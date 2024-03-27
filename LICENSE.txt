@@ -1,0 +1,4 @@
+This software is available under either:
+
+1. GNU AGPL v3 License (see LICENSE-AGPL.txt)
+2. Commercial License
