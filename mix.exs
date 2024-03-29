@@ -32,7 +32,7 @@ defmodule Runa.MixProject do
   def application do
     [
       mod: {Runa.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:ueberauth, :ueberauth_auth0, :logger, :runtime_tools]
     ]
   end
 
@@ -45,6 +45,9 @@ defmodule Runa.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:poison, "~> 5.0"},
+      {:ueberauth_auth0, "~> 2.0"},
+      {:ueberauth, "~> 0.10"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.18", only: :test},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
