@@ -1,4 +1,11 @@
 <div>
+  <%= if @current_user do %>
+    <.link href={~p"/"}>Home</.link>
+    <.link href={~p"/logout"}>Logout</.link>
+  <% else %>
+    <.link href={~p"/"}>Home</.link>
+    <.link href={~p"/auth/auth0"}>Login</.link>
+  <% end %>
   <div>
     <p>Runa</p>
     <p>

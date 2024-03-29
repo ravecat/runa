@@ -17,6 +17,15 @@ defmodule RunaWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
+  @session_opts Plug.Session.init(
+                  store: :cookie,
+                  key: "_session",
+                  encryption_salt: "encrypted cookie salt",
+                  signing_salt: "signing salt",
+                  secret_key_base: String.duplicate("abcdef0123456789", 8),
+                  same_site: "Lax"
+                )
+
   using do
     quote do
       # The default endpoint for testing
@@ -33,6 +42,13 @@ defmodule RunaWeb.ConnCase do
 
   setup tags do
     Runa.DataCase.setup_sandbox(tags)
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+
+    conn =
+      Phoenix.ConnTest.build_conn()
+      |> Plug.Session.call(@session_opts)
+      |> Plug.Conn.fetch_session()
+      |> Phoenix.Controller.fetch_flash()
+
+    {:ok, conn: conn}
   end
 end

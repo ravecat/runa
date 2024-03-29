@@ -1,6 +1,8 @@
 defmodule RunaWeb.Router do
   use RunaWeb, :router
 
+  require Ueberauth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,16 +10,26 @@ defmodule RunaWeb.Router do
     plug :put_root_layout, html: {RunaWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug RunaWeb.AuthPlug, :identify
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  scope "/auth", RunaWeb do
+    pipe_through :browser
+
+    get "/:provider", Auth.Controller, :request
+    get "/:provider/callback", Auth.Controller, :callback
+    post "/:provider/callback", Auth.Controller, :callback
+  end
+
   scope "/", RunaWeb do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/logout", Auth.Controller, :logout
   end
 
   # Other scopes may use custom stacks.
