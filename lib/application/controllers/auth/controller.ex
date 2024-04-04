@@ -25,10 +25,7 @@ defmodule RunaWeb.Auth.Controller do
     |> redirect(to: ~p"/")
   end
 
-  def callback(%{assigns: %{ueberauth_failure: fails}} = conn, _params) do
-    Logger.error("Failed to authenticate.")
-    Logger.error(inspect(fails))
-
+  def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
     conn
     |> put_flash(:error, "Failed to authenticate.")
     |> redirect(to: ~p"/")
