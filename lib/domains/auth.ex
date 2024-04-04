@@ -7,7 +7,7 @@ defmodule Runa.Auth do
 
   alias Ueberauth.Auth
 
-  def find_or_create(%Auth{provider: :identity} = auth) do
+  def find_or_create(%Auth{provider: :auth0} = auth) do
     case validate_pass(auth.credentials) do
       :ok ->
         {:ok, basic_info(auth)}
@@ -59,12 +59,8 @@ defmodule Runa.Auth do
     {:error, "Password required"}
   end
 
-  defp validate_pass(%{other: %{password: pw, password_confirmation: pw}}) do
-    :ok
-  end
-
   defp validate_pass(%{other: %{password: _}}) do
-    {:error, "Passwords do not match"}
+    :ok
   end
 
   defp validate_pass(_), do: {:error, "Password Required"}
