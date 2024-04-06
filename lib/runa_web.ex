@@ -63,6 +63,7 @@ defmodule RunaWeb do
       use Phoenix.LiveComponent
 
       unquote(html_helpers())
+      unquote(components())
     end
   end
 
@@ -76,6 +77,7 @@ defmodule RunaWeb do
 
       # Include general helpers for rendering HTML
       unquote(html_helpers())
+      unquote(components())
     end
   end
 
@@ -83,8 +85,8 @@ defmodule RunaWeb do
     quote do
       # HTML escaping functionality
       import Phoenix.HTML
-      # Core UI components and translation
-      import RunaWeb.CoreComponents
+      # Translation
+
       import RunaWeb.Gettext
 
       # Shortcut for generating JS commands
@@ -92,6 +94,15 @@ defmodule RunaWeb do
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
+      # Core UI components
+      unquote(components())
+    end
+  end
+
+  def components do
+    quote do
+      import RunaWeb.CoreComponents
+      import RunaWeb.Components.Button
     end
   end
 
