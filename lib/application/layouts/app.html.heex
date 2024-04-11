@@ -1,4 +1,7 @@
-<div class="flex min-vh-100 flex-column">
+<div class="flex flex-row-ns flex-column-reverse vh-100">
   <.flash_group flash={@flash} />
-  <div><%= @inner_content %></div>
+  <.sidebar />
+  <article class="pa2 flex-grow-1">
+    <%= @inner_content %>
+  </article>
 </div>

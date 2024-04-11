@@ -28,7 +28,7 @@ defmodule RunaWeb.Auth.Controller.Test do
   end
 
   describe "callback action" do
-    test "logs in user on success auth", %{conn: conn} do
+    test "logs in on success auth", %{conn: conn} do
       conn =
         conn
         |> bypass_through(RunaWeb.Router, [:browser])
@@ -40,7 +40,7 @@ defmodule RunaWeb.Auth.Controller.Test do
         |> RunaWeb.Auth.Controller.callback(%{})
 
       assert get_flash(conn, :info) == "Successfully authenticated as #{@auth.info.name}."
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/profile"
 
       conn = conn |> get(~p"/")
 
