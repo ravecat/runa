@@ -1,4 +1,4 @@
-defmodule RunaWeb.PageControllerTest do
+defmodule RunaWeb.PageController.Test do
   use RunaWeb.ConnCase
 
   test "GET /", %{conn: conn} do

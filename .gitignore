@@ -28,7 +28,6 @@ runa-*.tar
 # Ignore assets that are produced by build tools.
 /priv/static/assets/
 
-/priv/static/
 /deps/
 /_build/
 

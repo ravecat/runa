@@ -57,7 +57,7 @@ config :runa, RunaWeb.Endpoint,
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/application/.*(ex|heex)$"
+      ~r"lib/.*(ex|heex)$"
     ]
   ]
 

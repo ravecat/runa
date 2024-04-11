@@ -37,7 +37,7 @@ defmodule RunaWeb.Auth.Controller do
         conn
         |> put_flash(:info, "Successfully authenticated as " <> user.name <> ".")
         |> put_session(:current_user, user)
-        |> redirect(to: ~p"/")
+        |> redirect(to: ~p"/profile")
 
       {:error, reason} ->
         conn

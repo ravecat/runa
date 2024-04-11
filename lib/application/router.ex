@@ -17,6 +17,10 @@ defmodule RunaWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :authenticate do
+    plug RunaWeb.AuthPlug, :authenticate
+  end
+
   scope "/auth", RunaWeb do
     pipe_through :browser
 
@@ -30,6 +34,14 @@ defmodule RunaWeb.Router do
 
     get "/", PageController, :home
     get "/logout", Auth.Controller, :logout
+  end
+
+  scope "/profile", RunaWeb do
+    pipe_through :browser
+    pipe_through :authenticate
+
+    live "/", UserLive.Index, :index
+    live "/:id/edit", UserLive.Index, :edit
   end
 
   # Other scopes may use custom stacks.
