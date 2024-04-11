@@ -2,29 +2,29 @@ defmodule RunaWeb.Components.Sidebar do
   @moduledoc """
   Renders a application sidebar.
   """
-  use Phoenix.Component
   use RunaWeb, :html
+  use RunaWeb, :components
 
   attr :rows, :list,
     default: [
       %{
         title: "Workspaces",
-        icon: "/images/workspace.svg",
+        icon: "workspace",
         href: "/"
       },
       %{
         title: "Projects",
-        icon: "/images/project.svg",
+        icon: "project",
         href: "/"
       },
       %{
         title: "Settings",
-        icon: "/images/settings.svg",
+        icon: "settings",
         href: "/"
       },
       %{
         title: "Logout",
-        icon: "/images/logout.svg",
+        icon: "logout",
         href: "/"
       }
     ]
@@ -32,7 +32,9 @@ defmodule RunaWeb.Components.Sidebar do
   def sidebar(assigns) do
     ~H"""
     <aside class="pa2 w5-ns bg-near-white h-100-ns h3">
-      <div class="pa2 db-ns dn h2"><img class="dib h-100 dark-gray" src="/images/logo.svg" /></div>
+      <div class="pa2 db-ns dn">
+        <.icon icon="logo" class="w3 dark-gray" />
+      </div>
       <div class="dt w-100 bb b--black-05 pa2">
         <div class="dtc w2 w2-ns v-mid">
           <img src="" class="ba b--black-10 db br-100 w2 w2-ns h2 h2-ns" />
@@ -49,7 +51,7 @@ defmodule RunaWeb.Components.Sidebar do
           title={row[:title]}
         >
           <div class="w1 w1-ns h1 h1-ns">
-            <img  src={row[:icon]} />
+            <.icon icon={row[:icon]} class="dark-gray" />
           </div>
           <div class="f6 ml2"><%= row[:title] %></div>
         </.link>

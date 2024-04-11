@@ -79,6 +79,18 @@ defmodule RunaWeb do
     end
   end
 
+  def components do
+    quote do
+      import RunaWeb.Components.Icon
+    end
+  end
+
+  def widgets do
+    quote do
+      import RunaWeb.Components.Sidebar
+    end
+  end
+
   defp html_helpers do
     quote do
       # HTML escaping functionality
@@ -90,8 +102,6 @@ defmodule RunaWeb do
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
-
-
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())

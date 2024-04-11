@@ -1,7 +1,6 @@
 defmodule RunaWeb.PageHTML do
   use RunaWeb, :html
-
-  import RunaWeb.Components.Logo
+  use RunaWeb, :components
 
   embed_templates "/*"
 end
