@@ -82,12 +82,13 @@ defmodule RunaWeb do
   def components do
     quote do
       import RunaWeb.Components.Icon
+      import RunaWeb.Components.Avatar
     end
   end
 
   def widgets do
     quote do
-      import RunaWeb.Components.Sidebar
+      alias RunaWeb.Components.Sidebar
     end
   end
 

@@ -2,51 +2,58 @@ defmodule RunaWeb.Components.Sidebar do
   @moduledoc """
   Renders a application sidebar.
   """
-  use RunaWeb, :html
+  use RunaWeb, :live_component
   use RunaWeb, :components
 
-  attr :rows, :list,
-    default: [
-      %{
-        title: "Workspaces",
-        icon: "workspace",
-        href: "/"
-      },
-      %{
-        title: "Projects",
-        icon: "project",
-        href: "/"
-      },
-      %{
-        title: "Settings",
-        icon: "settings",
-        href: "/"
-      },
-      %{
-        title: "Logout",
-        icon: "logout",
-        href: "/"
-      }
-    ]
+  @rows [
+    %{
+      title: "Projects",
+      icon: "project",
+      href: "/"
+    },
+    %{
+      title: "Team",
+      icon: "settings",
+      href: "/"
+    },
+    %{
+      title: "Profile",
+      icon: "settings",
+      href: "/"
+    },
+    %{
+      title: "Logout",
+      icon: "logout",
+      href: "/"
+    }
+  ]
 
-  def sidebar(assigns) do
+  def mount(socket) do
+    {:ok, assign(socket, :rows, @rows)}
+  end
+
+  def render(assigns) do
     ~H"""
     <aside class="pa2 w5-ns bg-near-white h-100-ns h3">
       <div class="pa2 db-ns dn">
         <.icon icon="logo" class="w3 dark-gray" />
       </div>
-      <div class="dt w-100 bb b--black-05 pa2">
-        <div class="dtc w2 w2-ns v-mid">
-          <img src="" class="ba b--black-10 db br-100 w2 w2-ns h2 h2-ns" />
+      <div class="flex items-center w-100 pa2 pointer bg-animate hover-bg-moon-gray br2">
+        <.avatar src={@user.avatar} />
+        <div class="flex-grow-1 ml2 mr2">
+          <div class="f6 fw4 mt0 mb0 black-60"><%= @user.name <> "'s Team" %></div>
+          <div class="f6 f5-ns fw6 lh-title black mv0">
+            <%= @user.name %>
+            <span class="f6 fw4 mt0 mb0 black-60">(owner)</span>
+          </div>
         </div>
-        <div class="dtc v-mid">
-          <div class="f6 fw4 mt0 mb0 black-60">Max's team</div>
-          <div class="f6 f5-ns fw6 lh-title black mv0">Max Sharov</div>
+        <div>
+          <.icon icon="shevron-right" class="dark-gray" />
         </div>
       </div>
       <%= for row <- @rows do %>
         <.link
-          class="dib flex w-100-ns h2-ns no-underline dark-gray bg-animate bg-near-white hover-bg-moon-gray items-center br2 pa2"
+          class="flex align-items w-100-ns h2-ns no-underline dark-gray bg-animate hover-bg-moon-gray br2 pa2"
           href={row[:href]}
           title={row[:title]}
         >
