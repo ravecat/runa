@@ -37,11 +37,10 @@ defmodule RunaWeb.Router do
   end
 
   scope "/profile", RunaWeb do
-    pipe_through :browser
-    pipe_through :authenticate
+    pipe_through [:browser, :authenticate]
 
-    live "/", UserLive.Index, :index
-    live "/:id/edit", UserLive.Index, :edit
+    live "/", PageLive.Profile, :show
+    live "/:id/edit", PageLive.Profile, :edit
   end
 
   # Other scopes may use custom stacks.

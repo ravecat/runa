@@ -1,5 +1,6 @@
-defmodule RunaWeb.UserLive.Index do
+defmodule RunaWeb.PageLive.Profile do
   use RunaWeb, :live_view
+  use RunaWeb, :components
 
   alias Runa.Accounts
 
@@ -13,19 +14,19 @@ defmodule RunaWeb.UserLive.Index do
   end
 
   @impl true
+  def handle_params(_params, _url, %{assigns: %{live_action: :show}} = socket) do
+    socket =
+      socket
+      |> assign(:page_title, "Profile")
+
+    {:noreply, socket}
+  end
+
   def handle_params(%{"id" => id}, _url, %{assigns: %{live_action: :edit}} = socket) do
     socket =
       socket
       |> assign(:page_title, "Edit profile")
       |> assign(:user, Accounts.get_user!(id))
-
-    {:noreply, socket}
-  end
-
-  def handle_params(_params, _url, %{assigns: %{live_action: :index}} = socket) do
-    socket =
-      socket
-      |> assign(:page_title, "Profile")
 
     {:noreply, socket}
   end
@@ -42,4 +43,5 @@ defmodule RunaWeb.UserLive.Index do
 
     {:noreply, stream_delete(socket, :users, user)}
   end
+
 end
