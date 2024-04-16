@@ -32,13 +32,17 @@ defmodule RunaWeb.Auth.Controller do
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    case Runa.Auth.find_or_create(auth) do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "Successfully authenticated as " <> user.name <> ".")
-        |> put_session(:current_user, user)
-        |> redirect(to: ~p"/profile")
-
+    with {:ok, user} <- Runa.Auth.find_or_create(auth),
+         {:ok, _team} <-
+           Runa.Teams.create_team(%{
+             title: "#{user.name}'s Team",
+             owner_id: user.uid
+           }) do
+      conn
+      |> put_flash(:info, "Successfully authenticated as #{user.name}.")
+      |> put_session(:current_user, user)
+      |> redirect(to: ~p"/profile")
+    else
       {:error, reason} ->
         conn
         |> put_flash(:error, reason)

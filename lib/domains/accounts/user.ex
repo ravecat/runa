@@ -3,8 +3,10 @@ defmodule Runa.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
+    field :uid, :string
     field :name, :string
     field :avatar, :string
+    field :nickname, :string
 
     timestamps(type: :utc_datetime)
   end
@@ -12,7 +14,7 @@ defmodule Runa.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :uid, :avatar])
+    |> validate_required([:name, :uid])
   end
 end

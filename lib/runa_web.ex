@@ -83,6 +83,7 @@ defmodule RunaWeb do
     quote do
       import RunaWeb.Components.Icon
       import RunaWeb.Components.Avatar
+      import RunaWeb.Components.Button
     end
   end
 

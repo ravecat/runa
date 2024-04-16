@@ -4,14 +4,8 @@ defmodule RunaWeb.UserLive.Test do
   import Phoenix.LiveViewTest
   import Runa.Accounts.Fixtures
 
-  defp create_user(_) do
-    user = user_fixture()
-
-    %{user: user}
-  end
-
   describe "authenticated user" do
-    setup [:create_user]
+    setup [:create_aux_user]
 
     test "can see projects page", %{conn: conn, user: user} do
       {:ok, _show_live, html} =

@@ -29,7 +29,11 @@ defmodule RunaWeb.Components.Sidebar do
   ]
 
   def mount(socket) do
-    {:ok, assign(socket, :rows, @rows)}
+    socket =
+      socket
+      |> assign(:rows, @rows)
+
+    {:ok, socket}
   end
 
   def render(assigns) do
@@ -41,7 +45,7 @@ defmodule RunaWeb.Components.Sidebar do
       <div class="flex items-center w-100 pa2 pointer bg-animate hover-bg-moon-gray br2">
         <.avatar src={@user.avatar} />
         <div class="flex-grow-1 ml2 mr2">
-          <div class="f6 fw4 mt0 mb0 black-60"><%= @user.name <> "'s Team" %></div>
+          <div class="f6 fw4 mt0 mb0 black-60"><%= @team.title || "-" %></div>
           <div class="f6 f5-ns fw6 lh-title black mv0">
             <%= @user.name %>
             <span class="f6 fw4 mt0 mb0 black-60">(owner)</span>

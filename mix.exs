@@ -88,6 +88,7 @@ defmodule Runa.MixProject do
       ],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "test.watch.only": ["test.watch --only only"],
       "assets.setup": ["esbuild.install --if-missing"],
       "assets.build": ["esbuild runa"],
       "assets.deploy": [
