@@ -84,6 +84,7 @@ defmodule RunaWeb do
       import RunaWeb.Components.Icon
       import RunaWeb.Components.Avatar
       import RunaWeb.Components.Button
+      import RunaWeb.Components.Flash
     end
   end
 
