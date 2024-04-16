@@ -3,11 +3,21 @@ defmodule RunaWeb.PageLive.Profile do
   use RunaWeb, :components
 
   alias Runa.Accounts
+  alias Runa.Teams
+  alias Runa.Teams.Team
 
   @impl true
   def mount(_params, %{"current_user" => user}, socket) do
     socket =
-      socket
+      case Teams.get_teams_by(:owner_id, user.uid) do
+        [%Team{} = team | _tail] ->
+          socket
+          |> assign(:team, team)
+
+        _ ->
+          socket
+          |> assign(:team, %Team{})
+      end
       |> assign(:user, user)
 
     {:ok, socket}
@@ -43,5 +53,4 @@ defmodule RunaWeb.PageLive.Profile do
 
     {:noreply, stream_delete(socket, :users, user)}
   end
-
 end

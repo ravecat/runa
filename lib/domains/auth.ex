@@ -11,7 +11,12 @@ defmodule Runa.Auth do
     Logger.debug("Auth0 auth: " <> Poison.encode!(auth))
 
     {:ok,
-     %{uid: auth.uid, name: get_name(auth), avatar: get_avatar(auth), nickname: get_nickname(auth)}}
+     %{
+       uid: auth.uid,
+       name: get_name(auth),
+       avatar: get_avatar(auth),
+       nickname: get_nickname(auth)
+     }}
   end
 
   defp get_avatar(%Auth{info: %{urls: %{avatar_url: image}}}), do: image

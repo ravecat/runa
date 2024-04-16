@@ -1,4 +1,5 @@
 defmodule RunaWeb.Widgets.Sidebar.Test do
+  @moduledoc false
   use RunaWeb.ConnCase
 
   import Phoenix.LiveViewTest
@@ -7,18 +8,14 @@ defmodule RunaWeb.Widgets.Sidebar.Test do
 
   import Phoenix.LiveViewTest
   import Runa.Accounts.Fixtures
-
-  defp create_user(_) do
-    user = user_fixture()
-
-    %{user: user}
-  end
+  import Runa.Teams.Fixtures
 
   describe "Sidebar" do
-    setup [:create_user]
+    setup [:create_aux_user]
+    setup [:create_aux_team]
 
-    test "renders menu items", %{user: user} do
-      html = render_component(Sidebar, user: user)
+    test "renders menu items", %{user: user, team: team} do
+      html = render_component(Sidebar, %{user: user, team: team})
 
       assert html =~ "Profile"
       assert html =~ "Projects"
@@ -26,12 +23,12 @@ defmodule RunaWeb.Widgets.Sidebar.Test do
       assert html =~ "Logout"
     end
 
-    test "renders wokrspace info", %{user: user} do
-      html = render_component(Sidebar, user: user)
+    test "renders wokrspace info", %{user: user, team: team} do
+      html = render_component(Sidebar, %{user: user, team: team})
 
       assert html =~ "#{user.name}"
       assert html =~ "owner"
-      assert html =~ "#{user.name}&#39;s Team"
+      assert html =~ "#{team.title}"
     end
   end
 end

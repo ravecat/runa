@@ -1,6 +1,8 @@
 defmodule RunaWeb.Auth.Controller.Test do
   use RunaWeb.ConnCase
 
+  alias Runa.Teams
+
   def create_auth(_),
     do: %{
       auth: %Ueberauth.Auth{
@@ -42,6 +44,10 @@ defmodule RunaWeb.Auth.Controller.Test do
         |> get("/auth/auth0/callback")
         |> RunaWeb.Auth.Controller.callback(%{})
 
+      assert [%Runa.Teams.Team{} = team] = Teams.get_teams()
+      assert team.title == "#{auth.info.name}'s Team"
+      assert team.owner_id == auth.uid
+
       assert get_flash(conn, :info) == "Successfully authenticated as #{auth.info.name}."
       assert redirected_to(conn) == ~p"/profile"
 
@@ -53,13 +59,15 @@ defmodule RunaWeb.Auth.Controller.Test do
              }
     end
 
-    test "reject on provider failure", %{conn: conn} do
+    test "reject on provider failure", %{conn: conn, auth: auth} do
       conn =
         conn
         |> bypass_through(RunaWeb.Router, [:browser])
         |> assign(:ueberauth_failure, "error")
         |> get("/auth/auth0/callback")
         |> RunaWeb.Auth.Controller.callback(%{})
+
+      assert [] = Teams.get_teams()
 
       assert get_flash(conn, :error) == "Failed to authenticate."
       assert redirected_to(conn) == ~p"/"
