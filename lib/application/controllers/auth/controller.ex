@@ -11,6 +11,7 @@ defmodule RunaWeb.Auth.Controller do
   If the authentication fails, the `callback` action will redirect the user to the
   home page with an error message.
   """
+  alias Runa.Teams
   use RunaWeb, :controller
   use RunaWeb, :verified_routes
 
@@ -34,9 +35,9 @@ defmodule RunaWeb.Auth.Controller do
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
     with {:ok, user} <- Runa.Auth.find_or_create(auth),
          {:ok, _team} <-
-           Runa.Teams.create_team(%{
-             title: "#{user.name}'s Team",
-             owner_id: user.uid
+           Teams.ensure_team([owner_id: user.uid], %{
+             owner_id: user.uid,
+             title: "#{user.name}'s Team"
            }) do
       conn
       |> put_flash(:info, "Successfully authenticated as #{user.name}.")
