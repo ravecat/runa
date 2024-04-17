@@ -9,7 +9,7 @@ defmodule RunaWeb.PageLive.Profile do
   @impl true
   def mount(_params, %{"current_user" => user}, socket) do
     socket =
-      case Teams.get_teams_by(:owner_id, user.uid) do
+      case Teams.get_teams_by(owner_id: user.uid) do
         [%Team{} = team | _tail] ->
           socket
           |> assign(:team, team)
