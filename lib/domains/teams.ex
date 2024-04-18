@@ -3,7 +3,7 @@ defmodule Runa.Teams do
   The Teams context.
   """
 
-  import Ecto.Query, warn: false
+  import Ecto.Query
   alias Runa.Repo
 
   alias Runa.Teams.Team

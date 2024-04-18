@@ -11,9 +11,10 @@ defmodule Runa.Accounts.Fixtures do
     {:ok, user} =
       attrs
       |> Enum.into(%{
-        uid: "123",
+        uid: "uid",
         name: "John Doe",
         avatar: "https://example.com/avatar.jpg",
+        email: "john.doe@mail.com"
       })
       |> Runa.Accounts.create_user()
 

@@ -7,24 +7,40 @@ defmodule Runa.Auth do
 
   alias Ueberauth.Auth
 
-  def find_or_create(%Auth{provider: :auth0} = auth) do
-    Logger.debug("Auth0 auth: " <> Poison.encode!(auth))
+  alias Runa.Repo.Helpers
+  alias Runa.Accounts.User
 
-    {:ok,
-     %{
-       uid: auth.uid,
-       name: get_name(auth),
-       avatar: get_avatar(auth),
-       nickname: get_nickname(auth)
-     }}
+  def find_or_create(%Auth{provider: :auth0} = auth) do
+    with uid when not is_nil(uid) <- auth.uid,
+         email when not is_nil(email) <- get_email(auth),
+         {:ok, [user]} <-
+           Helpers.ensure(User, [email: email], %{
+             uid: uid,
+             name: get_name(auth),
+             avatar: get_avatar(auth),
+             nickname: get_nickname(auth),
+             email: email
+           }) do
+      {:ok, Map.take(user, [:uid, :name, :avatar, :nickname, :email])}
+    else
+      {:error, %Ecto.Changeset{}} ->
+        {:error, "Failed to create user"}
+
+      _ ->
+        {:error, "Required authentication information is missing."}
+    end
   end
 
-  defp get_avatar(%Auth{info: %{urls: %{avatar_url: image}}}), do: image
+  defp get_avatar(%Auth{info: %{urls: %{avatar_url: image}}}) when image not in [nil, ""] do
+    image
+  end
 
-  defp get_avatar(%Auth{info: %{image: image}}), do: image
+  defp get_avatar(%Auth{info: %{image: image}}) when image not in [nil, ""] do
+    image
+  end
 
-  defp get_avatar(%Auth{provider: provider} = auth) do
-    Logger.warn(provider <> " needs to find an avatar URL!")
+  defp get_avatar(auth) do
+    Logger.warn("No avatar found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
     nil
@@ -45,6 +61,10 @@ defmodule Runa.Auth do
     nickname
   end
 
+  defp get_name(%Auth{info: %{email: email}}) when email not in [nil, ""] do
+    email
+  end
+
   defp get_name(auth) do
     Logger.warn("No name found in auth info!")
     Logger.debug(Poison.encode!(auth))
@@ -58,6 +78,17 @@ defmodule Runa.Auth do
 
   defp get_nickname(auth) do
     Logger.warn("No nickname found in auth info!")
+    Logger.debug(Poison.encode!(auth))
+
+    nil
+  end
+
+  defp get_email(%Auth{info: %{email: email}}) when email not in [nil, ""] do
+    email
+  end
+
+  defp get_email(auth) do
+    Logger.warn("No email found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
     nil

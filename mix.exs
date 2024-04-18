@@ -66,7 +66,8 @@ defmodule Runa.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.7"},
-      {:floki, "~> 0.36.0", only: :test}
+      {:floki, "~> 0.36.0", only: :test},
+      {:pathex, "~> 2.0", only: :test}
     ]
   end
 

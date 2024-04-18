@@ -6,7 +6,7 @@ defmodule Runa.Accounts.Test do
 
   import Runa.Accounts.Fixtures
 
-  @invalid_attrs %{name: nil}
+  @invalid_attrs %{uid: nil, email: nil}
 
   describe "users" do
     setup [:create_aux_user]
@@ -20,7 +20,7 @@ defmodule Runa.Accounts.Test do
     end
 
     test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{name: "some name", uid: "uid"}
+      valid_attrs = %{name: "some name", uid: "xxx", email: "peter.parker@mail.com"}
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
       assert user.name == "some name"
