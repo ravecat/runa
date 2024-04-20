@@ -40,7 +40,6 @@ defmodule RunaWeb.Auth.Controller.Test do
                uid: auth.uid,
                name: auth.info.name,
                avatar: auth.info.urls.avatar_url,
-               nickname: auth.info.nickname,
                email: auth.info.email
              }
     end

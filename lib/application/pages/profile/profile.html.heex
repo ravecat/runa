@@ -1,12 +1,13 @@
-<div class="dt w-100 pa2">
-  <div class="dtc v-mid">
-    <div class="f6 fw4 mt0 mb0 black-60">Name</div>
-    <div class="f6 f5-ns fw6 lh-title black mv0"><%= @user.name %></div>
-  </div>
-  <div class="dtc w2 w3-ns v-mid">
-    <.avatar
-      src={@user.avatar}
-      class="dtc v-mid ba b--black-10 br-100 w2 w3-ns h2 h3-ns"
-    />
-  </div>
+<div class="flex w-100">
+  <.info>
+    <:title>Name</:title>
+    <:info><%= @user.name %></:info>
+  </.info>
+  <.avatar src={@user.avatar} class="w3-ns h3-ns" />
+</div>
+<div class="flex w-100">
+  <.info>
+    <:title>Email</:title>
+    <:info><%= @user.email %></:info>
+  </.info>
 </div>
