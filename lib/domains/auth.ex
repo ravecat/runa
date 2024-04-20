@@ -21,7 +21,7 @@ defmodule Runa.Auth do
              nickname: get_nickname(auth),
              email: email
            }) do
-      {:ok, Map.take(user, [:uid, :name, :avatar, :nickname, :email])}
+      {:ok, Map.take(user, [:uid, :name, :avatar, :nickname, :email, :id])}
     else
       {:error, %Ecto.Changeset{}} ->
         {:error, "Failed to create user"}

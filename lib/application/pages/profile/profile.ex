@@ -4,21 +4,22 @@ defmodule RunaWeb.PageLive.Profile do
 
   alias Runa.Accounts
   alias Runa.Teams
-  alias Runa.Teams.Team
 
   @impl true
   def mount(_params, %{"current_user" => user}, socket) do
-    socket =
-      case Teams.get_teams_by(owner_id: user.uid) do
-        [%Team{} = team | _tail] ->
-          socket
-          |> assign(:team, team)
-
-        _ ->
-          socket
-          |> assign(:team, %Team{})
+    user =
+      case Runa.Repo.get_by(Accounts.User, email: user.email) do
+        %Accounts.User{} = user -> user
+        _ -> %Accounts.User{}
       end
-      |> assign(:user, user)
+
+    team =
+      case Teams.get_teams_by(owner_id: user.uid) do
+        [%Teams.Team{} = team | _tail] -> team
+        _ -> %Teams.Team{}
+      end
+
+    socket = socket |> assign(:user, user) |> assign(:team, team)
 
     {:ok, socket}
   end

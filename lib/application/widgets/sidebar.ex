@@ -39,32 +39,23 @@ defmodule RunaWeb.Components.Sidebar do
   def render(assigns) do
     ~H"""
     <aside class="pa2 w5-ns bg-near-white h-100-ns h3">
-      <div class="pa2 db-ns dn">
-        <.icon icon="logo" class="w3 dark-gray" />
+      <div class="pa3 pl2 db-ns dn">
+        <.icon icon="logo" class="w3" />
       </div>
       <div class="flex items-center w-100 pa2 pointer bg-animate hover-bg-moon-gray br2">
         <.avatar src={@user.avatar} />
-        <div class="flex-grow-1 ml2 mr2">
-          <div class="f6 fw4 mt0 mb0 black-60"><%= @team.title || "-" %></div>
-          <div class="f6 f5-ns fw6 lh-title black mv0">
-            <%= @user.name %>
-            <span class="f6 fw4 mt0 mb0 black-60">(owner)</span>
-          </div>
-        </div>
-        <div>
-          <.icon icon="shevron-right" class="dark-gray" />
-        </div>
+        <.info class="flex-grow-1 pt0 pb0">
+          <:title><%= @team.title || "-" %></:title>
+          <:info><%= @user.name %> <span class="f6 fw4">(owner)</span></:info>
+        </.info>
+        <.icon icon="shevron-right" />
       </div>
       <%= for row <- @rows do %>
-        <.link
-          class="flex align-items w-100-ns h2-ns no-underline dark-gray bg-animate hover-bg-moon-gray br2 pa2"
-          href={row[:href]}
-          title={row[:title]}
-        >
-          <div class="w1 w1-ns h1 h1-ns">
-            <.icon icon={row[:icon]} class="dark-gray" />
+        <.link class="no-underline dark-gray" href={row[:href]} title={row[:title]}>
+          <div class="flex align-items bg-animate hover-bg-moon-gray br2 pa2">
+            <.icon class="w1 w1-ns h1 h1-ns dib" icon={row[:icon]} />
+            <span class="f6 ml2"><%= row[:title] %></span>
           </div>
-          <div class="f6 ml2"><%= row[:title] %></div>
         </.link>
       <% end %>
     </aside>
