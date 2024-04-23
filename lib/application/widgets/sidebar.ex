@@ -45,7 +45,7 @@ defmodule RunaWeb.Components.Sidebar do
       <div class="flex items-center w-100 pa2 pointer bg-animate hover-bg-moon-gray br2">
         <.avatar src={@user.avatar} />
         <.info class="flex-grow-1 pt0 pb0">
-          <:title><%= @team.title || "-" %></:title>
+          <:title><%= @active_team.title || "-" %></:title>
           <:info><%= @user.name %> <span class="f6 fw4">(owner)</span></:info>
         </.info>
         <.icon icon="shevron-right" />

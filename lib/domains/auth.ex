@@ -7,22 +7,25 @@ defmodule Runa.Auth do
 
   alias Ueberauth.Auth
 
-  alias Runa.Repo.Helpers
-  alias Runa.Accounts.User
+  alias Runa.Accounts
 
   def find_or_create(%Auth{provider: :auth0} = auth) do
     with uid when not is_nil(uid) <- auth.uid,
          email when not is_nil(email) <- get_email(auth),
-         {:ok, [user]} <-
-           Helpers.ensure(User, [email: email], %{
-             uid: uid,
+         user when is_nil(user) <- Runa.Repo.get_by(Accounts.User, email: email),
+         {:ok, new_user} <-
+           Accounts.create_user(%{
+             uid: auth.uid,
              name: get_name(auth),
              avatar: get_avatar(auth),
              nickname: get_nickname(auth),
-             email: email
+             email: get_email(auth)
            }) do
-      {:ok, Map.take(user, [:uid, :name, :avatar, :nickname, :email, :id])}
+      {:ok, new_user}
     else
+      %Accounts.User{} = user ->
+        {:ok, user}
+
       {:error, %Ecto.Changeset{}} ->
         {:error, "Failed to create user"}
 

@@ -113,20 +113,4 @@ defmodule Runa.Teams do
 
     Repo.all(query)
   end
-
-  @doc """
-  Ensures a team exists for a fields values.
-  """
-  def ensure_team(clauses, defaults) when is_list(clauses) and is_map(defaults) do
-    case get_teams_by(clauses) do
-      [] ->
-        case create_team(defaults) do
-          {:ok, team} -> {:ok, [team]}
-          {:error, changeset} -> {:error, changeset}
-        end
-
-      teams ->
-        {:ok, teams}
-    end
-  end
 end

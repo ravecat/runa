@@ -11,8 +11,7 @@ defmodule Runa.Teams.Fixtures do
     {:ok, team} =
       attrs
       |> Enum.into(%{
-        owner_id: "some owner_id",
-        title: "some title"
+        title: "team title"
       })
       |> Runa.Teams.create_team()
 

@@ -13,11 +13,11 @@ defmodule Runa.Accounts do
 
   ## Examples
 
-      iex> list_users()
+      iex> get_users()
       [%User{}, ...]
 
   """
-  def list_users do
+  def get_users do
     Repo.all(User)
   end
 

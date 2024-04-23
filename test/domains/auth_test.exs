@@ -1,8 +1,9 @@
 defmodule Runa.Auth.Test do
   use RunaWeb.ConnCase
 
+  @moduletag :auth
+
   import Runa.Auth.Fixtures
-  import Runa.Accounts.Fixtures
 
   alias Runa.Accounts
   alias Ueberauth.Auth
@@ -300,6 +301,7 @@ defmodule Runa.Auth.Test do
                {:error, "Required authentication information is missing."}
     end
 
+    @tag :only
     test "data with incorrect changeset", %{auth: auth} do
       auth = %Auth{
         uid: 1,
@@ -325,18 +327,18 @@ defmodule Runa.Auth.Test do
     setup [:create_aux_success_auth]
 
     test "and creates user", %{auth: auth} do
-      assert [] == Accounts.list_users()
+      assert [] == Accounts.get_users()
 
       assert {:ok, user} = Runa.Auth.find_or_create(auth)
 
-      assert [new] = Accounts.list_users()
+      assert [new] = Accounts.get_users()
 
       assert Map.take(new, [:uid, :name, :avatar, :nickname, :email]) ==
                Map.take(user, [:uid, :name, :avatar, :nickname, :email])
     end
 
     test "and returns existing user", %{auth: auth} do
-      assert [] == Accounts.list_users()
+      assert [] == Accounts.get_users()
 
       assert {:ok, user} = Runa.Auth.find_or_create(auth)
 

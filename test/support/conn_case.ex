@@ -32,6 +32,7 @@ defmodule RunaWeb.ConnCase do
       @endpoint RunaWeb.Endpoint
 
       use RunaWeb, :verified_routes
+      use ExUnit.Case
 
       # Import conveniences for testing with connections
       import Plug.Conn

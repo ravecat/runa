@@ -11,11 +11,10 @@ defmodule RunaWeb.Widgets.Sidebar.Test do
   import Runa.Teams.Fixtures
 
   describe "Sidebar" do
-    setup [:create_aux_user]
-    setup [:create_aux_team]
+    setup [:create_aux_user, :create_aux_team]
 
     test "renders menu items", %{user: user, team: team} do
-      html = render_component(Sidebar, %{user: user, team: team})
+      html = render_component(Sidebar, %{user: user, active_team: team})
 
       assert html =~ "Profile"
       assert html =~ "Projects"
@@ -24,7 +23,7 @@ defmodule RunaWeb.Widgets.Sidebar.Test do
     end
 
     test "renders wokrspace info", %{user: user, team: team} do
-      html = render_component(Sidebar, %{user: user, team: team})
+      html = render_component(Sidebar, %{user: user, active_team: team})
 
       assert html =~ "#{user.name}"
       assert html =~ "owner"

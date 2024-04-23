@@ -12,7 +12,9 @@ defmodule RunaWeb.Auth.Controller do
   home page with an error message.
   """
   alias Runa.Teams
-  alias Runa.Repo.Helpers
+  alias Runa.Auth
+  alias Runa.Accounts
+  alias Runa.Permissions
 
   use RunaWeb, :controller
   use RunaWeb, :verified_routes
@@ -35,17 +37,28 @@ defmodule RunaWeb.Auth.Controller do
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    with {:ok, user} <- Runa.Auth.find_or_create(auth),
-         {:ok, _team} <-
-           Helpers.ensure(Teams.Team, [owner_id: user.uid], %{
-             owner_id: user.uid,
-             title: "#{user.name}'s Team"
-           }) do
-      conn
-      |> put_flash(:info, "Successfully authenticated as #{user.name}.")
-      |> put_session(:current_user, Map.take(user, [:email, :uid, :name, :avatar]))
-      |> redirect(to: ~p"/profile")
-    else
+    case Auth.find_or_create(auth) do
+      {:ok, user} ->
+        %Accounts.User{teams: teams} = Runa.Repo.preload(user, :teams)
+
+        if Enum.empty?(teams) do
+          {:ok, team} = Teams.create_team(%{title: "#{user.name}'s Team"})
+          role = Runa.Repo.get_by(Permissions.Role, title: "admin")
+
+          user
+          |> Ecto.build_assoc(:team_roles, %{
+            team_id: team.id,
+            role_id: role.id,
+            user_id: user.id
+          })
+        |> Runa.Repo.insert()
+        end
+
+        conn
+        |> put_flash(:info, "Successfully authenticated as #{user.name}.")
+        |> put_session(:current_user, Map.take(user, [:email, :uid]))
+        |> redirect(to: ~p"/profile")
+
       {:error, reason} ->
         conn
         |> put_flash(:error, reason)
