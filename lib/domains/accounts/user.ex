@@ -10,6 +10,9 @@ defmodule Runa.Accounts.User do
     field :avatar, :string
     field :nickname, :string
 
+    has_many :team_roles, Runa.Permissions.TeamRole
+    many_to_many :teams, Runa.Teams.Team, join_through: Runa.Permissions.TeamRole
+
     timestamps(type: :utc_datetime)
   end
 

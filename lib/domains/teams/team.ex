@@ -4,7 +4,9 @@ defmodule Runa.Teams.Team do
 
   schema "teams" do
     field :title, :string
-    field :owner_id, :string
+
+    has_many :team_roles, Runa.Permissions.TeamRole
+    many_to_many :users, Runa.Accounts.User, join_through: Runa.Permissions.TeamRole
 
     timestamps(type: :utc_datetime)
   end
@@ -12,7 +14,7 @@ defmodule Runa.Teams.Team do
   @doc false
   def changeset(team, attrs) do
     team
-    |> cast(attrs, [:title, :owner_id])
-    |> validate_required([:title, :owner_id])
+    |> cast(attrs, [:title])
+    |> validate_required([:title])
   end
 end

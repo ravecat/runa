@@ -1,5 +1,5 @@
 alias Runa.Repo
-alias Runa.Accounts.Role
+alias Runa.Permissions.Role
 
 now = DateTime.utc_now() |> DateTime.truncate(:second)
 

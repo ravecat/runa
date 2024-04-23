@@ -11,8 +11,8 @@ defmodule Runa.Accounts.Test do
   describe "users" do
     setup [:create_aux_user]
 
-    test "list_users/0 returns all users", %{user: user} do
-      assert Accounts.list_users() == [user]
+    test "get_users/0 returns all users", %{user: user} do
+      assert Accounts.get_users() == [user]
     end
 
     test "get_user!/1 returns the user with given id", %{user: user} do
