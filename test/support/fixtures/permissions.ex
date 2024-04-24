@@ -7,7 +7,27 @@ defmodule Runa.Permissions.Fixtures do
   @doc """
   Generate a team_role.
   """
-  def create_aux_team_role(attrs \\ %{}) do
+  def create_aux_team_role(
+        %{
+          test: _,
+          team: %Runa.Teams.Team{} = team,
+          user: %Runa.Accounts.User{} = user,
+          role: %Runa.Permissions.Role{} = role
+        } = attrs
+      ) do
+    {:ok, team_role} =
+      attrs
+      |> Enum.into(%{
+        team_id: team.id,
+        user_id: user.id,
+        role_id: role.id
+      })
+      |> Runa.Permissions.create_team_role()
+
+    %{team_role: team_role}
+  end
+
+  def create_aux_team_role(attrs) do
     {:ok, team_role} =
       attrs
       |> Enum.into(%{})

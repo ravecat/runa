@@ -1,6 +1,6 @@
 <div class="flex flex-row-ns flex-column-reverse vh-100 dark-gray f6 f5-ns">
   <.flash_group flash={@flash} />
-  <.live_component module={Sidebar} id="sidebar" user={@user} active_team={@active_team} />
+  <.live_component module={Sidebar} id="sidebar" user={@user} />
   <article class="pa2 flex-grow-1 mw8">
     <h2 class="ma0 lh-title pa2 fw5"><%= @page_title %></h2>
     <%= @inner_content %>
