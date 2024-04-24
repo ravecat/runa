@@ -29,18 +29,20 @@ defmodule RunaWeb.Router do
     post "/:provider/callback", Auth.Controller, :callback
   end
 
-  scope "/", RunaWeb do
-    pipe_through :browser
+  live_session :default, on_mount: RunaWeb.UserData do
+    scope "/", RunaWeb do
+      pipe_through :browser
 
-    get "/", PageController, :home
-    get "/logout", Auth.Controller, :logout
-  end
+      get "/", PageController, :home
+      get "/logout", Auth.Controller, :logout
+    end
 
-  scope "/profile", RunaWeb do
-    pipe_through [:browser, :authenticate]
+    scope "/profile", RunaWeb do
+      pipe_through [:browser, :authenticate]
 
-    live "/", PageLive.Profile, :show
-    live "/:id/edit", PageLive.Profile, :edit
+      live "/", PageLive.Profile, :show
+      live "/:id/edit", PageLive.Profile, :edit
+    end
   end
 
   # Other scopes may use custom stacks.

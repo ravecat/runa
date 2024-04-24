@@ -5,25 +5,6 @@ defmodule RunaWeb.PageLive.Profile do
   alias Runa.Accounts
 
   @impl true
-  def mount(_params, %{"current_user" => user}, socket) do
-    user =
-      case Runa.Repo.get_by(Accounts.User, email: user.email) do
-        %Accounts.User{} = user -> user |> Runa.Repo.preload(:teams)
-        _ -> %Accounts.User{}
-      end
-
-    [active_team | _tail] = user.teams
-
-    socket =
-      socket
-      |> assign(:user, user)
-      |> assign(:teams, user.teams)
-      |> assign(:active_team, active_team)
-
-    {:ok, socket}
-  end
-
-  @impl true
   def handle_params(_params, _url, %{assigns: %{live_action: :show}} = socket) do
     socket =
       socket

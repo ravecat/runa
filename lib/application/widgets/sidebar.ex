@@ -37,6 +37,8 @@ defmodule RunaWeb.Components.Sidebar do
   end
 
   def render(assigns) do
+    assigns = Map.put_new(assigns, :active_team, List.first(assigns.user.teams || []))
+
     ~H"""
     <aside class="pa2 w5-ns bg-near-white h-100-ns h3">
       <div class="pa3 pl2 db-ns dn">
