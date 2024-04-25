@@ -19,35 +19,44 @@ defmodule RunaWeb.Components.Dropdown do
   attr :rest, :global
   attr :position, :string, default: "bottom", values: ["top", "bottom", "left", "right"]
 
-  slot :button, required: true
+  slot :summary, required: true
   slot :menu, required: true
+  slot :footer
 
   def dropdown(assigns) do
     ~H"""
     <details
-      phx-click-away={JS.toggle_attribute({"open", "false"})}
+      phx-click-away={JS.remove_attribute("open")}
+      role="menu"
+      aria-orientation="vertical"
+      data-state="closed"
       class={[
         "phx-submit-loading:opacity-75 relative",
         @class
       ]}
       {@rest}
     >
-      <summary class="list">
-        <%= render_slot(@button) %>
+      <summary class="list-none">
+        <%= render_slot(@summary) %>
       </summary>
       <%!-- [TODO] Required css modules functionality https://ravecat.fibery.io/Runa/Features-282#Task/css-modules-integration-19 --%>
       <div
-        class="absolute pa1 bg-white w5 z-1 shadow-4 br2 ba b--moon-gray"
-        style={
+        class="absolute w-[16rem] bg-background rounded divide-y divide-secondary-100 border border-secondary-100 bg-background shadow-lg"
+        style={[
           %{
             "top" => ["transform: translate(0, calc(-100% - 0.5rem));", "top: 0;"],
             "bottom" => ["transform: translate(0, calc(0% + 0.5rem));"],
             "left" => ["transform: translate(calc(-100% - 0.5rem), 0);", "top: 0;"],
             "right" => ["transform: translate(calc(100% + 0.5rem), 0);", "top: 0;", "right: 0"]
           }[@position]
-        }
+        ]}
       >
-        <%= render_slot(@menu) %>
+        <div class="p-[.25rem]">
+          <%= render_slot(@menu) %>
+        </div>
+        <div class="p-[.25rem]">
+          <%= render_slot(@footer) %>
+        </div>
       </div>
     </details>
     """

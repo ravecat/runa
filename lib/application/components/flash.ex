@@ -28,19 +28,18 @@ defmodule RunaWeb.Components.Flash do
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
       class={[
-        "fixed top-1 right-1 mr-2 w-33-l w-90 br3 pa2 z-1 shadow-4",
-        @kind == :info && "bg-washed-green green",
-        @kind == :error && "bg-washed-red red"
+        "fixed z-1 top-[1rem] right-[1rem] rounded border-s-4 p-[1rem] shadow-md cursor-pointer",
+        @kind == :info && "bg-success-100 text-success-600",
+        @kind == :error && "bg-error-50 text-error"
       ]}
       {@rest}
     >
-      <p :if={@title} class="flex items-center ma2">
-        <.icon :if={@kind == :info} icon="information-circle" class="pr1" />
-        <.icon :if={@kind == :error} icon="exclamation-circle" class="pr1" />
-        <%= @title %>
-      </p>
-      <p class="ma2"><%= msg %></p>
-      <.icon aria-label={gettext("close")} icon="x-mark" class="absolute top-1 right-1 pointer dim" />
+      <div :if={@title} class="flex items-center gap-2">
+        <.icon :if={@kind == :info} class="h-5 w-5" icon="information-circle" />
+        <.icon :if={@kind == :error} class="h-5 w-5" icon="exclamation-circle" />
+        <strong class="block font-medium"><%= @title %></strong>
+      </div>
+      <p class="mt-2 text-sm text-red-700"><%= msg %></p>
     </div>
     """
   end

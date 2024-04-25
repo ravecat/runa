@@ -25,7 +25,8 @@ config :runa, RunaWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "pNcmh9y/fN20hRXU5V/Yy6RO+2nbAgAlBbU1/QIw6m0JQV5YcOHj9GTIBDbw1jNW",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:runa, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:runa, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # ## SSL Support

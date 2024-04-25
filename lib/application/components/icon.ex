@@ -18,7 +18,10 @@ defmodule RunaWeb.Components.Icon do
         "mask-repeat: no-repeat;",
         "background-color: currentColor;"
       ]}
-      class={["db w1 h1", @class]}
+      class={[
+        "block min-w-[1rem] min-h-[1rem]",
+        @class
+      ]}
       {@rest}
     >
     </span>

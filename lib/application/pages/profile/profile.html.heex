@@ -1,13 +1,13 @@
-<div class="flex w-100">
+<.tab class="justify-between">
   <.info>
     <:title>Name</:title>
     <:info><%= @user.name %></:info>
   </.info>
-  <.avatar src={@user.avatar} class="w3-ns h3-ns" />
-</div>
-<div class="flex w-100">
+  <.avatar src={@user.avatar} />
+</.tab>
+<.tab>
   <.info>
     <:title>Email</:title>
     <:info><%= @user.email %></:info>
   </.info>
-</div>
+</.tab>

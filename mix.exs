@@ -67,7 +67,8 @@ defmodule Runa.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.7"},
       {:floki, "~> 0.36.0", only: :test},
-      {:pathex, "~> 2.0", only: :test}
+      {:pathex, "~> 2.0", only: :test},
+      {:tailwind, "~> 0.2.2"}
     ]
   end
 
@@ -93,6 +94,7 @@ defmodule Runa.MixProject do
       "assets.setup": ["esbuild.install --if-missing"],
       "assets.build": ["esbuild runa"],
       "assets.deploy": [
+        "tailwind default --minify",
         "esbuild runa --minify",
         "phx.digest"
       ],

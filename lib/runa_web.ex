@@ -87,6 +87,7 @@ defmodule RunaWeb do
       import RunaWeb.Components.Flash
       import RunaWeb.Components.Info
       import RunaWeb.Components.Dropdown
+      import RunaWeb.Components.Tab
     end
   end
 
