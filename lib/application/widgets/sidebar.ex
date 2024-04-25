@@ -40,45 +40,46 @@ defmodule RunaWeb.Components.Sidebar do
     assigns = Map.put_new(assigns, :active_team, List.first(assigns.user.teams || []))
 
     ~H"""
-    <aside class="pa2 w5-ns bg-near-white h-100-ns h3">
-      <div class="pa3 pl2 db-ns dn">
-        <.icon icon="logo" class="w3" />
+    <aside class="flex h-screen flex-col bg-accent-50">
+      <div class="px-[1rem] py-[1rem]">
+        <.icon icon="logo" class="w-[4rem]" />
       </div>
-      <.dropdown class="br2" position="right">
-        <:button>
-          <div class="flex items-center w-100 pa2 pointer bg-animate hover-bg-moon-gray br2">
-            <.avatar src={@user.avatar} />
-            <.info class="flex-grow-1 pt0 pb0">
-              <:title><%= @active_team.title || "-" %></:title>
-              <:info><%= @user.name %> <span class="fw4">(owner)</span></:info>
-            </.info>
-            <.icon icon="shevron-right" />
-          </div>
-        </:button>
-        <:menu>
-          <%= for team <- @user.teams do %>
-            <.link :if={team} class="no-underline dark-gray" href="#">
-              <.info class="pointer bg-animate hover-bg-moon-gray br2">
-                <:info><span class="fw4"><%= team.title %></span></:info>
+      <div class="px-[.5rem]">
+        <.dropdown position="right">
+          <:summary>
+            <.tab class="cursor-pointer hover:bg-accent-100 hover:text-accent-700">
+              <.avatar alt="" src={@user.avatar} />
+              <.info class="grow text-sm">
+                <:title><%= @active_team.title || "-" %></:title>
+                <:info><%= @user.name %></:info>
               </.info>
-            </.link>
-          <% end %>
-          <div :if={@user.teams != []} class="bb b--moon-gray mt1 mb1"></div>
-          <.link class="no-underline dark-gray" href="#">
-            <.info class="pointer bg-animate hover-bg-moon-gray br2">
-              <:info><span class="fw4">Create team</span></:info>
-            </.info>
+              <.icon icon="shevron-right" />
+            </.tab>
+          </:summary>
+          <:menu>
+            <%= for team <- @user.teams do %>
+              <.tab class="cursor-pointer hover:bg-secondary-50">
+                <.link :if={team} href="#">
+                  <%= team.title %>
+                </.link>
+              </.tab>
+            <% end %>
+          </:menu>
+          <:footer>
+            <.tab class="cursor-pointer hover:bg-secondary-50">
+              Create team
+            </.tab>
+          </:footer>
+        </.dropdown>
+        <%= for row <- @rows do %>
+          <.link href="#">
+            <.tab class="cursor-pointer hover:bg-accent-100 hover:text-accent-700">
+              <.icon icon={row[:icon]} />
+              <%= row[:title] %>
+            </.tab>
           </.link>
-        </:menu>
-      </.dropdown>
-      <%= for row <- @rows do %>
-        <.link class="no-underline dark-gray" href={row[:href]} title={row[:title]}>
-          <.info class="flex flex-row justify-start bg-animate hover-bg-moon-gray br2 pa2">
-            <.icon class="w1 w1-ns h1 h1-ns dib" icon={row[:icon]} />
-            <span class="f6 ml2"><%= row[:title] %></span>
-          </.info>
-        </.link>
-      <% end %>
+        <% end %>
+      </div>
     </aside>
     """
   end

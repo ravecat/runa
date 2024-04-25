@@ -1,23 +1,27 @@
 <header>
-  <nav class="flex w-100 mw8 center items-center ph4 pv3 bg-white justify-between">
-    <.link href={~p"/"} class="flex">
-      <.icon icon="logo" class="w3 dark-gray" />
+  <nav class="flex w-full max-w-[64rem] mx-auto items-center px-8 py-4 justify-between">
+    <.link href={~p"/"}>
+      <.icon icon="logo" class="w-[4rem]" />
     </.link>
-
-    <.link class="pa2 lh-copy f6 no-underline fw6 dark-gray dim ph3 ba" href={~p"/auth/auth0"}>
+    <.link
+      class="inline-flex items-center justify-center h-[2rem] rounded border border-primary px-6 py-2 bg-primary text-background focus:outline-none focus:primary active:bg-primary"
+      href={~p"/auth/auth0"}
+    >
       Log in
     </.link>
   </nav>
 </header>
 <main>
   <div>
-    <article class="bg-white dark-gray">
-      <section style="background-image: var(--gradient-9);">
-        <div class="center mw8 pv5 ph4 tl">
-          <h1 class="f-subheadline-m f-subheadline-l f1 lh-title fw6">
+    <article>
+      <section>
+        <div class="mx-auto max-w-[64rem] px-[2rem] py-[4rem]">
+          <h1 class="sm:text-[6rem] text-5xl leading-tight font-semibold">
             Cloud-based localization management system
           </h1>
-          <h2 class="f3 lh-copy fw4">for your web, mobile apps, games and digital content.</h2>
+          <h2 class="text-2xl py-[2rem]">
+            for your web, mobile apps, games and digital content.
+          </h2>
         </div>
       </section>
     </article>

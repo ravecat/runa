@@ -10,7 +10,7 @@ defmodule RunaWeb.Components.Avatar do
 
   def avatar(assigns) do
     ~H"""
-    <img src={@src} class={["ba b--black-10 db br-100 w2 h2", @class]} {@rest} />
+    <img src={@src} class={["size-10 rounded-full object-cover", @class]} {@rest} />
     """
   end
 end
