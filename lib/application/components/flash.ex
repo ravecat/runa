@@ -1,8 +1,5 @@
 defmodule RunaWeb.Components.Flash do
-  use RunaWeb, :html
-  import RunaWeb.Components.Icon
-
-  @doc """
+  @moduledoc """
   Renders flash notices.
 
   ## Examples
@@ -10,6 +7,11 @@ defmodule RunaWeb.Components.Flash do
       <.flash kind={:info} flash={@flash} />
       <.flash kind={:info} phx-mounted={show("#flash")}>Welcome Back!</.flash>
   """
+  use RunaWeb, :html
+
+  import RunaWeb.Components.Icon
+  import RunaWeb.Components.Commands
+
   attr :id, :string, doc: "the optional id of flash container"
   attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
   attr :title, :string, default: nil

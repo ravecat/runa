@@ -66,7 +66,11 @@ defmodule RunaWeb.Components.Sidebar do
             <% end %>
           </:menu>
           <:footer>
-            <.tab class="cursor-pointer hover:bg-secondary-50">
+            <.tab
+              type="button"
+              phx-click={show_modal("create-team")}
+              class="cursor-pointer hover:bg-secondary-50"
+            >
               Create team
             </.tab>
           </:footer>
@@ -80,6 +84,12 @@ defmodule RunaWeb.Components.Sidebar do
           </.link>
         <% end %>
       </div>
+      <.modal id="create-team">
+        <:title>
+          Create team
+        </:title>
+        <:content>Let's create</:content>
+      </.modal>
     </aside>
     """
   end

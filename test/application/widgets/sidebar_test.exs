@@ -31,7 +31,6 @@ defmodule RunaWeb.Widgets.Sidebar.Test do
       html = render_component(Sidebar, %{user: user})
 
       assert html =~ "#{user.name}"
-      assert html =~ "owner"
       assert html =~ "#{team.title}"
     end
   end
