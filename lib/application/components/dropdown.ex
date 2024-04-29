@@ -13,6 +13,7 @@ defmodule RunaWeb.Components.Dropdown do
     </.dropdown>
   """
   use Phoenix.Component
+
   alias Phoenix.LiveView.JS
 
   attr :class, :string, default: nil

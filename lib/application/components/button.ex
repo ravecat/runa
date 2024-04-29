@@ -19,8 +19,9 @@ defmodule RunaWeb.Components.Button do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        "phx-submit-loading:opacity-75",
+        "inline-flex items-center justify-center rounded px-3 h-[2rem] min-w-[4rem]",
+        "text-sm font-semibold text-background bg-primary hover:bg-primary-500 text-background active:text-background/80",
         @class
       ]}
       {@rest}
