@@ -108,7 +108,6 @@ defmodule RunaWeb do
       # Translation
 
       import RunaWeb.Gettext
-      import RunaWeb.CoreComponents
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
