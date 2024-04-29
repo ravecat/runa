@@ -90,6 +90,8 @@ defmodule RunaWeb do
       import RunaWeb.Components.Modal
       import RunaWeb.Components.Commands
       import RunaWeb.Components.Tab
+      import RunaWeb.Components.Input
+      import RunaWeb.Components.Label
     end
   end
 
