@@ -27,8 +27,6 @@ defmodule RunaWeb.Components.Input do
 
   use Phoenix.Component
 
-  import RunaWeb.Gettext
-
   import RunaWeb.Components.Label
 
   attr :id, :any, default: nil
