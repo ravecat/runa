@@ -17,7 +17,7 @@ defmodule RunaWeb.Components.Button do
   def button(assigns) do
     ~H"""
     <button
-      type={@type}
+      type={@type || "button"}
       class={[
         "phx-submit-loading:opacity-75",
         "inline-flex items-center justify-center rounded px-3 h-[2rem] min-w-[4rem]",

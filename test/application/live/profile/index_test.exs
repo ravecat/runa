@@ -1,4 +1,4 @@
-defmodule RunaWeb.PageLive.Profile.Test do
+defmodule RunaWeb.PageLive.ProfileTest do
   use RunaWeb.ConnCase
 
   @moduletag :profile

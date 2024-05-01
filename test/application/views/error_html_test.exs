@@ -1,5 +1,5 @@
 defmodule RunaWeb.ErrorHTMLTest do
-  use RunaWeb.ConnCase, async: true
+  use RunaWeb.ConnCase
 
   # Bring render_to_string/4 for testing custom views
   import Phoenix.Template

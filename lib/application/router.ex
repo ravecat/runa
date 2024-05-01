@@ -24,9 +24,9 @@ defmodule RunaWeb.Router do
   scope "/auth", RunaWeb do
     pipe_through :browser
 
-    get "/:provider", Auth.Controller, :request
-    get "/:provider/callback", Auth.Controller, :callback
-    post "/:provider/callback", Auth.Controller, :callback
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    post "/:provider/callback", AuthController, :callback
   end
 
   live_session :default, on_mount: RunaWeb.UserData do
@@ -34,7 +34,7 @@ defmodule RunaWeb.Router do
       pipe_through :browser
 
       get "/", PageController, :home
-      get "/logout", Auth.Controller, :logout
+      get "/logout", AuthController, :logout
     end
 
     scope "/profile", RunaWeb do

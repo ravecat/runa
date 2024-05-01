@@ -1,4 +1,4 @@
-defmodule Runa.Accounts.Test do
+defmodule Runa.AccountsTest do
   use Runa.DataCase
 
   alias Runa.Accounts

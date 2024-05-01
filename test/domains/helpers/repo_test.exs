@@ -1,4 +1,4 @@
-defmodule Runa.Repo.Helpers.Test do
+defmodule Runa.Repo.HelpersTest do
   @moduledoc false
   use Runa.DataCase
 

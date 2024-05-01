@@ -1,4 +1,4 @@
-defmodule RunaWeb.AuthPlug.Test do
+defmodule RunaWeb.AuthPlugTest do
   use RunaWeb.ConnCase
 
   @user %{id: "1", name: "John Doe"}

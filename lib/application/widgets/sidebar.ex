@@ -5,6 +5,11 @@ defmodule RunaWeb.Components.Sidebar do
   use RunaWeb, :live_component
   use RunaWeb, :components
 
+  alias Runa.Teams
+  alias Runa.Teams.Team
+
+  embed_templates "../templates/team/*"
+
   @rows [
     %{
       title: "Projects",
@@ -29,11 +34,12 @@ defmodule RunaWeb.Components.Sidebar do
   ]
 
   def mount(socket) do
-    socket =
-      socket
-      |> assign(:rows, @rows)
+    assigns = %{
+      rows: @rows,
+      team_changeset: to_form(Teams.change_team(%Team{}))
+    }
 
-    {:ok, socket}
+    {:ok, assign(socket, assigns)}
   end
 
   def render(assigns) do
@@ -64,40 +70,63 @@ defmodule RunaWeb.Components.Sidebar do
             </.tab>
           </:summary>
           <:menu>
-            <%= for team <- @user.teams do %>
-              <.tab class="cursor-pointer hover:bg-secondary-50">
-                <.link :if={team} href="#">
-                  <%= team.title %>
-                </.link>
-              </.tab>
-            <% end %>
+            <.tab
+              :for={team <- @user.teams}
+              class="cursor-pointer hover:bg-secondary-50"
+            >
+              <.link :if={team} href="#">
+                <%= team.title %>
+              </.link>
+            </.tab>
           </:menu>
           <:footer>
             <.tab
               type="button"
-              phx-click={show_modal("create-team")}
+              phx-click={show_modal("create_team")}
               class="cursor-pointer hover:bg-secondary-50"
             >
               Create team
             </.tab>
           </:footer>
         </.dropdown>
-        <%= for row <- @rows do %>
-          <.link href="#">
-            <.tab class="cursor-pointer hover:bg-accent-100 hover:text-accent-700">
-              <.icon icon={row[:icon]} />
-              <%= row[:title] %>
-            </.tab>
-          </.link>
-        <% end %>
+        <.link :for={row <- @rows} href="#">
+          <.tab class="cursor-pointer hover:bg-accent-100 hover:text-accent-700">
+            <.icon icon={row[:icon]} />
+            <%= row[:title] %>
+          </.tab>
+        </.link>
       </div>
-      <.modal id="create-team">
+      <.modal id="create_team">
         <:title>
           Create team
         </:title>
-        <:content>Let's create</:content>
+        <:content>
+          <%= Template.render(RunaWeb.TeamHTML, "new", "html", assigns) %>
+        </:content>
       </.modal>
     </aside>
     """
+  end
+
+  def handle_event("validate", %{"team" => params}, socket) do
+    form =
+      %Team{}
+      |> Teams.change_team(params)
+      |> Map.put(:action, :insert)
+      |> to_form()
+
+    {:noreply, assign(socket, team_changeset: form)}
+  end
+
+  def handle_event("save", %{"team" => params}, socket) do
+    case Teams.create_team(params) do
+      {:ok, _} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "team created")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, team_changeset: to_form(changeset))}
+    end
   end
 end

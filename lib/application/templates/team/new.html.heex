@@ -1,0 +1,11 @@
+<.custom_form
+  for={@team_changeset}
+  phx-change="validate"
+  phx-submit="save"
+  phx-target={@myself}
+>
+  <.input type="text" field={@team_changeset[:title]} label="Title" />
+  <:actions>
+    <.button type="submit">Ok</.button>
+  </:actions>
+</.custom_form>

@@ -1,4 +1,4 @@
-defmodule RunaWeb.Auth.Controller do
+defmodule RunaWeb.AuthController do
   @moduledoc """
   This controller handles authentication.
 
