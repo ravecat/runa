@@ -18,7 +18,10 @@ defmodule RunaWeb.Components.Dropdown do
 
   attr :class, :string, default: nil
   attr :rest, :global
-  attr :position, :string, default: "bottom", values: ["top", "bottom", "left", "right"]
+
+  attr :position, :string,
+    default: "bottom",
+    values: ["top", "bottom", "left", "right"]
 
   slot :summary, required: true
   slot :menu, required: true
@@ -45,10 +48,22 @@ defmodule RunaWeb.Components.Dropdown do
         class="absolute w-[16rem] bg-background rounded divide-y divide-secondary-100 border border-secondary-100 bg-background shadow-lg"
         style={[
           %{
-            "top" => ["transform: translate(0, calc(-100% - 0.5rem));", "top: 0;"],
-            "bottom" => ["transform: translate(0, calc(0% + 0.5rem));"],
-            "left" => ["transform: translate(calc(-100% - 0.5rem), 0);", "top: 0;"],
-            "right" => ["transform: translate(calc(100% + 0.5rem), 0);", "top: 0;", "right: 0"]
+            "top" => [
+              "transform: translate(0, calc(-100% - 0.5rem));",
+              "top: 0;"
+            ],
+            "bottom" => [
+              "transform: translate(0, calc(0% + 0.5rem));"
+            ],
+            "left" => [
+              "transform: translate(calc(-100% - 0.5rem), 0);",
+              "top: 0;"
+            ],
+            "right" => [
+              "transform: translate(calc(100% + 0.5rem), 0);",
+              "top: 0;",
+              "right: 0"
+            ]
           }[@position]
         ]}
       >

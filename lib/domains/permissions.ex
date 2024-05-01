@@ -37,8 +37,17 @@ defmodule Runa.Permissions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_team_role!(%{team_id: team_id, role_id: role_id, user_id: user_id}),
-    do: Repo.get_by!(TeamRole, team_id: team_id, role_id: role_id, user_id: user_id)
+  def get_team_role!(%{
+        team_id: team_id,
+        role_id: role_id,
+        user_id: user_id
+      }),
+      do:
+        Repo.get_by!(TeamRole,
+          team_id: team_id,
+          role_id: role_id,
+          user_id: user_id
+        )
 
   @doc """
   Creates a team_role.
@@ -102,7 +111,10 @@ defmodule Runa.Permissions do
       %Ecto.Changeset{data: %TeamRole{}}
 
   """
-  def change_team_role(%TeamRole{} = team_role, attrs \\ %{}) do
+  def change_team_role(
+        %TeamRole{} = team_role,
+        attrs \\ %{}
+      ) do
     TeamRole.changeset(team_role, attrs)
   end
 

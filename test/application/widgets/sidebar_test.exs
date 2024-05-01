@@ -12,7 +12,12 @@ defmodule RunaWeb.Widgets.Sidebar.Test do
   import Runa.Permissions.Fixtures
 
   describe "Sidebar" do
-    setup [:create_aux_user, :create_aux_team, :create_aux_role, :create_aux_team_role]
+    setup [
+      :create_aux_user,
+      :create_aux_team,
+      :create_aux_role,
+      :create_aux_team_role
+    ]
 
     test "renders menu items", %{user: user} do
       user = user |> Runa.Repo.preload(:teams)

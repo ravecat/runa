@@ -13,8 +13,12 @@ defmodule RunaWeb.Components.Info do
   def info(assigns) do
     ~H"""
     <div class={["flex flex-col", @class]} {@rest}>
-      <strong :if={@title != []} class="block font-medium"><%= render_slot(@title) %></strong>
-      <span :if={@info != []} class="block"><%= render_slot(@info) %></span>
+      <strong :if={@title != []} class="block font-medium">
+        <%= render_slot(@title) %>
+      </strong>
+      <span :if={@info != []} class="block">
+        <%= render_slot(@info) %>
+      </span>
     </div>
     """
   end

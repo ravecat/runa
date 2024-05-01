@@ -62,7 +62,8 @@ defmodule RunaWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: RunaWeb.Telemetry
+      live_dashboard "/dashboard",
+        metrics: RunaWeb.Telemetry
     end
   end
 end

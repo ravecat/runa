@@ -14,7 +14,10 @@ defmodule RunaWeb.AuthPlug do
 
     case user do
       nil ->
-        conn |> put_flash(:error, "You can't access that page") |> redirect(to: ~p"/") |> halt()
+        conn
+        |> put_flash(:error, "You can't access that page")
+        |> redirect(to: ~p"/")
+        |> halt()
 
       _ ->
         conn

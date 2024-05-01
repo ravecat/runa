@@ -10,7 +10,10 @@ defmodule Runa.Application do
     children = [
       RunaWeb.Telemetry,
       Runa.Repo,
-      {DNSCluster, query: Application.get_env(:runa, :dns_cluster_query) || :ignore},
+      {DNSCluster,
+       query:
+         Application.get_env(:runa, :dns_cluster_query) ||
+           :ignore},
       {Phoenix.PubSub, name: Runa.PubSub},
       # Start a worker by calling: Runa.Worker.start_link(arg)
       # {Runa.Worker, arg},
