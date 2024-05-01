@@ -13,7 +13,11 @@ defmodule Runa.MixProject do
       preferred_cli_env: [
         "test.watch": :test
       ],
-      elixirc_options: [debug_info: true, verbose: true, all_warnings: true],
+      elixirc_options: [
+        debug_info: true,
+        verbose: true,
+        all_warnings: true
+      ],
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -32,7 +36,12 @@ defmodule Runa.MixProject do
   def application do
     [
       mod: {Runa.Application, []},
-      extra_applications: [:ueberauth, :ueberauth_auth0, :logger, :runtime_tools]
+      extra_applications: [
+        :ueberauth,
+        :ueberauth_auth0,
+        :logger,
+        :runtime_tools
+      ]
     ]
   end
 
@@ -82,15 +91,25 @@ defmodule Runa.MixProject do
     [
       start: ["deps", "phx.server"],
       deps: ["deps.get", "deps.compile"],
-      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      setup: [
+        "deps.get",
+        "ecto.setup",
+        "assets.setup",
+        "assets.build"
+      ],
       "ecto.setup": [
         "ecto.create",
         "ecto.migrate",
         "run priv/repo/roles.exs"
       ],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: [
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
+        "test"
+      ],
       "test.watch.only": ["test.watch --only only"],
+      "test.format": ["credo", "format --check-formatted"],
       "assets.setup": ["esbuild.install --if-missing"],
       "assets.build": ["esbuild runa"],
       "assets.deploy": [

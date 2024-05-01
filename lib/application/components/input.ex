@@ -36,20 +36,32 @@ defmodule RunaWeb.Components.Input do
 
   attr :type, :string,
     default: "text",
-    values: ~w(checkbox color date datetime-local email file hidden month number password
+    values:
+      ~w(checkbox color date datetime-local email file hidden month number password
                range radio search select tel text textarea time url week)
 
   attr :field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+    doc:
+      "a form field struct retrieved from the form, for example: @form[:email]"
 
   attr :errors, :list, default: []
+
   attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
-  attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
-  attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
-  attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
+
+  attr :prompt, :string,
+    default: nil,
+    doc: "the prompt for select inputs"
+
+  attr :options, :list,
+    doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
+
+  attr :multiple, :boolean,
+    default: false,
+    doc: "the multiple flag for select inputs"
 
   attr :rest, :global,
-    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
+    include:
+      ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
 
   slot :inner_block
@@ -57,8 +69,15 @@ defmodule RunaWeb.Components.Input do
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
-    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
+    |> assign(
+      :errors,
+      Enum.map(field.errors, &translate_error(&1))
+    )
+    |> assign_new(:name, fn ->
+      if assigns.multiple,
+        do: field.name <> "[]",
+        else: field.name
+    end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
   end
@@ -66,7 +85,10 @@ defmodule RunaWeb.Components.Input do
   def input(%{type: "checkbox"} = assigns) do
     assigns =
       assign_new(assigns, :checked, fn ->
-        Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
+        Phoenix.HTML.Form.normalize_value(
+          "checkbox",
+          assigns[:value]
+        )
       end)
 
     ~H"""
@@ -101,7 +123,10 @@ defmodule RunaWeb.Components.Input do
         {@rest}
       >
         <option :if={@prompt} value=""><%= @prompt %></option>
-        <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
+        <%= Phoenix.HTML.Form.options_for_select(
+          @options,
+          @value
+        ) %>
       </select>
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
@@ -118,8 +143,10 @@ defmodule RunaWeb.Components.Input do
         class={[
           "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
           "min-h-[6rem] phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          @errors == [] &&
+            "border-zinc-300 focus:border-zinc-400",
+          @errors != [] &&
+            "border-rose-400 focus:border-rose-400"
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
@@ -141,8 +168,10 @@ defmodule RunaWeb.Components.Input do
         class={[
           "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          @errors == [] &&
+            "border-zinc-300 focus:border-zinc-400",
+          @errors != [] &&
+            "border-rose-400 focus:border-rose-400"
         ]}
         {@rest}
       />
@@ -166,7 +195,14 @@ defmodule RunaWeb.Components.Input do
     # with our gettext backend as first argument. Translations are
     # available in the errors.po file (as we use the "errors" domain).
     if count = opts[:count] do
-      Gettext.dngettext(RunaWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(
+        RunaWeb.Gettext,
+        "errors",
+        msg,
+        msg,
+        count,
+        opts
+      )
     else
       Gettext.dgettext(RunaWeb.Gettext, "errors", msg, opts)
     end
@@ -175,8 +211,10 @@ defmodule RunaWeb.Components.Input do
   @doc """
   Translates the errors for a field from a keyword list of errors.
   """
-  def translate_errors(errors, field) when is_list(errors) do
-    for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
+  def translate_errors(errors, field)
+      when is_list(errors) do
+    for {^field, {msg, opts}} <- errors,
+        do: translate_error({msg, opts})
   end
 
   @doc """

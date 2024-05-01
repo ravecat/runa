@@ -11,7 +11,9 @@ defmodule Runa.Permissions.Role do
     field :title, :string
 
     has_many :team_roles, Runa.Permissions.TeamRole
-    many_to_many :users, Runa.Accounts.User, join_through: Runa.Permissions.TeamRole
+
+    many_to_many :users, Runa.Accounts.User,
+      join_through: Runa.Permissions.TeamRole
 
     timestamps(type: :utc_datetime)
   end

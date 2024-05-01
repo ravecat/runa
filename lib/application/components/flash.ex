@@ -13,21 +13,41 @@ defmodule RunaWeb.Components.Flash do
   import RunaWeb.Components.Commands
 
   attr :id, :string, doc: "the optional id of flash container"
-  attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
-  attr :title, :string, default: nil
-  attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
-  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the flash container"
 
-  slot :inner_block, doc: "the optional inner block that renders the flash message"
+  attr :flash, :map,
+    default: %{},
+    doc: "the map of flash messages to display"
+
+  attr :title, :string, default: nil
+
+  attr :kind, :atom,
+    values: [:info, :error],
+    doc: "used for styling and flash lookup"
+
+  attr :rest, :global,
+    doc: "the arbitrary HTML attributes to add to the flash container"
+
+  slot :inner_block,
+    doc: "the optional inner block that renders the flash message"
 
   def flash(assigns) do
-    assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
+    assigns =
+      assign_new(assigns, :id, fn ->
+        "flash-#{assigns.kind}"
+      end)
 
     ~H"""
     <div
-      :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
+      :if={
+        msg =
+          render_slot(@inner_block) ||
+            Phoenix.Flash.get(@flash, @kind)
+      }
       id={@id}
-      phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
+      phx-click={
+        JS.push("lv:clear-flash", value: %{key: @kind})
+        |> hide("##{@id}")
+      }
       role="alert"
       class={[
         "fixed z-1 top-[1rem] right-[1rem] rounded border-s-4 p-[1rem] shadow-md cursor-pointer",
@@ -53,8 +73,13 @@ defmodule RunaWeb.Components.Flash do
 
       <.flash_group flash={@flash} />
   """
-  attr :flash, :map, required: true, doc: "the map of flash messages"
-  attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
+  attr :flash, :map,
+    required: true,
+    doc: "the map of flash messages"
+
+  attr :id, :string,
+    default: "flash-group",
+    doc: "the optional id of flash container"
 
   def flash_group(assigns) do
     ~H"""

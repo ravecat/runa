@@ -9,11 +9,15 @@ defmodule RunaWeb.AuthPlug.Test do
       |> put_session(:current_user, nil)
       |> RunaWeb.AuthPlug.call(:authenticate)
 
-    assert get_flash(conn, :error) == "You can't access that page"
+    assert get_flash(conn, :error) ==
+             "You can't access that page"
+
     assert redirected_to(conn) == ~p"/"
   end
 
-  test "does not redirect authenticated users", %{conn: conn} do
+  test "does not redirect authenticated users", %{
+    conn: conn
+  } do
     conn =
       conn
       |> put_session(:current_user, @user)

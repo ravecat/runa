@@ -12,7 +12,8 @@ defmodule Runa.Auth do
   def find_or_create(%Auth{provider: :auth0} = auth) do
     with uid when not is_nil(uid) <- auth.uid,
          email when not is_nil(email) <- get_email(auth),
-         user when is_nil(user) <- Runa.Repo.get_by(Accounts.User, email: email),
+         user when is_nil(user) <-
+           Runa.Repo.get_by(Accounts.User, email: email),
          {:ok, new_user} <-
            Accounts.create_user(%{
              uid: auth.uid,
@@ -34,11 +35,13 @@ defmodule Runa.Auth do
     end
   end
 
-  defp get_avatar(%Auth{info: %{urls: %{avatar_url: image}}}) when image not in [nil, ""] do
+  defp get_avatar(%Auth{info: %{urls: %{avatar_url: image}}})
+       when image not in [nil, ""] do
     image
   end
 
-  defp get_avatar(%Auth{info: %{image: image}}) when image not in [nil, ""] do
+  defp get_avatar(%Auth{info: %{image: image}})
+       when image not in [nil, ""] do
     image
   end
 
@@ -49,22 +52,27 @@ defmodule Runa.Auth do
     nil
   end
 
-  defp get_name(%Auth{info: %{name: name}}) when name not in [nil, ""] do
+  defp get_name(%Auth{info: %{name: name}})
+       when name not in [nil, ""] do
     name
   end
 
-  defp get_name(%Auth{info: %{first_name: first, last_name: last}})
+  defp get_name(%Auth{
+         info: %{first_name: first, last_name: last}
+       })
        when first not in ["", nil] or last not in ["", nil] do
     [first, last]
     |> Enum.filter(&(&1 != nil and &1 != ""))
     |> Enum.join(" ")
   end
 
-  defp get_name(%Auth{info: %{nickname: nickname}}) when nickname not in [nil, ""] do
+  defp get_name(%Auth{info: %{nickname: nickname}})
+       when nickname not in [nil, ""] do
     nickname
   end
 
-  defp get_name(%Auth{info: %{email: email}}) when email not in [nil, ""] do
+  defp get_name(%Auth{info: %{email: email}})
+       when email not in [nil, ""] do
     email
   end
 
@@ -75,7 +83,8 @@ defmodule Runa.Auth do
     nil
   end
 
-  defp get_nickname(%Auth{info: %{nickname: nickname}}) when nickname not in [nil, ""] do
+  defp get_nickname(%Auth{info: %{nickname: nickname}})
+       when nickname not in [nil, ""] do
     nickname
   end
 
@@ -86,7 +95,8 @@ defmodule Runa.Auth do
     nil
   end
 
-  defp get_email(%Auth{info: %{email: email}}) when email not in [nil, ""] do
+  defp get_email(%Auth{info: %{email: email}})
+       when email not in [nil, ""] do
     email
   end
 

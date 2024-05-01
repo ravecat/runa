@@ -5,7 +5,11 @@ defmodule RunaWeb.PageLive.Profile do
   alias Runa.Accounts
 
   @impl true
-  def handle_params(_params, _url, %{assigns: %{live_action: :show}} = socket) do
+  def handle_params(
+        _params,
+        _url,
+        %{assigns: %{live_action: :show}} = socket
+      ) do
     socket =
       socket
       |> assign(:page_title, "Profile")
@@ -13,7 +17,11 @@ defmodule RunaWeb.PageLive.Profile do
     {:noreply, socket}
   end
 
-  def handle_params(%{"id" => id}, _url, %{assigns: %{live_action: :edit}} = socket) do
+  def handle_params(
+        %{"id" => id},
+        _url,
+        %{assigns: %{live_action: :edit}} = socket
+      ) do
     socket =
       socket
       |> assign(:page_title, "Edit profile")
@@ -23,7 +31,10 @@ defmodule RunaWeb.PageLive.Profile do
   end
 
   @impl true
-  def handle_info({RunaWeb.UserLive.FormComponent, {:saved, user}}, socket) do
+  def handle_info(
+        {RunaWeb.UserLive.FormComponent, {:saved, user}},
+        socket
+      ) do
     {:noreply, stream_insert(socket, :users, user)}
   end
 

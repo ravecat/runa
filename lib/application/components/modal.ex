@@ -94,7 +94,9 @@ defmodule RunaWeb.Components.Modal do
     |> JS.show(to: "##{id}", display: "flex")
     |> JS.show(
       to: "##{id}-bg",
-      transition: {"transition-all transform ease-out duration-300", "opacity-0", "opacity-100"}
+      transition:
+        {"transition-all transform ease-out duration-300", "opacity-0",
+         "opacity-100"}
     )
     |> show("##{id}-container")
     |> JS.add_class("overflow-hidden", to: "body")
@@ -105,10 +107,15 @@ defmodule RunaWeb.Components.Modal do
     js
     |> JS.hide(
       to: "##{id}-bg",
-      transition: {"transition-all transform ease-in duration-200", "opacity-100", "opacity-0"}
+      transition:
+        {"transition-all transform ease-in duration-200", "opacity-100",
+         "opacity-0"}
     )
     |> hide("##{id}-container")
-    |> JS.hide(to: "##{id}", transition: {"block", "block", "hidden"})
+    |> JS.hide(
+      to: "##{id}",
+      transition: {"block", "block", "hidden"}
+    )
     |> JS.remove_class("overflow-hidden", to: "body")
     |> JS.pop_focus()
   end

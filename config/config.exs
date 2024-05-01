@@ -16,7 +16,10 @@ config :runa, RunaWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
-    formats: [html: RunaWeb.ErrorHTML, json: RunaWeb.ErrorJSON],
+    formats: [
+      html: RunaWeb.ErrorHTML,
+      json: RunaWeb.ErrorJSON
+    ],
     layout: false
   ],
   pubsub_server: Runa.PubSub,

@@ -16,7 +16,12 @@ defmodule Runa.Permissions.TeamRole do
   @doc false
   def changeset(user_team_role, attrs) do
     user_team_role
-    |> cast(attrs, [:user_id, :team_id, :role_id, :updated_at])
+    |> cast(attrs, [
+      :user_id,
+      :team_id,
+      :role_id,
+      :updated_at
+    ])
     |> validate_required([:user_id, :team_id, :role_id])
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:team_id)

@@ -6,7 +6,8 @@ defmodule Runa.Repo.Helpers do
   @doc """
   Ensures an entry exists for given fields values. If not, creates one with the given defaults.
   """
-  def ensure(queryable, clauses, defaults \\ %{}) when is_list(clauses) and is_map(defaults) do
+  def ensure(queryable, clauses, defaults \\ %{})
+      when is_list(clauses) and is_map(defaults) do
     query =
       Enum.reduce(clauses, from(e in queryable), fn {field, value}, acc ->
         from e in acc, where: field(e, ^field) == ^value

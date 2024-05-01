@@ -8,7 +8,12 @@ defmodule RunaWeb.UserData do
 
   alias Runa.Accounts
 
-  def on_mount(:default, _params, %{"current_user" => user}, socket) do
+  def on_mount(
+        :default,
+        _params,
+        %{"current_user" => user},
+        socket
+      ) do
     socket =
       assign_new(socket, :user, fn ->
         Runa.Repo.get_by(Accounts.User, email: user.email)

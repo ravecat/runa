@@ -17,7 +17,8 @@ config :runa, Runa.Repo,
 # you can enable the server option below.
 config :runa, RunaWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "C3Vz504bPAE0Ik6A4nGbALDBrwNFGurw445+WHG8e7H9toKW8EfaXfhJN+KYmTm7",
+  secret_key_base:
+    "C3Vz504bPAE0Ik6A4nGbALDBrwNFGurw445+WHG8e7H9toKW8EfaXfhJN+KYmTm7",
   server: false
 
 # Print only warnings and errors during test

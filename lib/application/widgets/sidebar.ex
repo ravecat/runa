@@ -37,7 +37,12 @@ defmodule RunaWeb.Components.Sidebar do
   end
 
   def render(assigns) do
-    assigns = Map.put_new(assigns, :active_team, List.first(assigns.user.teams || []))
+    assigns =
+      Map.put_new(
+        assigns,
+        :active_team,
+        List.first(assigns.user.teams || [])
+      )
 
     ~H"""
     <aside class="flex h-screen flex-col bg-accent-50">
@@ -50,7 +55,9 @@ defmodule RunaWeb.Components.Sidebar do
             <.tab class="cursor-pointer hover:bg-accent-100 hover:text-accent-700">
               <.avatar alt="" src={@user.avatar} />
               <.info class="grow text-sm">
-                <:title><%= @active_team.title || "-" %></:title>
+                <:title>
+                  <%= @active_team.title || "-" %>
+                </:title>
                 <:info><%= @user.name %></:info>
               </.info>
               <.icon icon="shevron-right" />

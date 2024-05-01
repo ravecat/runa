@@ -30,20 +30,33 @@ defmodule RunaWeb.Auth.Controller do
     |> redirect(to: ~p"/")
   end
 
-  def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
+  def callback(
+        %{assigns: %{ueberauth_failure: _fails}} = conn,
+        _params
+      ) do
     conn
     |> put_flash(:error, "Failed to authenticate.")
     |> redirect(to: ~p"/")
   end
 
-  def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
+  def callback(
+        %{assigns: %{ueberauth_auth: auth}} = conn,
+        _params
+      ) do
     case Auth.find_or_create(auth) do
       {:ok, user} ->
         %Accounts.User{teams: teams} = Runa.Repo.preload(user, :teams)
 
         if Enum.empty?(teams) do
-          {:ok, team} = Teams.create_team(%{title: "#{user.name}'s Team"})
-          role = Runa.Repo.get_by(Permissions.Role, title: "admin")
+          {:ok, team} =
+            Teams.create_team(%{
+              title: "#{user.name}'s Team"
+            })
+
+          role =
+            Runa.Repo.get_by(Permissions.Role,
+              title: "admin"
+            )
 
           user
           |> Ecto.build_assoc(:team_roles, %{
@@ -51,12 +64,18 @@ defmodule RunaWeb.Auth.Controller do
             role_id: role.id,
             user_id: user.id
           })
-        |> Runa.Repo.insert()
+          |> Runa.Repo.insert()
         end
 
         conn
-        |> put_flash(:info, "Successfully authenticated as #{user.name}.")
-        |> put_session(:current_user, Map.take(user, [:email, :uid]))
+        |> put_flash(
+          :info,
+          "Successfully authenticated as #{user.name}."
+        )
+        |> put_session(
+          :current_user,
+          Map.take(user, [:email, :uid])
+        )
         |> redirect(to: ~p"/profile")
 
       {:error, reason} ->
