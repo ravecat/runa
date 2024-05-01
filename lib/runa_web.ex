@@ -55,6 +55,8 @@ defmodule RunaWeb do
       use Phoenix.LiveView,
         layout: {RunaWeb.Layouts, :app}
 
+      alias Phoenix.Template
+
       unquote(html_helpers())
     end
   end
@@ -62,6 +64,7 @@ defmodule RunaWeb do
   def live_component do
     quote do
       use Phoenix.LiveComponent
+      alias Phoenix.Template
 
       unquote(html_helpers())
     end
@@ -70,6 +73,8 @@ defmodule RunaWeb do
   def html do
     quote do
       use Phoenix.Component
+
+      alias Phoenix.Template
 
       # Import convenience functions from controllers
       import Phoenix.Controller,
@@ -97,6 +102,7 @@ defmodule RunaWeb do
       import RunaWeb.Components.Tab
       import RunaWeb.Components.Input
       import RunaWeb.Components.Label
+      import RunaWeb.Components.Form
     end
   end
 

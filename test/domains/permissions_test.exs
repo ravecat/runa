@@ -1,4 +1,4 @@
-defmodule Runa.Permissions.Test do
+defmodule Runa.PermissionsTest do
   use Runa.DataCase
 
   @moduletag :permissions

@@ -57,11 +57,13 @@ config :runa, RunaWeb.Endpoint,
 # Watch static and templates for browser reloading.
 config :runa, RunaWeb.Endpoint,
   live_reload: [
+    interval: 1000,
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/.*(ex|heex)$"
-    ]
+    ],
+    web_console_logger: true
   ]
 
 # Enable dev routes for dashboard and mailbox

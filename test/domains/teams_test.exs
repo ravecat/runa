@@ -1,4 +1,4 @@
-defmodule Runa.Teams.Test do
+defmodule Runa.TeamsTest do
   @moduledoc false
 
   use Runa.DataCase

@@ -1,12 +1,10 @@
-defmodule RunaWeb.Widgets.Sidebar.Test do
-  @moduledoc false
+defmodule RunaWeb.Widgets.SidebarTest do
   use RunaWeb.ConnCase
 
   import Phoenix.LiveViewTest
 
   alias RunaWeb.Components.Sidebar
 
-  import Phoenix.LiveViewTest
   import Runa.Accounts.Fixtures
   import Runa.Teams.Fixtures
   import Runa.Permissions.Fixtures
@@ -19,10 +17,10 @@ defmodule RunaWeb.Widgets.Sidebar.Test do
       :create_aux_team_role
     ]
 
-    test "renders menu items", %{user: user} do
+    test "renders menu items", %{user: user, test: test} do
       user = user |> Runa.Repo.preload(:teams)
 
-      html = render_component(Sidebar, %{user: user})
+      html = render_component(Sidebar, %{user: user, id: test})
 
       assert html =~ "Profile"
       assert html =~ "Projects"
@@ -30,13 +28,21 @@ defmodule RunaWeb.Widgets.Sidebar.Test do
       assert html =~ "Logout"
     end
 
-    test "renders wokrspace info", %{user: user, team: team} do
+    test "renders wokrspace info", %{user: user, team: team, test: test} do
       user = user |> Runa.Repo.preload(:teams)
 
-      html = render_component(Sidebar, %{user: user})
+      html = render_component(Sidebar, %{user: user, id: test})
 
       assert html =~ "#{user.name}"
       assert html =~ "#{team.title}"
+    end
+
+    test "renders team list", %{user: user, team: team, test: test} do
+      user = user |> Runa.Repo.preload(:teams)
+
+      html = render_component(Sidebar, %{user: user, id: test})
+
+      assert html =~ "Create team"
     end
   end
 end

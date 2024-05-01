@@ -65,7 +65,7 @@ defmodule Runa.MixProject do
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.0"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_reload, "~> 1.5", only: :dev},
       {:phoenix_live_view, "~> 0.20.2"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
@@ -77,7 +77,8 @@ defmodule Runa.MixProject do
       {:plug_cowboy, "~> 2.7"},
       {:floki, "~> 0.36.0", only: :test},
       {:pathex, "~> 2.0", only: :test},
-      {:tailwind, "~> 0.2.2"}
+      {:tailwind, "~> 0.2.2"},
+      {:phoenix_template, "~> 1.0"}
     ]
   end
 

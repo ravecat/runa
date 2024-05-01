@@ -1,4 +1,4 @@
-defmodule RunaWeb.Auth.Controller.Test do
+defmodule RunaWeb.AuthControllerTest do
   use RunaWeb.ConnCase
 
   @moduletag :auth
@@ -46,7 +46,7 @@ defmodule RunaWeb.Auth.Controller.Test do
         |> bypass_through(RunaWeb.Router, [:browser])
         |> assign(:ueberauth_auth, auth)
         |> get("/auth/auth0/callback")
-        |> RunaWeb.Auth.Controller.callback(%{})
+        |> RunaWeb.AuthController.callback(%{})
 
       assert get_flash(conn, :info) ==
                "Successfully authenticated as #{auth.info.name}."
@@ -69,7 +69,7 @@ defmodule RunaWeb.Auth.Controller.Test do
         |> bypass_through(RunaWeb.Router, [:browser])
         |> assign(:ueberauth_failure, "error")
         |> get("/auth/auth0/callback")
-        |> RunaWeb.Auth.Controller.callback(%{})
+        |> RunaWeb.AuthController.callback(%{})
 
       assert [] = Teams.get_teams()
 
@@ -97,7 +97,7 @@ defmodule RunaWeb.Auth.Controller.Test do
       |> bypass_through(RunaWeb.Router, [:browser])
       |> assign(:ueberauth_auth, auth)
       |> get("/auth/auth0/callback")
-      |> RunaWeb.Auth.Controller.callback(%{})
+      |> RunaWeb.AuthController.callback(%{})
 
       assert [%Runa.Teams.Team{} = team] = Teams.get_teams()
       assert team.title == "#{auth.info.name}'s Team"
@@ -117,7 +117,7 @@ defmodule RunaWeb.Auth.Controller.Test do
       |> bypass_through(RunaWeb.Router, [:browser])
       |> assign(:ueberauth_auth, auth)
       |> get("/auth/auth0/callback")
-      |> RunaWeb.Auth.Controller.callback(%{})
+      |> RunaWeb.AuthController.callback(%{})
 
       assert [%Runa.Teams.Team{} = team] = Teams.get_teams()
 
@@ -125,7 +125,7 @@ defmodule RunaWeb.Auth.Controller.Test do
       |> bypass_through(RunaWeb.Router, [:browser])
       |> assign(:ueberauth_auth, auth)
       |> get("/auth/auth0/callback")
-      |> RunaWeb.Auth.Controller.callback(%{})
+      |> RunaWeb.AuthController.callback(%{})
 
       assert [%Runa.Teams.Team{} = ^team] = Teams.get_teams()
     end

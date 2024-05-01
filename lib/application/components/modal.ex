@@ -22,7 +22,6 @@ defmodule RunaWeb.Components.Modal do
 
   import RunaWeb.Components.Commands
   import RunaWeb.Components.Icon
-  import RunaWeb.Components.Button
 
   attr :id, :string, required: true
   attr :show, :boolean, default: false
@@ -74,14 +73,6 @@ defmodule RunaWeb.Components.Modal do
           </div>
           <div class="p-[1rem] overflow-y-auto">
             <%= render_slot(@content) %>
-          </div>
-          <div class="flex gap-[1rem] justify-end p-4">
-            <.button phx-click={JS.exec("data-cancel", to: "##{@id}")} type="button">
-              Cancel
-            </.button>
-            <.button phx-click={@on_confirm} type="button">
-              Ok
-            </.button>
           </div>
         </div>
       </div>

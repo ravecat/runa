@@ -1,4 +1,8 @@
 defmodule Runa.Teams.Team do
+  @moduledoc """
+  The schema for teams, which are groups of users
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

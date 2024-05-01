@@ -3,7 +3,6 @@ defmodule Runa.Teams do
   The Teams context.
   """
 
-  import Ecto.Query
   alias Runa.Repo
 
   alias Runa.Teams.Team
@@ -100,17 +99,5 @@ defmodule Runa.Teams do
   """
   def change_team(%Team{} = team, attrs \\ %{}) do
     Team.changeset(team, attrs)
-  end
-
-  @doc """
-  Returns the list of teams for a given fields values.
-  """
-  def get_teams_by(clauses) when is_list(clauses) do
-    query =
-      Enum.reduce(clauses, from(t in Team), fn {field, value}, acc ->
-        from t in acc, where: field(t, ^field) == ^value
-      end)
-
-    Repo.all(query)
   end
 end

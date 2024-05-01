@@ -1,4 +1,4 @@
-defmodule Runa.Auth.Test do
+defmodule Runa.AuthTest do
   use RunaWeb.ConnCase
 
   @moduletag :auth
