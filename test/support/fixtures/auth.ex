@@ -1,4 +1,7 @@
 defmodule Runa.Auth.Fixtures do
+  @moduledoc """
+  Module for handling authentication fixtures.
+  """
   def create_aux_success_auth(_) do
     auth = %Ueberauth.Auth{
       uid: "auth0|1234567890",

@@ -1,7 +1,12 @@
 defmodule Runa.Accounts.User do
+  @moduledoc """
+  User schema
+  """
   use Ecto.Schema
 
   import Ecto.Changeset
+
+  alias Runa.{Permissions, Teams}
 
   schema "users" do
     field :email, :string
@@ -10,10 +15,9 @@ defmodule Runa.Accounts.User do
     field :avatar, :string
     field :nickname, :string
 
-    has_many :team_roles, Runa.Permissions.TeamRole
+    has_many :team_roles, Permissions.TeamRole
 
-    many_to_many :teams, Runa.Teams.Team,
-      join_through: Runa.Permissions.TeamRole
+    many_to_many :teams, Teams.Team, join_through: Permissions.TeamRole
 
     timestamps(type: :utc_datetime)
   end
