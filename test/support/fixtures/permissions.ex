@@ -40,7 +40,7 @@ defmodule Runa.Permissions.Fixtures do
     {:ok, role} =
       attrs
       |> Enum.into(%{
-        title: "admin"
+        title: "owner",
       })
       |> Runa.Permissions.create_role()
 

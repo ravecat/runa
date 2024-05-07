@@ -1,15 +1,17 @@
 defmodule Runa.AuthTest do
+  @moduledoc false
   use RunaWeb.ConnCase
 
   @moduletag :auth
 
   import Runa.Auth.Fixtures
+  import Runa.Permissions.Fixtures
 
-  alias Runa.Accounts
+  alias Runa.{Accounts, Permissions, Teams}
   alias Ueberauth.Auth
 
   describe "authorization module for new user" do
-    setup [:create_aux_success_auth]
+    setup [:create_aux_success_auth, :create_aux_role]
 
     test "handle full data", %{auth: auth} do
       assert {:ok, result} = Runa.Auth.find_or_create(auth)
@@ -326,7 +328,6 @@ defmodule Runa.AuthTest do
                {:error, "Required authentication information is missing."}
     end
 
-    @tag :only
     test "data with incorrect changeset", %{auth: auth} do
       auth = %Auth{
         uid: 1,
@@ -349,11 +350,12 @@ defmodule Runa.AuthTest do
     end
   end
 
-  describe "authorization module affects db" do
-    setup [:create_aux_success_auth]
+  describe "authorization process affects db" do
+    setup [:create_aux_success_auth, :create_aux_role]
 
-    test "and creates user", %{auth: auth} do
+    test "and creates related entities", %{auth: auth} do
       assert [] == Accounts.get_users()
+      assert [] == Teams.get_teams()
 
       assert {:ok, user} = Runa.Auth.find_or_create(auth)
 
@@ -373,6 +375,9 @@ defmodule Runa.AuthTest do
                  :nickname,
                  :email
                ])
+
+      assert [%Teams.Team{} = team] = Teams.get_teams()
+      assert [%Permissions.TeamRole{} = role] = Permissions.get_team_roles()
     end
 
     test "and returns existing user", %{auth: auth} do

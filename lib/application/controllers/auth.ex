@@ -11,10 +11,7 @@ defmodule RunaWeb.AuthController do
   If the authentication fails, the `callback` action will redirect the user to the
   home page with an error message.
   """
-  alias Runa.Teams
   alias Runa.Auth
-  alias Runa.Accounts
-  alias Runa.Permissions
 
   use RunaWeb, :controller
   use RunaWeb, :verified_routes
@@ -45,28 +42,6 @@ defmodule RunaWeb.AuthController do
       ) do
     case Auth.find_or_create(auth) do
       {:ok, user} ->
-        %Accounts.User{teams: teams} = Runa.Repo.preload(user, :teams)
-
-        if Enum.empty?(teams) do
-          {:ok, team} =
-            Teams.create_team(%{
-              title: "#{user.name}'s Team"
-            })
-
-          role =
-            Runa.Repo.get_by(Permissions.Role,
-              title: "admin"
-            )
-
-          user
-          |> Ecto.build_assoc(:team_roles, %{
-            team_id: team.id,
-            role_id: role.id,
-            user_id: user.id
-          })
-          |> Runa.Repo.insert()
-        end
-
         conn
         |> put_flash(
           :info,

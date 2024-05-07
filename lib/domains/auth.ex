@@ -7,13 +7,13 @@ defmodule Runa.Auth do
 
   alias Ueberauth.Auth
 
-  alias Runa.Accounts
+  alias Runa.{Accounts, Permissions, Teams, Repo}
 
   def find_or_create(%Auth{provider: :auth0} = auth) do
     with uid when not is_nil(uid) <- auth.uid,
          email when not is_nil(email) <- get_email(auth),
          user when is_nil(user) <-
-           Runa.Repo.get_by(Accounts.User, email: email),
+           Repo.get_by(Accounts.User, email: email),
          {:ok, new_user} <-
            Accounts.create_user(%{
              uid: auth.uid,
@@ -21,16 +21,35 @@ defmodule Runa.Auth do
              avatar: get_avatar(auth),
              nickname: get_nickname(auth),
              email: get_email(auth)
-           }) do
-      {:ok, new_user}
+           }),
+         {:ok, new_team} <-
+           Teams.create_team(%{
+             title: "#{new_user.name}'s Team"
+           }),
+         %Permissions.Role{} = role <-
+           Repo.get_by(Permissions.Role,
+             title: "owner"
+           ),
+         {:ok, %Permissions.TeamRole{}} <-
+           Ecto.build_assoc(new_user, :team_roles, %{
+             team_id: new_team.id,
+             role_id: role.id,
+             user_id: new_user.id
+           })
+           |> Repo.insert() do
+      user = Repo.preload(new_user, [:teams, :team_roles])
+
+      {:ok, user}
     else
       %Accounts.User{} = user ->
+        user = Repo.preload(user, [:teams, :team_roles])
+
         {:ok, user}
 
-      {:error, %Ecto.Changeset{}} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         {:error, "Failed to create user"}
 
-      _ ->
+      _err ->
         {:error, "Required authentication information is missing."}
     end
   end
