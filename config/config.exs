@@ -9,7 +9,13 @@ import Config
 
 config :runa,
   ecto_repos: [Runa.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  permissions: %{
+    owner: "owner",
+    admin: "admin",
+    editor: "editor",
+    viewer: "viewer"
+  }
 
 # Configures the endpoint
 config :runa, RunaWeb.Endpoint,

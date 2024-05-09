@@ -7,30 +7,32 @@ defmodule Runa.Auth do
 
   alias Ueberauth.Auth
 
-  alias Runa.{Accounts, Permissions, Teams, Repo}
+  alias Runa.{Accounts, Roles, TeamRoles, Teams, Repo}
+
+  @roles Application.compile_env(:runa, :permissions)
 
   def find_or_create(%Auth{provider: :auth0} = auth) do
     with uid when not is_nil(uid) <- auth.uid,
-         email when not is_nil(email) <- get_email(auth),
+         email when not is_nil(email) <- fetch_email(auth),
          user when is_nil(user) <-
            Repo.get_by(Accounts.User, email: email),
          {:ok, new_user} <-
            Accounts.create_user(%{
              uid: auth.uid,
-             name: get_name(auth),
-             avatar: get_avatar(auth),
-             nickname: get_nickname(auth),
-             email: get_email(auth)
+             name: fetch_name(auth),
+             avatar: fetch_avatar(auth),
+             nickname: fetch_nickname(auth),
+             email: fetch_email(auth)
            }),
          {:ok, new_team} <-
            Teams.create_team(%{
              title: "#{new_user.name}'s Team"
            }),
-         %Permissions.Role{} = role <-
-           Repo.get_by(Permissions.Role,
-             title: "owner"
+         %Roles.Role{} = role <-
+           Repo.get_by(Roles.Role,
+             title: @roles[:owner]
            ),
-         {:ok, %Permissions.TeamRole{}} <-
+         {:ok, %TeamRoles.TeamRole{}} <-
            Ecto.build_assoc(new_user, :team_roles, %{
              team_id: new_team.id,
              role_id: role.id,
@@ -54,29 +56,29 @@ defmodule Runa.Auth do
     end
   end
 
-  defp get_avatar(%Auth{info: %{urls: %{avatar_url: image}}})
+  defp fetch_avatar(%Auth{info: %{urls: %{avatar_url: image}}})
        when image not in [nil, ""] do
     image
   end
 
-  defp get_avatar(%Auth{info: %{image: image}})
+  defp fetch_avatar(%Auth{info: %{image: image}})
        when image not in [nil, ""] do
     image
   end
 
-  defp get_avatar(auth) do
+  defp fetch_avatar(auth) do
     Logger.warn("No avatar found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
     nil
   end
 
-  defp get_name(%Auth{info: %{name: name}})
+  defp fetch_name(%Auth{info: %{name: name}})
        when name not in [nil, ""] do
     name
   end
 
-  defp get_name(%Auth{
+  defp fetch_name(%Auth{
          info: %{first_name: first, last_name: last}
        })
        when first not in ["", nil] or last not in ["", nil] do
@@ -85,41 +87,41 @@ defmodule Runa.Auth do
     |> Enum.join(" ")
   end
 
-  defp get_name(%Auth{info: %{nickname: nickname}})
+  defp fetch_name(%Auth{info: %{nickname: nickname}})
        when nickname not in [nil, ""] do
     nickname
   end
 
-  defp get_name(%Auth{info: %{email: email}})
+  defp fetch_name(%Auth{info: %{email: email}})
        when email not in [nil, ""] do
     email
   end
 
-  defp get_name(auth) do
+  defp fetch_name(auth) do
     Logger.warn("No name found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
     nil
   end
 
-  defp get_nickname(%Auth{info: %{nickname: nickname}})
+  defp fetch_nickname(%Auth{info: %{nickname: nickname}})
        when nickname not in [nil, ""] do
     nickname
   end
 
-  defp get_nickname(auth) do
+  defp fetch_nickname(auth) do
     Logger.warn("No nickname found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
     nil
   end
 
-  defp get_email(%Auth{info: %{email: email}})
+  defp fetch_email(%Auth{info: %{email: email}})
        when email not in [nil, ""] do
     email
   end
 
-  defp get_email(auth) do
+  defp fetch_email(auth) do
     Logger.warn("No email found in auth info!")
     Logger.debug(Poison.encode!(auth))
 

@@ -1,14 +1,17 @@
-defmodule Runa.Permissions.TeamRole do
+defmodule Runa.TeamRoles.TeamRole do
   @moduledoc """
-  TeamRole schema for permissions, representing the relationship between a user, a team, and a role.
+  Schema for team role, representing the relationship between a user, a team, and a role.
   """
   use Ecto.Schema
+
   import Ecto.Changeset
 
+  alias Runa.{Accounts, Teams, Roles}
+
   schema "team_roles" do
-    belongs_to :user, Runa.Accounts.User
-    belongs_to :role, Runa.Permissions.Role
-    belongs_to :team, Runa.Teams.Team
+    belongs_to :user, Accounts.User
+    belongs_to :role, Roles.Role
+    belongs_to :team, Teams.Team
 
     timestamps(type: :utc_datetime)
   end
@@ -19,8 +22,7 @@ defmodule Runa.Permissions.TeamRole do
     |> cast(attrs, [
       :user_id,
       :team_id,
-      :role_id,
-      :updated_at
+      :role_id
     ])
     |> validate_required([:user_id, :team_id, :role_id])
     |> foreign_key_constraint(:user_id)

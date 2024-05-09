@@ -5,8 +5,9 @@ defmodule RunaWeb.PageLive.ProfileTest do
 
   import Phoenix.LiveViewTest
   import Runa.Accounts.Fixtures
-  import Runa.Permissions.Fixtures
   import Runa.Teams.Fixtures
+  import Runa.TeamRoles.Fixtures
+  import Runa.Roles.Fixtures
 
   describe "authenticated user" do
     setup [

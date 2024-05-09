@@ -1,4 +1,5 @@
 defmodule RunaWeb.AuthControllerTest do
+  @moduledoc false
   use RunaWeb.ConnCase
 
   @moduletag :auth
@@ -6,7 +7,7 @@ defmodule RunaWeb.AuthControllerTest do
   alias Runa.Teams
 
   import Runa.Auth.Fixtures
-  import Runa.Permissions.Fixtures
+  import Runa.Roles.Fixtures
 
   describe "logout action" do
     setup [:create_aux_success_auth]
@@ -83,51 +84,4 @@ defmodule RunaWeb.AuthControllerTest do
              |> get_session(:current_user)
     end
   end
-
-  # describe "side effect creates default team" do
-  #   setup [:create_aux_success_auth, :create_aux_role]
-
-  #   test "on first successful sign up", %{
-  #     conn: conn,
-  #     auth: auth
-  #   } do
-  #     assert [] = Teams.get_teams()
-
-  #     conn
-  #     |> bypass_through(RunaWeb.Router, [:browser])
-  #     |> assign(:ueberauth_auth, auth)
-  #     |> get("/auth/auth0/callback")
-  #     |> RunaWeb.AuthController.callback(%{})
-
-  #     assert [%Runa.Teams.Team{} = team] = Teams.get_teams()
-  #     assert team.title == "#{auth.info.name}'s Team"
-  #   end
-  # end
-
-  # describe "side effect skips default team creation" do
-  #   setup [:create_aux_success_auth, :create_aux_role]
-
-  #   test "on second successful sign up", %{
-  #     conn: conn,
-  #     auth: auth
-  #   } do
-  #     assert [] = Teams.get_teams()
-
-  #     conn
-  #     |> bypass_through(RunaWeb.Router, [:browser])
-  #     |> assign(:ueberauth_auth, auth)
-  #     |> get("/auth/auth0/callback")
-  #     |> RunaWeb.AuthController.callback(%{})
-
-  #     assert [%Runa.Teams.Team{} = team] = Teams.get_teams()
-
-  #     conn
-  #     |> bypass_through(RunaWeb.Router, [:browser])
-  #     |> assign(:ueberauth_auth, auth)
-  #     |> get("/auth/auth0/callback")
-  #     |> RunaWeb.AuthController.callback(%{})
-
-  #     assert [%Runa.Teams.Team{} = ^team] = Teams.get_teams()
-  #   end
-  # end
 end

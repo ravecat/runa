@@ -1,4 +1,5 @@
 defmodule RunaWeb.Widgets.SidebarTest do
+  @moduledoc false
   use RunaWeb.ConnCase
 
   import Phoenix.LiveViewTest
@@ -7,7 +8,8 @@ defmodule RunaWeb.Widgets.SidebarTest do
 
   import Runa.Accounts.Fixtures
   import Runa.Teams.Fixtures
-  import Runa.Permissions.Fixtures
+  import Runa.TeamRoles.Fixtures
+  import Runa.Roles.Fixtures
 
   describe "Sidebar" do
     setup [
@@ -37,7 +39,7 @@ defmodule RunaWeb.Widgets.SidebarTest do
       assert html =~ "#{team.title}"
     end
 
-    test "renders team list", %{user: user, team: team, test: test} do
+    test "renders team list", %{user: user, test: test} do
       user = user |> Runa.Repo.preload(:teams)
 
       html = render_component(Sidebar, %{user: user, id: test})

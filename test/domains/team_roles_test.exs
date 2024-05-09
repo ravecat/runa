@@ -1,14 +1,15 @@
-defmodule Runa.PermissionsTest do
+defmodule Runa.TeamRolesTest do
+  @moduledoc false
   use Runa.DataCase
 
-  @moduletag :permissions
+  @moduletag :team_roles
 
-  alias Runa.Permissions
-  alias Runa.Permissions.TeamRole
+  alias Runa.TeamRoles
 
   import Runa.Accounts.Fixtures
   import Runa.Teams.Fixtures
-  import Runa.Permissions.Fixtures
+  import Runa.TeamRoles.Fixtures
+  import Runa.Roles.Fixtures
 
   describe "team_roles" do
     setup [
@@ -22,14 +23,14 @@ defmodule Runa.PermissionsTest do
       user: user,
       role: role
     } do
-      %{team_role: team_role} =
+      {:ok, team_role} =
         create_aux_team_role(%{
           team_id: team.id,
           user_id: user.id,
           role_id: role.id
         })
 
-      assert Permissions.get_team_roles() == [team_role]
+      assert TeamRoles.get_team_roles() == [team_role]
     end
 
     test "get_team_role!/1 returns the team_role with given id",
@@ -38,14 +39,14 @@ defmodule Runa.PermissionsTest do
            user: user,
            role: role
          } do
-      %{team_role: team_role} =
+      {:ok, team_role} =
         create_aux_team_role(%{
           team_id: team.id,
           user_id: user.id,
           role_id: role.id
         })
 
-      assert Permissions.get_team_role!(%{
+      assert TeamRoles.get_team_role!(%{
                team_id: team.id,
                user_id: user.id,
                role_id: role.id
@@ -58,8 +59,8 @@ defmodule Runa.PermissionsTest do
            user: user,
            role: role
          } do
-      assert {:ok, %TeamRole{}} =
-               Permissions.create_team_role(%{
+      assert {:ok, %TeamRoles.TeamRole{}} =
+               TeamRoles.create_team_role(%{
                  team_id: team.id,
                  user_id: user.id,
                  role_id: role.id
@@ -67,7 +68,7 @@ defmodule Runa.PermissionsTest do
     end
 
     test "create_team_role/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Permissions.create_team_role(%{})
+      assert {:error, %Ecto.Changeset{}} = TeamRoles.create_team_role(%{})
     end
 
     test "update_team_role/2 with valid data updates the team_role",
@@ -76,7 +77,7 @@ defmodule Runa.PermissionsTest do
            user: user,
            role: role
          } do
-      %{team_role: team_role} =
+      {:ok, team_role} =
         create_aux_team_role(%{
           team_id: team.id,
           user_id: user.id,
@@ -89,8 +90,8 @@ defmodule Runa.PermissionsTest do
         team_id: new_team.id
       }
 
-      assert {:ok, %TeamRole{} = team_role} =
-               Permissions.update_team_role(
+      assert {:ok, %TeamRoles.TeamRole{} = team_role} =
+               TeamRoles.update_team_role(
                  team_role,
                  update_attrs
                )
@@ -104,7 +105,7 @@ defmodule Runa.PermissionsTest do
            user: user,
            role: role
          } do
-      %{team_role: team_role} =
+      {:ok, team_role} =
         create_aux_team_role(%{
           team_id: team.id,
           user_id: user.id,
@@ -112,12 +113,12 @@ defmodule Runa.PermissionsTest do
         })
 
       assert {:error, %Ecto.Changeset{}} =
-               Permissions.update_team_role(team_role, %{
+               TeamRoles.update_team_role(team_role, %{
                  team_id: nil
                })
 
       assert team_role ==
-               Permissions.get_team_role!(%{
+               TeamRoles.get_team_role!(%{
                  team_id: team.id,
                  user_id: user.id,
                  role_id: role.id
@@ -129,17 +130,18 @@ defmodule Runa.PermissionsTest do
       user: user,
       role: role
     } do
-      %{team_role: team_role} =
+      {:ok, team_role} =
         create_aux_team_role(%{
           team_id: team.id,
           user_id: user.id,
           role_id: role.id
         })
 
-      assert {:ok, %TeamRole{}} = Permissions.delete_team_role(team_role)
+      assert {:ok, %TeamRoles.TeamRole{}} =
+               TeamRoles.delete_team_role(team_role)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Permissions.get_team_role!(%{
+        TeamRoles.get_team_role!(%{
           team_id: team.id,
           user_id: user.id,
           role_id: role.id
@@ -153,14 +155,14 @@ defmodule Runa.PermissionsTest do
            user: user,
            role: role
          } do
-      %{team_role: team_role} =
+      {:ok, team_role} =
         create_aux_team_role(%{
           team_id: team.id,
           user_id: user.id,
           role_id: role.id
         })
 
-      assert %Ecto.Changeset{} = Permissions.change_team_role(team_role)
+      assert %Ecto.Changeset{} = TeamRoles.change_team_role(team_role)
     end
   end
 end
