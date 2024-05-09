@@ -15,6 +15,10 @@ config :runa,
     admin: "admin",
     editor: "editor",
     viewer: "viewer"
+  },
+  token_access_levels: %{
+    read: 0,
+    write: 1
   }
 
 # Configures the endpoint
