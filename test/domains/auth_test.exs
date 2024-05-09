@@ -5,9 +5,9 @@ defmodule Runa.AuthTest do
   @moduletag :auth
 
   import Runa.Auth.Fixtures
-  import Runa.Permissions.Fixtures
+  import Runa.Roles.Fixtures
 
-  alias Runa.{Accounts, Permissions, Teams}
+  alias Runa.{Accounts, Teams, TeamRoles}
   alias Ueberauth.Auth
 
   describe "authorization module for new user" do
@@ -376,8 +376,8 @@ defmodule Runa.AuthTest do
                  :email
                ])
 
-      assert [%Teams.Team{} = team] = Teams.get_teams()
-      assert [%Permissions.TeamRole{} = role] = Permissions.get_team_roles()
+      assert [%Teams.Team{}] = Teams.get_teams()
+      assert [%TeamRoles.TeamRole{}] = TeamRoles.get_team_roles()
     end
 
     test "and returns existing user", %{auth: auth} do

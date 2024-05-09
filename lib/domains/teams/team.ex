@@ -9,10 +9,10 @@ defmodule Runa.Teams.Team do
   schema "teams" do
     field :title, :string
 
-    has_many :team_roles, Runa.Permissions.TeamRole
+    has_many :team_roles, Runa.TeamRoles.TeamRole
 
     many_to_many :users, Runa.Accounts.User,
-      join_through: Runa.Permissions.TeamRole
+      join_through: Runa.TeamRoles.TeamRole
 
     timestamps(type: :utc_datetime)
   end

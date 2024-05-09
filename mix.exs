@@ -98,10 +98,13 @@ defmodule Runa.MixProject do
         "assets.setup",
         "assets.build"
       ],
+      "ecto.seed": [
+        "run priv/repo/roles.exs"
+      ],
       "ecto.setup": [
         "ecto.create",
         "ecto.migrate",
-        "run priv/repo/roles.exs"
+        "ecto.seed"
       ],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: [

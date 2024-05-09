@@ -1,13 +1,14 @@
 alias Runa.Repo
-alias Runa.Permissions.Role
+alias Runa.Roles.Role
 
 now = DateTime.utc_now() |> DateTime.truncate(:second)
 
-roles = [
-  %{title: "owner", inserted_at: now, updated_at: now},
-  %{title: "admin", inserted_at: now, updated_at: now},
-  %{title: "editor", inserted_at: now, updated_at: now},
-  %{title: "reader", inserted_at: now, updated_at: now}
-]
+roles =
+  Application.compile_env(:runa, :permissions)
+  |> Map.values()
+  |> Enum.map(fn title -> %{title: title, inserted_at: now, updated_at: now} end)
 
-Repo.insert_all(Role, roles)
+Repo.insert_all(Role, roles,
+  on_conflict: {:replace_all_except, [:id, :title]},
+  conflict_target: :title,
+)
