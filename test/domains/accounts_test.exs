@@ -4,7 +4,7 @@ defmodule Runa.AccountsTest do
   alias Runa.Accounts
   alias Runa.Accounts.User
 
-  import Runa.Accounts.Fixtures
+  import Runa.AccountsFixtures
 
   @invalid_attrs %{uid: nil, email: nil}
 

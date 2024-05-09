@@ -6,8 +6,8 @@ defmodule RunaWeb.AuthControllerTest do
 
   alias Runa.Teams
 
-  import Runa.Auth.Fixtures
-  import Runa.Roles.Fixtures
+  import Runa.AuthFixtures
+  import Runa.RolesFixtures
 
   describe "logout action" do
     setup [:create_aux_success_auth]

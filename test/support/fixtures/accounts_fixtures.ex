@@ -1,4 +1,4 @@
-defmodule Runa.Accounts.Fixtures do
+defmodule Runa.AccountsFixtures do
   @moduledoc """
   This module defines test helpers for creating
   entities via the `Runa.Accounts` context.

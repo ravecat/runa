@@ -8,7 +8,7 @@ defmodule Runa.TeamsTest do
   alias Runa.Teams
   alias Runa.Teams.Team
 
-  import Runa.Teams.Fixtures
+  import Runa.TeamsFixtures
 
   @invalid_attrs %{title: nil}
   @valid_attrs %{title: "some title"}

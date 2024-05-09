@@ -4,10 +4,10 @@ defmodule RunaWeb.PageLive.ProfileTest do
   @moduletag :profile
 
   import Phoenix.LiveViewTest
-  import Runa.Accounts.Fixtures
-  import Runa.Teams.Fixtures
-  import Runa.TeamRoles.Fixtures
-  import Runa.Roles.Fixtures
+  import Runa.AccountsFixtures
+  import Runa.TeamsFixtures
+  import Runa.TeamRolesFixtures
+  import Runa.RolesFixtures
 
   describe "authenticated user" do
     setup [
