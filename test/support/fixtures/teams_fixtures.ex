@@ -1,4 +1,4 @@
-defmodule Runa.Teams.Fixtures do
+defmodule Runa.TeamsFixtures do
   @moduledoc """
   This module defines test helpers for creating
   entities via the `Runa.Teams` context.

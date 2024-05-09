@@ -4,8 +4,8 @@ defmodule Runa.AuthTest do
 
   @moduletag :auth
 
-  import Runa.Auth.Fixtures
-  import Runa.Roles.Fixtures
+  import Runa.AuthFixtures
+  import Runa.RolesFixtures
 
   alias Runa.{Accounts, Teams, TeamRoles}
   alias Ueberauth.Auth

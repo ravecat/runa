@@ -1,4 +1,4 @@
-defmodule Runa.Auth.Fixtures do
+defmodule Runa.AuthFixtures do
   @moduledoc """
   Module for handling authentication fixtures.
   """

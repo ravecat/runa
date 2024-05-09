@@ -67,7 +67,7 @@ defmodule Runa.Auth do
   end
 
   defp fetch_avatar(auth) do
-    Logger.warn("No avatar found in auth info!")
+    Logger.debug("No avatar found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
     nil
@@ -98,7 +98,7 @@ defmodule Runa.Auth do
   end
 
   defp fetch_name(auth) do
-    Logger.warn("No name found in auth info!")
+    Logger.debug("No name found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
     nil
@@ -110,7 +110,7 @@ defmodule Runa.Auth do
   end
 
   defp fetch_nickname(auth) do
-    Logger.warn("No nickname found in auth info!")
+    Logger.debug("No nickname found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
     nil
@@ -122,7 +122,7 @@ defmodule Runa.Auth do
   end
 
   defp fetch_email(auth) do
-    Logger.warn("No email found in auth info!")
+    Logger.debug("No email found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
     nil

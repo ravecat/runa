@@ -1,4 +1,4 @@
-defmodule Runa.Roles.Fixtures do
+defmodule Runa.RolesFixtures do
   @moduledoc """
   This module defines test helpers for creating role entities.
   """

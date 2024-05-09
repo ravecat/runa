@@ -6,10 +6,10 @@ defmodule Runa.TeamRolesTest do
 
   alias Runa.TeamRoles
 
-  import Runa.Accounts.Fixtures
-  import Runa.Teams.Fixtures
-  import Runa.TeamRoles.Fixtures
-  import Runa.Roles.Fixtures
+  import Runa.AccountsFixtures
+  import Runa.TeamsFixtures
+  import Runa.TeamRolesFixtures
+  import Runa.RolesFixtures
 
   describe "team_roles" do
     setup [

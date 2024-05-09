@@ -5,11 +5,14 @@ defmodule RunaWeb.Widgets.SidebarTest do
   import Phoenix.LiveViewTest
 
   alias RunaWeb.Components.Sidebar
+  alias Runa.Repo
 
-  import Runa.Accounts.Fixtures
-  import Runa.Teams.Fixtures
-  import Runa.TeamRoles.Fixtures
-  import Runa.Roles.Fixtures
+  import Runa.{
+    AccountsFixtures,
+    TeamsFixtures,
+    RolesFixtures,
+    TeamRolesFixtures
+  }
 
   describe "Sidebar" do
     setup [
@@ -20,7 +23,7 @@ defmodule RunaWeb.Widgets.SidebarTest do
     ]
 
     test "renders menu items", %{user: user, test: test} do
-      user = user |> Runa.Repo.preload(:teams)
+      user = user |> Repo.preload(:teams)
 
       html = render_component(Sidebar, %{user: user, id: test})
 
@@ -31,7 +34,7 @@ defmodule RunaWeb.Widgets.SidebarTest do
     end
 
     test "renders wokrspace info", %{user: user, team: team, test: test} do
-      user = user |> Runa.Repo.preload(:teams)
+      user = user |> Repo.preload(:teams)
 
       html = render_component(Sidebar, %{user: user, id: test})
 
@@ -40,7 +43,7 @@ defmodule RunaWeb.Widgets.SidebarTest do
     end
 
     test "renders team list", %{user: user, test: test} do
-      user = user |> Runa.Repo.preload(:teams)
+      user = user |> Repo.preload(:teams)
 
       html = render_component(Sidebar, %{user: user, id: test})
 

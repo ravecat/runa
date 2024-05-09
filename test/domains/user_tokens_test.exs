@@ -6,7 +6,7 @@ defmodule Runa.UserTokensTest do
   alias Runa.UserTokens.UserToken
 
   import Runa.UserTokensFixtures
-  import Runa.Accounts.Fixtures
+  import Runa.AccountsFixtures
   import Runa.TokensFixtures
 
   @invalid_attrs %{}
