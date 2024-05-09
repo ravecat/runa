@@ -10,5 +10,5 @@ roles =
 
 Repo.insert_all(Role, roles,
   on_conflict: {:replace_all_except, [:id, :title]},
-  conflict_target: :title,
+  conflict_target: :title
 )

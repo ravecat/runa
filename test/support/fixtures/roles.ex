@@ -12,6 +12,7 @@ defmodule Runa.Roles.Fixtures do
   Generate auxilary role
   """
   def create_aux_role(attrs \\ %{})
+
   def create_aux_role(%{test: _}) do
     {:ok, role} =
       %Role{}
