@@ -6,7 +6,7 @@ defmodule Runa.Languages.Language do
   import Ecto.Changeset
 
   schema "languages" do
-    field :walls_code, :string
+    field :wals_code, :string
     field :iso_code, :string
     field :glotto_code, :string
     field :title, :string
@@ -17,10 +17,8 @@ defmodule Runa.Languages.Language do
   @doc false
   def changeset(language, attrs) do
     language
-    |> cast(attrs, [:walls_code, :iso_code, :glotto_code, :title])
-    |> validate_required([:walls_code, :title])
-    |> unique_constraint(:walls_code)
-    |> unique_constraint(:iso_code)
-    |> unique_constraint(:glotto_code)
+    |> cast(attrs, [:wals_code, :iso_code, :glotto_code, :title])
+    |> validate_required([:wals_code, :title])
+    |> unique_constraint(:wals_code)
   end
 end

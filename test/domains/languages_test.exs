@@ -11,7 +11,7 @@ defmodule Runa.LanguagesTest do
 
   @invalid_attrs %{
     title: nil,
-    walls_code: nil,
+    wals_code: nil,
     iso_code: nil,
     glotto_code: nil
   }
@@ -30,7 +30,7 @@ defmodule Runa.LanguagesTest do
     test "create_language/1 with valid data creates a language" do
       valid_attrs = %{
         title: "some title",
-        walls_code: "some walls_code",
+        wals_code: "some wals_code",
         iso_code: "some iso_code",
         glotto_code: "some glotto_code"
       }
@@ -39,7 +39,7 @@ defmodule Runa.LanguagesTest do
                Languages.create_language(valid_attrs)
 
       assert language.title == "some title"
-      assert language.walls_code == "some walls_code"
+      assert language.wals_code == "some wals_code"
       assert language.iso_code == "some iso_code"
       assert language.glotto_code == "some glotto_code"
     end
@@ -52,7 +52,7 @@ defmodule Runa.LanguagesTest do
     test "update_language/2 with valid data updates the language", ctx do
       update_attrs = %{
         title: "some updated title",
-        walls_code: "some updated walls_code",
+        wals_code: "some updated wals_code",
         iso_code: "some updated iso_code",
         glotto_code: "some updated glotto_code"
       }
@@ -61,7 +61,7 @@ defmodule Runa.LanguagesTest do
                Languages.update_language(ctx.language, update_attrs)
 
       assert language.title == "some updated title"
-      assert language.walls_code == "some updated walls_code"
+      assert language.wals_code == "some updated wals_code"
       assert language.iso_code == "some updated iso_code"
       assert language.glotto_code == "some updated glotto_code"
     end

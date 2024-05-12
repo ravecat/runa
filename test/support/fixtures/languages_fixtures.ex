@@ -16,7 +16,7 @@ defmodule Runa.LanguagesFixtures do
         glotto_code: Atom.to_string(test),
         iso_code: Atom.to_string(test),
         title: Atom.to_string(test),
-        walls_code: Atom.to_string(test)
+        wals_code: Atom.to_string(test)
       })
       |> Runa.Languages.create_language()
 
@@ -30,7 +30,7 @@ defmodule Runa.LanguagesFixtures do
         glotto_code: "some glotto_code",
         iso_code: "some iso_code",
         title: "some title",
-        walls_code: "some walls_code"
+        wals_code: "some wals_code"
       })
       |> Runa.Languages.create_language()
 

@@ -78,6 +78,7 @@ defmodule Runa.MixProject do
       {:floki, "~> 0.36.0", only: :test},
       {:pathex, "~> 2.0", only: :test},
       {:tailwind, "~> 0.2.2"},
+      {:csv, "~> 3.2"},
       {:phoenix_template, "~> 1.0"}
     ]
   end
@@ -99,7 +100,8 @@ defmodule Runa.MixProject do
         "assets.build"
       ],
       "ecto.seed": [
-        "run priv/repo/roles.exs"
+        "run priv/repo/roles.exs",
+        "seed.languages"
       ],
       "ecto.setup": [
         "ecto.create",
