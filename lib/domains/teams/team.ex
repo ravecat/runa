@@ -6,13 +6,15 @@ defmodule Runa.Teams.Team do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Runa.{Accounts.User, TeamRoles.TeamRole}
+
   schema "teams" do
     field :title, :string
+    field :token, :string
 
-    has_many :team_roles, Runa.TeamRoles.TeamRole
+    has_many :team_roles, TeamRole
 
-    many_to_many :users, Runa.Accounts.User,
-      join_through: Runa.TeamRoles.TeamRole
+    many_to_many :users, User, join_through: TeamRole
 
     timestamps(type: :utc_datetime)
   end
@@ -20,7 +22,7 @@ defmodule Runa.Teams.Team do
   @doc false
   def changeset(team, attrs) do
     team
-    |> cast(attrs, [:title])
-    |> validate_required([:title])
+    |> cast(attrs, [:title, :token])
+    |> validate_required([:title, :token])
   end
 end

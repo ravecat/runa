@@ -1,11 +1,12 @@
 defmodule Runa.Teams do
   @moduledoc """
-  The Teams context.
+  The teams context.
   """
 
-  alias Runa.Repo
+  alias Runa.{Repo, Teams.Team}
 
-  alias Runa.Teams.Team
+  import Ecto.Changeset
+  import Runa.TokenGenerator
 
   @doc """
   Returns the list of teams.
@@ -50,6 +51,7 @@ defmodule Runa.Teams do
   """
   def create_team(attrs \\ %{}) do
     %Team{}
+    |> change(%{token: generate_token(type: :schema)})
     |> Team.changeset(attrs)
     |> Repo.insert()
   end

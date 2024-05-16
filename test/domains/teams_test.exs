@@ -29,7 +29,8 @@ defmodule Runa.TeamsTest do
     test "create_team/1 with valid data creates a team" do
       assert {:ok, %Team{} = team} = Teams.create_team(@valid_attrs)
 
-      assert team.title == "some title"
+      assert String.length(team.token) == 32
+      assert Regex.match?(~r/^[A-Za-z0-9_-]+$/, team.token)
     end
 
     test "create_team/1 with invalid data returns error changeset" do
