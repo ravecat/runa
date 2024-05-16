@@ -28,8 +28,8 @@ defmodule Runa.TokensTest do
 
       assert {:ok, %Token{} = token} = Tokens.create_token(valid_attrs)
       assert token.access == @valid_access_levels[:read]
-      assert String.length(token.token) == 64
-      assert Regex.match?(~r/^[a-z0-9]+$/, token.token)
+      assert String.length(token.token) == 32
+      assert Regex.match?(~r/^[A-Za-z0-9_-]+$/, token.token)
     end
 
     test "create_token/1 with invalid data returns error changeset" do
@@ -46,8 +46,8 @@ defmodule Runa.TokensTest do
 
       assert {:ok, %Token{} = token} = Tokens.update_token(token, update_attrs)
       assert token.access == @valid_access_levels[:read]
-      assert String.length(token.token) == 64
-      assert Regex.match?(~r/^[a-z0-9]+$/, token.token)
+      assert String.length(token.token) == 32
+      assert Regex.match?(~r/^[A-Za-z0-9_-]+$/, token.token)
     end
 
     test "update_token/2 with invalid data returns error changeset" do
