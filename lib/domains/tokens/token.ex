@@ -19,7 +19,7 @@ defmodule Runa.Tokens.Token do
   def changeset(token, attrs) do
     token
     |> cast(attrs, [:access])
-    |> validate_required([:access])
+    |> validate_required([:access, :token])
     |> validate_inclusion(:access, @valid_access_levels)
   end
 end

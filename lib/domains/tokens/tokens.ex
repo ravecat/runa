@@ -5,6 +5,7 @@ defmodule Runa.Tokens do
 
   import Ecto.Query, warn: false
   import Ecto.Changeset
+  import Runa.TokenGenerator
 
   alias Runa.Repo
   alias Runa.Tokens.Token
@@ -52,18 +53,9 @@ defmodule Runa.Tokens do
   """
   def create_token(attrs \\ %{}) do
     %Token{}
+    |> change(%{token: generate_token()})
     |> Token.changeset(attrs)
-    |> put_change(:token, generate_token())
     |> Repo.insert()
-  end
-
-  defp generate_token do
-    :crypto.hash(
-      :sha256,
-      "#{System.system_time()}#{:rand.uniform(1_000_000_000)}"
-    )
-    |> Base.encode16()
-    |> String.downcase()
   end
 
   @doc """
