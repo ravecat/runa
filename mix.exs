@@ -79,7 +79,9 @@ defmodule Runa.MixProject do
       {:pathex, "~> 2.0", only: :test},
       {:tailwind, "~> 0.2.2"},
       {:csv, "~> 3.2"},
-      {:phoenix_template, "~> 1.0"}
+      {:phoenix_template, "~> 1.0"},
+      {:mock, "~> 0.3.0", only: :test},
+      {:hammox, "~> 0.7", only: :test}
     ]
   end
 

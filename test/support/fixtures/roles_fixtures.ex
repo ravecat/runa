@@ -7,6 +7,9 @@ defmodule Runa.RolesFixtures do
   alias Runa.Roles.Role
 
   @roles Application.compile_env(:runa, :permissions)
+  @default_attrs %{
+    title: @roles[:owner]
+  }
 
   @doc """
   Generate auxilary role
@@ -16,19 +19,14 @@ defmodule Runa.RolesFixtures do
   def create_aux_role(%{test: _}) do
     {:ok, role} =
       %Role{}
-      |> Role.changeset(%{
-        title: @roles[:owner]
-      })
+      |> Role.changeset(@default_attrs)
       |> Repo.insert()
 
     %{role: role}
   end
 
   def create_aux_role(attrs) do
-    attrs =
-      Enum.into(attrs, %{
-        title: @roles[:owner]
-      })
+    attrs = Enum.into(attrs, @default_attrs)
 
     {:ok, role} =
       %Role{}

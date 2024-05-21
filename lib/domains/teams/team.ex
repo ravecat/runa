@@ -1,4 +1,6 @@
 defmodule Runa.Teams.Team do
+
+
   @moduledoc """
   The schema for teams, which are groups of users
   """
@@ -10,7 +12,6 @@ defmodule Runa.Teams.Team do
 
   schema "teams" do
     field :title, :string
-    field :token, :string
 
     has_many :team_roles, TeamRole
 
@@ -22,7 +23,7 @@ defmodule Runa.Teams.Team do
   @doc false
   def changeset(team, attrs) do
     team
-    |> cast(attrs, [:title, :token])
-    |> validate_required([:title, :token])
+    |> cast(attrs, [:title])
+    |> validate_required([:title])
   end
 end

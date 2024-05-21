@@ -4,9 +4,9 @@ defmodule Runa.TokensFixtures do
   entities via the `Runa.Tokens` context.
   """
 
-  @valid_access_levels Application.compile_env(:runa, :token_access_levels)
-
   alias Runa.Tokens
+
+  @valid_access_levels Application.compile_env(:runa, :token_access_levels)
 
   @doc """
   Generate a token.

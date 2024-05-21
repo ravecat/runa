@@ -6,53 +6,21 @@ defmodule Runa.Auth do
   require Poison
 
   alias Ueberauth.Auth
-
-  alias Runa.{Accounts, Roles, TeamRoles, Teams, Repo}
-
-  @roles Application.compile_env(:runa, :permissions)
+  alias Runa.Accounts
 
   def find_or_create(%Auth{provider: :auth0} = auth) do
-    with uid when not is_nil(uid) <- auth.uid,
-         email when not is_nil(email) <- fetch_email(auth),
-         user when is_nil(user) <-
-           Repo.get_by(Accounts.User, email: email),
-         {:ok, new_user} <-
-           Accounts.create_user(%{
-             uid: auth.uid,
-             name: fetch_name(auth),
-             avatar: fetch_avatar(auth),
-             nickname: fetch_nickname(auth),
-             email: fetch_email(auth)
-           }),
-         {:ok, new_team} <-
-           Teams.create_team(%{
-             title: "#{new_user.name}'s Team"
-           }),
-         %Roles.Role{} = role <-
-           Repo.get_by(Roles.Role,
-             title: @roles[:owner]
-           ),
-         {:ok, %TeamRoles.TeamRole{}} <-
-           Ecto.build_assoc(new_user, :team_roles, %{
-             team_id: new_team.id,
-             role_id: role.id,
-             user_id: new_user.id
-           })
-           |> Repo.insert() do
-      user = Repo.preload(new_user, [:teams, :team_roles])
+    result =
+      Accounts.create_or_find_user(%{
+        uid: auth.uid,
+        email: fetch_email(auth),
+        name: fetch_name(auth),
+        nickname: fetch_nickname(auth),
+        avatar: fetch_avatar(auth)
+      })
 
-      {:ok, user}
-    else
-      %Accounts.User{} = user ->
-        user = Repo.preload(user, [:teams, :team_roles])
-
-        {:ok, user}
-
-      {:error, %Ecto.Changeset{} = _changeset} ->
-        {:error, "Failed to create user"}
-
-      _err ->
-        {:error, "Required authentication information is missing."}
+    case result do
+      {:ok, user} -> {:ok, user}
+      {:error, reason} -> {:error, reason}
     end
   end
 

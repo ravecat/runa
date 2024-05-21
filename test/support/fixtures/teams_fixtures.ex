@@ -4,15 +4,17 @@ defmodule Runa.TeamsFixtures do
   entities via the `Runa.Teams` context.
   """
 
+  @default_attrs %{
+    title: "team title"
+  }
+
   @doc """
   Generate a team.
   """
   def create_aux_team(attrs \\ %{}) do
     {:ok, team} =
       attrs
-      |> Enum.into(%{
-        title: "team title"
-      })
+      |> Enum.into(@default_attrs)
       |> Runa.Teams.create_team()
 
     %{team: team}

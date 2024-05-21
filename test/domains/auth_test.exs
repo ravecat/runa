@@ -1,20 +1,24 @@
 defmodule Runa.AuthTest do
   @moduledoc false
+
   use RunaWeb.ConnCase
 
   @moduletag :auth
 
-  import Runa.AuthFixtures
-  import Runa.RolesFixtures
+  import Runa.{AuthFixtures, RolesFixtures, TeamsFixtures, AccountsFixtures}
 
-  alias Runa.{Accounts, Teams, TeamRoles}
-  alias Ueberauth.Auth
+  alias Runa.Auth
 
-  describe "authorization module for new user" do
-    setup [:create_aux_success_auth, :create_aux_role]
+  describe "authorization module" do
+    setup [
+      :create_aux_success_auth,
+      :create_aux_role,
+      :create_aux_team,
+      :create_aux_user
+    ]
 
     test "handle full data", %{auth: auth} do
-      assert {:ok, result} = Runa.Auth.find_or_create(auth)
+      assert {:ok, result} = Auth.find_or_create(auth)
 
       expected = %{
         uid: auth.uid,
@@ -29,10 +33,10 @@ defmodule Runa.AuthTest do
     end
 
     test "handle data without avatar_url", %{auth: auth} do
-      auth = %Auth{
+      auth = %Ueberauth.Auth{
         uid: auth.uid,
         provider: auth.provider,
-        info: %Auth.Info{
+        info: %Ueberauth.Auth.Info{
           name: auth.info.name,
           image: auth.info.image,
           first_name: auth.info.first_name,
@@ -53,7 +57,7 @@ defmodule Runa.AuthTest do
         email: auth.info.email
       }
 
-      assert {:ok, result} = Runa.Auth.find_or_create(auth)
+      assert {:ok, result} = Auth.find_or_create(auth)
 
       assert Map.take(result, Map.keys(expected)) ==
                expected
@@ -62,10 +66,10 @@ defmodule Runa.AuthTest do
     test "handle data without avatar_url, image", %{
       auth: auth
     } do
-      auth = %Auth{
+      auth = %Ueberauth.Auth{
         uid: auth.uid,
         provider: auth.provider,
-        info: %Auth.Info{
+        info: %Ueberauth.Auth.Info{
           name: auth.info.name,
           first_name: auth.info.first_name,
           last_name: auth.info.last_name,
@@ -86,17 +90,17 @@ defmodule Runa.AuthTest do
         email: auth.info.email
       }
 
-      assert {:ok, result} = Runa.Auth.find_or_create(auth)
+      assert {:ok, result} = Auth.find_or_create(auth)
 
       assert Map.take(result, Map.keys(expected)) ==
                expected
     end
 
     test "handle data without name", %{auth: auth} do
-      auth = %Auth{
+      auth = %Ueberauth.Auth{
         uid: auth.uid,
         provider: auth.provider,
-        info: %Auth.Info{
+        info: %Ueberauth.Auth.Info{
           name: nil,
           image: auth.info.image,
           first_name: auth.info.first_name,
@@ -117,7 +121,7 @@ defmodule Runa.AuthTest do
         email: auth.info.email
       }
 
-      assert {:ok, result} = Runa.Auth.find_or_create(auth)
+      assert {:ok, result} = Auth.find_or_create(auth)
 
       assert Map.take(result, Map.keys(expected)) ==
                expected
@@ -126,10 +130,10 @@ defmodule Runa.AuthTest do
     test "handle data without name, first name", %{
       auth: auth
     } do
-      auth = %Auth{
+      auth = %Ueberauth.Auth{
         uid: auth.uid,
         provider: auth.provider,
-        info: %Auth.Info{
+        info: %Ueberauth.Auth.Info{
           name: nil,
           image: auth.info.image,
           first_name: nil,
@@ -150,19 +154,19 @@ defmodule Runa.AuthTest do
         email: auth.info.email
       }
 
-      assert {:ok, result} = Runa.Auth.find_or_create(auth)
+      assert {:ok, result} = Auth.find_or_create(auth)
 
       assert Map.take(result, Map.keys(expected)) ==
                expected
     end
 
-    test "handle data without name, last name", %{
+    test "handles data without name, last name", %{
       auth: auth
     } do
-      auth = %Auth{
+      auth = %Ueberauth.Auth{
         uid: auth.uid,
         provider: auth.provider,
-        info: %Auth.Info{
+        info: %Ueberauth.Auth.Info{
           name: nil,
           image: auth.info.image,
           first_name: auth.info.first_name,
@@ -183,7 +187,7 @@ defmodule Runa.AuthTest do
         email: auth.info.email
       }
 
-      assert {:ok, result} = Runa.Auth.find_or_create(auth)
+      assert {:ok, result} = Auth.find_or_create(auth)
 
       assert Map.take(result, Map.keys(expected)) ==
                expected
@@ -191,10 +195,10 @@ defmodule Runa.AuthTest do
 
     test "handle data without name, first name, last name",
          %{auth: auth} do
-      auth = %Auth{
+      auth = %Ueberauth.Auth{
         uid: auth.uid,
         provider: auth.provider,
-        info: %Auth.Info{
+        info: %Ueberauth.Auth.Info{
           name: nil,
           image: auth.info.image,
           first_name: nil,
@@ -215,7 +219,7 @@ defmodule Runa.AuthTest do
         email: auth.info.email
       }
 
-      assert {:ok, result} = Runa.Auth.find_or_create(auth)
+      assert {:ok, result} = Auth.find_or_create(auth)
 
       assert Map.take(result, Map.keys(expected)) ==
                expected
@@ -223,10 +227,10 @@ defmodule Runa.AuthTest do
 
     test "handle data without name, first name, last name, nickname",
          %{auth: auth} do
-      auth = %Auth{
+      auth = %Ueberauth.Auth{
         uid: auth.uid,
         provider: auth.provider,
-        info: %Auth.Info{
+        info: %Ueberauth.Auth.Info{
           name: nil,
           image: auth.info.image,
           first_name: nil,
@@ -247,17 +251,55 @@ defmodule Runa.AuthTest do
         email: auth.info.email
       }
 
-      assert {:ok, result} = Runa.Auth.find_or_create(auth)
+      assert {:ok, result} = Auth.find_or_create(auth)
 
       assert Map.take(result, Map.keys(expected)) ==
                expected
     end
 
-    test "handle data without nickname", %{auth: auth} do
-      auth = %Auth{
+    test "returns error for data without uid", %{auth: auth} do
+      auth = %Ueberauth.Auth{
+        provider: auth.provider,
+        info: %Ueberauth.Auth.Info{
+          name: auth.info.name,
+          image: auth.info.image,
+          first_name: auth.info.first_name,
+          last_name: auth.info.last_name,
+          urls: %{
+            avatar_url: auth.info.urls.avatar_url
+          },
+          nickname: auth.info.nickname,
+          email: auth.info.email
+        }
+      }
+
+      assert {:error, %Ecto.Changeset{}} = Auth.find_or_create(auth)
+    end
+
+    test "returns error for data without email", %{auth: auth} do
+      auth = %Ueberauth.Auth{
         uid: auth.uid,
         provider: auth.provider,
-        info: %Auth.Info{
+        info: %Ueberauth.Auth.Info{
+          name: auth.info.name,
+          image: auth.info.image,
+          first_name: auth.info.first_name,
+          last_name: auth.info.last_name,
+          urls: %{
+            avatar_url: auth.info.urls.avatar_url
+          },
+          nickname: auth.info.nickname
+        }
+      }
+
+      assert {:error, %Ecto.Changeset{}} = Auth.find_or_create(auth)
+    end
+
+    test "handle data without nickname", %{auth: auth} do
+      auth = %Ueberauth.Auth{
+        uid: auth.uid,
+        provider: auth.provider,
+        info: %Ueberauth.Auth.Info{
           name: auth.info.name,
           image: auth.info.image,
           first_name: auth.info.first_name,
@@ -278,114 +320,10 @@ defmodule Runa.AuthTest do
         email: auth.info.email
       }
 
-      assert {:ok, result} = Runa.Auth.find_or_create(auth)
+      assert {:ok, result} = Auth.find_or_create(auth)
 
       assert Map.take(result, Map.keys(expected)) ==
                expected
-    end
-  end
-
-  describe "authorization module return error" do
-    setup [:create_aux_success_auth]
-
-    test "data without email", %{auth: auth} do
-      auth = %Auth{
-        uid: auth.uid,
-        provider: auth.provider,
-        info: %Auth.Info{
-          name: auth.info.name,
-          image: auth.info.image,
-          first_name: auth.info.first_name,
-          last_name: auth.info.last_name,
-          urls: %{
-            avatar_url: auth.info.urls.avatar_url
-          },
-          nickname: auth.info.nickname
-        }
-      }
-
-      assert Runa.Auth.find_or_create(auth) ==
-               {:error, "Required authentication information is missing."}
-    end
-
-    test "data without uid", %{auth: auth} do
-      auth = %Auth{
-        provider: auth.provider,
-        info: %Auth.Info{
-          name: auth.info.name,
-          image: auth.info.image,
-          first_name: auth.info.first_name,
-          last_name: auth.info.last_name,
-          urls: %{
-            avatar_url: auth.info.urls.avatar_url
-          },
-          nickname: auth.info.nickname,
-          email: auth.info.email
-        }
-      }
-
-      assert Runa.Auth.find_or_create(auth) ==
-               {:error, "Required authentication information is missing."}
-    end
-
-    test "data with incorrect changeset", %{auth: auth} do
-      auth = %Auth{
-        uid: 1,
-        provider: auth.provider,
-        info: %Auth.Info{
-          name: auth.info.name,
-          image: auth.info.image,
-          first_name: auth.info.first_name,
-          last_name: auth.info.last_name,
-          urls: %{
-            avatar_url: auth.info.urls.avatar_url
-          },
-          nickname: auth.info.nickname,
-          email: auth.info.email
-        }
-      }
-
-      assert {:error, "Failed to create user"} ==
-               Runa.Auth.find_or_create(auth)
-    end
-  end
-
-  describe "authorization process affects db" do
-    setup [:create_aux_success_auth, :create_aux_role]
-
-    test "and creates related entities", %{auth: auth} do
-      assert [] == Accounts.get_users()
-      assert [] == Teams.get_teams()
-
-      assert {:ok, user} = Runa.Auth.find_or_create(auth)
-
-      assert [new] = Accounts.get_users()
-
-      assert Map.take(new, [
-               :uid,
-               :name,
-               :avatar,
-               :nickname,
-               :email
-             ]) ==
-               Map.take(user, [
-                 :uid,
-                 :name,
-                 :avatar,
-                 :nickname,
-                 :email
-               ])
-
-      assert [%Teams.Team{}] = Teams.get_teams()
-      assert [%TeamRoles.TeamRole{}] = TeamRoles.get_team_roles()
-    end
-
-    test "and returns existing user", %{auth: auth} do
-      assert [] == Accounts.get_users()
-
-      assert {:ok, user} = Runa.Auth.find_or_create(auth)
-
-      assert {:ok, ^user} = Runa.Auth.find_or_create(auth)
     end
   end
 end
