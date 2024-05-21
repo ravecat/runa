@@ -4,9 +4,11 @@ defmodule Runa.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias Runa.Repo
 
-  alias Runa.Accounts.User
+  alias Runa.{Accounts.User, Repo, Teams.Team, Roles.Role, TeamRoles.TeamRole}
+  alias Ecto.Multi
+
+  @roles Application.compile_env(:runa, :permissions)
 
   @doc """
   Returns the list of users.
@@ -38,21 +40,40 @@ defmodule Runa.Accounts do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
-  Creates a user.
-
-  ## Examples
-
-      iex> create_user(%{field: value})
-      {:ok, %User{}}
-
-      iex> create_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
+  Creates or finds user.
   """
-  def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+  def create_or_find_user(attrs \\ %{}) do
+    with %Ecto.Changeset{valid?: true} <- User.changeset(%User{}, attrs),
+         nil <- Repo.get_by(User, email: attrs.email),
+         {:ok, %{user: %User{} = user}} <-
+           Multi.new()
+           |> Multi.one(
+             :role,
+             from(r in Role, where: r.title == ^@roles[:owner])
+           )
+           |> Multi.insert(:user, User.changeset(%User{}, attrs))
+           |> Multi.insert(:team, fn %{user: user} ->
+             Team.changeset(%Team{}, %{title: "#{user.name}'s Team"})
+           end)
+           |> Multi.insert(:team_role, fn %{user: user, team: team, role: role} ->
+             TeamRole.changeset(%TeamRole{}, %{
+               user_id: user.id,
+               team_id: team.id,
+               role_id: role.id
+             })
+           end)
+           |> Repo.transaction() do
+      {:ok, user}
+    else
+      %User{} = user ->
+        {:ok, user}
+
+      %Ecto.Changeset{} = changeset ->
+        {:error, changeset}
+
+      {:error, _, reason, _} ->
+        {:error, reason}
+    end
   end
 
   @doc """

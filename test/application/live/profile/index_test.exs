@@ -1,19 +1,24 @@
 defmodule RunaWeb.PageLive.ProfileTest do
+  @moduledoc false
+
   use RunaWeb.ConnCase
 
   @moduletag :profile
 
   import Phoenix.LiveViewTest
-  import Runa.AccountsFixtures
-  import Runa.TeamsFixtures
-  import Runa.TeamRolesFixtures
-  import Runa.RolesFixtures
+
+  import Runa.{
+    AccountsFixtures,
+    TeamsFixtures,
+    TeamRolesFixtures,
+    RolesFixtures
+  }
 
   describe "authenticated user" do
     setup [
+      :create_aux_role,
       :create_aux_user,
-      :create_aux_team,
-      :create_aux_role
+      :create_aux_team
     ]
 
     test "can see projects page", %{

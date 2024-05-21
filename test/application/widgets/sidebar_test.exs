@@ -1,11 +1,12 @@
 defmodule RunaWeb.Widgets.SidebarTest do
   @moduledoc false
-  use RunaWeb.ConnCase
 
-  import Phoenix.LiveViewTest
+  use RunaWeb.ConnCase
 
   alias RunaWeb.Components.Sidebar
   alias Runa.Repo
+
+  import Phoenix.LiveViewTest
 
   import Runa.{
     AccountsFixtures,
@@ -16,9 +17,9 @@ defmodule RunaWeb.Widgets.SidebarTest do
 
   describe "Sidebar" do
     setup [
+      :create_aux_role,
       :create_aux_user,
       :create_aux_team,
-      :create_aux_role,
       :create_aux_team_role
     ]
 

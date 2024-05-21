@@ -35,6 +35,6 @@ defmodule Runa.TeamRolesFixtures do
       |> Enum.into(%{})
       |> TeamRoles.create_team_role()
 
-    {:ok, team_role}
+    team_role
   end
 end

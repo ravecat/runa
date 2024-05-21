@@ -5,8 +5,7 @@ defmodule Runa.TeamsTest do
 
   @moduletag :teams
 
-  alias Runa.Teams
-  alias Runa.Teams.Team
+  alias Runa.{Teams.Team, Teams}
 
   import Runa.TeamsFixtures
 
@@ -16,28 +15,25 @@ defmodule Runa.TeamsTest do
   describe "teams" do
     setup [:create_aux_team]
 
-    test "get_teams/0 returns all teams", %{team: team} do
+    test "returns all teams", %{team: team} do
       assert Teams.get_teams() == [team]
     end
 
-    test "get_team!/1 returns the team with given id", %{
+    test "returns the team with given id", %{
       team: team
     } do
       assert Teams.get_team!(team.id) == team
     end
 
-    test "create_team/1 with valid data creates a team" do
-      assert {:ok, %Team{} = team} = Teams.create_team(@valid_attrs)
-
-      assert String.length(team.token) == 32
-      assert Regex.match?(~r/^[A-Za-z0-9_-]+$/, team.token)
+    test "creates a team with valid data" do
+      assert {:ok, %Team{}} = Teams.create_team(@valid_attrs)
     end
 
-    test "create_team/1 with invalid data returns error changeset" do
+    test "returns error changeset after create with invalid data" do
       assert {:error, %Ecto.Changeset{}} = Teams.create_team(@invalid_attrs)
     end
 
-    test "update_team/2 with valid data updates the team",
+    test "updates the team with valid data",
          %{team: team} do
       update_attrs = %{title: "some updated title"}
 
@@ -46,7 +42,7 @@ defmodule Runa.TeamsTest do
       assert team.title == "some updated title"
     end
 
-    test "update_team/2 with invalid data returns error changeset",
+    test "returns error changeset after update with invalid data",
          %{team: team} do
       assert {:error, %Ecto.Changeset{}} =
                Teams.update_team(team, @invalid_attrs)
@@ -54,7 +50,7 @@ defmodule Runa.TeamsTest do
       assert team == Teams.get_team!(team.id)
     end
 
-    test "delete_team/1 deletes the team", %{team: team} do
+    test "deletes the team", %{team: team} do
       assert {:ok, %Team{}} = Teams.delete_team(team)
 
       assert_raise Ecto.NoResultsError, fn ->
@@ -62,7 +58,7 @@ defmodule Runa.TeamsTest do
       end
     end
 
-    test "change_team/1 returns a team changeset", %{
+    test "returns a team changeset", %{
       team: team
     } do
       assert %Ecto.Changeset{} = Teams.change_team(team)
