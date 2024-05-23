@@ -4,27 +4,31 @@ defmodule Runa.TokensTest do
 
   @moduletag :tokens
 
-  alias Runa.Tokens
-  alias Runa.Tokens.Token
+  alias Runa.{Tokens, Tokens.Token}
 
-  import Runa.TokensFixtures
+  import Runa.{TokensFixtures, AccountsFixtures, RolesFixtures, TeamsFixtures}
 
   @valid_access_levels Application.compile_env(:runa, :token_access_levels)
   @invalid_attrs %{access: nil, token: nil}
 
   describe "tokens" do
-    test "list_tokens/0 returns all tokens" do
-      token = create_aux_token()
-      assert Tokens.list_tokens() == [token]
+    setup [
+      :create_aux_role,
+      :create_aux_team,
+      :create_aux_user,
+      :create_aux_token
+    ]
+
+    test "return all tokens", ctx do
+      assert Tokens.list_tokens() == [ctx.token]
     end
 
-    test "get_token!/1 returns the token with given id" do
-      token = create_aux_token()
-      assert Tokens.get_token!(token.id) == token
+    test "return the token with given id", ctx do
+      assert Tokens.get_token!(ctx.token.id) == ctx.token
     end
 
-    test "create_token/1 with valid data creates a token" do
-      valid_attrs = %{access: @valid_access_levels[:read]}
+    test "create a token with valid data", ctx do
+      valid_attrs = %{access: @valid_access_levels[:read], user_id: ctx.user.id}
 
       assert {:ok, %Token{} = token} = Tokens.create_token(valid_attrs)
       assert token.access == @valid_access_levels[:read]
@@ -32,42 +36,36 @@ defmodule Runa.TokensTest do
       assert Regex.match?(~r/^[A-Za-z0-9_-]+$/, token.token)
     end
 
-    test "create_token/1 with invalid data returns error changeset" do
+    test "return error changeset during creation with invalid data" do
       assert {:error, %Ecto.Changeset{}} = Tokens.create_token(@invalid_attrs)
     end
 
-    test "update_token/2 with valid data updates the token" do
-      token = create_aux_token()
-
+    test "update the token with valid data", ctx do
       update_attrs = %{
         access: @valid_access_levels[:read],
         token: "some updated token"
       }
 
-      assert {:ok, %Token{} = token} = Tokens.update_token(token, update_attrs)
+      assert {:ok, %Token{} = token} = Tokens.update_token(ctx.token, update_attrs)
       assert token.access == @valid_access_levels[:read]
       assert String.length(token.token) == 32
       assert Regex.match?(~r/^[A-Za-z0-9_-]+$/, token.token)
     end
 
-    test "update_token/2 with invalid data returns error changeset" do
-      token = create_aux_token()
-
+    test "return error changeset during update with invalid data", ctx do
       assert {:error, %Ecto.Changeset{}} =
-               Tokens.update_token(token, @invalid_attrs)
+               Tokens.update_token(ctx.token, @invalid_attrs)
 
-      assert token == Tokens.get_token!(token.id)
+      assert ctx.token == Tokens.get_token!(ctx.token.id)
     end
 
-    test "delete_token/1 deletes the token" do
-      token = create_aux_token()
-      assert {:ok, %Token{}} = Tokens.delete_token(token)
-      assert_raise Ecto.NoResultsError, fn -> Tokens.get_token!(token.id) end
+    test "delete the token", ctx do
+      assert {:ok, %Token{}} = Tokens.delete_token(ctx.token)
+      assert_raise Ecto.NoResultsError, fn -> Tokens.get_token!(ctx.token.id) end
     end
 
-    test "change_token/1 returns a token changeset" do
-      token = create_aux_token()
-      assert %Ecto.Changeset{} = Tokens.change_token(token)
+    test "return a token changeset", ctx do
+      assert %Ecto.Changeset{} = Tokens.change_token(ctx.token)
     end
   end
 end

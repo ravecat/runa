@@ -6,7 +6,7 @@ defmodule Runa.Accounts.User do
 
   import Ecto.Changeset
 
-  alias Runa.{Contributors, Teams}
+  alias Runa.{Contributors.Contributor, Teams.Team, Tokens.Token}
 
   schema "users" do
     field :email, :string
@@ -14,10 +14,9 @@ defmodule Runa.Accounts.User do
     field :name, :string
     field :avatar, :string
     field :nickname, :string
-
-    has_many :contributors, Contributors.Contributor
-
-    many_to_many :teams, Teams.Team, join_through: Contributors.Contributor
+    has_many :contributors, Contributor
+    has_many :tokens, Token
+    many_to_many :teams, Team, join_through: Contributor
 
     timestamps(type: :utc_datetime)
   end
