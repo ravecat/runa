@@ -7,24 +7,20 @@ defmodule Runa.TokensFixtures do
   alias Runa.Tokens
 
   @valid_access_levels Application.compile_env(:runa, :token_access_levels)
+  @default_attrs %{
+    access: @valid_access_levels[:read]
+  }
 
   @doc """
   Generate a token.
   """
   def create_aux_token(attrs \\ %{})
 
-  def create_aux_token(
-        %{
-          test: _,
-          user: user
-        } = attrs
-      ) do
+  def create_aux_token(%{test: _} = attrs) do
     {:ok, token} =
       attrs
-      |> Enum.into(%{
-        access: @valid_access_levels[:read],
-        user_id: user.id
-      })
+      |> Enum.into(@default_attrs)
+      |> Map.put(:user_id, attrs.user.id)
       |> Tokens.create_token()
 
     %{token: token}
@@ -33,9 +29,7 @@ defmodule Runa.TokensFixtures do
   def create_aux_token(attrs) do
     {:ok, token} =
       attrs
-      |> Enum.into(%{
-        access: @valid_access_levels[:read]
-      })
+      |> Enum.into(@default_attrs)
       |> Tokens.create_token()
 
     token
