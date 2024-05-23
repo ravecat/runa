@@ -12,7 +12,7 @@ defmodule RunaWeb.Widgets.SidebarTest do
     AccountsFixtures,
     TeamsFixtures,
     RolesFixtures,
-    TeamRolesFixtures
+    ContributorsFixtures
   }
 
   describe "Sidebar" do
@@ -20,7 +20,7 @@ defmodule RunaWeb.Widgets.SidebarTest do
       :create_aux_role,
       :create_aux_user,
       :create_aux_team,
-      :create_aux_team_role
+      :create_aux_contributor
     ]
 
     test "renders menu items", %{user: user, test: test} do

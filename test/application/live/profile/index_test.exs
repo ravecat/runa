@@ -10,7 +10,7 @@ defmodule RunaWeb.PageLive.ProfileTest do
   import Runa.{
     AccountsFixtures,
     TeamsFixtures,
-    TeamRolesFixtures,
+    ContributorsFixtures,
     RolesFixtures
   }
 
@@ -27,7 +27,7 @@ defmodule RunaWeb.PageLive.ProfileTest do
       team: team,
       role: role
     } do
-      create_aux_team_role(%{
+      create_aux_contributor(%{
         team_id: team.id,
         user_id: user.id,
         role_id: role.id

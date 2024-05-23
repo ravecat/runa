@@ -5,17 +5,19 @@ defmodule Runa.Roles.Role do
   Available roles: owner (default), admin, editor, viewer.
   """
   use Ecto.Schema
+
   import Ecto.Changeset
+
+  alias Runa.{Contributors.Contributor, Accounts.User}
 
   @valid_roles ["owner", "admin", "editor", "reader"]
 
   schema "roles" do
     field :title, :string
 
-    has_many :team_roles, Runa.TeamRoles.TeamRole
+    has_many :contributors, Contributor
 
-    many_to_many :users, Runa.Accounts.User,
-      join_through: Runa.TeamRoles.TeamRole
+    many_to_many :users, User, join_through: Contributor
 
     timestamps(type: :utc_datetime)
   end

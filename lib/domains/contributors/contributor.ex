@@ -1,4 +1,4 @@
-defmodule Runa.TeamRoles.TeamRole do
+defmodule Runa.Contributors.Contributor do
   @moduledoc """
   Schema for team role, representing the relationship between a user, a team, and a role.
   """
@@ -8,7 +8,7 @@ defmodule Runa.TeamRoles.TeamRole do
 
   alias Runa.{Accounts, Teams, Roles}
 
-  schema "team_roles" do
+  schema "contributors" do
     belongs_to :user, Accounts.User
     belongs_to :role, Roles.Role
     belongs_to :team, Teams.Team
@@ -17,8 +17,8 @@ defmodule Runa.TeamRoles.TeamRole do
   end
 
   @doc false
-  def changeset(user_team_role, attrs) do
-    user_team_role
+  def changeset(contributor, attrs) do
+    contributor
     |> cast(attrs, [
       :user_id,
       :team_id,
