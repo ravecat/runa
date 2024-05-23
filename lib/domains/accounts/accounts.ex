@@ -5,7 +5,7 @@ defmodule Runa.Accounts do
 
   import Ecto.Query, warn: false
 
-  alias Runa.{Accounts.User, Repo, Teams.Team, Roles.Role, TeamRoles.TeamRole}
+  alias Runa.{Accounts.User, Repo, Teams.Team, Roles.Role, Contributors.Contributor}
   alias Ecto.Multi
 
   @roles Application.compile_env(:runa, :permissions)
@@ -55,8 +55,8 @@ defmodule Runa.Accounts do
            |> Multi.insert(:team, fn %{user: user} ->
              Team.changeset(%Team{}, %{title: "#{user.name}'s Team"})
            end)
-           |> Multi.insert(:team_role, fn %{user: user, team: team, role: role} ->
-             TeamRole.changeset(%TeamRole{}, %{
+           |> Multi.insert(:contributor, fn %{user: user, team: team, role: role} ->
+             Contributor.changeset(%Contributor{}, %{
                user_id: user.id,
                team_id: team.id,
                role_id: role.id

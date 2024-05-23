@@ -1,57 +1,57 @@
-defmodule Runa.TeamRolesTest do
+defmodule Runa.ContributorsTest do
   @moduledoc false
 
   use Runa.DataCase
 
-  @moduletag :team_roles
+  @moduletag :contributors
 
-  alias Runa.TeamRoles
+  alias Runa.Contributors
 
   import Runa.{
     AccountsFixtures,
     TeamsFixtures,
     RolesFixtures,
-    TeamRolesFixtures
+    ContributorsFixtures
   }
 
-  describe "team_roles" do
+  describe "contributors" do
     setup [
       :create_aux_role,
       :create_aux_user,
       :create_aux_team
     ]
 
-    test "returns all team_roles", ctx do
-      team_role =
-        create_aux_team_role(%{
+    test "returns all contributors", ctx do
+      contributor =
+        create_aux_contributor(%{
           team_id: ctx.team.id,
           user_id: ctx.user.id,
           role_id: ctx.role.id
         })
 
-      team_roles = TeamRoles.get_team_roles()
+      contributors = Contributors.get_contributors()
 
-      assert Enum.member?(team_roles, team_role)
+      assert Enum.member?(contributors, contributor)
     end
 
     test "returns the record with given set", ctx do
-      team_role =
-        create_aux_team_role(%{
+      contributor =
+        create_aux_contributor(%{
           team_id: ctx.team.id,
           user_id: ctx.user.id,
           role_id: ctx.role.id
         })
 
-      assert TeamRoles.get_team_role!(%{
+      assert Contributors.get_contributor!(%{
                team_id: ctx.team.id,
                user_id: ctx.user.id,
                role_id: ctx.role.id
-             }) == team_role
+             }) == contributor
     end
 
-    test "creates a team_role with valid data", ctx do
-      assert {:ok, %TeamRoles.TeamRole{}} =
-               TeamRoles.create_team_role(%{
+    test "creates a contributor with valid data", ctx do
+      assert {:ok, %Contributors.Contributor{}} =
+               Contributors.create_contributor(%{
                  team_id: ctx.team.id,
                  user_id: ctx.user.id,
                  role_id: ctx.role.id
@@ -59,12 +59,12 @@ defmodule Runa.TeamRolesTest do
     end
 
     test "returns error changeset after creation with invalid data " do
-      assert {:error, %Ecto.Changeset{}} = TeamRoles.create_team_role(%{})
+      assert {:error, %Ecto.Changeset{}} = Contributors.create_contributor(%{})
     end
 
-    test "update_team_role/2 with valid data updates the team_role", ctx do
-      team_role =
-        create_aux_team_role(%{
+    test "update_contributor/2 with valid data updates the contributor", ctx do
+      contributor =
+        create_aux_contributor(%{
           team_id: ctx.team.id,
           user_id: ctx.user.id,
           role_id: ctx.role.id
@@ -76,49 +76,49 @@ defmodule Runa.TeamRolesTest do
         team_id: new_team.id
       }
 
-      assert {:ok, %TeamRoles.TeamRole{} = team_role} =
-               TeamRoles.update_team_role(
-                 team_role,
+      assert {:ok, %Contributors.Contributor{} = contributor} =
+               Contributors.update_contributor(
+                 contributor,
                  update_attrs
                )
 
-      assert team_role.team_id == new_team.id
+      assert contributor.team_id == new_team.id
     end
 
-    test "update_team_role/2 with invalid data returns error changeset", ctx do
-      team_role =
-        create_aux_team_role(%{
+    test "update_contributor/2 with invalid data returns error changeset", ctx do
+      contributor =
+        create_aux_contributor(%{
           team_id: ctx.team.id,
           user_id: ctx.user.id,
           role_id: ctx.role.id
         })
 
       assert {:error, %Ecto.Changeset{}} =
-               TeamRoles.update_team_role(team_role, %{
+               Contributors.update_contributor(contributor, %{
                  team_id: nil
                })
 
-      assert team_role ==
-               TeamRoles.get_team_role!(%{
+      assert contributor ==
+               Contributors.get_contributor!(%{
                  team_id: ctx.team.id,
                  user_id: ctx.user.id,
                  role_id: ctx.role.id
                })
     end
 
-    test "delete_team_role/1 deletes the team_role", ctx do
-      team_role =
-        create_aux_team_role(%{
+    test "delete_contributor/1 deletes the contributor", ctx do
+      contributor =
+        create_aux_contributor(%{
           team_id: ctx.team.id,
           user_id: ctx.user.id,
           role_id: ctx.role.id
         })
 
-      assert {:ok, %TeamRoles.TeamRole{}} =
-               TeamRoles.delete_team_role(team_role)
+      assert {:ok, %Contributors.Contributor{}} =
+               Contributors.delete_contributor(contributor)
 
       assert_raise Ecto.NoResultsError, fn ->
-        TeamRoles.get_team_role!(%{
+        Contributors.get_contributor!(%{
           team_id: ctx.team.id,
           user_id: ctx.user.id,
           role_id: ctx.role.id
@@ -126,15 +126,15 @@ defmodule Runa.TeamRolesTest do
       end
     end
 
-    test "change_team_role/1 returns a team_role changeset", ctx do
-      team_role =
-        create_aux_team_role(%{
+    test "change_contributor/1 returns a contributor changeset", ctx do
+      contributor =
+        create_aux_contributor(%{
           team_id: ctx.team.id,
           user_id: ctx.user.id,
           role_id: ctx.role.id
         })
 
-      assert %Ecto.Changeset{} = TeamRoles.change_team_role(team_role)
+      assert %Ecto.Changeset{} = Contributors.change_contributor(contributor)
     end
   end
 end

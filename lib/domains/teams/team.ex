@@ -1,6 +1,4 @@
 defmodule Runa.Teams.Team do
-
-
   @moduledoc """
   The schema for teams, which are groups of users
   """
@@ -8,14 +6,14 @@ defmodule Runa.Teams.Team do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Runa.{Accounts.User, TeamRoles.TeamRole}
+  alias Runa.{Accounts.User, Contributors.Contributor}
 
   schema "teams" do
     field :title, :string
 
-    has_many :team_roles, TeamRole
+    has_many :contributors, Contributor
 
-    many_to_many :users, User, join_through: TeamRole
+    many_to_many :users, User, join_through: Contributor
 
     timestamps(type: :utc_datetime)
   end

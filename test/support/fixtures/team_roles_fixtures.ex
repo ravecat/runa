@@ -1,15 +1,15 @@
-defmodule Runa.TeamRolesFixtures do
+defmodule Runa.ContributorsFixtures do
   @moduledoc """
   This module defines test helpers for creating
   entities via the team roles context.
   """
 
-  alias Runa.{TeamRoles, Teams, Roles, Accounts}
+  alias Runa.{Contributors, Teams, Roles, Accounts}
 
   @doc """
   Generate auxilary team role.
   """
-  def create_aux_team_role(
+  def create_aux_contributor(
         %{
           test: _,
           team: %Teams.Team{} = team,
@@ -17,24 +17,24 @@ defmodule Runa.TeamRolesFixtures do
           role: %Roles.Role{} = role
         } = attrs
       ) do
-    {:ok, team_role} =
+    {:ok, contributor} =
       attrs
       |> Enum.into(%{
         team_id: team.id,
         user_id: user.id,
         role_id: role.id
       })
-      |> TeamRoles.create_team_role()
+      |> Contributors.create_contributor()
 
-    %{team_role: team_role}
+    %{contributor: contributor}
   end
 
-  def create_aux_team_role(attrs) do
-    {:ok, team_role} =
+  def create_aux_contributor(attrs) do
+    {:ok, contributor} =
       attrs
       |> Enum.into(%{})
-      |> TeamRoles.create_team_role()
+      |> Contributors.create_contributor()
 
-    team_role
+    contributor
   end
 end
