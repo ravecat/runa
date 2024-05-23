@@ -4,6 +4,13 @@ defmodule Runa.ProjectsFixtures do
   entities via the `Runa.Projects` context.
   """
 
+  alias Runa.Projects
+
+  @default_attrs %{
+    description: "Some description",
+    name: "Some name"
+  }
+
   @doc """
   Generate a project.
   """
@@ -12,11 +19,12 @@ defmodule Runa.ProjectsFixtures do
   def create_aux_project(%{test: test} = attrs) do
     {:ok, project} =
       attrs
+      |> Enum.into(@default_attrs)
       |> Enum.into(%{
         description: Atom.to_string(test),
         name: Atom.to_string(test)
       })
-      |> Runa.Projects.create_project()
+      |> Projects.create_project()
 
     %{project: project}
   end
@@ -24,11 +32,8 @@ defmodule Runa.ProjectsFixtures do
   def create_aux_project(attrs) do
     {:ok, project} =
       attrs
-      |> Enum.into(%{
-        description: "some description",
-        name: "some name"
-      })
-      |> Runa.Projects.create_project()
+      |> Enum.into(@default_attrs)
+      |> Projects.create_project()
 
     project
   end
