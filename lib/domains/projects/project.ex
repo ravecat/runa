@@ -6,12 +6,13 @@ defmodule Runa.Projects.Project do
 
   import Ecto.Changeset
 
-  alias Runa.Files.File
+  alias Runa.{Files.File, Keys.Key}
 
   schema "projects" do
     field :name, :string
     field :description, :string
     has_many :files, File
+    has_many :keys, Key
 
     timestamps(type: :utc_datetime)
   end
