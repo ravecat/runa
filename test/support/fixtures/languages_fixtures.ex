@@ -4,6 +4,15 @@ defmodule Runa.LanguagesFixtures do
   entities via the `Runa.Languages` context.
   """
 
+  alias Runa.Languages
+
+  @default_attrs %{
+    glotto_code: "some glotto_code",
+    iso_code: "some iso_code",
+    title: "some title",
+    wals_code: "some wals_code"
+  }
+
   @doc """
   Generate a language.
   """
@@ -18,7 +27,8 @@ defmodule Runa.LanguagesFixtures do
         title: Atom.to_string(test),
         wals_code: Atom.to_string(test)
       })
-      |> Runa.Languages.create_language()
+      |> Enum.into(@default_attrs)
+      |> Languages.create_language()
 
     %{language: language}
   end
@@ -26,13 +36,8 @@ defmodule Runa.LanguagesFixtures do
   def create_aux_language(attrs) do
     {:ok, language} =
       attrs
-      |> Enum.into(%{
-        glotto_code: "some glotto_code",
-        iso_code: "some iso_code",
-        title: "some title",
-        wals_code: "some wals_code"
-      })
-      |> Runa.Languages.create_language()
+      |> Enum.into(@default_attrs)
+      |> Languages.create_language()
 
     language
   end
