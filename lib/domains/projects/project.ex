@@ -6,13 +6,20 @@ defmodule Runa.Projects.Project do
 
   import Ecto.Changeset
 
-  alias Runa.{Files.File, Keys.Key, Locales.Locale, Languages.Language}
+  alias Runa.{
+    Files.File,
+    Keys.Key,
+    Locales.Locale,
+    Languages.Language,
+    Teams.Team
+  }
 
   schema "projects" do
     field :name, :string
     field :description, :string
     has_many :files, File
     has_many :keys, Key
+    belongs_to :team, Team
     many_to_many :locales, Language, join_through: Locale
 
     timestamps(type: :utc_datetime)
@@ -20,7 +27,8 @@ defmodule Runa.Projects.Project do
 
   def changeset(project, attrs) do
     project
-    |> cast(attrs, [:name, :description])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :description, :team_id])
+    |> validate_required([:name, :team_id])
+    |> foreign_key_constraint(:team_id)
   end
 end

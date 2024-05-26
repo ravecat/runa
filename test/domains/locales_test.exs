@@ -5,10 +5,20 @@ defmodule Runa.LocalesTest do
 
   alias Runa.{Locales.Locale, Locales}
 
-  import Runa.{LocalesFixtures, ProjectsFixtures, LanguagesFixtures}
+  import Runa.{
+    LocalesFixtures,
+    ProjectsFixtures,
+    LanguagesFixtures,
+    TeamsFixtures
+  }
 
   describe "locale context" do
-    setup [:create_aux_project, :create_aux_language, :create_aux_locales]
+    setup [
+      :create_aux_team,
+      :create_aux_project,
+      :create_aux_language,
+      :create_aux_locales
+    ]
 
     test "returns all locales", ctx do
       assert Locales.get_locales() == [ctx.locale]
@@ -18,8 +28,8 @@ defmodule Runa.LocalesTest do
       assert Locales.get_locale!(ctx.locale.id) == ctx.locale
     end
 
-    test "creates a locale with valid data" do
-      project = create_aux_project()
+    test "creates a locale with valid data", ctx do
+      project = create_aux_project(%{team_id: ctx.team.id})
       language = create_aux_language()
 
       valid_attrs = %{project_id: project.id, language_id: language.id}
@@ -34,7 +44,7 @@ defmodule Runa.LocalesTest do
     end
 
     test "updates the locale with valid data", ctx do
-      project = create_aux_project()
+      project = create_aux_project(%{team_id: ctx.team.id})
 
       update_attrs = %{
         project_id: project.id

@@ -5,12 +5,12 @@ defmodule Runa.KeysTest do
 
   alias Runa.{Keys, Keys.Key}
 
-  import Runa.{KeysFixtures, ProjectsFixtures}
+  import Runa.{KeysFixtures, ProjectsFixtures, TeamsFixtures}
 
   @invalid_attrs %{name: nil, description: nil}
 
   describe "keys context" do
-    setup [:create_aux_project, :create_aux_key]
+    setup [:create_aux_team, :create_aux_project, :create_aux_key]
 
     test "returns all keys", ctx do
       assert Keys.list_keys() == [ctx.key]
@@ -48,7 +48,9 @@ defmodule Runa.KeysTest do
     end
 
     test "returns error changeset during update with invalid data", ctx do
-      assert {:error, %Ecto.Changeset{}} = Keys.update_key(ctx.key, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Keys.update_key(ctx.key, @invalid_attrs)
+
       assert ctx.key == Keys.get_key!(ctx.key.id)
     end
 
