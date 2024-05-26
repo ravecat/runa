@@ -5,12 +5,12 @@ defmodule Runa.ProjectsTest do
 
   alias Runa.{Projects, Projects.Project}
 
-  import Runa.ProjectsFixtures
+  import Runa.{ProjectsFixtures, TeamsFixtures}
 
   @invalid_attrs %{name: nil, description: nil}
 
   describe "projects context" do
-    setup [:create_aux_project]
+    setup [:create_aux_team, :create_aux_project]
 
     test "returns all projects", ctx do
       assert Projects.get_projects() == [ctx.project]
@@ -20,8 +20,12 @@ defmodule Runa.ProjectsTest do
       assert Projects.get_project!(ctx.project.id) == ctx.project
     end
 
-    test "creates a project with valid data" do
-      valid_attrs = %{name: "some name", description: "some description"}
+    test "creates a project with valid data", ctx do
+      valid_attrs = %{
+        name: "some name",
+        description: "some description",
+        team_id: ctx.team.id
+      }
 
       assert {:ok, %Project{} = project} = Projects.create_project(valid_attrs)
       assert project.name == "some name"

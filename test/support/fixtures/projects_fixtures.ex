@@ -22,7 +22,8 @@ defmodule Runa.ProjectsFixtures do
       |> Enum.into(@default_attrs)
       |> Enum.into(%{
         description: Atom.to_string(test),
-        name: Atom.to_string(test)
+        name: Atom.to_string(test),
+        team_id: attrs.team.id
       })
       |> Projects.create_project()
 

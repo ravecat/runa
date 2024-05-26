@@ -5,10 +5,20 @@ defmodule Runa.TranslationsTest do
 
   alias Runa.{Translations, Translations.Translation}
 
-  import Runa.{TranslationsFixtures, KeysFixtures, ProjectsFixtures}
+  import Runa.{
+    TranslationsFixtures,
+    KeysFixtures,
+    ProjectsFixtures,
+    TeamsFixtures
+  }
 
   describe "translations" do
-    setup [:create_aux_project, :create_aux_key, :create_aux_translation]
+    setup [
+      :create_aux_team,
+      :create_aux_project,
+      :create_aux_key,
+      :create_aux_translation
+    ]
 
     test "returns all translations", ctx do
       assert Translations.list_translations() == [ctx.translation]

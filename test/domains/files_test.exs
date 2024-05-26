@@ -5,13 +5,13 @@ defmodule Runa.FilesTest do
 
   alias Runa.{Files, Files.File}
 
-  import Runa.{FilesFixtures, ProjectsFixtures}
+  import Runa.{FilesFixtures, ProjectsFixtures, TeamsFixtures}
 
   @invalid_attrs %{filename: nil}
   @valid_attrs %{filename: "some filename"}
 
   describe "files" do
-    setup [:create_aux_project, :create_aux_file]
+    setup [:create_aux_team, :create_aux_project, :create_aux_file]
 
     test "returns all files", ctx do
       assert Files.get_files() == [ctx.uploaded_file]
@@ -56,7 +56,7 @@ defmodule Runa.FilesTest do
       end
     end
 
-    test " returns a file changeset", ctx do
+    test "returns a file changeset", ctx do
       assert %Ecto.Changeset{} = Files.change_file(ctx.uploaded_file)
     end
   end
