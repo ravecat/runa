@@ -5,18 +5,17 @@ defmodule Runa.AuthTest do
 
   @moduletag :auth
 
-  import Runa.{AuthFixtures, RolesFixtures, TeamsFixtures, AccountsFixtures}
+  import Runa.AuthFixtures
 
   alias Runa.Auth
 
-  describe "authorization module" do
-    setup [
-      :create_aux_success_auth,
-      :create_aux_role,
-      :create_aux_team,
-      :create_aux_user
-    ]
+  setup do
+    auth = create_aux_success_auth()
 
+    %{auth: auth}
+  end
+
+  describe "authorization module" do
     test "handle full data", %{auth: auth} do
       assert {:ok, result} = Auth.find_or_create(auth)
 

@@ -3,23 +3,19 @@ defmodule Runa.LocalesTest do
 
   use Runa.DataCase
 
+  @moduletag :locales
+
   alias Runa.{Locales.Locale, Locales}
 
-  import Runa.{
-    LocalesFixtures,
-    ProjectsFixtures,
-    LanguagesFixtures,
-    TeamsFixtures
-  }
+  import Runa.{LocalesFixtures, ProjectsFixtures, LanguagesFixtures}
+
+  setup do
+    locale = create_aux_locale()
+
+    %{locale: locale}
+  end
 
   describe "locale context" do
-    setup [
-      :create_aux_team,
-      :create_aux_project,
-      :create_aux_language,
-      :create_aux_locales
-    ]
-
     test "returns all locales", ctx do
       assert Locales.get_locales() == [ctx.locale]
     end
@@ -29,8 +25,8 @@ defmodule Runa.LocalesTest do
     end
 
     test "creates a locale with valid data", ctx do
-      project = create_aux_project(%{team_id: ctx.team.id})
-      language = create_aux_language()
+      project = create_aux_project()
+      language = create_aux_language(%{wals_code: Atom.to_string(ctx.test)})
 
       valid_attrs = %{project_id: project.id, language_id: language.id}
 
@@ -44,7 +40,7 @@ defmodule Runa.LocalesTest do
     end
 
     test "updates the locale with valid data", ctx do
-      project = create_aux_project(%{team_id: ctx.team.id})
+      project = create_aux_project()
 
       update_attrs = %{
         project_id: project.id

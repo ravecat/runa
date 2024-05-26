@@ -7,10 +7,13 @@ defmodule RunaWeb.AuthControllerTest do
   alias Runa.Teams
 
   import Runa.AuthFixtures
-  import Runa.RolesFixtures
 
   describe "logout action" do
-    setup [:create_aux_success_auth]
+    setup do
+      auth = create_aux_success_auth()
+
+      %{auth: auth}
+    end
 
     test "logs out user and redirects to home page", %{
       conn: conn,
@@ -36,7 +39,11 @@ defmodule RunaWeb.AuthControllerTest do
   end
 
   describe "callback action" do
-    setup [:create_aux_success_auth, :create_aux_role]
+    setup do
+      auth = create_aux_success_auth()
+
+      %{auth: auth}
+    end
 
     test "logs in on success auth", %{
       conn: conn,

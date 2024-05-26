@@ -36,6 +36,7 @@ defmodule RunaWeb.ConnCase do
 
       # Import conveniences for testing with connections
       import Plug.Conn
+      import Plug.HTML
       import Phoenix.ConnTest
       import RunaWeb.ConnCase
     end

@@ -3,30 +3,24 @@ defmodule RunaWeb.Widgets.SidebarTest do
 
   use RunaWeb.ConnCase
 
+  @moduletag :sidebar
+
   alias RunaWeb.Components.Sidebar
   alias Runa.Repo
 
   import Phoenix.LiveViewTest
 
-  import Runa.{
-    AccountsFixtures,
-    TeamsFixtures,
-    RolesFixtures,
-    ContributorsFixtures
-  }
+  import Runa.AccountsFixtures
 
-  describe "Sidebar" do
-    setup [
-      :create_aux_role,
-      :create_aux_user,
-      :create_aux_team,
-      :create_aux_contributor
-    ]
+  describe "sidebar" do
+    setup do
+      user = create_aux_user() |> Repo.preload(:teams)
 
-    test "renders menu items", %{user: user, test: test} do
-      user = user |> Repo.preload(:teams)
+      %{user: user}
+    end
 
-      html = render_component(Sidebar, %{user: user, id: test})
+    test "renders menu items", ctx do
+      html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
 
       assert html =~ "Profile"
       assert html =~ "Projects"
@@ -34,19 +28,17 @@ defmodule RunaWeb.Widgets.SidebarTest do
       assert html =~ "Logout"
     end
 
-    test "renders wokrspace info", %{user: user, team: team, test: test} do
-      user = user |> Repo.preload(:teams)
+    test "renders wokrspace info", ctx do
+      team = ctx.user.teams |> List.first()
 
-      html = render_component(Sidebar, %{user: user, id: test})
+      html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
 
-      assert html =~ "#{user.name}"
-      assert html =~ "#{team.title}"
+      assert html =~ html_escape(ctx.user.name)
+      assert html =~ html_escape(team.title)
     end
 
-    test "renders team list", %{user: user, test: test} do
-      user = user |> Repo.preload(:teams)
-
-      html = render_component(Sidebar, %{user: user, id: test})
+    test "renders team list", ctx do
+      html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
 
       assert html =~ "Create team"
     end

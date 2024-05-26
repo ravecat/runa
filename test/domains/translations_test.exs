@@ -3,23 +3,22 @@ defmodule Runa.TranslationsTest do
 
   use Runa.DataCase
 
+  @moduletag :translations
+
   alias Runa.{Translations, Translations.Translation}
 
   import Runa.{
     TranslationsFixtures,
-    KeysFixtures,
-    ProjectsFixtures,
-    TeamsFixtures
+    KeysFixtures
   }
 
-  describe "translations" do
-    setup [
-      :create_aux_team,
-      :create_aux_project,
-      :create_aux_key,
-      :create_aux_translation
-    ]
+  setup do
+    translation = create_aux_translation()
 
+    %{translation: translation}
+  end
+
+  describe "translations" do
     test "returns all translations", ctx do
       assert Translations.list_translations() == [ctx.translation]
     end
@@ -29,8 +28,9 @@ defmodule Runa.TranslationsTest do
                ctx.translation
     end
 
-    test "creates a translation with valid data", ctx do
-      valid_attrs = %{translation: "some translation", key_id: ctx.key.id}
+    test "creates a translation with valid data" do
+      key = create_aux_key()
+      valid_attrs = %{translation: "some translation", key_id: key.id}
 
       assert {:ok, %Translation{} = translation} =
                Translations.create_translation(valid_attrs)
@@ -38,8 +38,8 @@ defmodule Runa.TranslationsTest do
       assert translation.translation == "some translation"
     end
 
-    test "returns error changeset during creation with invalid data", ctx do
-      invalid_attrs = %{translation: 11, key_id: ctx.key.id}
+    test "returns error changeset during creation with invalid data" do
+      invalid_attrs = %{key_id: nil}
 
       assert {:error, %Ecto.Changeset{}} =
                Translations.create_translation(invalid_attrs)
@@ -55,7 +55,8 @@ defmodule Runa.TranslationsTest do
     end
 
     test "returns error changeset during update with invalid data", ctx do
-      invalid_attrs = %{translation: 11, key_id: ctx.key.id}
+      key = create_aux_key()
+      invalid_attrs = %{translation: 11, key_id: key.id}
 
       assert {:error, %Ecto.Changeset{}} =
                Translations.update_translation(ctx.translation, invalid_attrs)

@@ -1,33 +1,36 @@
 defmodule Runa.LanguagesTest do
   @moduledoc false
+
   use Runa.DataCase
 
   @moduletag :languages
 
-  alias Runa.Languages
-  alias Runa.Languages.Language
+  alias Runa.{Languages.Language, Languages}
 
   import Runa.LanguagesFixtures
 
-  @invalid_attrs %{
-    title: nil,
-    wals_code: nil,
-    iso_code: nil,
-    glotto_code: nil
-  }
+  setup tags do
+    language =
+      create_aux_language(%{
+        title: Atom.to_string(tags.test),
+        wals_code: Atom.to_string(tags.test),
+        iso_code: Atom.to_string(tags.test),
+        glotto_code: Atom.to_string(tags.test)
+      })
+
+    %{language: language}
+  end
 
   describe "languages" do
-    setup [:create_aux_language]
-
-    test "get_languages/0 returns all languages", ctx do
+    test "returns all languages", ctx do
       assert Languages.get_languages() == [ctx.language]
     end
 
-    test "get_language!/1 returns the language with given id", ctx do
+    test "returns the language with given id", ctx do
       assert Languages.get_language!(ctx.language.id) == ctx.language
     end
 
-    test "create_language/1 with valid data creates a language" do
+    test "creates a language with valid data" do
       valid_attrs = %{
         title: "some title",
         wals_code: "some wals_code",
@@ -44,12 +47,19 @@ defmodule Runa.LanguagesTest do
       assert language.glotto_code == "some glotto_code"
     end
 
-    test "create_language/1 with invalid data returns error changeset" do
+    test "returns error changeset during creation with invalid data" do
+      invalid_attrs = %{
+        title: nil,
+        wals_code: nil,
+        iso_code: nil,
+        glotto_code: nil
+      }
+
       assert {:error, %Ecto.Changeset{}} =
-               Languages.create_language(@invalid_attrs)
+               Languages.create_language(invalid_attrs)
     end
 
-    test "update_language/2 with valid data updates the language", ctx do
+    test "updates the language with valid data", ctx do
       update_attrs = %{
         title: "some updated title",
         wals_code: "some updated wals_code",
@@ -66,14 +76,21 @@ defmodule Runa.LanguagesTest do
       assert language.glotto_code == "some updated glotto_code"
     end
 
-    test "update_language/2 with invalid data returns error changeset", ctx do
+    test "returns error changeset during update with invalid data", ctx do
+      invalid_attrs = %{
+        title: nil,
+        wals_code: nil,
+        iso_code: nil,
+        glotto_code: nil
+      }
+
       assert {:error, %Ecto.Changeset{}} =
-               Languages.update_language(ctx.language, @invalid_attrs)
+               Languages.update_language(ctx.language, invalid_attrs)
 
       assert ctx.language == Languages.get_language!(ctx.language.id)
     end
 
-    test "delete_language/1 deletes the language", ctx do
+    test "deletes the language", ctx do
       assert {:ok, %Language{}} = Languages.delete_language(ctx.language)
 
       assert_raise Ecto.NoResultsError, fn ->
@@ -81,7 +98,7 @@ defmodule Runa.LanguagesTest do
       end
     end
 
-    test "change_language/1 returns a language changeset", ctx do
+    test "returns a language changeset", ctx do
       assert %Ecto.Changeset{} = Languages.change_language(ctx.language)
     end
   end

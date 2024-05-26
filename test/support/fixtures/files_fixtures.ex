@@ -4,29 +4,23 @@ defmodule Runa.FilesFixtures do
   entities via the `Runa.Files` context.
   """
 
-  @default_attrs %{
-    filename: "some filename"
-  }
+  import Runa.ProjectsFixtures
 
   @doc """
   Generate a file.
   """
-  def create_aux_file(attrs \\ %{})
+  def create_aux_file(attrs \\ %{}) do
+    project = create_aux_project()
 
-  def create_aux_file(%{test: _, project: project} = attrs) do
+    default_attrs = %{
+      filename: "some filename",
+      project_id: project.id
+    }
+
     {:ok, file} =
       attrs
-      |> Enum.into(@default_attrs)
+      |> Enum.into(default_attrs)
       |> Map.put(:project_id, project.id)
-      |> Runa.Files.create_file()
-
-    %{uploaded_file: file}
-  end
-
-  def create_aux_file(attrs) do
-    {:ok, file} =
-      attrs
-      |> Enum.into(@default_attrs)
       |> Runa.Files.create_file()
 
     file

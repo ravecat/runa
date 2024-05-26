@@ -7,44 +7,28 @@ defmodule RunaWeb.PageLive.ProfileTest do
 
   import Phoenix.LiveViewTest
 
-  import Runa.{
-    AccountsFixtures,
-    TeamsFixtures,
-    ContributorsFixtures,
-    RolesFixtures
-  }
+  import Runa.AccountsFixtures
 
   describe "authenticated user" do
-    setup [
-      :create_aux_role,
-      :create_aux_user,
-      :create_aux_team
-    ]
+    setup do
+      user = create_aux_user()
 
-    test "can see projects page", %{
-      conn: conn,
-      user: user,
-      team: team,
-      role: role
-    } do
-      create_aux_contributor(%{
-        team_id: team.id,
-        user_id: user.id,
-        role_id: role.id
-      })
+      %{user: user}
+    end
 
+    test "can see projects page", ctx do
       {:ok, _show_live, html} =
-        conn
-        |> put_session(:current_user, user)
+        ctx.conn
+        |> put_session(:current_user, ctx.user)
         |> live(~p"/profile")
 
-      assert html =~ user.name
+      assert html =~ ctx.user.name
     end
   end
 
   describe "unauthenticated user" do
-    test "can't see projects page", %{conn: conn} do
-      assert {:error, {:redirect, %{to: "/"}}} = live(conn, ~p"/profile")
+    test "can't see projects page", ctx do
+      assert {:error, {:redirect, %{to: "/"}}} = live(ctx.conn, ~p"/profile")
     end
   end
 end

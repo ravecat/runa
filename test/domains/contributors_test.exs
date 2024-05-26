@@ -5,136 +5,84 @@ defmodule Runa.ContributorsTest do
 
   @moduletag :contributors
 
-  alias Runa.Contributors
+  alias Runa.{Contributors, Contributors.Contributor}
 
-  import Runa.{
-    AccountsFixtures,
-    TeamsFixtures,
-    RolesFixtures,
-    ContributorsFixtures
-  }
+  import Runa.{ContributorsFixtures, TeamsFixtures, AccountsFixtures}
+
+  setup do
+    contributor = create_aux_contributor()
+
+    %{contributor: contributor}
+  end
 
   describe "contributors" do
-    setup [
-      :create_aux_role,
-      :create_aux_user,
-      :create_aux_team
-    ]
-
     test "returns all contributors", ctx do
-      contributor =
-        create_aux_contributor(%{
-          team_id: ctx.team.id,
-          user_id: ctx.user.id,
-          role_id: ctx.role.id
-        })
-
-      contributors = Contributors.get_contributors()
-
-      assert Enum.member?(contributors, contributor)
+      assert Enum.member?(Contributors.get_contributors(), ctx.contributor)
     end
 
     test "returns the record with given set", ctx do
-      contributor =
-        create_aux_contributor(%{
-          team_id: ctx.team.id,
-          user_id: ctx.user.id,
-          role_id: ctx.role.id
-        })
-
-      assert Contributors.get_contributor!(%{
-               team_id: ctx.team.id,
-               user_id: ctx.user.id,
-               role_id: ctx.role.id
-             }) == contributor
+      assert Contributors.get_contributor!(ctx.contributor.id) ==
+               ctx.contributor
     end
 
     test "creates a contributor with valid data", ctx do
-      assert {:ok, %Contributors.Contributor{}} =
+      user = create_aux_user()
+      team = create_aux_team()
+
+      assert {:ok, %Contributor{}} =
                Contributors.create_contributor(%{
-                 team_id: ctx.team.id,
-                 user_id: ctx.user.id,
-                 role_id: ctx.role.id
+                 team_id: team.id,
+                 user_id: user.id,
+                 role_id: ctx.contributor.role_id
                })
     end
 
-    test "returns error changeset after creation with invalid data " do
+    test "returns error changeset after creation with invalid data" do
       assert {:error, %Ecto.Changeset{}} = Contributors.create_contributor(%{})
     end
 
-    test "update_contributor/2 with valid data updates the contributor", ctx do
-      contributor =
-        create_aux_contributor(%{
-          team_id: ctx.team.id,
-          user_id: ctx.user.id,
-          role_id: ctx.role.id
-        })
-
-      %{team: new_team} = create_aux_team(%{name: "new_team"})
+    test "updates the contributor with valid data ", ctx do
+      user = create_aux_user()
+      team = create_aux_team()
 
       update_attrs = %{
-        team_id: new_team.id
+        team_id: team.id,
+        user_id: user.id
       }
 
       assert {:ok, %Contributors.Contributor{} = contributor} =
                Contributors.update_contributor(
-                 contributor,
+                 ctx.contributor,
                  update_attrs
                )
 
-      assert contributor.team_id == new_team.id
+      assert contributor.team_id == team.id
     end
 
-    test "update_contributor/2 with invalid data returns error changeset", ctx do
-      contributor =
-        create_aux_contributor(%{
-          team_id: ctx.team.id,
-          user_id: ctx.user.id,
-          role_id: ctx.role.id
-        })
+    test "returns error changeset with invalid data", ctx do
+      invalid_attrs = %{
+        team_id: nil
+      }
 
       assert {:error, %Ecto.Changeset{}} =
-               Contributors.update_contributor(contributor, %{
-                 team_id: nil
-               })
+               Contributors.update_contributor(ctx.contributor, invalid_attrs)
 
-      assert contributor ==
-               Contributors.get_contributor!(%{
-                 team_id: ctx.team.id,
-                 user_id: ctx.user.id,
-                 role_id: ctx.role.id
-               })
+      assert ctx.contributor ==
+               Contributors.get_contributor!(ctx.contributor.id)
     end
 
-    test "delete_contributor/1 deletes the contributor", ctx do
-      contributor =
-        create_aux_contributor(%{
-          team_id: ctx.team.id,
-          user_id: ctx.user.id,
-          role_id: ctx.role.id
-        })
-
+    test "deletes the contributor", ctx do
       assert {:ok, %Contributors.Contributor{}} =
-               Contributors.delete_contributor(contributor)
+               Contributors.delete_contributor(ctx.contributor)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Contributors.get_contributor!(%{
-          team_id: ctx.team.id,
-          user_id: ctx.user.id,
-          role_id: ctx.role.id
-        })
+        Contributors.get_contributor!(ctx.contributor.id)
       end
     end
 
-    test "change_contributor/1 returns a contributor changeset", ctx do
-      contributor =
-        create_aux_contributor(%{
-          team_id: ctx.team.id,
-          user_id: ctx.user.id,
-          role_id: ctx.role.id
-        })
-
-      assert %Ecto.Changeset{} = Contributors.change_contributor(contributor)
+    test "returns a contributor changeset", ctx do
+      assert %Ecto.Changeset{} =
+               Contributors.change_contributor(ctx.contributor)
     end
   end
 end
