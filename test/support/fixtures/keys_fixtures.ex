@@ -6,30 +6,24 @@ defmodule Runa.KeysFixtures do
 
   alias Runa.Keys
 
-  @default_attrs %{
-    name: "some name",
-    description: "some description"
-  }
+  import Runa.{ProjectsFixtures, TeamsFixtures}
 
   @doc """
   Generate a key.
   """
-  def create_aux_key(attrs \\ %{})
+  def create_aux_key(attrs \\ %{}) do
+    team = create_aux_team()
+    project = create_aux_project(%{team_id: team.id})
 
-  def create_aux_key(%{test: _} = attrs) do
+    default_attrs = %{
+      name: "key name",
+      description: "key description",
+      project_id: project.id
+    }
+
     {:ok, key} =
       attrs
-      |> Enum.into(@default_attrs)
-      |> Enum.into(%{project_id: attrs.project.id})
-      |> Keys.create_key()
-
-    %{key: key}
-  end
-
-  def create_aux_key(attrs) do
-    {:ok, key} =
-      attrs
-      |> Enum.into(@default_attrs)
+      |> Enum.into(default_attrs)
       |> Keys.create_key()
 
     key

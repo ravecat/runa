@@ -3,15 +3,19 @@ defmodule Runa.KeysTest do
 
   use Runa.DataCase
 
+  @moduletag :keys
+
   alias Runa.{Keys, Keys.Key}
 
-  import Runa.{KeysFixtures, ProjectsFixtures, TeamsFixtures}
+  import Runa.{KeysFixtures, ProjectsFixtures}
 
-  @invalid_attrs %{name: nil, description: nil}
+  setup do
+    key = create_aux_key()
+
+    %{key: key}
+  end
 
   describe "keys context" do
-    setup [:create_aux_team, :create_aux_project, :create_aux_key]
-
     test "returns all keys", ctx do
       assert Keys.list_keys() == [ctx.key]
     end
@@ -20,11 +24,13 @@ defmodule Runa.KeysTest do
       assert Keys.get_key!(ctx.key.id) == ctx.key
     end
 
-    test "creates a key with valid data", ctx do
+    test "creates a key with valid data" do
+      project = create_aux_project()
+
       valid_attrs = %{
         name: "some name",
         description: "some description",
-        project_id: ctx.project.id
+        project_id: project.id
       }
 
       assert {:ok, %Key{} = key} = Keys.create_key(valid_attrs)
@@ -33,7 +39,8 @@ defmodule Runa.KeysTest do
     end
 
     test "returns error changeset during create with invalid data" do
-      assert {:error, %Ecto.Changeset{}} = Keys.create_key(@invalid_attrs)
+      invalid_attrs = %{name: nil, description: nil}
+      assert {:error, %Ecto.Changeset{}} = Keys.create_key(invalid_attrs)
     end
 
     test "updates the key with valid data", ctx do
@@ -48,8 +55,10 @@ defmodule Runa.KeysTest do
     end
 
     test "returns error changeset during update with invalid data", ctx do
+      invalid_attrs = %{name: nil, description: nil}
+
       assert {:error, %Ecto.Changeset{}} =
-               Keys.update_key(ctx.key, @invalid_attrs)
+               Keys.update_key(ctx.key, invalid_attrs)
 
       assert ctx.key == Keys.get_key!(ctx.key.id)
     end

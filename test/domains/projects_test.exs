@@ -3,15 +3,19 @@ defmodule Runa.ProjectsTest do
 
   use Runa.DataCase
 
+  @moduletag :projects
+
   alias Runa.{Projects, Projects.Project}
 
   import Runa.{ProjectsFixtures, TeamsFixtures}
 
-  @invalid_attrs %{name: nil, description: nil}
+  setup do
+    project = create_aux_project()
+
+    %{project: project}
+  end
 
   describe "projects context" do
-    setup [:create_aux_team, :create_aux_project]
-
     test "returns all projects", ctx do
       assert Projects.get_projects() == [ctx.project]
     end
@@ -20,21 +24,25 @@ defmodule Runa.ProjectsTest do
       assert Projects.get_project!(ctx.project.id) == ctx.project
     end
 
-    test "creates a project with valid data", ctx do
+    test "creates a project with valid data" do
+      team = create_aux_team()
+
       valid_attrs = %{
         name: "some name",
         description: "some description",
-        team_id: ctx.team.id
+        team_id: team.id
       }
 
       assert {:ok, %Project{} = project} = Projects.create_project(valid_attrs)
-      assert project.name == "some name"
-      assert project.description == "some description"
+      assert project.name == valid_attrs.name
+      assert project.description == valid_attrs.description
     end
 
     test "returns error changeset during creation with invalid data" do
+      invalid_attrs = %{name: nil, description: nil}
+
       assert {:error, %Ecto.Changeset{}} =
-               Projects.create_project(@invalid_attrs)
+               Projects.create_project(invalid_attrs)
     end
 
     test "updates the project with valid data", ctx do
@@ -51,8 +59,10 @@ defmodule Runa.ProjectsTest do
     end
 
     test "returns error changeset during update with invalid data", ctx do
+      invalid_attrs = %{name: nil, description: nil}
+
       assert {:error, %Ecto.Changeset{}} =
-               Projects.update_project(ctx.project, @invalid_attrs)
+               Projects.update_project(ctx.project, invalid_attrs)
 
       assert ctx.project == Projects.get_project!(ctx.project.id)
     end

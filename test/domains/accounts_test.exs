@@ -7,37 +7,42 @@ defmodule Runa.AccountsTest do
 
   alias Runa.{Accounts, Accounts.User}
 
-  import Runa.{AccountsFixtures, TeamsFixtures, RolesFixtures}
+  import Runa.AccountsFixtures
 
-  @invalid_attrs %{uid: nil, email: nil}
-  @valid_attrs %{
-    name: "some name",
-    uid: "xxx",
-    email: "peter.parker@mail.com"
-  }
+  setup do
+    user = create_aux_user()
+
+    %{user: user}
+  end
 
   describe "users" do
-    setup [:create_aux_role, :create_aux_user, :create_aux_team]
-
-    test "returns all users", %{user: user} do
-      assert Accounts.get_users() == [user]
+    test "returns all users", ctx do
+      assert Accounts.get_users() == [ctx.user]
     end
 
-    test "returns the user with given id", %{
-      user: user
-    } do
-      assert Accounts.get_user!(user.id) == user
+    test "returns the user with given id", ctx do
+      assert Accounts.get_user!(ctx.user.id) == ctx.user
     end
 
     test "creates a user with valid data" do
-      assert {:ok, %User{} = user} = Accounts.create_or_find_user(@valid_attrs)
+      valid_attrs = %{
+        name: "some name",
+        uid: "xxx",
+        email: "peter.parker@mail.com"
+      }
 
-      assert user.name == "some name"
+      assert {:ok, %User{} = user} = Accounts.create_or_find_user(valid_attrs)
+
+      assert user.name == valid_attrs.name
+      assert user.uid == valid_attrs.uid
+      assert user.email == valid_attrs.email
     end
 
     test "returns error during creation a user with invalid data" do
+      invalid_attrs = %{uid: nil, email: nil}
+
       assert {:error, %Ecto.Changeset{} = changeset} =
-               Accounts.create_or_find_user(@invalid_attrs)
+               Accounts.create_or_find_user(invalid_attrs)
 
       assert changeset.errors == [
                uid: {"can't be blank", [validation: :required]},
@@ -54,26 +59,25 @@ defmodule Runa.AccountsTest do
       assert user.name == "some updated name"
     end
 
-    test "updates a user with invalid data",
-         %{user: user} do
-      assert {:error, %Ecto.Changeset{}} =
-               Accounts.update_user(user, @invalid_attrs)
+    test "updates a user with invalid data", ctx do
+      invalid_attrs = %{uid: nil, email: nil}
 
-      assert user == Accounts.get_user!(user.id)
+      assert {:error, %Ecto.Changeset{}} =
+               Accounts.update_user(ctx.user, invalid_attrs)
+
+      assert ctx.user == Accounts.get_user!(ctx.user.id)
     end
 
-    test "deletes the user", %{user: user} do
-      assert {:ok, %User{}} = Accounts.delete_user(user)
+    test "deletes the user", ctx do
+      assert {:ok, %User{}} = Accounts.delete_user(ctx.user)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_user!(user.id)
+        Accounts.get_user!(ctx.user.id)
       end
     end
 
-    test "returns a user changeset", %{
-      user: user
-    } do
-      assert %Ecto.Changeset{} = Accounts.change_user(user)
+    test "returns a user changeset", ctx do
+      assert %Ecto.Changeset{} = Accounts.change_user(ctx.user)
     end
   end
 end

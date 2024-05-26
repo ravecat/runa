@@ -36,17 +36,7 @@ defmodule Runa.Contributors do
       ** (Ecto.NoResultsError)
 
   """
-  def get_contributor!(%{
-        team_id: team_id,
-        role_id: role_id,
-        user_id: user_id
-      }),
-      do:
-        Repo.get_by!(Contributor,
-          team_id: team_id,
-          role_id: role_id,
-          user_id: user_id
-        )
+  def get_contributor!(id), do: Repo.get!(Contributor, id)
 
   @doc """
   Creates a contributor.
