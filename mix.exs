@@ -81,7 +81,8 @@ defmodule Runa.MixProject do
       {:csv, "~> 3.2"},
       {:phoenix_template, "~> 1.0"},
       {:mock, "~> 0.3.0", only: :test},
-      {:hammox, "~> 0.7", only: :test}
+      {:hammox, "~> 0.7", only: :test},
+      {:jsonapi, "~> 1.7.1"}
     ]
   end
 

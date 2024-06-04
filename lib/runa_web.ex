@@ -40,7 +40,7 @@ defmodule RunaWeb do
   def controller do
     quote do
       use Phoenix.Controller,
-        formats: [:html, :json],
+        formats: [:html, :json, :jsonapi],
         layouts: [html: RunaWeb.Layouts]
 
       import Plug.Conn
