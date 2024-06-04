@@ -26,6 +26,7 @@ config :runa, RunaWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
+    accepts: ~w(html json jsonapi),
     formats: [
       html: RunaWeb.ErrorHTML,
       json: RunaWeb.ErrorJSON
@@ -70,6 +71,16 @@ config :tailwind,
     ),
     cd: Path.expand("../assets", __DIR__)
   ]
+
+config :jsonapi,
+  namespace: "/api",
+  field_transformation: :underscore,
+  remove_links: false,
+  json_library: Jason
+
+config :mime, :types, %{
+  "application/vnd.api+json" => ["jsonapi"]
+}
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

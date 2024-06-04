@@ -19,16 +19,21 @@ defmodule RunaWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   pipeline :auth do
     plug Authentication
   end
 
+  pipeline :api do
+    plug :accepts, ["jsonapi"]
+    plug JSONAPI.EnsureSpec
+    plug JSONAPI.Deserializer
+    plug JSONAPI.UnderscoreParameters
+  end
+
   scope "/api", RunaWeb do
     pipe_through :api
+
+    resources "/teams", TeamController, only: [:index]
   end
 
   scope "/", RunaWeb do
