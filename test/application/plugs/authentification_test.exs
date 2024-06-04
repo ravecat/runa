@@ -1,5 +1,9 @@
-defmodule RunaWeb.AuthPlugTest do
+defmodule RunaWeb.Plug.AuthenticationTest do
+  @moduledoc false
+
   use RunaWeb.ConnCase
+
+  alias RunaWeb.Plug.Authentication
 
   @user %{id: "1", name: "John Doe"}
 
@@ -7,7 +11,7 @@ defmodule RunaWeb.AuthPlugTest do
     conn =
       conn
       |> put_session(:current_user, nil)
-      |> RunaWeb.AuthPlug.call(:authenticate)
+      |> Authentication.call(nil)
 
     assert get_flash(conn, :error) ==
              "You can't access that page"
@@ -21,17 +25,8 @@ defmodule RunaWeb.AuthPlugTest do
     conn =
       conn
       |> put_session(:current_user, @user)
-      |> RunaWeb.AuthPlug.call(:authenticate)
+      |> Authentication.call(nil)
 
     assert conn.status != 302
-  end
-
-  test "puts current user to conn", %{conn: conn} do
-    conn =
-      conn
-      |> put_session(:current_user, @user)
-      |> RunaWeb.AuthPlug.call(:identify)
-
-    assert conn.assigns[:current_user] == @user
   end
 end

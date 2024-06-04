@@ -3,52 +3,52 @@ defmodule RunaWeb.Router do
 
   require Ueberauth
 
+  alias RunaWeb.{
+    Plug.Authentication,
+    Layouts,
+    UserData,
+    Telemetry
+  }
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, html: {RunaWeb.Layouts, :root}
+    plug :put_root_layout, html: {Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug RunaWeb.AuthPlug, :identify
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  pipeline :authenticate do
-    plug RunaWeb.AuthPlug, :authenticate
+  pipeline :auth do
+    plug Authentication
   end
 
-  scope "/auth", RunaWeb do
+  scope "/api", RunaWeb do
+    pipe_through :api
+  end
+
+  scope "/", RunaWeb do
     pipe_through :browser
 
-    get "/:provider", AuthController, :request
-    get "/:provider/callback", AuthController, :callback
-    post "/:provider/callback", AuthController, :callback
+    get "/", PageController, :home
+    get "/logout", AuthController, :logout
+    get "/auth/:provider", AuthController, :request
+    get "/auth/:provider/callback", AuthController, :callback
+    post "/auth/:provider/callback", AuthController, :callback
   end
 
-  live_session :default, on_mount: RunaWeb.UserData do
-    scope "/", RunaWeb do
-      pipe_through :browser
+  live_session :default, on_mount: UserData do
+    scope "/profile", RunaWeb.PageLive do
+      pipe_through [:browser, :auth]
 
-      get "/", PageController, :home
-      get "/logout", AuthController, :logout
-    end
-
-    scope "/profile", RunaWeb do
-      pipe_through [:browser, :authenticate]
-
-      live "/", PageLive.Profile, :show
-      live "/:id/edit", PageLive.Profile, :edit
+      live "/", Profile, :show
+      live "/:id/edit", Profile, :edit
     end
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", RunaWeb do
-  #   pipe_through :api
-  # end
 
   # Enable LiveDashboard in development
   if Application.compile_env(:runa, :dev_routes) do
@@ -63,7 +63,7 @@ defmodule RunaWeb.Router do
       pipe_through :browser
 
       live_dashboard "/dashboard",
-        metrics: RunaWeb.Telemetry
+        metrics: Telemetry
     end
   end
 end

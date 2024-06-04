@@ -1,5 +1,5 @@
 defmodule RunaWeb.ErrorJSONTest do
-  use RunaWeb.ConnCase, async: true
+  use RunaWeb.ConnCase
 
   test "renders 404" do
     assert RunaWeb.ErrorJSON.render("404.json", %{}) == %{
