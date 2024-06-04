@@ -1,20 +1,21 @@
 defmodule RunaWeb.AuthControllerTest do
   @moduledoc false
+
   use RunaWeb.ConnCase
 
   @moduletag :auth
 
-  alias Runa.Teams
+  alias RunaWeb.{AuthController, Router}
 
   import Runa.AuthFixtures
 
-  describe "logout action" do
-    setup do
-      auth = create_aux_success_auth()
+  setup do
+    auth = create_aux_success_auth()
 
-      %{auth: auth}
-    end
+    %{auth: auth}
+  end
 
+  describe "auth module" do
     test "logs out user and redirects to home page", %{
       conn: conn,
       auth: auth
@@ -38,57 +39,46 @@ defmodule RunaWeb.AuthControllerTest do
     end
   end
 
-  describe "callback action" do
-    setup do
-      auth = create_aux_success_auth()
+  test "logs in on success auth",
+       %{
+         conn: conn,
+         auth: auth
+       } do
+    conn =
+      conn
+      |> bypass_through(Router, [:browser])
+      |> assign(:ueberauth_auth, auth)
+      |> get(~p"/auth/auth0/callback")
+      |> AuthController.callback(%{})
 
-      %{auth: auth}
-    end
+    assert get_flash(conn, :info) ==
+             "Successfully authenticated as #{auth.info.name}."
 
-    test "logs in on success auth", %{
-      conn: conn,
-      auth: auth
-    } do
-      conn =
-        conn
-        |> bypass_through(RunaWeb.Router, [:browser])
-        |> assign(:ueberauth_auth, auth)
-        |> get("/auth/auth0/callback")
-        |> RunaWeb.AuthController.callback(%{})
+    assert redirected_to(conn) == ~p"/profile"
 
-      assert get_flash(conn, :info) ==
-               "Successfully authenticated as #{auth.info.name}."
+    assert conn
+           |> get(~p"/")
+           |> get_session(:current_user) == %{
+             uid: auth.uid,
+             email: auth.info.email
+           }
+  end
 
-      assert redirected_to(conn) == ~p"/profile"
+  test "reject on provider failure", %{conn: conn} do
+    conn =
+      conn
+      |> bypass_through(Router, [:browser])
+      |> assign(:ueberauth_failure, %Ueberauth.Failure{})
+      |> get(~p"/auth/auth0/callback")
+      |> AuthController.callback(%{})
 
-      assert conn
-             |> get(~p"/")
-             |> get_session(:current_user) == %{
-               uid: auth.uid,
-               email: auth.info.email
-             }
-    end
+    assert get_flash(conn, :error) ==
+             "Failed to authenticate."
 
-    test "reject on provider failure", %{conn: conn} do
-      assert [] == Teams.get_teams()
+    assert redirected_to(conn) == ~p"/"
 
-      conn =
-        conn
-        |> bypass_through(RunaWeb.Router, [:browser])
-        |> assign(:ueberauth_failure, "error")
-        |> get("/auth/auth0/callback")
-        |> RunaWeb.AuthController.callback(%{})
-
-      assert [] = Teams.get_teams()
-
-      assert get_flash(conn, :error) ==
-               "Failed to authenticate."
-
-      assert redirected_to(conn) == ~p"/"
-
-      refute conn
-             |> get(~p"/")
-             |> get_session(:current_user)
-    end
+    refute conn
+           |> get(~p"/")
+           |> get_session(:current_user)
   end
 end
