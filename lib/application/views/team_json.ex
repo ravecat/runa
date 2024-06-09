@@ -14,4 +14,13 @@ defmodule RunaWeb.TeamJSONAPI do
     |> serialize(data, conn)
     |> Jason.encode!()
   end
+
+  @doc """
+  Serializes a team
+  """
+  def show(%{data: data, conn: conn}) do
+    TeamSerializer
+    |> serialize(data, conn)
+    |> Jason.encode!()
+  end
 end

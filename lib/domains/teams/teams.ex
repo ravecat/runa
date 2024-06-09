@@ -25,14 +25,19 @@ defmodule Runa.Teams do
 
   ## Examples
 
-      iex> get_team!(123)
-      %Team{}
+      iex> get_team(1)
+      {:ok, %Team{}}
 
-      iex> get_team!(456)
-      ** (Ecto.NoResultsError)
+      iex> get_team(999)
+      {:error, %Ecto.NoResultsError{}}
 
   """
-  def get_team!(id), do: Repo.get!(Team, id)
+  def get_team(id) do
+    case Repo.get(Team, id) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      team -> {:ok, team}
+    end
+  end
 
   @doc """
   Creates a team.
