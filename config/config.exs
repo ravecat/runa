@@ -82,6 +82,8 @@ config :mime, :types, %{
   "application/vnd.api+json" => ["jsonapi"]
 }
 
+config :phoenix_template, :format_encoders, jsonapi: Jason
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

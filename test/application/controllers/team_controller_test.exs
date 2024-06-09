@@ -90,52 +90,59 @@ defmodule RunaWeb.TeamControllerTest do
     end
   end
 
-  # describe "create" do
-  #   test "returns team when data is valid", ctx do
-  #     conn =
-  #       post(ctx.conn, ~p"/api/teams", %{
-  #         "data" => %{
-  #           "type" => "teams",
-  #           "attributes" => %{
-  #             "title" => "Team 1"
-  #           }
-  #         }
-  #       })
+  describe "create" do
+    test "returns team when data is valid", ctx do
+      conn =
+        post(ctx.conn, ~p"/api/teams", %{
+          "data" => %{
+            "type" => "teams",
+            "attributes" => %{
+              "title" => "Team 1"
+            }
+          }
+        })
 
-  #     assert %{
-  #              "data" => %{
-  #                "attributes" => %{
-  #                  "inserted_at" => _,
-  #                  "inserted_at_timestamp" => _,
-  #                  "title" => "Team 1",
-  #                  "updated_at" => _,
-  #                  "updated_at_timestamp" => _
-  #                },
-  #                "id" => _,
-  #                "type" => "teams",
-  #                "relationships" => %{},
-  #                "links" => %{"self" => _}
-  #              },
-  #              "included" => [],
-  #              "links" => %{"self" => _}
-  #            } = json_response(conn, 201)
+      assert %{
+               "data" => %{
+                 "attributes" => %{
+                   "inserted_at" => _,
+                   "inserted_at_timestamp" => _,
+                   "title" => "Team 1",
+                   "updated_at" => _,
+                   "updated_at_timestamp" => _
+                 },
+                 "id" => _,
+                 "type" => "teams",
+                 "relationships" => %{},
+                 "links" => %{"self" => _}
+               },
+               "included" => [],
+               "links" => %{"self" => _}
+             } = json_response(conn, 201)
+    end
 
-  #     # conn = get(conn, ~p"/api/teams/#{id}")
+    test "renders errors when data is invalid", ctx do
+      conn =
+        post(ctx.conn, ~p"/api/teams", %{
+          "data" => %{
+            "type" => "teams",
+            "attributes" => %{}
+          }
+        })
 
-  #     # assert %{
-  #     #          "id" => ^id
-  #     #        } = json_response(conn, 200)["data"]
-  #   end
-
-  #   # test "renders errors when data is invalid", ctx do
-  #   #   conn = post(ctx.conn, ~p"/api/teams", team: @invalid_attrs)
-  #   #   assert json_response(conn, 422)["errors"] != %{}
-  #   # end
-  # end
+      assert %{
+               "errors" => [
+                 %{
+                   "source" => %{"pointer" => "/data/attributes/title"},
+                   "title" => "title can't be blank"
+                 }
+               ]
+             } == json_response(conn, 422)
+    end
+  end
 
   # describe "update team" do
   #   setup [:create_team]
-
   #   test "renders team when data is valid", %{
   #     conn: conn,
   #     team: %Team{id: id} = team
