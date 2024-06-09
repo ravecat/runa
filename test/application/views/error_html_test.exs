@@ -3,6 +3,7 @@ defmodule RunaWeb.ErrorHTMLTest do
 
   # Bring render_to_string/4 for testing custom views
   import Phoenix.Template
+  alias RunaWeb.{ErrorHTML, ErrorJSON}
 
   test "renders 404.html" do
     assert render_to_string(

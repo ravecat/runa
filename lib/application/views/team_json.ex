@@ -12,7 +12,6 @@ defmodule RunaWeb.TeamJSONAPI do
   def index(%{data: data, conn: conn}) do
     TeamSerializer
     |> serialize(data, conn)
-    |> Jason.encode!()
   end
 
   @doc """
@@ -21,6 +20,5 @@ defmodule RunaWeb.TeamJSONAPI do
   def show(%{data: data, conn: conn}) do
     TeamSerializer
     |> serialize(data, conn)
-    |> Jason.encode!()
   end
 end
