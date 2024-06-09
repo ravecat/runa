@@ -33,7 +33,7 @@ defmodule RunaWeb.Router do
   scope "/api", RunaWeb do
     pipe_through :api
 
-    resources "/teams", TeamController, only: [:index]
+    resources "/teams", TeamController
   end
 
   scope "/", RunaWeb do

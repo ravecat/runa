@@ -21,7 +21,7 @@ defmodule Runa.TeamsTest do
     end
 
     test "returns the team with given id", ctx do
-      assert Teams.get_team!(ctx.team.id) == ctx.team
+      assert Teams.get_team(ctx.team.id) == {:ok, ctx.team}
     end
 
     test "creates a team with valid data" do
@@ -50,15 +50,13 @@ defmodule Runa.TeamsTest do
       assert {:error, %Ecto.Changeset{}} =
                Teams.update_team(ctx.team, invalid_attrs)
 
-      assert ctx.team == Teams.get_team!(ctx.team.id)
+      assert {:ok, ctx.team} == Teams.get_team(ctx.team.id)
     end
 
     test "deletes the team", ctx do
       assert {:ok, %Team{}} = Teams.delete_team(ctx.team)
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Teams.get_team!(ctx.team.id)
-      end
+      assert {:error, %Ecto.NoResultsError{}} = Teams.get_team(ctx.team.id)
     end
 
     test "returns a team changeset", ctx do

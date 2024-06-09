@@ -6,13 +6,19 @@ defmodule RunaWeb.FallbackController do
   """
   use RunaWeb, :controller
 
-  alias RunaWeb.{ErrorHTML, ErrorJSON}
+  alias RunaWeb.{ErrorHTML, ErrorJSON, ChangesetJSON}
 
-  # This clause is an example of how to handle resources that cannot be found.
-  def call(conn, {:error, :not_found}) do
+  def call(conn, {:error, %Ecto.NoResultsError{}}) do
     conn
-    |> put_status(:not_found)
-    |> put_view(html: ErrorHTML, json: ErrorJSON)
+    |> put_status(404)
+    |> put_view(html: ErrorHTML, json: ErrorJSON, jsonapi: ErrorJSON)
     |> render(:"404")
+  end
+
+  def error(conn, {:error, %Ecto.Changeset{} = changeset}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> put_view(json: ChangesetJSON, jsonapi: ChangesetJSON)
+    |> render(:error, changeset: changeset)
   end
 end
