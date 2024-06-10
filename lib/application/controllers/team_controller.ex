@@ -30,13 +30,12 @@ defmodule RunaWeb.TeamController do
     end
   end
 
-  # def update(conn, %{"id" => id, "team" => team_params}) do
-  #   team = Teams.get_team(id)
-
-  #   with {:ok, %Team{} = team} <- Teams.update_team(team, team_params) do
-  #     render(conn, :show, team: team)
-  #   end
-  # end
+  def update(conn, %{"id" => id} = attrs) do
+    with {:ok, team = %Team{}} <- Teams.get_team(id),
+         {:ok, %Team{} = data} <- Teams.update_team(team, attrs) do
+      render(conn, :show, data: data)
+    end
+  end
 
   # def delete(conn, %{"id" => id}) do
   #   team = Teams.get_team(id)

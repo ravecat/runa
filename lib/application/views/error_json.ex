@@ -13,12 +13,12 @@ defmodule RunaWeb.ErrorJSON do
   #   %{errors: %{detail: "Internal Server Error"}}
   # end
   def render(template, _assigns) do
-    [code, _format] = String.split(template, ".")
+    [status, _format] = String.split(template, ".")
 
     %{
       errors: [
         %{
-          code: code,
+          status: status,
           title: Phoenix.Controller.status_message_from_template(template),
           detail: Phoenix.Controller.status_message_from_template(template)
         }

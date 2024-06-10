@@ -12,7 +12,7 @@ defmodule RunaWeb.FallbackController do
     conn
     |> put_status(404)
     |> put_view(html: ErrorHTML, json: ErrorJSON, jsonapi: ErrorJSON)
-    |> render("404.json")
+    |> render(:"404")
   end
 
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
