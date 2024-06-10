@@ -48,7 +48,7 @@ defmodule RunaWeb.TeamControllerTest do
     end
   end
 
-  describe "show" do
+  describe "show endpoint" do
     test "returns resource", ctx do
       team = create_aux_team()
       conn = get(ctx.conn, ~p"/api/teams/#{team.id}")
@@ -75,7 +75,7 @@ defmodule RunaWeb.TeamControllerTest do
       assert id == team.id |> Integer.to_string()
     end
 
-    test "returns error when resource is not found", ctx do
+    test "returns errors when resource is not found", ctx do
       conn = get(ctx.conn, ~p"/api/teams/1")
 
       assert %{
@@ -83,15 +83,15 @@ defmodule RunaWeb.TeamControllerTest do
                  %{
                    "title" => "Not Found",
                    "detail" => "Not Found",
-                   "code" => "404"
+                   "status" => "404"
                  }
                ]
              } = json_response(conn, 404)
     end
   end
 
-  describe "create" do
-    test "returns team when data is valid", ctx do
+  describe "create endpoint" do
+    test "returns resource when data is valid", ctx do
       conn =
         post(ctx.conn, ~p"/api/teams", %{
           "data" => %{
@@ -141,27 +141,83 @@ defmodule RunaWeb.TeamControllerTest do
     end
   end
 
-  # describe "update team" do
-  #   setup [:create_team]
-  #   test "renders team when data is valid", %{
-  #     conn: conn,
-  #     team: %Team{id: id} = team
-  #   } do
-  #     conn = put(conn, ~p"/api/teams/#{team}", team: @update_attrs)
-  #     assert %{"id" => ^id} = json_response(conn, 200)["data"]
+  describe "update endpoint" do
+    test "returns resource when data is valid", ctx do
+      team = create_aux_team()
 
-  #     conn = get(conn, ~p"/api/teams/#{id}")
+      conn =
+        patch(ctx.conn, ~p"/api/teams/#{team.id}", %{
+          "data" => %{
+            "type" => "teams",
+            "id" => "#{team.id}",
+            "attributes" => %{
+              "title" => "New team title"
+            }
+          }
+        })
 
-  #     assert %{
-  #              "id" => ^id
-  #            } = json_response(conn, 200)["data"]
-  #   end
+      assert %{
+               "data" => %{
+                 "attributes" => %{
+                   "inserted_at" => _,
+                   "inserted_at_timestamp" => _,
+                   "title" => "New team title",
+                   "updated_at" => _,
+                   "updated_at_timestamp" => _
+                 },
+                 "id" => id,
+                 "type" => "teams",
+                 "relationships" => %{},
+                 "links" => %{"self" => _}
+               },
+               "included" => [],
+               "links" => %{"self" => _}
+             } = json_response(conn, 200)
 
-  #   test "renders errors when data is invalid", %{conn: conn, team: team} do
-  #     conn = put(conn, ~p"/api/teams/#{team}", team: @invalid_attrs)
-  #     assert json_response(conn, 422)["errors"] != %{}
-  #   end
-  # end
+      conn = get(ctx.conn, ~p"/api/teams/#{id}")
+
+      assert %{
+               "data" => %{
+                 "attributes" => %{
+                   "inserted_at" => _,
+                   "inserted_at_timestamp" => _,
+                   "title" => "New team title",
+                   "updated_at" => _,
+                   "updated_at_timestamp" => _
+                 },
+                 "id" => id,
+                 "type" => "teams",
+                 "relationships" => %{},
+                 "links" => %{"self" => _}
+               },
+               "included" => [],
+               "links" => %{"self" => _}
+             } = json_response(conn, 200)
+    end
+
+    test "returns 404 error when resource doesn't exists", ctx do
+      conn =
+        patch(ctx.conn, ~p"/api/teams/1", %{
+          "data" => %{
+            "type" => "teams",
+            "id" => "1",
+            "attributes" => %{
+              "title" => "New team title"
+            }
+          }
+        })
+
+      assert %{
+               "errors" => [
+                 %{
+                   "title" => "Not Found",
+                   "detail" => "Not Found",
+                   "status" => "404"
+                 }
+               ]
+             } = json_response(conn, 404)
+    end
+  end
 
   # describe "delete team" do
   #   setup [:create_team]
