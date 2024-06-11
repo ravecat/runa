@@ -37,11 +37,12 @@ defmodule RunaWeb.TeamController do
     end
   end
 
-  # def delete(conn, %{"id" => id}) do
-  #   team = Teams.get_team(id)
-
-  #   with {:ok, %Team{}} <- Teams.delete_team(team) do
-  #     send_resp(conn, :no_content, "")
-  #   end
-  # end
+  def delete(conn, %{"id" => id}) do
+    with {:ok, team = %Team{}} <- Teams.get_team(id),
+         {:ok, %Team{}} <- Teams.delete_team(team) do
+      conn
+      |> put_status(204)
+      |> render(:delete)
+    end
+  end
 end

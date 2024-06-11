@@ -1,24 +1,6 @@
 defmodule RunaWeb.TeamJSONAPI do
   @moduledoc """
-  API response for teams
+  API response for team entity
   """
-  alias RunaWeb.TeamSerializer
-
-  import JSONAPI.Serializer
-
-  @doc """
-  Serializes a list of teams
-  """
-  def index(%{data: data, conn: conn}) do
-    TeamSerializer
-    |> serialize(data, conn)
-  end
-
-  @doc """
-  Serializes a team
-  """
-  def show(%{data: data, conn: conn}) do
-    TeamSerializer
-    |> serialize(data, conn)
-  end
+  use RunaWeb.CommonJSON, serializer: RunaWeb.TeamSerializer
 end
