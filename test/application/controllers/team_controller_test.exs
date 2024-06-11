@@ -219,16 +219,16 @@ defmodule RunaWeb.TeamControllerTest do
     end
   end
 
-  # describe "delete team" do
-  #   setup [:create_team]
+  describe "delete endpoint" do
+    test "deletes resource", ctx do
+      team = create_aux_team()
+      conn = delete(ctx.conn, ~p"/api/teams/#{team.id}")
 
-  #   test "deletes chosen team", %{conn: conn, team: team} do
-  #     conn = delete(conn, ~p"/api/teams/#{team}")
-  #     assert response(conn, 204)
-
-  #     assert_error_sent 404, fn ->
-  #       get(conn, ~p"/api/teams/#{team}")
-  #     end
-  #   end
-  # end
+      assert %{
+               "meta" => %{
+                 "message" => "Resource deleted"
+               }
+             } = json_response(conn, 204)
+    end
+  end
 end
