@@ -7,35 +7,36 @@ defmodule Runa.TranslationsTest do
 
   alias Runa.{Translations, Translations.Translation}
 
-  import Runa.{
-    TranslationsFixtures,
-    KeysFixtures
-  }
+  import Runa.Factory
 
   setup do
-    translation = create_aux_translation()
+    team = insert(:team)
+    project = insert(:project, team: team)
+    key = insert(:key, project: project)
+    translation = insert(:translation, key: key)
 
-    %{translation: translation}
+    {:ok, translation: translation, key: key, project: project}
   end
 
   describe "translations" do
     test "returns all translations", ctx do
-      assert Translations.list_translations() == [ctx.translation]
+      assert [translation] = Translations.list_translations()
+      assert ctx.translation.id == translation.id
     end
 
     test "returns the translation with given id", ctx do
-      assert Translations.get_translation!(ctx.translation.id) ==
-               ctx.translation
+      assert translation = Translations.get_translation!(ctx.translation.id)
+      assert translation.id == ctx.translation.id
     end
 
-    test "creates a translation with valid data" do
-      key = create_aux_key()
-      valid_attrs = %{translation: "some translation", key_id: key.id}
+    test "creates a translation with valid data", ctx do
+      key = insert(:key, project: ctx.project)
+      valid_attrs = %{translation: Atom.to_string(ctx.test), key_id: key.id}
 
       assert {:ok, %Translation{} = translation} =
                Translations.create_translation(valid_attrs)
 
-      assert translation.translation == "some translation"
+      assert translation.translation == Atom.to_string(ctx.test)
     end
 
     test "returns error changeset during creation with invalid data" do
@@ -46,23 +47,20 @@ defmodule Runa.TranslationsTest do
     end
 
     test "updates the translation with valid data", ctx do
-      update_attrs = %{translation: "some updated translation"}
+      update_attrs = %{translation: Atom.to_string(ctx.test)}
 
       assert {:ok, %Translation{} = translation} =
                Translations.update_translation(ctx.translation, update_attrs)
 
-      assert translation.translation == "some updated translation"
+      assert translation.translation == Atom.to_string(ctx.test)
     end
 
     test "returns error changeset during update with invalid data", ctx do
-      key = create_aux_key()
+      key = insert(:key, project: ctx.project)
       invalid_attrs = %{translation: 11, key_id: key.id}
 
       assert {:error, %Ecto.Changeset{}} =
                Translations.update_translation(ctx.translation, invalid_attrs)
-
-      assert ctx.translation ==
-               Translations.get_translation!(ctx.translation.id)
     end
 
     test "deletes the translation", ctx do

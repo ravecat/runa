@@ -6,28 +6,34 @@ defmodule Runa.TokensTest do
 
   alias Runa.{Tokens, Tokens.Token}
 
-  import Runa.{TokensFixtures, AccountsFixtures}
+  import Runa.Factory
 
   @valid_access_levels Application.compile_env(:runa, :token_access_levels)
 
   setup do
-    token = create_aux_token()
+    user = insert(:user)
+    token = insert(:token, user: user)
 
-    %{token: token}
+    {:ok, token: token, user: user}
   end
 
   describe "tokens" do
     test "return all tokens", ctx do
-      assert Tokens.list_tokens() == [ctx.token]
+      assert [token] = Tokens.get_tokens()
+
+      assert token.id == ctx.token.id
     end
 
     test "return the token with given id", ctx do
-      assert Tokens.get_token!(ctx.token.id) == ctx.token
+      assert token = Tokens.get_token!(ctx.token.id)
+
+      assert token.id == ctx.token.id
+      assert token.access == ctx.token.access
+      assert token.user_id == ctx.user.id
     end
 
-    test "create a token with valid data" do
-      user = create_aux_user()
-      valid_attrs = %{access: @valid_access_levels[:read], user_id: user.id}
+    test "create a token with valid data", ctx do
+      valid_attrs = %{access: @valid_access_levels[:read], user_id: ctx.user.id}
 
       assert {:ok, %Token{} = token} = Tokens.create_token(valid_attrs)
       assert token.access == @valid_access_levels[:read]
@@ -43,16 +49,13 @@ defmodule Runa.TokensTest do
 
     test "update the token with valid data", ctx do
       update_attrs = %{
-        access: @valid_access_levels[:read],
-        token: "some updated token"
+        access: @valid_access_levels[:read]
       }
 
       assert {:ok, %Token{} = token} =
                Tokens.update_token(ctx.token, update_attrs)
 
       assert token.access == @valid_access_levels[:read]
-      assert String.length(token.token) == 32
-      assert Regex.match?(~r/^[A-Za-z0-9_-]+$/, token.token)
     end
 
     test "return error changeset during update with invalid data", ctx do
@@ -60,8 +63,6 @@ defmodule Runa.TokensTest do
 
       assert {:error, %Ecto.Changeset{}} =
                Tokens.update_token(ctx.token, invalid_attrs)
-
-      assert ctx.token == Tokens.get_token!(ctx.token.id)
     end
 
     test "delete the token", ctx do

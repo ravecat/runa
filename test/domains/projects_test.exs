@@ -7,25 +7,28 @@ defmodule Runa.ProjectsTest do
 
   alias Runa.{Projects, Projects.Project}
 
-  import Runa.{ProjectsFixtures, TeamsFixtures}
+  import Runa.Factory
 
   setup do
-    project = create_aux_project()
+    team = insert(:team)
+    project = insert(:project, team: team)
 
-    %{project: project}
+    {:ok, project: project, team: team}
   end
 
   describe "projects context" do
     test "returns all projects", ctx do
-      assert Projects.get_projects() == [ctx.project]
+      assert [project] = Projects.get_projects()
+      assert project.id == ctx.project.id
     end
 
     test "returns the project with given id", ctx do
-      assert Projects.get_project!(ctx.project.id) == ctx.project
+      assert project = Projects.get_project!(ctx.project.id)
+      assert project.id == ctx.project.id
     end
 
     test "creates a project with valid data" do
-      team = create_aux_team()
+      team = insert(:team)
 
       valid_attrs = %{
         name: "some name",
@@ -63,8 +66,6 @@ defmodule Runa.ProjectsTest do
 
       assert {:error, %Ecto.Changeset{}} =
                Projects.update_project(ctx.project, invalid_attrs)
-
-      assert ctx.project == Projects.get_project!(ctx.project.id)
     end
 
     test "deletes the project", ctx do

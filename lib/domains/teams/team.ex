@@ -11,7 +11,6 @@ defmodule Runa.Teams.Team do
 
   schema "teams" do
     field :title, :string
-    has_many :contributors, Contributor
     has_many :projects, Project
     many_to_many :users, User, join_through: Contributor
 

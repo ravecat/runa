@@ -14,11 +14,11 @@ defmodule Runa.Tokens do
 
   ## Examples
 
-      iex> list_tokens()
+      iex> get_tokens()
       [%Token{}, ...]
 
   """
-  def list_tokens do
+  def get_tokens do
     Repo.all(Token)
   end
 

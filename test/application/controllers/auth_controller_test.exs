@@ -7,12 +7,14 @@ defmodule RunaWeb.AuthControllerTest do
 
   alias RunaWeb.{AuthController, Router}
 
-  import Runa.AuthFixtures
+  import Runa.Factory
 
   setup do
-    auth = create_aux_success_auth()
+    insert(:role)
 
-    %{auth: auth}
+    auth = build(:auth)
+
+    {:ok, auth: auth}
   end
 
   describe "auth module" do

@@ -5,29 +5,42 @@ defmodule Runa.ContributorsTest do
 
   @moduletag :contributors
 
-  alias Runa.{Contributors, Contributors.Contributor}
+  alias Runa.Repo
+  alias Runa.Contributors
+  alias Runa.Contributors.Contributor
 
-  import Runa.{ContributorsFixtures, TeamsFixtures, AccountsFixtures}
+  import Runa.Factory
+
+  @roles Application.compile_env(:runa, :permissions)
 
   setup do
-    contributor = create_aux_contributor()
+    team = insert(:team)
+    user = insert(:user)
+    role = insert(:role, title: @roles[:owner])
+    contributor = insert(:contributor, role: role, team: team, user: user)
 
-    %{contributor: contributor}
+    {:ok, contributor: contributor}
   end
 
   describe "contributors" do
     test "returns all contributors", ctx do
-      assert Enum.member?(Contributors.get_contributors(), ctx.contributor)
+      assert [contributor] = Contributors.get_contributors()
+
+      assert contributor.id == ctx.contributor.id
+      assert contributor.role_id == ctx.contributor.role_id
+      assert contributor.team_id == ctx.contributor.team_id
+      assert contributor.user_id == ctx.contributor.user_id
     end
 
     test "returns the record with given set", ctx do
-      assert Contributors.get_contributor!(ctx.contributor.id) ==
-               ctx.contributor
+      assert ctx.contributor ==
+               Contributors.get_contributor!(ctx.contributor.id)
+               |> Repo.preload([:team, :user, :role])
     end
 
     test "creates a contributor with valid data", ctx do
-      user = create_aux_user()
-      team = create_aux_team()
+      user = insert(:user)
+      team = insert(:team)
 
       assert {:ok, %Contributor{}} =
                Contributors.create_contributor(%{
@@ -42,8 +55,8 @@ defmodule Runa.ContributorsTest do
     end
 
     test "updates the contributor with valid data ", ctx do
-      user = create_aux_user()
-      team = create_aux_team()
+      user = insert(:user)
+      team = insert(:team)
 
       update_attrs = %{
         team_id: team.id,
@@ -67,8 +80,12 @@ defmodule Runa.ContributorsTest do
       assert {:error, %Ecto.Changeset{}} =
                Contributors.update_contributor(ctx.contributor, invalid_attrs)
 
-      assert ctx.contributor ==
-               Contributors.get_contributor!(ctx.contributor.id)
+      assert contributor = Contributors.get_contributor!(ctx.contributor.id)
+
+      assert contributor.id == ctx.contributor.id
+      assert contributor.role_id == ctx.contributor.role_id
+      assert contributor.team_id == ctx.contributor.team_id
+      assert contributor.user_id == ctx.contributor.user_id
     end
 
     test "deletes the contributor", ctx do

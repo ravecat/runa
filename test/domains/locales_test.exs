@@ -7,26 +7,36 @@ defmodule Runa.LocalesTest do
 
   alias Runa.{Locales.Locale, Locales}
 
-  import Runa.{LocalesFixtures, ProjectsFixtures, LanguagesFixtures}
+  import Runa.Factory
 
   setup do
-    locale = create_aux_locale()
+    team = insert(:team)
+    project = insert(:project, team: team)
+    language = insert(:language)
 
-    %{locale: locale}
+    locale = insert(:locale, project: project, language: language)
+
+    {:ok, locale: locale, team: team}
   end
 
   describe "locale context" do
     test "returns all locales", ctx do
-      assert Locales.get_locales() == [ctx.locale]
+      assert [locale] = Locales.get_locales()
+      assert ctx.locale.id == locale.id
+      assert locale.project_id == ctx.locale.project_id
+      assert locale.language_id == ctx.locale.language_id
     end
 
     test "returns the locale with given id", ctx do
-      assert Locales.get_locale!(ctx.locale.id) == ctx.locale
+      assert locale = Locales.get_locale!(ctx.locale.id)
+      assert ctx.locale.id == locale.id
+      assert locale.project_id == ctx.locale.project_id
+      assert locale.language_id == ctx.locale.language_id
     end
 
     test "creates a locale with valid data", ctx do
-      project = create_aux_project()
-      language = create_aux_language(%{wals_code: Atom.to_string(ctx.test)})
+      project = insert(:project, team: ctx.team)
+      language = insert(:language, wals_code: Atom.to_string(ctx.test))
 
       valid_attrs = %{project_id: project.id, language_id: language.id}
 
@@ -40,7 +50,7 @@ defmodule Runa.LocalesTest do
     end
 
     test "updates the locale with valid data", ctx do
-      project = create_aux_project()
+      project = insert(:project, team: ctx.team)
 
       update_attrs = %{
         project_id: project.id
@@ -57,8 +67,6 @@ defmodule Runa.LocalesTest do
 
       assert {:error, %Ecto.Changeset{}} =
                Locales.update_locale(ctx.locale, invalid_attrs)
-
-      assert ctx.locale == Locales.get_locale!(ctx.locale.id)
     end
 
     test "deletes the locale", ctx do

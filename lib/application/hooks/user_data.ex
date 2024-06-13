@@ -14,12 +14,9 @@ defmodule RunaWeb.UserData do
         %{"current_user" => user},
         socket
       ) do
-    socket =
-      assign_new(socket, :user, fn ->
-        Runa.Repo.get_by(Accounts.User, email: user.email)
-        |> Runa.Repo.preload(:teams)
-      end)
-
-    {:cont, socket}
+    {:cont,
+     assign_new(socket, :user, fn ->
+       Accounts.get_user_by(email: user.email)
+     end)}
   end
 end

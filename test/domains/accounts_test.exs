@@ -4,15 +4,15 @@ defmodule Runa.AccountsTest do
   use Runa.DataCase
 
   @moduletag :accounts
+  @roles Application.compile_env(:runa, :permissions)
 
   alias Runa.{Accounts, Accounts.User}
 
-  import Runa.AccountsFixtures
+  import Runa.Factory
 
   setup do
-    user = create_aux_user()
-
-    %{user: user}
+    user = insert(:user)
+    {:ok, user: user}
   end
 
   describe "users" do
@@ -25,6 +25,8 @@ defmodule Runa.AccountsTest do
     end
 
     test "creates a user with valid data" do
+      insert(:role, title: @roles[:owner])
+
       valid_attrs = %{
         name: "some name",
         uid: "xxx",
