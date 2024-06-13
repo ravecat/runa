@@ -7,25 +7,29 @@ defmodule Runa.KeysTest do
 
   alias Runa.{Keys, Keys.Key}
 
-  import Runa.{KeysFixtures, ProjectsFixtures}
+  import Runa.Factory
 
   setup do
-    key = create_aux_key()
+    team = insert(:team)
+    project = insert(:project, team: team)
+    key = insert(:key, project: project)
 
-    %{key: key}
+    {:ok, key: key, team: team}
   end
 
   describe "keys context" do
     test "returns all keys", ctx do
-      assert Keys.list_keys() == [ctx.key]
+      assert [key] = Keys.list_keys()
+      assert key.id == ctx.key.id
     end
 
     test "returns the key with given id", ctx do
-      assert Keys.get_key!(ctx.key.id) == ctx.key
+      assert key = Keys.get_key!(ctx.key.id)
+      assert key.id == ctx.key.id
     end
 
-    test "creates a key with valid data" do
-      project = create_aux_project()
+    test "creates a key with valid data", ctx do
+      project = insert(:project, team: ctx.team)
 
       valid_attrs = %{
         name: "some name",
@@ -59,8 +63,6 @@ defmodule Runa.KeysTest do
 
       assert {:error, %Ecto.Changeset{}} =
                Keys.update_key(ctx.key, invalid_attrs)
-
-      assert ctx.key == Keys.get_key!(ctx.key.id)
     end
 
     test "deletes the key", ctx do

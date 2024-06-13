@@ -7,18 +7,12 @@ defmodule Runa.LanguagesTest do
 
   alias Runa.{Languages.Language, Languages}
 
-  import Runa.LanguagesFixtures
+  import Runa.Factory
 
-  setup tags do
-    language =
-      create_aux_language(%{
-        title: Atom.to_string(tags.test),
-        wals_code: Atom.to_string(tags.test),
-        iso_code: Atom.to_string(tags.test),
-        glotto_code: Atom.to_string(tags.test)
-      })
+  setup do
+    language = insert(:language)
 
-    %{language: language}
+    {:ok, language: language}
   end
 
   describe "languages" do
@@ -30,21 +24,21 @@ defmodule Runa.LanguagesTest do
       assert Languages.get_language!(ctx.language.id) == ctx.language
     end
 
-    test "creates a language with valid data" do
+    test "creates a language with valid data", ctx do
       valid_attrs = %{
-        title: "some title",
-        wals_code: "some wals_code",
-        iso_code: "some iso_code",
-        glotto_code: "some glotto_code"
+        title: Atom.to_string(ctx.test),
+        wals_code: Atom.to_string(ctx.test),
+        iso_code: Atom.to_string(ctx.test),
+        glotto_code: Atom.to_string(ctx.test)
       }
 
       assert {:ok, %Language{} = language} =
                Languages.create_language(valid_attrs)
 
-      assert language.title == "some title"
-      assert language.wals_code == "some wals_code"
-      assert language.iso_code == "some iso_code"
-      assert language.glotto_code == "some glotto_code"
+      assert language.title == Atom.to_string(ctx.test)
+      assert language.wals_code == Atom.to_string(ctx.test)
+      assert language.iso_code == Atom.to_string(ctx.test)
+      assert language.glotto_code == Atom.to_string(ctx.test)
     end
 
     test "returns error changeset during creation with invalid data" do
@@ -61,19 +55,20 @@ defmodule Runa.LanguagesTest do
 
     test "updates the language with valid data", ctx do
       update_attrs = %{
-        title: "some updated title",
-        wals_code: "some updated wals_code",
-        iso_code: "some updated iso_code",
-        glotto_code: "some updated glotto_code"
+        title: Atom.to_string(ctx.test),
+        wals_code: Atom.to_string(ctx.test),
+        iso_code: Atom.to_string(ctx.test),
+        glotto_code: Atom.to_string(ctx.test)
       }
 
       assert {:ok, %Language{} = language} =
                Languages.update_language(ctx.language, update_attrs)
 
-      assert language.title == "some updated title"
-      assert language.wals_code == "some updated wals_code"
-      assert language.iso_code == "some updated iso_code"
-      assert language.glotto_code == "some updated glotto_code"
+      assert language.id == ctx.language.id
+      assert language.title == Atom.to_string(ctx.test)
+      assert language.wals_code == Atom.to_string(ctx.test)
+      assert language.iso_code == Atom.to_string(ctx.test)
+      assert language.glotto_code == Atom.to_string(ctx.test)
     end
 
     test "returns error changeset during update with invalid data", ctx do

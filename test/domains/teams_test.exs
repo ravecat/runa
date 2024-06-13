@@ -7,12 +7,10 @@ defmodule Runa.TeamsTest do
 
   alias Runa.{Teams.Team, Teams}
 
-  import Runa.TeamsFixtures
+  import Runa.Factory
 
   setup do
-    team = create_aux_team()
-
-    %{team: team}
+    {:ok, team: insert(:team)}
   end
 
   describe "teams" do

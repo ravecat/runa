@@ -6,11 +6,11 @@ defmodule RunaWeb.TeamControllerTest do
 
   @moduletag :teams
 
-  import Runa.TeamsFixtures
+  import Runa.Factory
 
   describe "index" do
     test "returns list of resources", ctx do
-      team = create_aux_team()
+      team = insert(:team)
       conn = get(ctx.conn, ~p"/api/teams")
 
       assert %{
@@ -50,7 +50,7 @@ defmodule RunaWeb.TeamControllerTest do
 
   describe "show endpoint" do
     test "returns resource", ctx do
-      team = create_aux_team()
+      team = insert(:team)
       conn = get(ctx.conn, ~p"/api/teams/#{team.id}")
 
       assert %{
@@ -143,7 +143,7 @@ defmodule RunaWeb.TeamControllerTest do
 
   describe "update endpoint" do
     test "returns resource when data is valid", ctx do
-      team = create_aux_team()
+      team = insert(:team)
 
       conn =
         patch(ctx.conn, ~p"/api/teams/#{team.id}", %{
@@ -185,7 +185,7 @@ defmodule RunaWeb.TeamControllerTest do
                    "updated_at" => _,
                    "updated_at_timestamp" => _
                  },
-                 "id" => id,
+                 "id" => _,
                  "type" => "teams",
                  "relationships" => %{},
                  "links" => %{"self" => _}
@@ -221,7 +221,7 @@ defmodule RunaWeb.TeamControllerTest do
 
   describe "delete endpoint" do
     test "deletes resource", ctx do
-      team = create_aux_team()
+      team = insert(:team)
       conn = delete(ctx.conn, ~p"/api/teams/#{team.id}")
 
       assert %{

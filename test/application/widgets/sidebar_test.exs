@@ -4,19 +4,20 @@ defmodule RunaWeb.Widgets.SidebarTest do
   use RunaWeb.ConnCase
 
   @moduletag :sidebar
+  @roles Application.compile_env(:runa, :permissions)
 
   alias RunaWeb.Components.Sidebar
-  alias Runa.Repo
 
   import Phoenix.LiveViewTest
-
-  import Runa.AccountsFixtures
+  import Runa.Factory
 
   describe "sidebar" do
     setup do
-      user = create_aux_user() |> Repo.preload(:teams)
+      insert(:role, title: @roles[:owner])
+      teams = insert_list(2, :team)
+      user = insert(:user, teams: teams)
 
-      %{user: user}
+      {:ok, user: user}
     end
 
     test "renders menu items", ctx do

@@ -8,7 +8,7 @@ defmodule RunaWeb.ErrorHTMLTest do
 
   test "renders 404.html" do
     assert render_to_string(
-             RunaWeb.ErrorHTML,
+             ErrorHTML,
              "404",
              "html",
              []
@@ -17,7 +17,7 @@ defmodule RunaWeb.ErrorHTMLTest do
 
   test "renders 500.html" do
     assert render_to_string(
-             RunaWeb.ErrorHTML,
+             ErrorHTML,
              "500",
              "html",
              []

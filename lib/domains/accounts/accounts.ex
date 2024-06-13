@@ -46,6 +46,11 @@ defmodule Runa.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_by(attrs \\ []) do
+    Repo.get_by(User, attrs)
+    |> Repo.preload(:teams)
+  end
+
   @doc """
   Creates or finds user.
   """

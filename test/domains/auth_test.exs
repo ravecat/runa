@@ -5,14 +5,16 @@ defmodule Runa.AuthTest do
 
   @moduletag :auth
 
-  import Runa.AuthFixtures
-
   alias Runa.Auth
 
-  setup do
-    auth = create_aux_success_auth()
+  import Runa.Factory
 
-    %{auth: auth}
+  setup do
+    insert(:role)
+
+    auth = build(:auth)
+
+    {:ok, auth: auth}
   end
 
   describe "authorization module" do

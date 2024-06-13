@@ -82,7 +82,8 @@ defmodule Runa.MixProject do
       {:phoenix_template, "~> 1.0"},
       {:mock, "~> 0.3.0", only: :test},
       {:hammox, "~> 0.7", only: :test},
-      {:jsonapi, "~> 1.7.1"}
+      {:jsonapi, "~> 1.7.1"},
+      {:ex_machina, "~> 2.7.0", only: :test}
     ]
   end
 

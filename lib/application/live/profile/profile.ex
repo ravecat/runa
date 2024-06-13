@@ -3,6 +3,7 @@ defmodule RunaWeb.PageLive.Profile do
   use RunaWeb, :components
 
   alias Runa.Accounts
+  alias RunaWeb.UserLive.FormComponent
 
   @impl true
   def handle_params(_params, _url, %{assigns: %{live_action: :show}} = socket) do
@@ -25,7 +26,7 @@ defmodule RunaWeb.PageLive.Profile do
   end
 
   @impl true
-  def handle_info({RunaWeb.UserLive.FormComponent, {:saved, user}}, socket) do
+  def handle_info({FormComponent, {:saved, user}}, socket) do
     {:noreply, stream_insert(socket, :users, user)}
   end
 

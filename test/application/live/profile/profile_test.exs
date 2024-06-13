@@ -3,23 +3,25 @@ defmodule RunaWeb.PageLive.ProfileTest do
 
   use RunaWeb.ConnCase
 
-  @moduletag :profile
-
   import Phoenix.LiveViewTest
+  import Runa.Factory
 
-  import Runa.AccountsFixtures
+  @moduletag :profile
+  @roles Application.compile_env(:runa, :permissions)
 
   describe "authenticated user" do
     setup do
-      user = create_aux_user()
+      insert(:role, title: @roles[:owner])
+      teams = insert_list(2, :team)
+      user = insert(:user, teams: teams)
 
-      %{user: user}
+      {:ok, user: user}
     end
 
     test "can see projects page", ctx do
       {:ok, _show_live, html} =
         ctx.conn
-        |> put_session(:current_user, ctx.user)
+        |> put_session(:current_user, Map.take(ctx.user, [:email, :uid]))
         |> live(~p"/profile")
 
       assert html =~ ctx.user.name

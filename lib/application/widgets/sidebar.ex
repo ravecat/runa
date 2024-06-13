@@ -7,6 +7,7 @@ defmodule RunaWeb.Components.Sidebar do
 
   alias Runa.Teams
   alias Runa.Teams.Team
+  alias RunaWeb.TeamHTML
 
   embed_templates "../templates/team/*"
 
@@ -42,14 +43,15 @@ defmodule RunaWeb.Components.Sidebar do
     {:ok, assign(socket, assigns)}
   end
 
-  def render(assigns) do
-    assigns =
-      Map.put_new(
-        assigns,
-        :active_team,
-        List.first(assigns.user.teams || [])
-      )
+  def update(assigns, socket) do
+    active_team = List.first(assigns.user.teams || [])
 
+    assigns = Map.put(assigns, :active_team, active_team)
+
+    {:ok, assign(socket, assigns)}
+  end
+
+  def render(assigns) do
     ~H"""
     <aside class="flex h-screen flex-col bg-accent-50">
       <div class="px-[1rem] py-[1rem]">
@@ -101,7 +103,7 @@ defmodule RunaWeb.Components.Sidebar do
           Create team
         </:title>
         <:content>
-          <%= Template.render(RunaWeb.TeamHTML, "new", "html", assigns) %>
+          <%= Template.render(TeamHTML, "new", "html", assigns) %>
         </:content>
       </.modal>
     </aside>
