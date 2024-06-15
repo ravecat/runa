@@ -4,17 +4,17 @@ defmodule Runa.Factory do
   """
   use ExMachina.Ecto, repo: Runa.Repo
 
-  alias Runa.Teams.Team
-  alias Runa.Projects.Project
   alias Runa.Accounts.User
-  alias Runa.Roles.Role
   alias Runa.Contributors.Contributor
-  alias Runa.Tokens.Token
+  alias Runa.Files.File
+  alias Runa.Keys.Key
   alias Runa.Languages.Language
   alias Runa.Locales.Locale
+  alias Runa.Projects.Project
+  alias Runa.Roles.Role
+  alias Runa.Teams.Team
+  alias Runa.Tokens.Token
   alias Runa.Translations.Translation
-  alias Runa.Keys.Key
-  alias Runa.Files.File
 
   @roles Application.compile_env(:runa, :permissions)
   @valid_access_levels Application.compile_env(:runa, :token_access_levels)

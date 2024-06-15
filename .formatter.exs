@@ -1,11 +1,10 @@
 [
   import_deps: [:ecto, :ecto_sql, :phoenix],
   subdirectories: ["priv/*/migrations"],
-  plugins: [Phoenix.LiveView.HTMLFormatter],
+  plugins: [Phoenix.LiveView.HTMLFormatter, Recode.FormatterPlugin],
   inputs: [
-    "*.{heex,ex,exs}",
-    "{config,lib,test}/**/*.{heex,ex,exs}",
-    "priv/*/**.exs"
+    "{config,lib,test}/**/*.{ex,exs}",
+    "*.{heex,ex,exs}"
   ],
   line_length: 80
 ]

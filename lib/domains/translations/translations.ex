@@ -5,7 +5,8 @@ defmodule Runa.Translations do
 
   import Ecto.Query, warn: false
 
-  alias Runa.{Repo, Translations.Translation}
+  alias Runa.Repo
+  alias Runa.Translations.Translation
 
   @doc """
   Returns the list of translations.

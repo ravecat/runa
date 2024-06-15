@@ -1,7 +1,7 @@
 alias Runa.Repo
 alias Runa.Roles.Role
 
-now = DateTime.utc_now() |> DateTime.truncate(:second)
+now = DateTime.truncate(DateTime.utc_now(), :second)
 
 roles =
   Application.compile_env(:runa, :permissions)

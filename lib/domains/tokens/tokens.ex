@@ -7,7 +7,8 @@ defmodule Runa.Tokens do
   import Ecto.Changeset
   import Runa.TokenGenerator
 
-  alias Runa.{Repo, Tokens.Token}
+  alias Runa.Repo
+  alias Runa.Tokens.Token
 
   @doc """
   Returns the list of tokens.

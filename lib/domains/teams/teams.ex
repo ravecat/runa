@@ -3,7 +3,8 @@ defmodule Runa.Teams do
   The teams context.
   """
 
-  alias Runa.{Repo, Teams.Team}
+  alias Runa.Repo
+  alias Runa.Teams.Team
 
   @doc """
   Returns the list of teams.

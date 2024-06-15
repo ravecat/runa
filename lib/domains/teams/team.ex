@@ -7,7 +7,9 @@ defmodule Runa.Teams.Team do
 
   import Ecto.Changeset
 
-  alias Runa.{Accounts.User, Contributors.Contributor, Projects.Project}
+  alias Runa.Accounts.User
+  alias Runa.Contributors.Contributor
+  alias Runa.Projects.Project
 
   schema "teams" do
     field :title, :string

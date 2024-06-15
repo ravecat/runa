@@ -123,9 +123,7 @@ defmodule RunaWeb.Components.Sidebar do
   def handle_event("save", %{"team" => params}, socket) do
     case Teams.create_team(params) do
       {:ok, _} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "team created")}
+        {:noreply, put_flash(socket, :info, "team created")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, team_changeset: to_form(changeset))}

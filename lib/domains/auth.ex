@@ -3,10 +3,10 @@ defmodule Runa.Auth do
   Retrieve the user information from an auth request
   """
   require Logger
-  require Poison
 
-  alias Ueberauth.Auth
   alias Runa.Accounts
+  alias Ueberauth.Auth
+  require Poison
 
   def find_or_create(%Auth{provider: :auth0} = auth) do
     result =

@@ -3,12 +3,10 @@ defmodule RunaWeb.Router do
 
   require Ueberauth
 
-  alias RunaWeb.{
-    Plug.Authentication,
-    Layouts,
-    UserData,
-    Telemetry
-  }
+  alias RunaWeb.Layouts
+  alias RunaWeb.Plug.Authentication
+  alias RunaWeb.Telemetry
+  alias RunaWeb.UserData
 
   pipeline :browser do
     plug :accepts, ["html"]

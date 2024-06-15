@@ -6,7 +6,8 @@ defmodule Runa.AccountsTest do
   @moduletag :accounts
   @roles Application.compile_env(:runa, :permissions)
 
-  alias Runa.{Accounts, Accounts.User}
+  alias Runa.Accounts
+  alias Runa.Accounts.User
 
   import Runa.Factory
 

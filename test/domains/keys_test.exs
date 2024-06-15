@@ -5,7 +5,8 @@ defmodule Runa.KeysTest do
 
   @moduletag :keys
 
-  alias Runa.{Keys, Keys.Key}
+  alias Runa.Keys
+  alias Runa.Keys.Key
 
   import Runa.Factory
 

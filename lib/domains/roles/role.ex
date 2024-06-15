@@ -8,7 +8,8 @@ defmodule Runa.Roles.Role do
 
   import Ecto.Changeset
 
-  alias Runa.{Contributors.Contributor, Accounts.User}
+  alias Runa.Accounts.User
+  alias Runa.Contributors.Contributor
 
   @valid_roles ["owner", "admin", "editor", "reader"]
 
