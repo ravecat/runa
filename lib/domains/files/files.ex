@@ -5,7 +5,8 @@ defmodule Runa.Files do
 
   import Ecto.Query, warn: false
 
-  alias Runa.{Repo, Files.File}
+  alias Runa.Files.File
+  alias Runa.Repo
 
   @doc """
   Returns the list of files.

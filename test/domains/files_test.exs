@@ -5,7 +5,8 @@ defmodule Runa.FilesTest do
 
   @moduletag :files
 
-  alias Runa.{Files, Files.File}
+  alias Runa.Files
+  alias Runa.Files.File
 
   import Runa.Factory
 

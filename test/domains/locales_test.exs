@@ -5,7 +5,8 @@ defmodule Runa.LocalesTest do
 
   @moduletag :locales
 
-  alias Runa.{Locales.Locale, Locales}
+  alias Runa.Locales
+  alias Runa.Locales.Locale
 
   import Runa.Factory
 

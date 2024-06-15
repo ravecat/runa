@@ -5,7 +5,8 @@ defmodule Runa.Locales do
 
   import Ecto.Query, warn: false
 
-  alias Runa.{Repo, Locales.Locale}
+  alias Runa.Locales.Locale
+  alias Runa.Repo
 
   @doc """
   Returns the list of locales.

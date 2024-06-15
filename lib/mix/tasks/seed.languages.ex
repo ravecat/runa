@@ -6,8 +6,8 @@ defmodule Mix.Tasks.Seed.Languages do
   use Mix.Task
 
   require Logger
-  alias Runa.Repo
   alias Runa.Languages.Language
+  alias Runa.Repo
 
   @requirements ["app.start"]
   @url "https://gist.githubusercontent.com/ravecat/a47ca0ebf170f3dc00f17bc408d6aba1/raw/b2f1651fa9c2aea8c0c4d282c13fbee20bb00e8f/languages.csv"

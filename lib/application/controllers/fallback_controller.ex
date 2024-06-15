@@ -6,7 +6,8 @@ defmodule RunaWeb.FallbackController do
   """
   use RunaWeb, :controller
 
-  alias RunaWeb.{ErrorHTML, ErrorJSON}
+  alias RunaWeb.ErrorHTML
+  alias RunaWeb.ErrorJSON
 
   def call(conn, {:error, %Ecto.NoResultsError{}}) do
     conn

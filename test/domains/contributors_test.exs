@@ -5,9 +5,9 @@ defmodule Runa.ContributorsTest do
 
   @moduletag :contributors
 
-  alias Runa.Repo
   alias Runa.Contributors
   alias Runa.Contributors.Contributor
+  alias Runa.Repo
 
   import Runa.Factory
 

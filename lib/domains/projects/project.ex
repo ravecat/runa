@@ -6,13 +6,11 @@ defmodule Runa.Projects.Project do
 
   import Ecto.Changeset
 
-  alias Runa.{
-    Files.File,
-    Keys.Key,
-    Locales.Locale,
-    Languages.Language,
-    Teams.Team
-  }
+  alias Runa.Files.File
+  alias Runa.Keys.Key
+  alias Runa.Languages.Language
+  alias Runa.Locales.Locale
+  alias Runa.Teams.Team
 
   schema "projects" do
     field :name, :string

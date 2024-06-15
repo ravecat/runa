@@ -34,7 +34,7 @@ defmodule RunaWeb.TeamControllerTest do
              } = json_response(conn, 200)
 
       assert title == team.title
-      assert id == team.id |> Integer.to_string()
+      assert id == Integer.to_string(team.id)
     end
 
     test "returns empty list of resources", ctx do
@@ -72,7 +72,7 @@ defmodule RunaWeb.TeamControllerTest do
              } = json_response(conn, 200)
 
       assert title == team.title
-      assert id == team.id |> Integer.to_string()
+      assert id == Integer.to_string(team.id)
     end
 
     test "returns errors when resource is not found", ctx do

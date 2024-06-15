@@ -4,7 +4,8 @@ defmodule Runa.TokensTest do
 
   @moduletag :tokens
 
-  alias Runa.{Tokens, Tokens.Token}
+  alias Runa.Tokens
+  alias Runa.Tokens.Token
 
   import Runa.Factory
 

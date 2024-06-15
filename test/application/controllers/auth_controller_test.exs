@@ -5,7 +5,8 @@ defmodule RunaWeb.AuthControllerTest do
 
   @moduletag :auth
 
-  alias RunaWeb.{AuthController, Router}
+  alias RunaWeb.AuthController
+  alias RunaWeb.Router
 
   import Runa.Factory
 

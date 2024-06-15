@@ -5,7 +5,8 @@ defmodule Runa.LanguagesTest do
 
   @moduletag :languages
 
-  alias Runa.{Languages.Language, Languages}
+  alias Runa.Languages
+  alias Runa.Languages.Language
 
   import Runa.Factory
 

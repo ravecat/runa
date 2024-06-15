@@ -6,7 +6,8 @@ defmodule Runa.Keys.Key do
 
   import Ecto.Changeset
 
-  alias Runa.{Projects.Project, Translations.Translation}
+  alias Runa.Projects.Project
+  alias Runa.Translations.Translation
 
   schema "keys" do
     field :name, :string

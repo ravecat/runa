@@ -5,7 +5,8 @@ defmodule Runa.Keys do
 
   import Ecto.Query, warn: false
 
-  alias Runa.{Repo, Keys.Key}
+  alias Runa.Keys.Key
+  alias Runa.Repo
 
   @doc """
   Returns the list of keys.

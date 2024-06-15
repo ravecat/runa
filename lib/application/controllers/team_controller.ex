@@ -1,7 +1,8 @@
 defmodule RunaWeb.TeamController do
   use RunaWeb, :controller
 
-  alias Runa.{Teams, Teams.Team}
+  alias Runa.Teams
+  alias Runa.Teams.Team
   alias RunaWeb.FallbackController
 
   action_fallback FallbackController

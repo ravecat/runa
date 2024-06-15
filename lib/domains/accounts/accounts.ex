@@ -5,13 +5,11 @@ defmodule Runa.Accounts do
 
   import Ecto.Query, warn: false
 
-  alias Runa.{
-    Accounts.User,
-    Repo,
-    Teams.Team,
-    Roles.Role,
-    Contributors.Contributor
-  }
+  alias Runa.Accounts.User
+  alias Runa.Contributors.Contributor
+  alias Runa.Repo
+  alias Runa.Roles.Role
+  alias Runa.Teams.Team
 
   alias Ecto.Multi
 

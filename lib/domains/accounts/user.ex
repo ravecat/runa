@@ -6,7 +6,9 @@ defmodule Runa.Accounts.User do
 
   import Ecto.Changeset
 
-  alias Runa.{Contributors.Contributor, Teams.Team, Tokens.Token}
+  alias Runa.Contributors.Contributor
+  alias Runa.Teams.Team
+  alias Runa.Tokens.Token
 
   schema "users" do
     field :email, :string

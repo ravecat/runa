@@ -6,7 +6,8 @@ defmodule Runa.Languages.Language do
 
   import Ecto.Changeset
 
-  alias Runa.{Projects.Project, Locales.Locale}
+  alias Runa.Locales.Locale
+  alias Runa.Projects.Project
 
   schema "languages" do
     field :wals_code, :string

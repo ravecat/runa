@@ -5,7 +5,8 @@ defmodule Runa.TeamsTest do
 
   @moduletag :teams
 
-  alias Runa.{Teams.Team, Teams}
+  alias Runa.Teams
+  alias Runa.Teams.Team
 
   import Runa.Factory
 

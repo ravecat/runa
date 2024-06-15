@@ -30,7 +30,7 @@ defmodule RunaWeb.Widgets.SidebarTest do
     end
 
     test "renders wokrspace info", ctx do
-      team = ctx.user.teams |> List.first()
+      team = List.first(ctx.user.teams)
 
       html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
 
