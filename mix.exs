@@ -84,7 +84,8 @@ defmodule Runa.MixProject do
       {:hammox, "~> 0.7", only: :test},
       {:jsonapi, "~> 1.7.1"},
       {:ex_machina, "~> 2.7.0", only: :test},
-      {:recode, "~> 0.7", only: [:dev, :test]}
+      {:recode, "~> 0.7", only: [:dev, :test]},
+      {:open_api_spex, "~> 3.19"}
     ]
   end
 

@@ -1,11 +1,31 @@
 defmodule RunaWeb.TeamController do
   use RunaWeb, :controller
+  use RunaWeb, :openapi
 
   alias Runa.Teams
   alias Runa.Teams.Team
   alias RunaWeb.FallbackController
+  alias RunaWeb.Schemas
 
   action_fallback FallbackController
+
+  def index_operation() do
+    %Operation{
+      tags: ["teams"],
+      summary: "List teams",
+      description: "List all teams related with user account",
+      operationId: "getTeamList",
+      responses: %{
+        200 =>
+          response(
+            "Team list response",
+            "application/vnd.api+json",
+            Schemas.TeamsResponse
+          ),
+        422 => %Reference{"$ref": "#/components/responses/unprocessable_entity"}
+      }
+    }
+  end
 
   def index(conn, _params) do
     teams = Teams.get_teams()

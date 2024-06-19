@@ -3,8 +3,13 @@ defmodule RunaWeb.Router do
 
   require Ueberauth
 
+  alias RunaWeb.APISpec
+  alias RunaWeb.AuthController
   alias RunaWeb.Layouts
   alias RunaWeb.Plug.Authentication
+  alias RunaWeb.PageController
+  alias RunaWeb.PageLive
+  alias RunaWeb.TeamController
   alias RunaWeb.Telemetry
   alias RunaWeb.UserData
 
@@ -22,19 +27,21 @@ defmodule RunaWeb.Router do
   end
 
   pipeline :api do
+    plug OpenApiSpex.Plug.PutApiSpec, module: APISpec
     plug :accepts, ["jsonapi"]
     plug JSONAPI.EnsureSpec
     plug JSONAPI.Deserializer
     plug JSONAPI.UnderscoreParameters
   end
 
-  scope "/api", RunaWeb do
+  scope "/api" do
     pipe_through :api
 
-    resources "/teams", TeamController
+    resources "/teams", TeamController, only: [:index]
+    get "/openapi", OpenApiSpex.Plug.RenderSpec, []
   end
 
-  scope "/", RunaWeb do
+  scope "/" do
     pipe_through :browser
 
     get "/", PageController, :home
@@ -45,11 +52,11 @@ defmodule RunaWeb.Router do
   end
 
   live_session :default, on_mount: UserData do
-    scope "/profile", RunaWeb.PageLive do
+    scope "/profile" do
       pipe_through [:browser, :auth]
 
-      live "/", Profile, :show
-      live "/:id/edit", Profile, :edit
+      live "/", PageLive.Profile, :show
+      live "/:id/edit", PageLive.Profile, :edit
     end
   end
 

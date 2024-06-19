@@ -30,6 +30,8 @@ runa-*.tar
 
 /deps/
 /_build/
+openapi.json
+openapi.yaml
 
 /deps/
 /_build/
