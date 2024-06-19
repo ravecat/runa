@@ -112,6 +112,22 @@ defmodule RunaWeb do
     end
   end
 
+  def openapi do
+    quote do
+      import OpenApiSpex.Operation,
+        only: [parameter: 5, request_body: 4, response: 3]
+
+      alias OpenApiSpex.Operation
+      alias OpenApiSpex.Reference
+
+      plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
+
+      def open_api_operation(action) do
+        apply(__MODULE__, :"#{action}_operation", [])
+      end
+    end
+  end
+
   defp html_helpers do
     quote do
       # HTML escaping functionality
