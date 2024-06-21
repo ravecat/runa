@@ -8,7 +8,7 @@ defmodule RunaWeb.ErrorJSONTest do
 
   test "renders 404" do
     assert ErrorJSON.render("404.json", %{}) == %{
-             errors: [%{detail: "Not Found", status: "404", title: "Not Found"}]
+             errors: [%{detail: "Not Found", code: "404", title: "Not Found"}]
            }
   end
 
@@ -18,7 +18,7 @@ defmodule RunaWeb.ErrorJSONTest do
                errors: [
                  %{
                    detail: "Internal Server Error",
-                   status: "500",
+                   code: "500",
                    title: "Internal Server Error"
                  }
                ]

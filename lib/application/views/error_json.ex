@@ -18,7 +18,7 @@ defmodule RunaWeb.ErrorJSON do
     %{
       errors: [
         %{
-          status: status,
+          code: status,
           title: Phoenix.Controller.status_message_from_template(template),
           detail: Phoenix.Controller.status_message_from_template(template)
         }

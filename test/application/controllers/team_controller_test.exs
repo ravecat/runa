@@ -27,42 +27,15 @@ defmodule RunaWeb.TeamControllerTest do
   describe "show endpoint" do
     test "returns resource", ctx do
       team = insert(:team)
-      conn = get(ctx.conn, ~p"/api/teams/#{team.id}")
+      json = get(ctx.conn, ~p"/api/teams/#{team.id}") |> json_response(200)
 
-      assert %{
-               "data" => %{
-                 "attributes" => %{
-                   "inserted_at" => _,
-                   "inserted_at_timestamp" => _,
-                   "title" => title,
-                   "updated_at" => _,
-                   "updated_at_timestamp" => _
-                 },
-                 "id" => id,
-                 "type" => "teams",
-                 "relationships" => %{},
-                 "links" => %{"self" => _}
-               },
-               "included" => [],
-               "links" => %{"self" => _}
-             } = json_response(conn, 200)
-
-      assert title == team.title
-      assert id == Integer.to_string(team.id)
+      assert_schema(json, "TeamResponse", ctx.spec)
     end
 
     test "returns errors when resource is not found", ctx do
-      conn = get(ctx.conn, ~p"/api/teams/1")
+      json = get(ctx.conn, ~p"/api/teams/1") |> json_response(404)
 
-      assert %{
-               "errors" => [
-                 %{
-                   "title" => "Not Found",
-                   "detail" => "Not Found",
-                   "status" => "404"
-                 }
-               ]
-             } = json_response(conn, 404)
+      assert_schema(json, "NotFoundResponse", ctx.spec)
     end
   end
 

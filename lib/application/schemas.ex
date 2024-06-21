@@ -112,4 +112,88 @@ defmodule RunaWeb.Schemas do
       }
     })
   end
+
+  defmodule TeamResponse do
+    @moduledoc """
+    The schema for team response.
+    """
+    OpenApiSpex.schema(%{
+      title: "TeamResponse",
+      description: "Response schema for team",
+      type: :object,
+      properties: %{
+        links: %Schema{
+          type: :object,
+          properties: %{
+            self: %Schema{
+              type: :string,
+              format: :uri,
+              description: "Self link"
+            }
+          }
+        },
+        data: Team
+      },
+      required: [:links, :data],
+      example: %{
+        "links" => %{
+          "self" => "http://www.example.com/api/teams/1"
+        },
+        "data" => %{
+          "id" => 1,
+          "type" => "teams",
+          "attributes" => %{
+            "title" => "My awesome team",
+            "inserted_at" => "2021-01-01T00:00:00Z",
+            "updated_at" => "2021-01-01T00:00:00Z",
+            "inserted_at_timestamp" => "1609459200",
+            "updated_at_timestamp" => "1609459200"
+          }
+        }
+      }
+    })
+  end
+
+  defmodule NotFoundResponse do
+    @moduledoc """
+    The schema for 404 response.
+    """
+    OpenApiSpex.schema(%{
+      title: "NotFoundResponse",
+      description: "Response schema for missed resource",
+      type: :object,
+      properties: %{
+        errors: %Schema{
+          type: :array,
+          items: %Schema{
+            type: :object,
+            properties: %{
+              code: %Schema{
+                type: :string,
+                description: "Error code"
+              },
+              title: %Schema{
+                type: :string,
+                description: "Error title"
+              },
+              detail: %Schema{
+                type: :string,
+                description: "Error detail"
+              }
+            },
+            required: [:code, :title, :detail]
+          }
+        }
+      },
+      required: [:errors],
+      example: %{
+        "errors" => [
+          %{
+            "code" => "404",
+            "title" => "Not found"
+          }
+        ]
+      }
+    })
+  end
 end
