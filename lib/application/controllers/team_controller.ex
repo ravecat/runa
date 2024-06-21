@@ -9,9 +9,11 @@ defmodule RunaWeb.TeamController do
 
   action_fallback FallbackController
 
+  @tags ["teams"]
+
   def index_operation() do
     %Operation{
-      tags: ["teams"],
+      tags: @tags,
       summary: "List teams",
       description: "List all teams related with user account",
       operationId: "getTeamList",
@@ -35,7 +37,34 @@ defmodule RunaWeb.TeamController do
     |> render(:index, data: teams)
   end
 
-  def show(conn, %{"id" => id}) do
+  def show_operation() do
+    %Operation{
+      tags: @tags,
+      summary: "Show team",
+      description: "Show team details",
+      operationId: "getTeam",
+      parameters: [
+        parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
+      ],
+      responses: %{
+        200 =>
+          response(
+            "Team response",
+            "application/vnd.api+json",
+            Schemas.TeamResponse
+          ),
+        404 =>
+          response(
+            "404",
+            "application/vnd.api+json",
+            Schemas.NotFoundResponse
+          ),
+        422 => %Reference{"$ref": "#/components/responses/unprocessable_entity"}
+      }
+    }
+  end
+
+  def show(conn, %{id: id}) do
     with {:ok, team = %Team{}} <- Teams.get_team(id) do
       conn
       |> put_status(200)

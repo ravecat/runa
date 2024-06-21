@@ -4,13 +4,13 @@ defmodule RunaWeb.APISpec do
   """
   alias OpenApiSpex.Components
   alias OpenApiSpex.Info
+  alias OpenApiSpex.MediaType
   alias OpenApiSpex.OpenApi
   alias OpenApiSpex.Paths
+  alias OpenApiSpex.Response
+  alias OpenApiSpex.Schema
   alias OpenApiSpex.SecurityScheme
   alias OpenApiSpex.Server
-  alias OpenApiSpex.Response
-  alias OpenApiSpex.MediaType
-  alias OpenApiSpex.Schema
   alias RunaWeb.Endpoint
   alias RunaWeb.Router
 
@@ -38,7 +38,9 @@ defmodule RunaWeb.APISpec do
           unprocessable_entity: %Response{
             description: "Unprocessable entity",
             content: %{
-              "application/vnd.api+json" => %MediaType{schema: %Schema{type: :object}}
+              "application/vnd.api+json" => %MediaType{
+                schema: %Schema{type: :object}
+              }
             }
           }
         }
