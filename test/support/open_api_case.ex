@@ -10,6 +10,7 @@ defmodule RunaWeb.OpenAPICase do
       import OpenApiSpex.TestAssertions
 
       alias RunaWeb.APISpec
+      alias OpenApiSpex.Schema
 
       setup do
         spec = APISpec.spec()

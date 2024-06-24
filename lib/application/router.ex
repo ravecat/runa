@@ -37,14 +37,14 @@ defmodule RunaWeb.Router do
   scope "/api" do
     pipe_through :api
 
-    resources "/teams", TeamController, only: [:index, :show]
-    get "/openapi", OpenApiSpex.Plug.RenderSpec, []
+    get "/", OpenApiSpex.Plug.RenderSpec, []
+    resources "/teams", TeamController, only: [:index, :show, :create]
   end
 
   scope "/" do
     pipe_through :browser
 
-    get "/openapi", OpenApiSpex.Plug.SwaggerUI, path: "/api/openapi"
+    get "/openapi", OpenApiSpex.Plug.SwaggerUI, path: "/api"
     get "/", PageController, :home
     get "/logout", AuthController, :logout
     get "/auth/:provider", AuthController, :request

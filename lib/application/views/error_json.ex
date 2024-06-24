@@ -18,7 +18,7 @@ defmodule RunaWeb.ErrorJSON do
     %{
       errors: [
         %{
-          code: status,
+          status: status,
           title: Phoenix.Controller.status_message_from_template(template),
           detail: Phoenix.Controller.status_message_from_template(template)
         }
@@ -27,7 +27,7 @@ defmodule RunaWeb.ErrorJSON do
   end
 
   @doc """
-  Renders changeset errors.
+  Renders errors.
   """
   def error(%{changeset: changeset}) do
     # When encoded, the changeset returns its errors
@@ -45,6 +45,21 @@ defmodule RunaWeb.ErrorJSON do
           end)
         end)
         |> List.flatten()
+    }
+  end
+
+  def error(%{errors: errors, conn: %{status: status}}) when is_list(errors) do
+    %{
+      errors:
+        Enum.map(errors, fn error ->
+          %{
+            status: to_string(status),
+            source: %{
+              pointer: OpenApiSpex.path_to_string(error)
+            },
+            title: to_string(error)
+          }
+        end)
     }
   end
 

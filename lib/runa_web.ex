@@ -117,10 +117,12 @@ defmodule RunaWeb do
       import OpenApiSpex.Operation,
         only: [parameter: 5, request_body: 4, response: 3]
 
+      alias OpenApiSpex.JsonErrorResponse
       alias OpenApiSpex.Operation
       alias OpenApiSpex.Reference
 
-      plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
+      plug OpenApiSpex.Plug.CastAndValidate,
+        render_error: RunaWeb.FallbackController
 
       def open_api_operation(action) do
         apply(__MODULE__, :"#{action}_operation", [])

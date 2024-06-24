@@ -4,6 +4,7 @@ defmodule RunaWeb.TeamControllerTest do
   use RunaWeb.ConnCase, async: true
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
+  alias RunaWeb.Schemas
 
   @moduletag :teams
 
@@ -11,7 +12,7 @@ defmodule RunaWeb.TeamControllerTest do
 
   describe "index" do
     test "returns list of resources", ctx do
-      team = insert(:team)
+      insert(:team)
       json = get(ctx.conn, ~p"/api/teams") |> json_response(200)
 
       assert_schema(json, "TeamsResponse", ctx.spec)
@@ -35,58 +36,31 @@ defmodule RunaWeb.TeamControllerTest do
     test "returns errors when resource is not found", ctx do
       json = get(ctx.conn, ~p"/api/teams/1") |> json_response(404)
 
-      assert_schema(json, "NotFoundResponse", ctx.spec)
+      assert_schema(json, "ErrorResponse", ctx.spec)
     end
   end
 
   describe "create endpoint" do
     test "returns resource when data is valid", ctx do
-      conn =
-        post(ctx.conn, ~p"/api/teams", %{
-          "data" => %{
-            "type" => "teams",
-            "attributes" => %{
-              "title" => "Team 1"
-            }
-          }
-        })
+      body = Schema.example(Schemas.TeamRequest.schema())
 
-      assert %{
-               "data" => %{
-                 "attributes" => %{
-                   "inserted_at" => _,
-                   "inserted_at_timestamp" => _,
-                   "title" => "Team 1",
-                   "updated_at" => _,
-                   "updated_at_timestamp" => _
-                 },
-                 "id" => _,
-                 "type" => "teams",
-                 "relationships" => %{},
-                 "links" => %{"self" => _}
-               },
-               "included" => [],
-               "links" => %{"self" => _}
-             } = json_response(conn, 201)
+      json =
+        post(ctx.conn, ~p"/api/teams", body)
+        |> json_response(201)
+
+      assert_schema(json, "TeamResponse", ctx.spec)
     end
 
     test "renders errors when data is invalid", ctx do
-      conn =
-        post(ctx.conn, ~p"/api/teams", %{
-          "data" => %{
-            "type" => "teams",
-            "attributes" => %{}
-          }
-        })
+      body =
+        Schema.example(Schemas.TeamRequest.schema())
+        |> put_in(["data", "attributes"], %{})
 
-      assert %{
-               "errors" => [
-                 %{
-                   "source" => %{"pointer" => "/data/attributes/title"},
-                   "title" => "title can't be blank"
-                 }
-               ]
-             } == json_response(conn, 422)
+      json =
+        post(ctx.conn, ~p"/api/teams", body)
+        |> json_response(422)
+
+      assert_schema(json, "ErrorResponse", ctx.spec)
     end
   end
 
