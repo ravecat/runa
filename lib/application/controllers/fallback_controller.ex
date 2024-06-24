@@ -22,4 +22,11 @@ defmodule RunaWeb.FallbackController do
     |> put_view(json: ErrorJSON, jsonapi: ErrorJSON)
     |> render(:error, changeset: changeset)
   end
+
+  def call(conn, errors) when is_list(errors) do
+    conn
+    |> put_status(422)
+    |> put_view(json: ErrorJSON, jsonapi: ErrorJSON)
+    |> render(:error, errors: errors)
+  end
 end

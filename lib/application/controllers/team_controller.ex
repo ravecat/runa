@@ -57,9 +57,14 @@ defmodule RunaWeb.TeamController do
           response(
             "404",
             "application/vnd.api+json",
-            Schemas.NotFoundResponse
+            Schemas.ErrorResponse
           ),
-        422 => %Reference{"$ref": "#/components/responses/unprocessable_entity"}
+        422 =>
+          response(
+            "422",
+            "application/vnd.api+json",
+            Schemas.ErrorResponse
+          )
       }
     }
   end
@@ -72,7 +77,40 @@ defmodule RunaWeb.TeamController do
     end
   end
 
-  def create(conn, attrs) do
+  def create_operation() do
+    %Operation{
+      tags: @tags,
+      summary: "Create team",
+      description: "Create a new team",
+      operationId: "createTeam",
+      requestBody:
+        request_body(
+          "Team request",
+          "application/vnd.api+json",
+          Schemas.TeamRequest,
+          required: true
+        ),
+      responses: %{
+        201 =>
+          response(
+            "Team response",
+            "application/vnd.api+json",
+            Schemas.TeamResponse
+          ),
+        422 =>
+          response(
+            "Unprocessible entity",
+            "application/vnd.api+json",
+            Schemas.ErrorResponse
+          )
+      }
+    }
+  end
+
+  def create(
+        %{body_params: %Schemas.TeamRequest{data: %{attributes: attrs}}} = conn,
+        _
+      ) do
     with {:ok, %Team{} = team} <- Teams.create_team(attrs) do
       conn
       |> put_status(201)

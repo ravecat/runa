@@ -154,13 +154,56 @@ defmodule RunaWeb.Schemas do
     })
   end
 
-  defmodule NotFoundResponse do
+  defmodule TeamRequest do
     @moduledoc """
-    The schema for 404 response.
+    The schema for team request.
     """
     OpenApiSpex.schema(%{
-      title: "NotFoundResponse",
-      description: "Response schema for missed resource",
+      title: "TeamRequest",
+      description: "Request schema for team",
+      type: :object,
+      properties: %{
+        data: %Schema{
+          type: :object,
+          properties: %{
+            type: %Schema{
+              type: :string,
+              description: "Resource type"
+            },
+            attributes: %Schema{
+              type: :object,
+              properties: %{
+                title: %Schema{
+                  type: :string,
+                  description: "Team title",
+                  pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
+                }
+              },
+              required: [:title]
+            }
+          },
+          required: [:type, :attributes]
+        }
+      },
+      required: [:data],
+      example: %{
+        "data" => %{
+          "type" => "teams",
+          "attributes" => %{
+            "title" => "My awesome team"
+          }
+        }
+      }
+    })
+  end
+
+  defmodule ErrorResponse do
+    @moduledoc """
+    The schema for error response.
+    """
+    OpenApiSpex.schema(%{
+      title: "ErrorResponse",
+      description: "Response schema for error",
       type: :object,
       properties: %{
         errors: %Schema{
@@ -168,20 +211,18 @@ defmodule RunaWeb.Schemas do
           items: %Schema{
             type: :object,
             properties: %{
-              code: %Schema{
+              status: %Schema{
                 type: :string,
-                description: "Error code"
+                description:
+                  "the HTTP status code applicable to this problem, expressed as a string value."
               },
               title: %Schema{
                 type: :string,
-                description: "Error title"
-              },
-              detail: %Schema{
-                type: :string,
-                description: "Error detail"
+                description:
+                  "a short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization."
               }
             },
-            required: [:code, :title, :detail]
+            required: [:status, :title]
           }
         }
       },
@@ -189,8 +230,20 @@ defmodule RunaWeb.Schemas do
       example: %{
         "errors" => [
           %{
-            "code" => "404",
-            "title" => "Not found"
+            "code" => "123",
+            "source" => %{"pointer" => "/data/attributes/firstName"},
+            "title" => "Value is too short"
+          },
+          %{
+            "code" => "225",
+            "source" => %{"pointer" => "/data/attributes/password"},
+            "title" =>
+              "Passwords must contain a letter, number, and punctuation character."
+          },
+          %{
+            "code" => "226",
+            "source" => %{"pointer" => "/data/attributes/password"},
+            "title" => "Password and password confirmation do not match."
           }
         ]
       }
