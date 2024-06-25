@@ -2,6 +2,60 @@ defmodule RunaWeb.Schemas do
   require OpenApiSpex
   alias OpenApiSpex.Schema
 
+  defmodule ResourceObject do
+    @moduledoc """
+    The schema for JSON:API resource object.
+    """
+    OpenApiSpex.schema(%{
+      title: "ResourceObject",
+      description: "JSON:API resource object",
+      type: :object,
+      properties: %{
+        type: %Schema{type: :string, description: "Resource type"}
+      },
+      required: [:type]
+    })
+  end
+
+  defmodule CommonResource do
+    @moduledoc """
+    The common properties for JSON:API resource object.
+    """
+    OpenApiSpex.schema(%{
+      type: :object,
+      allOf: [
+        ResourceObject,
+        %Schema{
+          type: :object,
+          properties: %{
+            inserted_at: %Schema{
+              type: :string,
+              description: "ISO 8601 date of creation",
+              format: :"date-time"
+            },
+            updated_at: %Schema{
+              type: :string,
+              description: "ISO 8601 date of update",
+              format: :"date-time"
+            },
+            inserted_at_timestamp: %Schema{
+              type: :string,
+              description: "UNIX timestamp of creation",
+              format: :int64,
+              minimum: 0
+            },
+            updated_at_timestamp: %Schema{
+              type: :string,
+              description: "UNIX timestamp of update",
+              format: :int64,
+              minimum: 0
+            }
+          }
+        }
+      ]
+    })
+  end
+
   defmodule Team do
     @moduledoc """
     The schema for team, which are union of users and projects.
@@ -12,49 +66,26 @@ defmodule RunaWeb.Schemas do
     OpenApiSpex.schema(%{
       title: "Team",
       description: "Team schema",
-      type: :object,
-      properties: %{
-        id: %Schema{type: :integer, description: "Resource ID"},
-        type: %Schema{
-          type: :string,
-          description: "Resource type"
-        },
-        attributes: %Schema{
+      allOf: [
+        CommonResource,
+        %Schema{
           type: :object,
           properties: %{
-            title: %Schema{
-              type: :string,
-              description: "Team title",
-              pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
-            },
-            inserted_at: %Schema{
-              type: :string,
-              description: "Creation ISO 8601 date",
-              format: :"date-time"
-            },
-            updated_at: %Schema{
-              type: :string,
-              description: "Update ISO 8601 date",
-              format: :"date-time"
-            },
-            inserted_at_timestamp: %Schema{
-              type: :string,
-              description: "Creation UNIX timestamp",
-              format: :int64,
-              minimum: 0
-            },
-            updated_at_timestamp: %Schema{
-              type: :string,
-              description: "Update UNIX timestamp",
-              format: :int64,
-              minimum: 0
+            attributes: %Schema{
+              type: :object,
+              properties: %{
+                title: %Schema{
+                  type: :string,
+                  description: "Team title",
+                  pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
+                }
+              },
+              required: [:title]
             }
-          },
-          required: [:title]
+          }
         }
-      },
+      ],
       example: %{
-        "id" => 1,
         "type" => "teams",
         "attributes" => %{
           "title" => "My awesome team",
@@ -154,12 +185,12 @@ defmodule RunaWeb.Schemas do
     })
   end
 
-  defmodule TeamRequest do
+  defmodule TeamPostRequest do
     @moduledoc """
     The schema for team request.
     """
     OpenApiSpex.schema(%{
-      title: "TeamRequest",
+      title: "TeamPostRequest",
       description: "Request schema for team",
       type: :object,
       properties: %{
@@ -189,6 +220,53 @@ defmodule RunaWeb.Schemas do
       example: %{
         "data" => %{
           "type" => "teams",
+          "attributes" => %{
+            "title" => "My awesome team"
+          }
+        }
+      }
+    })
+  end
+
+  defmodule TeamPatchRequest do
+    @moduledoc """
+    The schema for team request.
+    """
+    OpenApiSpex.schema(%{
+      title: "TeamPatchRequest",
+      description: "Request schema for team",
+      type: :object,
+      properties: %{
+        data: %Schema{
+          type: :object,
+          properties: %{
+            type: %Schema{
+              type: :string,
+              description: "Resource type"
+            },
+            id: %Schema{
+              type: :string,
+              description: "Resource ID"
+            },
+            attributes: %Schema{
+              type: :object,
+              properties: %{
+                title: %Schema{
+                  type: :string,
+                  description: "Team title",
+                  pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
+                }
+              }
+            }
+          },
+          required: [:type, :id, :attributes]
+        }
+      },
+      required: [:data],
+      example: %{
+        "data" => %{
+          "type" => "teams",
+          "id" => "1",
           "attributes" => %{
             "title" => "My awesome team"
           }

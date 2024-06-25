@@ -38,7 +38,7 @@ defmodule RunaWeb.Router do
     pipe_through :api
 
     get "/", OpenApiSpex.Plug.RenderSpec, []
-    resources "/teams", TeamController, only: [:index, :show, :create]
+    resources "/teams", TeamController, only: [:index, :show, :create, :update]
   end
 
   scope "/" do

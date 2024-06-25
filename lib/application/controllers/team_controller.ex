@@ -9,7 +9,7 @@ defmodule RunaWeb.TeamController do
 
   action_fallback FallbackController
 
-  @tags ["teams"]
+  @tags ["Teams"]
 
   def index_operation() do
     %Operation{
@@ -87,7 +87,7 @@ defmodule RunaWeb.TeamController do
         request_body(
           "Team request",
           "application/vnd.api+json",
-          Schemas.TeamRequest,
+          Schemas.TeamPostRequest,
           required: true
         ),
       responses: %{
@@ -108,7 +108,8 @@ defmodule RunaWeb.TeamController do
   end
 
   def create(
-        %{body_params: %Schemas.TeamRequest{data: %{attributes: attrs}}} = conn,
+        %{body_params: %Schemas.TeamPostRequest{data: %{attributes: attrs}}} =
+          conn,
         _
       ) do
     with {:ok, %Team{} = team} <- Teams.create_team(attrs) do
@@ -118,11 +119,68 @@ defmodule RunaWeb.TeamController do
     end
   end
 
-  def update(conn, %{"id" => id} = attrs) do
+  def update_operation() do
+    %Operation{
+      tags: @tags,
+      summary: "Update team",
+      description: "Update team details",
+      operationId: "updateTeam",
+      parameters: [
+        parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
+      ],
+      requestBody:
+        request_body(
+          "Team request",
+          "application/vnd.api+json",
+          Schemas.TeamPatchRequest,
+          required: true
+        ),
+      responses: %{
+        200 =>
+          response(
+            "Team response",
+            "application/vnd.api+json",
+            Schemas.TeamResponse
+          ),
+        422 =>
+          response(
+            "Unprocessible entity",
+            "application/vnd.api+json",
+            Schemas.ErrorResponse
+          )
+      }
+    }
+  end
+
+  def update(
+        %{body_params: %Schemas.TeamPatchRequest{data: %{attributes: attrs}}} =
+          conn,
+        %{id: id}
+      ) do
     with {:ok, team = %Team{}} <- Teams.get_team(id),
          {:ok, %Team{} = data} <- Teams.update_team(team, attrs) do
       render(conn, :show, data: data)
     end
+  end
+
+  def delete_operation() do
+    %Operation{
+      tags: @tags,
+      summary: "Delete team",
+      description: "Delete team",
+      operationId: "deleteTeam",
+      parameters: [
+        parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
+      ],
+      responses: %{
+        200 =>
+          response(
+            "No content",
+            "application/vnd.api+json",
+            Schemas.DeleteResponse
+          )
+      }
+    }
   end
 
   def delete(conn, %{"id" => id}) do
