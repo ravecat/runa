@@ -24,11 +24,7 @@ defmodule RunaWeb.CommonJSON do
       end
 
       def delete(%{conn: conn}) do
-        %{
-          meta: %{
-            message: "Resource deleted"
-          }
-        }
+        %{}
       end
     end
   end

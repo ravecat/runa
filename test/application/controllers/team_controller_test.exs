@@ -92,13 +92,9 @@ defmodule RunaWeb.TeamControllerTest do
   describe "delete endpoint" do
     test "deletes resource", ctx do
       team = insert(:team)
-      conn = delete(ctx.conn, ~p"/api/teams/#{team.id}")
+      json = delete(ctx.conn, ~p"/api/teams/#{team.id}") |> json_response(200)
 
-      assert %{
-               "meta" => %{
-                 "message" => "Resource deleted"
-               }
-             } = json_response(conn, 204)
+      assert %{} = json
     end
   end
 end

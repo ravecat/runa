@@ -173,21 +173,16 @@ defmodule RunaWeb.TeamController do
         parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
       ],
       responses: %{
-        200 =>
-          response(
-            "No content",
-            "application/vnd.api+json",
-            Schemas.DeleteResponse
-          )
+        200 => %Reference{"$ref": "#/components/responses/success_delete"}
       }
     }
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{id: id}) do
     with {:ok, team = %Team{}} <- Teams.get_team(id),
          {:ok, %Team{}} <- Teams.delete_team(team) do
       conn
-      |> put_status(204)
+      |> put_status(200)
       |> render(:delete)
     end
   end
