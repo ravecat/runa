@@ -8,6 +8,9 @@ defmodule RunaWeb.APISpec do
   alias OpenApiSpex.Paths
   alias OpenApiSpex.SecurityScheme
   alias OpenApiSpex.Server
+  alias OpenApiSpex.Schema
+  alias OpenApiSpex.MediaType
+  alias OpenApiSpex.Response
   alias RunaWeb.Endpoint
   alias RunaWeb.Router
 
@@ -29,6 +32,16 @@ defmodule RunaWeb.APISpec do
             type: "apiKey",
             in: "header",
             name: "X-API-KEY"
+          }
+        },
+        responses: %{
+          success_delete: %Response{
+            description: "Success delete response",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: %Schema{type: :object}
+              }
+            }
           }
         }
       },
