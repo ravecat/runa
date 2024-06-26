@@ -6,10 +6,11 @@ defmodule RunaWeb.TeamController do
   alias Runa.Teams.Team
   alias RunaWeb.FallbackController
   alias RunaWeb.Schemas
+  alias RunaWeb.TeamSerializer, as: Serializer
 
   action_fallback FallbackController
 
-  @tags ["Teams"]
+  @tags [Serializer.type()]
 
   def index_operation() do
     %Operation{
@@ -18,13 +19,27 @@ defmodule RunaWeb.TeamController do
       description: "List all teams related with user account",
       operationId: "getTeamList",
       responses: %{
-        200 =>
-          response(
-            "Team list response",
-            "application/vnd.api+json",
-            Schemas.TeamsResponse
-          ),
-        422 => %Reference{"$ref": "#/components/responses/unprocessable_entity"}
+        200 => %Response{
+          description: "200 OK",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: %Schema{
+                allOf: [
+                  %Reference{"$ref": "#/components/schemas/Document"},
+                  %Schema{
+                    type: :object,
+                    properties: %{
+                      data: %Schema{
+                        type: :array,
+                        items: Schemas.Team
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     }
   end
@@ -47,24 +62,24 @@ defmodule RunaWeb.TeamController do
         parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
       ],
       responses: %{
-        200 =>
-          response(
-            "Team response",
-            "application/vnd.api+json",
-            Schemas.TeamResponse
-          ),
-        404 =>
-          response(
-            "404",
-            "application/vnd.api+json",
-            Schemas.ErrorResponse
-          ),
-        422 =>
-          response(
-            "422",
-            "application/vnd.api+json",
-            Schemas.ErrorResponse
-          )
+        200 => %Response{
+          description: "200 OK",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: %Schema{
+                allOf: [
+                  %Reference{"$ref": "#/components/schemas/Document"},
+                  %Schema{
+                    type: :object,
+                    properties: %{
+                      data: Schemas.Team
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     }
   end
@@ -88,21 +103,33 @@ defmodule RunaWeb.TeamController do
           "Team request",
           "application/vnd.api+json",
           Schemas.TeamPostRequest,
-          required: true
+          required: true,
+          example: %{
+            "type" => "teams",
+            "attributes" => %{
+              "title" => "My awesome team"
+            }
+          }
         ),
       responses: %{
-        201 =>
-          response(
-            "Team response",
-            "application/vnd.api+json",
-            Schemas.TeamResponse
-          ),
-        422 =>
-          response(
-            "Unprocessible entity",
-            "application/vnd.api+json",
-            Schemas.ErrorResponse
-          )
+        201 => %Response{
+          description: "201 Created",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: %Schema{
+                allOf: [
+                  %Reference{"$ref": "#/components/schemas/Document"},
+                  %Schema{
+                    type: :object,
+                    properties: %{
+                      data: Schemas.Team
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     }
   end
@@ -136,18 +163,24 @@ defmodule RunaWeb.TeamController do
           required: true
         ),
       responses: %{
-        200 =>
-          response(
-            "Team response",
-            "application/vnd.api+json",
-            Schemas.TeamResponse
-          ),
-        422 =>
-          response(
-            "Unprocessible entity",
-            "application/vnd.api+json",
-            Schemas.ErrorResponse
-          )
+        200 => %Response{
+          description: "200 OK",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: %Schema{
+                allOf: [
+                  %Reference{"$ref": "#/components/schemas/Document"},
+                  %Schema{
+                    type: :object,
+                    properties: %{
+                      data: Schemas.Team
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     }
   end
@@ -173,7 +206,7 @@ defmodule RunaWeb.TeamController do
         parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
       ],
       responses: %{
-        200 => %Reference{"$ref": "#/components/responses/success_delete"}
+        204 => %Reference{"$ref": "#/components/responses/204"}
       }
     }
   end
@@ -182,7 +215,7 @@ defmodule RunaWeb.TeamController do
     with {:ok, team = %Team{}} <- Teams.get_team(id),
          {:ok, %Team{}} <- Teams.delete_team(team) do
       conn
-      |> put_status(200)
+      |> put_status(204)
       |> render(:delete)
     end
   end

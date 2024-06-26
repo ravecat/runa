@@ -47,6 +47,7 @@ defmodule RunaWeb.Router do
     pipe_through :browser
 
     get "/openapi", OpenApiSpex.Plug.SwaggerUI, path: "/api"
+
     get "/", PageController, :home
     get "/logout", AuthController, :logout
     get "/auth/:provider", AuthController, :request
