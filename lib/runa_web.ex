@@ -120,6 +120,9 @@ defmodule RunaWeb do
       alias OpenApiSpex.JsonErrorResponse
       alias OpenApiSpex.Operation
       alias OpenApiSpex.Reference
+      alias OpenApiSpex.Schema
+      alias OpenApiSpex.Response
+      alias OpenApiSpex.MediaType
 
       plug OpenApiSpex.Plug.CastAndValidate,
         render_error: RunaWeb.FallbackController

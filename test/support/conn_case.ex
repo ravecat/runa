@@ -39,6 +39,7 @@ defmodule RunaWeb.ConnCase do
       import Plug.HTML
       import Phoenix.ConnTest
       import RunaWeb.ConnCase
+      import Runa.Factory
     end
   end
 
