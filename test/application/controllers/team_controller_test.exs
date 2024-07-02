@@ -5,7 +5,7 @@ defmodule RunaWeb.TeamControllerTest do
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
 
-  alias RunaWeb.Schemas
+  alias RunaWeb.Schemas.Teams, as: Schemas
 
   @moduletag :teams
 
@@ -71,7 +71,7 @@ defmodule RunaWeb.TeamControllerTest do
 
   describe "create endpoint" do
     test "returns resource when data is valid", ctx do
-      body = Schema.example(Schemas.TeamPostRequest.schema())
+      body = Schema.example(Schemas.CreateBody.schema())
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(201)
@@ -88,7 +88,7 @@ defmodule RunaWeb.TeamControllerTest do
 
     test "renders errors when data is invalid", ctx do
       body =
-        Schema.example(Schemas.TeamPostRequest.schema())
+        Schema.example(Schemas.CreateBody.schema())
         |> put_in(["data", "attributes"], %{})
 
       post(ctx.conn, ~p"/api/teams", body)
@@ -102,7 +102,7 @@ defmodule RunaWeb.TeamControllerTest do
       team = insert(:team)
 
       body =
-        Schema.example(Schemas.TeamPatchRequest.schema())
+        Schema.example(Schemas.UpdateBody.schema())
         |> put_in(["data", "id"], "#{team.id}")
 
       patch(ctx.conn, ~p"/api/teams/#{team.id}", body)
@@ -119,7 +119,7 @@ defmodule RunaWeb.TeamControllerTest do
     end
 
     test "returns 404 error when resource doesn't exists", ctx do
-      body = Schema.example(Schemas.TeamPatchRequest.schema())
+      body = Schema.example(Schemas.UpdateBody.schema())
 
       patch(ctx.conn, ~p"/api/teams/#{body["data"]["id"]}", body)
       |> json_response(404)

@@ -5,7 +5,7 @@ defmodule RunaWeb.TeamController do
   alias Runa.Teams
   alias Runa.Teams.Team
   alias RunaWeb.FallbackController
-  alias RunaWeb.Schemas
+  alias RunaWeb.Schemas.Teams, as: Schemas
   alias RunaWeb.TeamSerializer, as: Serializer
 
   action_fallback FallbackController
@@ -19,27 +19,12 @@ defmodule RunaWeb.TeamController do
       description: "List all teams related with user account",
       operationId: "getTeamList",
       responses: %{
-        200 => %Response{
-          description: "200 OK",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: %Schema{
-                allOf: [
-                  %Reference{"$ref": "#/components/schemas/Document"},
-                  %Schema{
-                    type: :object,
-                    properties: %{
-                      data: %Schema{
-                        type: :array,
-                        items: Schemas.Team
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        }
+        200 =>
+          response(
+            "200 OK",
+            "application/vnd.api+json",
+            Schemas.IndexResponse
+          )
       }
     }
   end
@@ -62,24 +47,12 @@ defmodule RunaWeb.TeamController do
         parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
       ],
       responses: %{
-        200 => %Response{
-          description: "200 OK",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: %Schema{
-                allOf: [
-                  %Reference{"$ref": "#/components/schemas/Document"},
-                  %Schema{
-                    type: :object,
-                    properties: %{
-                      data: Schemas.Team
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        }
+        200 =>
+          response(
+            "200 OK",
+            "application/vnd.api+json",
+            Schemas.ShowResponse
+          )
       }
     }
   end
@@ -102,41 +75,22 @@ defmodule RunaWeb.TeamController do
         request_body(
           "Team request",
           "application/vnd.api+json",
-          Schemas.TeamPostRequest,
-          required: true,
-          example: %{
-            "type" => "teams",
-            "attributes" => %{
-              "title" => "My awesome team"
-            }
-          }
+          Schemas.CreateBody,
+          required: true
         ),
       responses: %{
-        201 => %Response{
-          description: "201 Created",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: %Schema{
-                allOf: [
-                  %Reference{"$ref": "#/components/schemas/Document"},
-                  %Schema{
-                    type: :object,
-                    properties: %{
-                      data: Schemas.Team
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        }
+        201 =>
+          response(
+            "200 OK",
+            "application/vnd.api+json",
+            Schemas.ShowResponse
+          )
       }
     }
   end
 
   def create(
-        %{body_params: %Schemas.TeamPostRequest{data: %{attributes: attrs}}} =
-          conn,
+        %{body_params: %Schemas.CreateBody{data: %{attributes: attrs}}} = conn,
         _
       ) do
     with {:ok, %Team{} = team} <- Teams.create_team(attrs) do
@@ -159,35 +113,22 @@ defmodule RunaWeb.TeamController do
         request_body(
           "Team request",
           "application/vnd.api+json",
-          Schemas.TeamPatchRequest,
+          Schemas.UpdateBody,
           required: true
         ),
       responses: %{
-        200 => %Response{
-          description: "200 OK",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: %Schema{
-                allOf: [
-                  %Reference{"$ref": "#/components/schemas/Document"},
-                  %Schema{
-                    type: :object,
-                    properties: %{
-                      data: Schemas.Team
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        }
+        200 =>
+          response(
+            "200 OK",
+            "application/vnd.api+json",
+            Schemas.ShowResponse
+          )
       }
     }
   end
 
   def update(
-        %{body_params: %Schemas.TeamPatchRequest{data: %{attributes: attrs}}} =
-          conn,
+        %{body_params: %Schemas.UpdateBody{data: %{attributes: attrs}}} = conn,
         %{id: id}
       ) do
     with {:ok, team = %Team{}} <- Teams.get_team(id),
