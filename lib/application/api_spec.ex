@@ -345,16 +345,6 @@ defmodule RunaWeb.APISpec do
                 additionalProperties: false
               }
             ]
-          },
-          "RequestBody" => %Schema{
-            type: :object,
-            properties: %{
-              data: %Reference{
-                "$ref": "#/components/schemas/ResourceObject"
-              }
-            },
-            required: [:data],
-            additionalProperties: false
           }
         },
         responses: %{
