@@ -1,6 +1,7 @@
 defmodule RunaWeb.Schemas.Teams do
   require OpenApiSpex
 
+  alias Credo.Check.Params
   alias OpenApiSpex.Reference
   alias OpenApiSpex.Schema
 
@@ -168,5 +169,24 @@ defmodule RunaWeb.Schemas.Teams do
         }
       }
     })
+  end
+
+  defmodule Params do
+    @moduledoc """
+    The schema for team operation params
+    """
+    alias OpenApiSpex.Parameter
+
+    def path,
+      do: [
+        %Parameter{
+          name: :id,
+          in: :path,
+          schema: %OpenApiSpex.Schema{type: :integer, minimum: 1},
+          description: "Team ID",
+          example: 1,
+          required: true
+        }
+      ]
   end
 end
