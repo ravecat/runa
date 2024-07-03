@@ -43,9 +43,7 @@ defmodule RunaWeb.TeamController do
       summary: "Show team",
       description: "Show team details",
       operationId: "getTeam",
-      parameters: [
-        parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
-      ],
+      parameters: Schemas.Params.path(),
       responses: %{
         200 =>
           response(
@@ -106,9 +104,7 @@ defmodule RunaWeb.TeamController do
       summary: "Update team",
       description: "Update team details",
       operationId: "updateTeam",
-      parameters: [
-        parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
-      ],
+      parameters: Schemas.Params.path(),
       requestBody:
         request_body(
           "Team request",
@@ -143,9 +139,7 @@ defmodule RunaWeb.TeamController do
       summary: "Delete team",
       description: "Delete team",
       operationId: "deleteTeam",
-      parameters: [
-        parameter(:id, :path, :integer, "Team ID", example: 1, required: true)
-      ],
+      parameters: Schemas.Params.path(),
       responses: %{
         204 => %Reference{"$ref": "#/components/responses/204"}
       }
