@@ -4,11 +4,8 @@ defmodule RunaWeb.TeamController do
 
   alias Runa.Teams
   alias Runa.Teams.Team
-  alias RunaWeb.FallbackController
   alias RunaWeb.Schemas.Teams, as: Schemas
   alias RunaWeb.TeamSerializer, as: Serializer
-
-  action_fallback FallbackController
 
   @tags [Serializer.type()]
 

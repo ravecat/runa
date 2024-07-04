@@ -24,7 +24,7 @@ defmodule Runa.ProjectsTest do
     end
 
     test "returns the project with given id", ctx do
-      assert project = Projects.get_project!(ctx.project.id)
+      assert {:ok, project} = Projects.get_project(ctx.project.id)
       assert project.id == ctx.project.id
     end
 
@@ -72,9 +72,7 @@ defmodule Runa.ProjectsTest do
     test "deletes the project", ctx do
       assert {:ok, %Project{}} = Projects.delete_project(ctx.project)
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Projects.get_project!(ctx.project.id)
-      end
+      assert {:error, %Ecto.NoResultsError{}} = Projects.get_project(ctx.project.id)
     end
 
     test "returns a project changeset", ctx do

@@ -26,16 +26,15 @@ defmodule Runa.Projects do
 
   Raises `Ecto.NoResultsError` if the Project does not exist.
 
-  ## Examples
 
-      iex> get_project!(123)
-      %Project{}
-
-      iex> get_project!(456)
-      ** (Ecto.NoResultsError)
 
   """
-  def get_project!(id), do: Repo.get!(Project, id)
+  def get_project(id) do
+    case Repo.get(Project, id) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      team -> {:ok, team}
+    end
+  end
 
   @doc """
   Creates a project.

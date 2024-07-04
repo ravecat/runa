@@ -15,15 +15,8 @@ defmodule RunaWeb.TeamControllerTest do
 
       get(ctx.conn, ~p"/api/teams")
       |> json_response(200)
-      |> assert_response(
-        %Schema{
-          properties: %{
-            data: %Schema{
-              type: :array,
-              items: %Reference{"$ref": "#/components/schemas/Team"}
-            }
-          }
-        },
+      |> assert_schema(
+        "Team.IndexResponse",
         ctx.spec
       )
     end
@@ -31,15 +24,8 @@ defmodule RunaWeb.TeamControllerTest do
     test "returns empty list of resources", ctx do
       get(ctx.conn, ~p"/api/teams")
       |> json_response(200)
-      |> assert_response(
-        %Schema{
-          properties: %{
-            data: %Schema{
-              type: :array,
-              items: %Reference{"$ref": "#/components/schemas/Team"}
-            }
-          }
-        },
+      |> assert_schema(
+        "Team.IndexResponse",
         ctx.spec
       )
     end
@@ -51,13 +37,8 @@ defmodule RunaWeb.TeamControllerTest do
 
       get(ctx.conn, ~p"/api/teams/#{team.id}")
       |> json_response(200)
-      |> assert_response(
-        %Schema{
-          type: :object,
-          properties: %{
-            data: %Reference{"$ref": "#/components/schemas/Team"}
-          }
-        },
+      |> assert_schema(
+        "Team.ShowResponse",
         ctx.spec
       )
     end
@@ -75,13 +56,8 @@ defmodule RunaWeb.TeamControllerTest do
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(201)
-      |> assert_response(
-        %Schema{
-          type: :object,
-          properties: %{
-            data: %Reference{"$ref": "#/components/schemas/Team"}
-          }
-        },
+      |> assert_schema(
+        "Team.ShowResponse",
         ctx.spec
       )
     end
@@ -107,13 +83,8 @@ defmodule RunaWeb.TeamControllerTest do
 
       patch(ctx.conn, ~p"/api/teams/#{team.id}", body)
       |> json_response(200)
-      |> assert_response(
-        %Schema{
-          type: :object,
-          properties: %{
-            data: %Reference{"$ref": "#/components/schemas/Team"}
-          }
-        },
+      |> assert_schema(
+        "Team.ShowResponse",
         ctx.spec
       )
     end
