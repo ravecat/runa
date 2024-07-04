@@ -1,14 +1,15 @@
-defmodule RunaWeb.TeamSerializer do
+defmodule RunaWeb.ProjectSerializer do
   @moduledoc """
-  Response serializer for teams
+  Response serializer for project resources
   """
   use JSONAPI.View
 
-  def type, do: "teams"
+  def type, do: "projects"
 
   def fields,
     do: [
-      :title,
+      :name,
+      :description,
       :inserted_at,
       :updated_at,
       :inserted_at_timestamp,

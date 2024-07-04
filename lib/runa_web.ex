@@ -46,6 +46,10 @@ defmodule RunaWeb do
       import Plug.Conn
       import RunaWeb.Gettext
 
+      alias RunaWeb.FallbackController
+
+      action_fallback FallbackController
+
       unquote(verified_routes())
     end
   end
@@ -118,11 +122,11 @@ defmodule RunaWeb do
         only: [parameter: 5, request_body: 4, response: 3]
 
       alias OpenApiSpex.JsonErrorResponse
+      alias OpenApiSpex.MediaType
       alias OpenApiSpex.Operation
       alias OpenApiSpex.Reference
-      alias OpenApiSpex.Schema
       alias OpenApiSpex.Response
-      alias OpenApiSpex.MediaType
+      alias OpenApiSpex.Schema
 
       plug OpenApiSpex.Plug.CastAndValidate,
         render_error: RunaWeb.FallbackController

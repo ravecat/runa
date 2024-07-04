@@ -10,6 +10,7 @@ defmodule RunaWeb.Router do
   alias RunaWeb.PageController
   alias RunaWeb.PageLive
   alias RunaWeb.TeamController
+  alias RunaWeb.ProjectController
   alias RunaWeb.Telemetry
   alias RunaWeb.UserData
 
@@ -41,6 +42,8 @@ defmodule RunaWeb.Router do
 
     resources "/teams", TeamController,
       only: [:index, :show, :create, :update, :delete]
+
+    resources "/projects", ProjectController, only: [:show]
   end
 
   scope "/" do

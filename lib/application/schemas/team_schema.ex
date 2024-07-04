@@ -1,7 +1,7 @@
 defmodule RunaWeb.Schemas.Teams do
   require OpenApiSpex
 
-  alias Credo.Check.Params
+  alias OpenApiSpex.Parameter
   alias OpenApiSpex.Reference
   alias OpenApiSpex.Schema
 
@@ -33,23 +33,16 @@ defmodule RunaWeb.Schemas.Teams do
             }
           }
         }
-      ],
-      example: %{
-        "type" => "teams",
-        "attributes" => %{
-          "title" => "title"
-        }
-      }
+      ]
     })
   end
 
   defmodule ShowResponse do
-    @moduledoc """
-    The schema for team show response
-    """
+    @moduledoc false
+
     OpenApiSpex.schema(%{
       title: "Team.ShowResponse",
-      description: "The schema for team show response",
+      description: "The schema for resource show response",
       type: :object,
       allOf: [
         %Reference{"$ref": "#/components/schemas/Document"},
@@ -77,12 +70,11 @@ defmodule RunaWeb.Schemas.Teams do
   end
 
   defmodule IndexResponse do
-    @moduledoc """
-    The schema for team index response
-    """
+    @moduledoc false
+
     OpenApiSpex.schema(%{
       title: "Team.IndexResponse",
-      description: "The schema for team index response",
+      description: "The schema for resource index response",
       type: :object,
       allOf: [
         %Reference{"$ref": "#/components/schemas/Document"},
@@ -116,12 +108,11 @@ defmodule RunaWeb.Schemas.Teams do
   end
 
   defmodule CreateBody do
-    @moduledoc """
-    The body schema for team creation request
-    """
+    @moduledoc false
+
     OpenApiSpex.schema(%{
       title: "Team.CreateBody",
-      description: "The body schema for team creation request",
+      description: "The body schema for resource creation request",
       type: :object,
       properties: %{
         data: Team
@@ -139,12 +130,11 @@ defmodule RunaWeb.Schemas.Teams do
   end
 
   defmodule UpdateBody do
-    @moduledoc """
-    The schema body for team update request
-    """
+    @moduledoc false
+
     OpenApiSpex.schema(%{
       title: "Team.UpdateBody",
-      description: "Request schema for team",
+      description: "Request schema body for resource update",
       type: :object,
       properties: %{
         data: %Schema{
@@ -172,18 +162,15 @@ defmodule RunaWeb.Schemas.Teams do
   end
 
   defmodule Params do
-    @moduledoc """
-    The schema for team operation params
-    """
-    alias OpenApiSpex.Parameter
+    @moduledoc false
 
     def path,
       do: [
         %Parameter{
           name: :id,
           in: :path,
-          schema: %OpenApiSpex.Schema{type: :integer, minimum: 1},
-          description: "Team ID",
+          schema: %Schema{type: :integer, minimum: 1},
+          description: "Resource ID",
           example: 1,
           required: true
         }

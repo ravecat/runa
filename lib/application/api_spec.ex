@@ -79,12 +79,14 @@ defmodule RunaWeb.APISpec do
             required: [:type],
             description: "A resource identifier object"
           },
-          "RelationshipObject" => %Schema{
+          "ResourceLinkage" => %Schema{
             type: :object,
-            description: "A relationship object",
-            minProperties: 1,
+            description:
+              "A resource linkage allows a client to link together all of the included resource objects",
+            required: [:data],
             properties: %{
               data: %Schema{
+                nullable: true,
                 oneOf: [
                   %Reference{
                     "$ref": "#/components/schemas/ResourceIdentifierObject"
@@ -221,7 +223,7 @@ defmodule RunaWeb.APISpec do
                 description:
                   "a relationships object describing relationships between the resource and other JSON:API resources",
                 additionalProperties: %Reference{
-                  "$ref": "#/components/schemas/RelationshipObject"
+                  "$ref": "#/components/schemas/ResourceLinkage"
                 }
               },
               links: %Schema{
