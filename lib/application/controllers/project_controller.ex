@@ -5,7 +5,8 @@ defmodule RunaWeb.ProjectController do
   alias Runa.Projects
   alias Runa.Projects.Project
   alias RunaWeb.ProjectSerializer, as: Serializer
-  alias RunaWeb.Schemas.Projects, as: Schemas
+  alias RunaWeb.Schemas.Projects, as: ProjectSchemas
+  alias RunaWeb.Schemas.Common, as: CommonSchemas
 
   @tags [Serializer.type()]
 
@@ -15,13 +16,13 @@ defmodule RunaWeb.ProjectController do
       summary: "Show project",
       description: "Show project details",
       operationId: "getTeam",
-      parameters: Schemas.Params.path(),
+      parameters: CommonSchemas.Params.path(),
       responses: %{
         200 =>
           response(
             "200 OK",
             "application/vnd.api+json",
-            Schemas.ShowResponse
+            ProjectSchemas.ShowResponse
           )
       }
     }

@@ -1,9 +1,8 @@
 defmodule RunaWeb.Schemas.Teams do
   require OpenApiSpex
 
-  alias OpenApiSpex.Parameter
-  alias OpenApiSpex.Reference
   alias OpenApiSpex.Schema
+  alias RunaWeb.Schemas.Common
 
   defmodule Team do
     @moduledoc """
@@ -14,9 +13,7 @@ defmodule RunaWeb.Schemas.Teams do
     """
     OpenApiSpex.schema(%{
       allOf: [
-        %Reference{
-          "$ref": "#/components/schemas/ResourceObject"
-        },
+        Common.ResourceObject,
         %Schema{
           type: :object,
           properties: %{
@@ -45,27 +42,14 @@ defmodule RunaWeb.Schemas.Teams do
       description: "The schema for resource show response",
       type: :object,
       allOf: [
-        %Reference{"$ref": "#/components/schemas/Document"},
+        Common.Document,
         %Schema{
           type: :object,
           properties: %{
             data: Team
           }
         }
-      ],
-      example: %{
-        "data" => %{
-          "type" => "teams",
-          "id" => "1",
-          "attributes" => %{
-            "title" => "title",
-            "inserted_at" => "2021-01-01T00:00:00Z",
-            "updated_at" => "2021-01-01T00:00:00Z",
-            "inserted_at_timestamp" => "1609836000",
-            "updated_at_timestamp" => "1609836000"
-          }
-        }
-      }
+      ]
     })
   end
 
@@ -77,7 +61,7 @@ defmodule RunaWeb.Schemas.Teams do
       description: "The schema for resource index response",
       type: :object,
       allOf: [
-        %Reference{"$ref": "#/components/schemas/Document"},
+        Common.Document,
         %Schema{
           type: :object,
           properties: %{
@@ -87,23 +71,7 @@ defmodule RunaWeb.Schemas.Teams do
             }
           }
         }
-      ],
-      required: [:data],
-      example: %{
-        "data" => [
-          %{
-            "type" => "teams",
-            "id" => "1",
-            "attributes" => %{
-              "title" => "title",
-              "inserted_at" => "2021-01-01T00:00:00Z",
-              "updated_at" => "2021-01-01T00:00:00Z",
-              "inserted_at_timestamp" => "1609836000",
-              "updated_at_timestamp" => "1609836000"
-            }
-          }
-        ]
-      }
+      ]
     })
   end
 
@@ -117,15 +85,7 @@ defmodule RunaWeb.Schemas.Teams do
       properties: %{
         data: Team
       },
-      required: [:data],
-      example: %{
-        "data" => %{
-          "type" => "teams",
-          "attributes" => %{
-            "title" => "title"
-          }
-        }
-      }
+      required: [:data]
     })
   end
 
@@ -148,32 +108,7 @@ defmodule RunaWeb.Schemas.Teams do
           ]
         }
       },
-      required: [:data],
-      example: %{
-        "data" => %{
-          "type" => "teams",
-          "id" => "1",
-          "attributes" => %{
-            "title" => "title"
-          }
-        }
-      }
+      required: [:data]
     })
-  end
-
-  defmodule Params do
-    @moduledoc false
-
-    def path,
-      do: [
-        %Parameter{
-          name: :id,
-          in: :path,
-          schema: %Schema{type: :integer, minimum: 1},
-          description: "Resource ID",
-          example: 1,
-          required: true
-        }
-      ]
   end
 end
