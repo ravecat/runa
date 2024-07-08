@@ -1,9 +1,8 @@
 defmodule RunaWeb.Schemas.Projects do
   require OpenApiSpex
 
-  alias OpenApiSpex.Parameter
-  alias OpenApiSpex.Reference
   alias OpenApiSpex.Schema
+  alias RunaWeb.Schemas.Common, as: CommonSchemas
 
   defmodule Project do
     @moduledoc """
@@ -13,9 +12,7 @@ defmodule RunaWeb.Schemas.Projects do
     """
     OpenApiSpex.schema(%{
       allOf: [
-        %Reference{
-          "$ref": "#/components/schemas/ResourceObject"
-        },
+        CommonSchemas.ResourceObject,
         %Schema{
           type: :object,
           properties: %{
@@ -49,7 +46,7 @@ defmodule RunaWeb.Schemas.Projects do
       description: "The schema for resource show response",
       type: :object,
       allOf: [
-        %Reference{"$ref": "#/components/schemas/Document"},
+        CommonSchemas.Document,
         %Schema{
           type: :object,
           properties: %{
@@ -72,21 +69,5 @@ defmodule RunaWeb.Schemas.Projects do
         }
       }
     })
-  end
-
-  defmodule Params do
-    @moduledoc false
-
-    def path,
-      do: [
-        %Parameter{
-          name: :id,
-          in: :path,
-          schema: %Schema{type: :integer, minimum: 1},
-          description: "Resource ID",
-          example: 1,
-          required: true
-        }
-      ]
   end
 end

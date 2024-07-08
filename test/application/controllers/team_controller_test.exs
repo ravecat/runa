@@ -5,6 +5,7 @@ defmodule RunaWeb.TeamControllerTest do
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
 
+  alias RunaWeb.Schemas.Common, as: CommonSchemas
   alias RunaWeb.Schemas.Teams, as: Schemas
 
   @moduletag :teams
@@ -46,13 +47,22 @@ defmodule RunaWeb.TeamControllerTest do
     test "returns errors when resource is not found", ctx do
       get(ctx.conn, ~p"/api/teams/1")
       |> json_response(404)
-      |> assert_response(ctx.spec)
+      |> assert_raw_schema(
+        %Schema{
+          oneOf: [
+            CommonSchemas.Error
+          ]
+        },
+        ctx.spec
+      )
     end
   end
 
   describe "create endpoint" do
     test "returns resource when data is valid", ctx do
-      body = Schema.example(Schemas.CreateBody.schema())
+      body =
+        Schema.example(Schemas.CreateBody.schema())
+        |> put_in([:data, :attributes, :title], "title")
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(201)
@@ -63,13 +73,18 @@ defmodule RunaWeb.TeamControllerTest do
     end
 
     test "renders errors when data is invalid", ctx do
-      body =
-        Schema.example(Schemas.CreateBody.schema())
-        |> put_in(["data", "attributes"], %{})
+      body = Schema.example(Schemas.CreateBody.schema())
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(422)
-      |> assert_response(ctx.spec)
+      |> assert_raw_schema(
+        %Schema{
+          oneOf: [
+            CommonSchemas.Error
+          ]
+        },
+        ctx.spec
+      )
     end
   end
 
@@ -79,7 +94,8 @@ defmodule RunaWeb.TeamControllerTest do
 
       body =
         Schema.example(Schemas.UpdateBody.schema())
-        |> put_in(["data", "id"], "#{team.id}")
+        |> put_in([:data, :id], "#{team.id}")
+        |> put_in([:data, :attributes, :title], "title")
 
       patch(ctx.conn, ~p"/api/teams/#{team.id}", body)
       |> json_response(200)
@@ -90,11 +106,23 @@ defmodule RunaWeb.TeamControllerTest do
     end
 
     test "returns 404 error when resource doesn't exists", ctx do
-      body = Schema.example(Schemas.UpdateBody.schema())
+      id = "1"
 
-      patch(ctx.conn, ~p"/api/teams/#{body["data"]["id"]}", body)
+      body =
+        Schema.example(Schemas.UpdateBody.schema())
+        |> put_in([:data, :id], "1")
+        |> put_in([:data, :attributes, :title], "title")
+
+      patch(ctx.conn, ~p"/api/teams/#{id}", body)
       |> json_response(404)
-      |> assert_response(ctx.spec)
+      |> assert_raw_schema(
+        %Schema{
+          oneOf: [
+            CommonSchemas.Error
+          ]
+        },
+        ctx.spec
+      )
     end
   end
 
@@ -104,7 +132,14 @@ defmodule RunaWeb.TeamControllerTest do
 
       delete(ctx.conn, ~p"/api/teams/#{team.id}")
       |> json_response(204)
-      |> assert_response(ctx.spec)
+      |> assert_raw_schema(
+        %Schema{
+          oneOf: [
+            CommonSchemas.Document
+          ]
+        },
+        ctx.spec
+      )
     end
   end
 end

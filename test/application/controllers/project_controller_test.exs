@@ -5,6 +5,8 @@ defmodule RunaWeb.ProjectControllerTest do
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
 
+  alias RunaWeb.Schemas.Common, as: CommonSchemas
+
   @moduletag :projects
 
   describe "show endpoint" do
@@ -20,10 +22,17 @@ defmodule RunaWeb.ProjectControllerTest do
       )
     end
 
-    # test "returns errors when resource is not found", ctx do
-    #   get(ctx.conn, ~p"/api/projects/1")
-    #   |> json_response(404)
-    #   |> assert_response(ctx.spec)
-    # end
+    test "returns errors when resource is not found", ctx do
+      get(ctx.conn, ~p"/api/projects/1")
+      |> json_response(404)
+      |> assert_raw_schema(
+        %Schema{
+          oneOf: [
+            CommonSchemas.Error
+          ]
+        },
+        ctx.spec
+      )
+    end
   end
 end
