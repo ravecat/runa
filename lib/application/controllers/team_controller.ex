@@ -41,7 +41,7 @@ defmodule RunaWeb.TeamController do
       summary: "Show team",
       description: "Show team details",
       operationId: "getTeam",
-      parameters: CommonSchemas.Params.path(),
+      parameters: [CommonSchemas.Params.path()],
       responses: %{
         200 =>
           response(
@@ -86,7 +86,8 @@ defmodule RunaWeb.TeamController do
   end
 
   def create(
-        %{body_params: %TeamSchemas.CreateBody{data: %{attributes: attrs}}} = conn,
+        %{body_params: %TeamSchemas.CreateBody{data: %{attributes: attrs}}} =
+          conn,
         _
       ) do
     with {:ok, %Team{} = team} <- Teams.create_team(attrs) do
@@ -102,7 +103,7 @@ defmodule RunaWeb.TeamController do
       summary: "Update team",
       description: "Update team details",
       operationId: "updateTeam",
-      parameters: CommonSchemas.Params.path(),
+      parameters: [CommonSchemas.Params.path()],
       requestBody:
         request_body(
           "Team request",
@@ -122,7 +123,8 @@ defmodule RunaWeb.TeamController do
   end
 
   def update(
-        %{body_params: %TeamSchemas.UpdateBody{data: %{attributes: attrs}}} = conn,
+        %{body_params: %TeamSchemas.UpdateBody{data: %{attributes: attrs}}} =
+          conn,
         %{id: id}
       ) do
     with {:ok, team = %Team{}} <- Teams.get_team(id),
@@ -137,7 +139,7 @@ defmodule RunaWeb.TeamController do
       summary: "Delete team",
       description: "Delete team",
       operationId: "deleteTeam",
-      parameters: CommonSchemas.Params.path(),
+      parameters: [CommonSchemas.Params.path()],
       responses: %{
         204 => %Reference{"$ref": "#/components/responses/204"}
       }
