@@ -300,9 +300,7 @@ defmodule RunaWeb.Schemas.Common do
             },
             included: %Schema{
               type: :array,
-              items: %Schema{
-                type: :object
-              }
+              items: ResourceObject
             }
           },
           required: [:data],
@@ -316,14 +314,27 @@ defmodule RunaWeb.Schemas.Common do
     @moduledoc false
 
     def path,
+      do: %Parameter{
+        name: :id,
+        in: :path,
+        schema: %Schema{type: :integer, minimum: 1},
+        description: "Resource ID",
+        example: 1,
+        required: true
+      }
+
+    def query,
       do: [
         %Parameter{
-          name: :id,
-          in: :path,
-          schema: %Schema{type: :integer, minimum: 1},
-          description: "Resource ID",
-          example: 1,
-          required: true
+          name: :include,
+          in: :query,
+          schema: %Schema{
+            type: :string,
+            pattern: "^[a-zA-Z,.]+(,[a-zA-Z.]+)*$"
+          },
+          description:
+            "Inclusion of related resources. Multiple relationships can be specified by comma-separating them. Dot-notation can be used for nested relationships.",
+          required: false
         }
       ]
   end

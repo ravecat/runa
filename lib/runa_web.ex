@@ -124,6 +124,7 @@ defmodule RunaWeb do
       alias OpenApiSpex.JsonErrorResponse
       alias OpenApiSpex.MediaType
       alias OpenApiSpex.Operation
+      alias OpenApiSpex.Parameter
       alias OpenApiSpex.Reference
       alias OpenApiSpex.Response
       alias OpenApiSpex.Schema
