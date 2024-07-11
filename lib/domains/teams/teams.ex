@@ -16,7 +16,7 @@ defmodule Runa.Teams do
 
   """
   def get_teams do
-    Repo.all(Team)
+    Repo.all(Team) |> Repo.preload(:projects)
   end
 
   @doc """
@@ -35,8 +35,12 @@ defmodule Runa.Teams do
   """
   def get_team(id) do
     case Repo.get(Team, id) do
-      nil -> {:error, %Ecto.NoResultsError{}}
-      team -> {:ok, team}
+      nil ->
+        {:error, %Ecto.NoResultsError{}}
+
+      team ->
+        team = Repo.preload(team, :projects)
+        {:ok, team}
     end
   end
 
