@@ -26,11 +26,7 @@ defmodule RunaWeb.ProjectControllerTest do
       get(ctx.conn, ~p"/api/projects/1")
       |> json_response(404)
       |> assert_raw_schema(
-        %Schema{
-          oneOf: [
-            CommonSchemas.Error
-          ]
-        },
+        resolve_schema(CommonSchemas.Error, %{}),
         ctx.spec
       )
     end

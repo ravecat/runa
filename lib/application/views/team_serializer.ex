@@ -4,6 +4,8 @@ defmodule RunaWeb.TeamSerializer do
   """
   use JSONAPI.View
 
+  alias RunaWeb.ProjectSerializer
+
   def type, do: "teams"
 
   def fields,
@@ -13,6 +15,11 @@ defmodule RunaWeb.TeamSerializer do
       :updated_at,
       :inserted_at_timestamp,
       :updated_at_timestamp
+    ]
+
+  def relationships,
+    do: [
+      projects: ProjectSerializer
     ]
 
   def inserted_at_timestamp(data, _conn) do

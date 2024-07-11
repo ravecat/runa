@@ -5,13 +5,14 @@ defmodule Runa.TeamsTest do
 
   @moduletag :teams
 
+  alias Runa.Repo
   alias Runa.Teams
   alias Runa.Teams.Team
 
   import Runa.Factory
 
   setup do
-    {:ok, team: insert(:team)}
+    {:ok, team: insert(:team) |> Repo.preload(:projects)}
   end
 
   describe "teams" do

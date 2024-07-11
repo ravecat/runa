@@ -119,18 +119,16 @@ defmodule RunaWeb.Schemas.Common do
     OpenApiSpex.schema(%{
       type: :object,
       description: "A resource identifier object",
-      properties: %{
-        type: %Schema{
-          type: :string,
-          description: "The type of the resource"
-        },
-        meta: Meta
-      },
       oneOf: [
         %Schema{
           type: :object,
           required: [:type, :id],
           properties: %{
+            type: %Schema{
+              type: :string,
+              description: "The type of the resource"
+            },
+            meta: Meta,
             id: %Schema{
               type: :string,
               description:
@@ -142,6 +140,11 @@ defmodule RunaWeb.Schemas.Common do
           type: :object,
           required: [:type, :lid],
           properties: %{
+            type: %Schema{
+              type: :string,
+              description: "The type of the resource"
+            },
+            meta: Meta,
             lid: %Schema{
               type: :string,
               description:
@@ -149,8 +152,7 @@ defmodule RunaWeb.Schemas.Common do
             }
           }
         }
-      ],
-      required: [:type]
+      ]
     })
   end
 
@@ -324,18 +326,16 @@ defmodule RunaWeb.Schemas.Common do
       }
 
     def query,
-      do: [
-        %Parameter{
-          name: :include,
-          in: :query,
-          schema: %Schema{
-            type: :string,
-            pattern: "^[a-zA-Z,.]+(,[a-zA-Z.]+)*$"
-          },
-          description:
-            "Inclusion of related resources. Multiple relationships can be specified by comma-separating them. Dot-notation can be used for nested relationships.",
-          required: false
-        }
-      ]
+      do: %Parameter{
+        name: :include,
+        in: :query,
+        schema: %Schema{
+          type: :string,
+          pattern: "^[a-zA-Z,.]+(,[a-zA-Z.]+)*$"
+        },
+        description:
+          "Inclusion of related resources. Multiple relationships can be specified by comma-separating them. Dot-notation can be used for nested relationships.",
+        required: false
+      }
   end
 end

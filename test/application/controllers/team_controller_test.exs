@@ -10,7 +10,7 @@ defmodule RunaWeb.TeamControllerTest do
 
   @moduletag :teams
 
-  describe "index" do
+  describe "index endpoint" do
     test "returns list of resources", ctx do
       insert(:team)
 
@@ -48,11 +48,7 @@ defmodule RunaWeb.TeamControllerTest do
       get(ctx.conn, ~p"/api/teams/1")
       |> json_response(404)
       |> assert_raw_schema(
-        %Schema{
-          oneOf: [
-            CommonSchemas.Error
-          ]
-        },
+        resolve_schema(CommonSchemas.Error, %{}),
         ctx.spec
       )
     end
@@ -78,11 +74,7 @@ defmodule RunaWeb.TeamControllerTest do
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(422)
       |> assert_raw_schema(
-        %Schema{
-          oneOf: [
-            CommonSchemas.Error
-          ]
-        },
+        resolve_schema(CommonSchemas.Error, %{}),
         ctx.spec
       )
     end
@@ -106,21 +98,15 @@ defmodule RunaWeb.TeamControllerTest do
     end
 
     test "returns 404 error when resource doesn't exists", ctx do
-      id = "1"
-
       body =
         Schema.example(Schemas.UpdateBody.schema())
         |> put_in([:data, :id], "1")
         |> put_in([:data, :attributes, :title], "title")
 
-      patch(ctx.conn, ~p"/api/teams/#{id}", body)
+      patch(ctx.conn, ~p"/api/teams/1", body)
       |> json_response(404)
       |> assert_raw_schema(
-        %Schema{
-          oneOf: [
-            CommonSchemas.Error
-          ]
-        },
+        resolve_schema(CommonSchemas.Error, %{}),
         ctx.spec
       )
     end
@@ -132,12 +118,52 @@ defmodule RunaWeb.TeamControllerTest do
 
       delete(ctx.conn, ~p"/api/teams/#{team.id}")
       |> json_response(204)
-      |> assert_raw_schema(
-        %Schema{
-          oneOf: [
-            CommonSchemas.Document
-          ]
-        },
+      |> assert_schema(
+        "Document",
+        ctx.spec
+      )
+    end
+  end
+
+  describe "inclusion endpoint" do
+    test "returns related resources for entity", ctx do
+      team = insert(:team)
+      insert(:project, team: team)
+
+      get(ctx.conn, ~p"/api/teams/#{team.id}?include=projects")
+      |> json_response(200)
+      |> assert_schema(
+        "Team.ShowResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns empty list if enttiyt hasn't related resources", ctx do
+      team = insert(:team)
+
+      get(ctx.conn, ~p"/api/teams/#{team.id}?include=projects")
+      |> json_response(200)
+      |> assert_schema(
+        "Team.ShowResponse",
+        ctx.spec
+      )
+
+      get(ctx.conn, ~p"/api/teams?include=projects")
+      |> json_response(200)
+      |> assert_schema(
+        "Team.ShowResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns related resources for entities", ctx do
+      team = insert(:team)
+      insert(:project, team: team)
+
+      get(ctx.conn, ~p"/api/teams?include=projects")
+      |> json_response(200)
+      |> assert_schema(
+        "Team.ShowResponse",
         ctx.spec
       )
     end

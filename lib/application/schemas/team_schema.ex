@@ -46,7 +46,15 @@ defmodule RunaWeb.Schemas.Teams do
         %Schema{
           type: :object,
           properties: %{
-            data: Team
+            data: %Schema{
+              oneOf: [
+                Team,
+                %Schema{
+                  type: :array,
+                  items: Team
+                }
+              ]
+            }
           }
         }
       ]
