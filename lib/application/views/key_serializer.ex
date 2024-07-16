@@ -1,26 +1,21 @@
-defmodule RunaWeb.TeamSerializer do
+defmodule RunaWeb.KeySerializer do
   @moduledoc """
-  Response serializer for team resources
+  Response serializer for project key resources
   """
   use JSONAPI.View
 
   alias RunaWeb.Formatters
-  alias RunaWeb.ProjectSerializer
 
-  def type, do: "teams"
+  def type, do: "keys"
 
   def fields,
     do: [
-      :title,
+      :name,
+      :description,
       :inserted_at,
       :updated_at,
       :inserted_at_timestamp,
       :updated_at_timestamp
-    ]
-
-  def relationships,
-    do: [
-      projects: ProjectSerializer
     ]
 
   def inserted_at_timestamp(data, _conn) do
