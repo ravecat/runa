@@ -326,16 +326,33 @@ defmodule RunaWeb.Schemas.Common do
       }
 
     def query,
-      do: %Parameter{
-        name: :include,
-        in: :query,
-        schema: %Schema{
-          type: :string,
-          pattern: "^[a-zA-Z,.]+(,[a-zA-Z.]+)*$"
+      do: [
+        %Parameter{
+          name: :include,
+          in: :query,
+          schema: %Schema{
+            type: :string,
+            pattern: "^[a-zA-Z,.]+(,[a-zA-Z.]+)*$"
+          },
+          description:
+            "Inclusion of related resources. Multiple relationships can be specified by comma-separating them.",
+          required: false
         },
-        description:
-          "Inclusion of related resources. Multiple relationships can be specified by comma-separating them. Dot-notation can be used for nested relationships.",
-        required: false
-      }
+        %Parameter{
+          name: :fields,
+          in: :query,
+          schema: %Schema{
+            type: :object,
+            additionalProperties: %Schema{
+              type: :string,
+              pattern: "^[a-zA-Z]+(,[a-zA-Z]+)*$"
+            }
+          },
+          style: :deepObject,
+          description:
+            "Sparse fieldsets. Specify fields for each resource type using `fields[TYPE]=field1,field2`. An empty value indicates that no fields should be returned.",
+          required: false
+        }
+      ]
   end
 end

@@ -5,6 +5,7 @@ defmodule RunaWeb.ProjectSerializer do
   use JSONAPI.View
 
   alias RunaWeb.Formatters
+  alias RunaWeb.KeySerializer
 
   def type, do: "projects"
 
@@ -16,6 +17,11 @@ defmodule RunaWeb.ProjectSerializer do
       :updated_at,
       :inserted_at_timestamp,
       :updated_at_timestamp
+    ]
+
+  def relationships,
+    do: [
+      keys: KeySerializer
     ]
 
   def inserted_at_timestamp(data, _conn) do

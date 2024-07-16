@@ -138,15 +138,39 @@ defmodule RunaWeb.TeamControllerTest do
       )
     end
 
-    test "returns empty list if enttiyt hasn't related resources", ctx do
+    test "returns empty list if entity hasn't related resources", ctx do
       team = insert(:team)
 
-      get(ctx.conn, ~p"/api/teams/#{team.id}?include=projects")
-      |> json_response(200)
-      |> assert_schema(
+      response =
+        get(ctx.conn, ~p"/api/teams/#{team.id}?include=projects")
+        |> json_response(200)
+
+      assert_schema(
+        response,
         "Team.ShowResponse",
         ctx.spec
       )
+
+      assert response["included"] == []
+    end
+
+    test "returns empty list if entities haven't related resources", ctx do
+      response =
+        get(ctx.conn, ~p"/api/teams?include=projects")
+        |> json_response(200)
+
+      assert_schema(
+        response,
+        "Team.ShowResponse",
+        ctx.spec
+      )
+
+      assert response["included"] == []
+    end
+
+    test "returns related resources for entities", ctx do
+      team = insert(:team)
+      insert(:project, team: team)
 
       get(ctx.conn, ~p"/api/teams?include=projects")
       |> json_response(200)
@@ -156,11 +180,14 @@ defmodule RunaWeb.TeamControllerTest do
       )
     end
 
-    test "returns related resources for entities", ctx do
+    test "returns sparse fieldset for entity", ctx do
       team = insert(:team)
       insert(:project, team: team)
 
-      get(ctx.conn, ~p"/api/teams?include=projects")
+      get(
+        ctx.conn,
+        ~p"/api/teams/#{team.id}?include=projects&fields[projects]=name"
+      )
       |> json_response(200)
       |> assert_schema(
         "Team.ShowResponse",
