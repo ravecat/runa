@@ -4,6 +4,8 @@ defmodule RunaWeb.ProjectSerializer do
   """
   use JSONAPI.View
 
+  alias RunaWeb.Formatters
+
   def type, do: "projects"
 
   def fields,
@@ -17,16 +19,10 @@ defmodule RunaWeb.ProjectSerializer do
     ]
 
   def inserted_at_timestamp(data, _conn) do
-    format_datetime_to_timestamp(data.inserted_at)
+    Formatters.format_datetime_to_timestamp(data.inserted_at)
   end
 
   def updated_at_timestamp(data, _conn) do
-    format_datetime_to_timestamp(data.updated_at)
-  end
-
-  defp format_datetime_to_timestamp(dt) do
-    dt
-    |> DateTime.to_unix()
-    |> Integer.to_string()
+    Formatters.format_datetime_to_timestamp(data.updated_at)
   end
 end
