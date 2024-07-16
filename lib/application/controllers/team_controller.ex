@@ -8,9 +8,7 @@ defmodule RunaWeb.TeamController do
   alias RunaWeb.Schemas.Teams, as: TeamSchemas
   alias RunaWeb.TeamSerializer, as: Serializer
 
-  plug JSONAPI.QueryParser,
-    include: ~w(projects),
-    view: Serializer
+  plug JSONAPI.QueryParser, view: Serializer
 
   @tags [Serializer.type()]
 
@@ -45,7 +43,7 @@ defmodule RunaWeb.TeamController do
       summary: "Show team",
       description: "Show team details",
       operationId: "getTeam",
-      parameters: [CommonSchemas.Params.path(), CommonSchemas.Params.query()],
+      parameters: [CommonSchemas.Params.path()] ++ CommonSchemas.Params.query(),
       responses: %{
         200 =>
           response(
