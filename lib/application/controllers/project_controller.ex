@@ -8,6 +8,8 @@ defmodule RunaWeb.ProjectController do
   alias RunaWeb.Schemas.Common, as: CommonSchemas
   alias RunaWeb.Schemas.Projects, as: ProjectSchemas
 
+  plug JSONAPI.QueryParser, view: Serializer
+
   @tags [Serializer.type()]
 
   def show_operation() do

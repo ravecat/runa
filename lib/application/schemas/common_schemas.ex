@@ -335,7 +335,7 @@ defmodule RunaWeb.Schemas.Common do
             pattern: "^[a-zA-Z,.]+(,[a-zA-Z.]+)*$"
           },
           description:
-            "Inclusion of related resources. Multiple relationships can be specified by comma-separating them.",
+            "Inclusion of related resources using `include=type`. Multiple relationships can be specified by comma-separating them `include=type1,type2`. A server may choose to expose a deeply nested relationship such as `include=type1.type2.type3`.",
           required: false
         },
         %Parameter{
@@ -350,7 +350,7 @@ defmodule RunaWeb.Schemas.Common do
           },
           style: :deepObject,
           description:
-            "Sparse fieldsets. Specify fields for each resource type using `fields[TYPE]=field1,field2`. An empty value indicates that no fields should be returned.",
+            "Sparse fieldsets. Specify fields for each resource type using `fields[type]=field1,field2`. An empty value indicates that no fields should be returned.",
           required: false
         }
       ]
