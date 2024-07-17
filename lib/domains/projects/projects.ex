@@ -18,21 +18,18 @@ defmodule Runa.Projects do
 
   """
   def get_projects do
-    Repo.all(Project)
+    Repo.all(Project) |> Repo.preload(:keys)
   end
 
   @doc """
   Gets a single project.
 
   Raises `Ecto.NoResultsError` if the Project does not exist.
-
-
-
   """
   def get_project(id) do
     case Repo.get(Project, id) do
       nil -> {:error, %Ecto.NoResultsError{}}
-      team -> {:ok, team}
+      team -> {:ok, Repo.preload(team, :keys)}
     end
   end
 

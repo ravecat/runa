@@ -194,5 +194,21 @@ defmodule RunaWeb.TeamControllerTest do
         ctx.spec
       )
     end
+
+    test "handles deeply nested relationship", ctx do
+      team = insert(:team)
+      project = insert(:project, team: team)
+      key = insert(:key, project: project)
+
+      get(
+        ctx.conn,
+        ~p"/api/teams/#{team.id}?include=projects.keys"
+      )
+      |> json_response(200)
+      |> assert_schema(
+        "Team.ShowResponse",
+        ctx.spec
+      )
+    end
   end
 end

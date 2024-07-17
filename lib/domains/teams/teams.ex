@@ -39,8 +39,7 @@ defmodule Runa.Teams do
         {:error, %Ecto.NoResultsError{}}
 
       team ->
-        team = Repo.preload(team, :projects)
-        {:ok, team}
+        {:ok, Repo.preload(team, projects: [:keys])}
     end
   end
 

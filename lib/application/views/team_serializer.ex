@@ -20,7 +20,7 @@ defmodule RunaWeb.TeamSerializer do
 
   def relationships,
     do: [
-      projects: ProjectSerializer
+      projects: ProjectSerializer,
     ]
 
   def inserted_at_timestamp(data, _conn) do
