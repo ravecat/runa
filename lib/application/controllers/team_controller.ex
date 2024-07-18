@@ -4,8 +4,7 @@ defmodule RunaWeb.TeamController do
 
   alias Runa.Teams
   alias Runa.Teams.Team
-  alias RunaWeb.Schemas.Common, as: CommonSchemas
-  alias RunaWeb.Schemas.Teams, as: TeamSchemas
+  alias RunaWeb.Schemas
   alias RunaWeb.TeamSerializer, as: Serializer
 
   plug JSONAPI.QueryParser, view: Serializer
@@ -22,8 +21,8 @@ defmodule RunaWeb.TeamController do
         200 =>
           response(
             "200 OK",
-            "application/vnd.api+json",
-            TeamSchemas.IndexResponse
+            Schemas.Headers.content_type(),
+            Schemas.Teams.IndexResponse
           )
       }
     }
@@ -43,13 +42,13 @@ defmodule RunaWeb.TeamController do
       summary: "Show team",
       description: "Show team details",
       operationId: "getTeam",
-      parameters: [CommonSchemas.Params.path()] ++ CommonSchemas.Params.query(),
+      parameters: [Schemas.Params.path()] ++ Schemas.Params.query(),
       responses: %{
         200 =>
           response(
             "200 OK",
-            "application/vnd.api+json",
-            TeamSchemas.ShowResponse
+            Schemas.Headers.content_type(),
+            Schemas.Teams.ShowResponse
           )
       }
     }
@@ -72,23 +71,23 @@ defmodule RunaWeb.TeamController do
       requestBody:
         request_body(
           "Team request",
-          "application/vnd.api+json",
-          TeamSchemas.CreateBody,
+          Schemas.Headers.content_type(),
+          Schemas.Teams.CreateBody,
           required: true
         ),
       responses: %{
         201 =>
           response(
             "200 OK",
-            "application/vnd.api+json",
-            TeamSchemas.ShowResponse
+            Schemas.Headers.content_type(),
+            Schemas.Teams.ShowResponse
           )
       }
     }
   end
 
   def create(
-        %{body_params: %TeamSchemas.CreateBody{data: %{attributes: attrs}}} =
+        %{body_params: %Schemas.Teams.CreateBody{data: %{attributes: attrs}}} =
           conn,
         _
       ) do
@@ -105,27 +104,27 @@ defmodule RunaWeb.TeamController do
       summary: "Update team",
       description: "Update team details",
       operationId: "updateTeam",
-      parameters: [CommonSchemas.Params.path()],
+      parameters: [Schemas.Params.path()],
       requestBody:
         request_body(
           "Team request",
-          "application/vnd.api+json",
-          TeamSchemas.UpdateBody,
+          Schemas.Headers.content_type(),
+          Schemas.Teams.UpdateBody,
           required: true
         ),
       responses: %{
         200 =>
           response(
             "200 OK",
-            "application/vnd.api+json",
-            TeamSchemas.ShowResponse
+            Schemas.Headers.content_type(),
+            Schemas.Teams.ShowResponse
           )
       }
     }
   end
 
   def update(
-        %{body_params: %TeamSchemas.UpdateBody{data: %{attributes: attrs}}} =
+        %{body_params: %Schemas.Teams.UpdateBody{data: %{attributes: attrs}}} =
           conn,
         %{id: id}
       ) do
@@ -141,7 +140,7 @@ defmodule RunaWeb.TeamController do
       summary: "Delete team",
       description: "Delete team",
       operationId: "deleteTeam",
-      parameters: [CommonSchemas.Params.path()],
+      parameters: [Schemas.Params.path()],
       responses: %{
         204 => %Reference{"$ref": "#/components/responses/204"}
       }

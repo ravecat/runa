@@ -4,13 +4,12 @@ defmodule RunaWeb.ProjectController do
 
   alias Runa.Projects
   alias Runa.Projects.Project
-  alias RunaWeb.ProjectSerializer, as: Serializer
-  alias RunaWeb.Schemas.Common, as: CommonSchemas
-  alias RunaWeb.Schemas.Projects, as: ProjectSchemas
+  alias RunaWeb.Schemas
+  alias RunaWeb.Serializers
 
-  plug JSONAPI.QueryParser, view: Serializer
+  plug JSONAPI.QueryParser, view: Serializers.Project
 
-  @tags [Serializer.type()]
+  @tags [Serializers.Project.type()]
 
   def show_operation() do
     %Operation{
@@ -18,13 +17,13 @@ defmodule RunaWeb.ProjectController do
       summary: "Show project",
       description: "Show project details",
       operationId: "getTeam",
-      parameters: [CommonSchemas.Params.path()],
+      parameters: [Schemas.Params.path()],
       responses: %{
         200 =>
           response(
             "200 OK",
-            "application/vnd.api+json",
-            ProjectSchemas.ShowResponse
+            Schemas.Headers.content_type(),
+            Schemas.Projects.ShowResponse
           )
       }
     }

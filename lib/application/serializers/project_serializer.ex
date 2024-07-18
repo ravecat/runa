@@ -1,11 +1,11 @@
-defmodule RunaWeb.ProjectSerializer do
+defmodule RunaWeb.Serializers.Project do
   @moduledoc """
   Response serializer for project resources
   """
   use JSONAPI.View
 
   alias RunaWeb.Formatters
-  alias RunaWeb.KeySerializer
+  alias RunaWeb.Serializers
 
   def type, do: "projects"
 
@@ -21,7 +21,7 @@ defmodule RunaWeb.ProjectSerializer do
 
   def relationships,
     do: [
-      keys: KeySerializer
+      keys: Serializers.Key,
     ]
 
   def inserted_at_timestamp(data, _conn) do

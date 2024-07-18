@@ -5,7 +5,7 @@ defmodule RunaWeb.ProjectControllerTest do
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
 
-  alias RunaWeb.Schemas.Common, as: CommonSchemas
+  alias RunaWeb.Schemas
 
   @moduletag :projects
 
@@ -26,7 +26,7 @@ defmodule RunaWeb.ProjectControllerTest do
       get(ctx.conn, ~p"/api/projects/1")
       |> json_response(404)
       |> assert_raw_schema(
-        resolve_schema(CommonSchemas.Error, %{}),
+        resolve_schema(Schemas.Error, %{}),
         ctx.spec
       )
     end
