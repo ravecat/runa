@@ -5,8 +5,7 @@ defmodule RunaWeb.TeamControllerTest do
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
 
-  alias RunaWeb.Schemas.Common, as: CommonSchemas
-  alias RunaWeb.Schemas.Teams, as: Schemas
+  alias RunaWeb.Schemas
 
   @moduletag :teams
 
@@ -48,7 +47,7 @@ defmodule RunaWeb.TeamControllerTest do
       get(ctx.conn, ~p"/api/teams/1")
       |> json_response(404)
       |> assert_raw_schema(
-        resolve_schema(CommonSchemas.Error, %{}),
+        resolve_schema(Schemas.Error, %{}),
         ctx.spec
       )
     end
@@ -57,7 +56,7 @@ defmodule RunaWeb.TeamControllerTest do
   describe "create endpoint" do
     test "returns resource when data is valid", ctx do
       body =
-        Schema.example(Schemas.CreateBody.schema())
+        Schema.example(Schemas.Teams.CreateBody.schema())
         |> put_in([:data, :attributes, :title], "title")
 
       post(ctx.conn, ~p"/api/teams", body)
@@ -69,12 +68,12 @@ defmodule RunaWeb.TeamControllerTest do
     end
 
     test "renders errors when data is invalid", ctx do
-      body = Schema.example(Schemas.CreateBody.schema())
+      body = Schema.example(Schemas.Teams.CreateBody.schema())
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(422)
       |> assert_raw_schema(
-        resolve_schema(CommonSchemas.Error, %{}),
+        resolve_schema(Schemas.Error, %{}),
         ctx.spec
       )
     end
@@ -85,7 +84,7 @@ defmodule RunaWeb.TeamControllerTest do
       team = insert(:team)
 
       body =
-        Schema.example(Schemas.UpdateBody.schema())
+        Schema.example(Schemas.Teams.UpdateBody.schema())
         |> put_in([:data, :id], "#{team.id}")
         |> put_in([:data, :attributes, :title], "title")
 
@@ -99,14 +98,14 @@ defmodule RunaWeb.TeamControllerTest do
 
     test "returns 404 error when resource doesn't exists", ctx do
       body =
-        Schema.example(Schemas.UpdateBody.schema())
+        Schema.example(Schemas.Teams.UpdateBody.schema())
         |> put_in([:data, :id], "1")
         |> put_in([:data, :attributes, :title], "title")
 
       patch(ctx.conn, ~p"/api/teams/1", body)
       |> json_response(404)
       |> assert_raw_schema(
-        resolve_schema(CommonSchemas.Error, %{}),
+        resolve_schema(Schemas.Error, %{}),
         ctx.spec
       )
     end

@@ -1,4 +1,4 @@
-defmodule RunaWeb.Schemas.Common do
+defmodule RunaWeb.Schemas do
   require OpenApiSpex
 
   alias OpenApiSpex.Parameter
@@ -354,5 +354,123 @@ defmodule RunaWeb.Schemas.Common do
           required: false
         }
       ]
+  end
+
+  defmodule Headers do
+    @moduledoc false
+
+    def accept,
+      do: "application/vnd.api+json"
+
+    def content_type,
+      do: "application/vnd.api+json"
+  end
+
+  defmacro __using__(opts) do
+    name = Keyword.fetch!(opts, :name)
+    properties = Keyword.fetch!(opts, :properties)
+
+    quote do
+      require OpenApiSpex
+      alias OpenApiSpex.Schema
+      alias RunaWeb.Schemas
+
+      defmodule unquote(Module.concat([name])) do
+        @moduledoc """
+        The schema for #{unquote(name)} resource
+        """
+        OpenApiSpex.schema(%{
+          allOf: [
+            Schemas.ResourceObject,
+            %Schema{
+              type: :object,
+              properties: unquote(properties)
+            }
+          ]
+        })
+      end
+
+      defmodule ShowResponse do
+        @moduledoc false
+        OpenApiSpex.schema(%{
+          title: "#{unquote(name)}.ShowResponse",
+          description: "The schema for resource show response",
+          type: :object,
+          allOf: [
+            Schemas.Document,
+            %Schema{
+              type: :object,
+              properties: %{
+                data: %Schema{
+                  oneOf: [
+                    unquote(Module.concat([name])),
+                    %Schema{
+                      type: :array,
+                      items: unquote(Module.concat([name]))
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        })
+      end
+
+      defmodule IndexResponse do
+        @moduledoc false
+        OpenApiSpex.schema(%{
+          title: "#{unquote(name)}.IndexResponse",
+          description: "The schema for resource index response",
+          type: :object,
+          allOf: [
+            Schemas.Document,
+            %Schema{
+              type: :object,
+              properties: %{
+                data: %Schema{
+                  type: :array,
+                  items: unquote(Module.concat([name]))
+                }
+              }
+            }
+          ]
+        })
+      end
+
+      defmodule CreateBody do
+        @moduledoc false
+        OpenApiSpex.schema(%{
+          title: "#{unquote(name)}.CreateBody",
+          description: "The body schema for resource creation request",
+          type: :object,
+          properties: %{
+            data: unquote(Module.concat([name]))
+          },
+          required: [:data]
+        })
+      end
+
+      defmodule UpdateBody do
+        @moduledoc false
+        OpenApiSpex.schema(%{
+          title: "#{unquote(name)}.UpdateBody",
+          description: "Request schema body for resource update",
+          type: :object,
+          properties: %{
+            data: %Schema{
+              type: :object,
+              allOf: [
+                unquote(Module.concat([name])),
+                %Schema{
+                  type: :object,
+                  required: [:id]
+                }
+              ]
+            }
+          },
+          required: [:data]
+        })
+      end
+    end
   end
 end

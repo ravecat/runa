@@ -1,4 +1,4 @@
-defmodule RunaWeb.KeySerializer do
+defmodule RunaWeb.Serializers.Key do
   @moduledoc """
   Response serializer for project key resources
   """
