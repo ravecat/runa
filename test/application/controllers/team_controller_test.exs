@@ -197,7 +197,7 @@ defmodule RunaWeb.TeamControllerTest do
     test "handles deeply nested relationship", ctx do
       team = insert(:team)
       project = insert(:project, team: team)
-      key = insert(:key, project: project)
+      insert(:key, project: project)
 
       get(
         ctx.conn,
@@ -208,6 +208,30 @@ defmodule RunaWeb.TeamControllerTest do
         "Team.ShowResponse",
         ctx.spec
       )
+    end
+  end
+
+  describe "sorting endpoint" do
+    test "returns sorted resources", ctx do
+      insert_pair(:team)
+
+      get(ctx.conn, ~p"/api/teams?sort=title")
+      |> json_response(200)
+      |> assert_schema(
+        "Team.IndexResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns asc/desc sorted resources", ctx do
+      insert_pair(:team)
+
+      asc = get(ctx.conn, ~p"/api/teams?sort=title") |> json_response(200)
+
+      desc = get(ctx.conn, ~p"/api/teams?sort=-title") |> json_response(200)
+
+      assert List.first(asc["data"]) == List.last(desc["data"])
+      assert List.last(asc["data"]) == List.first(desc["data"])
     end
   end
 end

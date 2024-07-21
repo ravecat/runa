@@ -3,7 +3,8 @@ defmodule Runa.Teams do
   The teams context.
   """
 
-  alias Runa.Repo
+  use Runa, :context
+
   alias Runa.Teams.Team
 
   @doc """
@@ -15,8 +16,10 @@ defmodule Runa.Teams do
       [%Team{}, ...]
 
   """
-  def get_teams do
-    Repo.all(Team) |> Repo.preload(:projects)
+  def get_teams(opts \\ []) do
+    sort = Keyword.get(opts, :sort, [])
+
+    Team |> order_by(^sort) |> Repo.all() |> Repo.preload(:projects)
   end
 
   @doc """

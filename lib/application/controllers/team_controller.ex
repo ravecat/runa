@@ -5,11 +5,13 @@ defmodule RunaWeb.TeamController do
   alias Runa.Teams
   alias Runa.Teams.Team
   alias RunaWeb.Schemas
-  alias RunaWeb.TeamSerializer, as: Serializer
+  alias RunaWeb.Serializers
 
-  plug JSONAPI.QueryParser, view: Serializer
+  plug JSONAPI.QueryParser,
+    view: Serializers.Team,
+    sort: Serializers.Team.sortable()
 
-  @tags [Serializer.type()]
+  @tags [Serializers.Team.type()]
 
   def index_operation() do
     %Operation{
@@ -28,8 +30,8 @@ defmodule RunaWeb.TeamController do
     }
   end
 
-  def index(conn, _params) do
-    teams = Teams.get_teams()
+  def index(%{assigns: %{jsonapi_query: %{sort: sort}}} = conn, _params) do
+    teams = Teams.get_teams(sort: sort)
 
     conn
     |> put_status(200)
