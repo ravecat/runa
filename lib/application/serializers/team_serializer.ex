@@ -1,4 +1,4 @@
-defmodule RunaWeb.TeamSerializer do
+defmodule RunaWeb.Serializers.Team do
   @moduledoc """
   Response serializer for team resources
   """
@@ -30,4 +30,6 @@ defmodule RunaWeb.TeamSerializer do
   def updated_at_timestamp(data, _conn) do
     Formatters.format_datetime_to_timestamp(data.updated_at)
   end
+
+  def sortable, do: Enum.map(fields(), &Atom.to_string(&1))
 end

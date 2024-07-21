@@ -352,6 +352,17 @@ defmodule RunaWeb.Schemas do
           description:
             "Sparse fieldsets. Specify fields for each resource type using `fields[type]=field1,field2`. An empty value indicates that no fields should be returned.",
           required: false
+        },
+        %Parameter{
+          name: :sort,
+          in: :query,
+          schema: %Schema{
+            type: :string,
+            pattern: "^[-a-zA-Z]+(,-[a-zA-Z]+)*$"
+          },
+          description:
+            "Sorting of resources using `sort=field1,-field2`. A leading `-` indicates descending order.",
+          required: false
         }
       ]
   end
