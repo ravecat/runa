@@ -18,8 +18,13 @@ defmodule Runa.Teams do
   """
   def get_teams(opts \\ []) do
     sort = Keyword.get(opts, :sort, [])
+    filter = Keyword.get(opts, :filter, [])
 
-    Team |> order_by(^sort) |> Repo.all() |> Repo.preload(:projects)
+    Team
+    |> where(^filter)
+    |> order_by(^sort)
+    |> Repo.all()
+    |> Repo.preload(:projects)
   end
 
   @doc """

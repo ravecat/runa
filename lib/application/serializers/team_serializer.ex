@@ -32,4 +32,5 @@ defmodule RunaWeb.Serializers.Team do
   end
 
   def sortable, do: Enum.map(fields(), &Atom.to_string(&1))
+  def filterable, do: Enum.map(fields(), &Atom.to_string(&1))
 end
