@@ -234,4 +234,28 @@ defmodule RunaWeb.TeamControllerTest do
       assert List.last(asc["data"]) == List.first(desc["data"])
     end
   end
+
+  describe "filtering endpoint" do
+    test "returns filtered resources", ctx do
+      %{title: title} = insert(:team, title: "resource1")
+      insert(:team, title: "resource2")
+
+      response =
+        get(ctx.conn, ~p"/api/teams?filter[title]=#{title}")
+        |> json_response(200)
+
+      assert_schema(
+        response,
+        "Team.IndexResponse",
+        ctx.spec
+      )
+
+      assert match?(
+               %{"data" => [%{"attributes" => %{"title" => ^title}}]},
+               response
+             )
+
+      assert length(response["data"]) == 1
+    end
+  end
 end
