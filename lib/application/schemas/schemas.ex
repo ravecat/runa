@@ -20,6 +20,7 @@ defmodule RunaWeb.Schemas do
     """
     OpenApiSpex.schema(%{
       description: "A link object representing relationship",
+      nullable: true,
       oneOf: [
         %Schema{type: :string, format: :uri},
         %Schema{
@@ -182,7 +183,8 @@ defmodule RunaWeb.Schemas do
           properties: %{
             self: Link,
             related: Link
-          }
+          },
+          additionalProperties: false
         },
         meta: Meta
       }
@@ -214,9 +216,12 @@ defmodule RunaWeb.Schemas do
         },
         links: %Schema{
           type: :object,
-          description:
-            "a links object containing links related to the resource",
-          additionalProperties: Link
+          minProperties: 1,
+          properties: %{
+            self: Link,
+            related: Link
+          },
+          additionalProperties: false
         },
         meta: Meta
       }
@@ -275,9 +280,15 @@ defmodule RunaWeb.Schemas do
           properties: %{
             links: %Schema{
               type: :object,
-              description:
-                "a links object containing links related to the resource",
-              additionalProperties: Link
+              minProperties: 1,
+              properties: %{
+                self: Link,
+                first: Link,
+                last: Link,
+                prev: Link,
+                next: Link
+              },
+              additionalProperties: false
             },
             data: %Schema{
               oneOf: [
@@ -362,6 +373,25 @@ defmodule RunaWeb.Schemas do
           },
           description:
             "Sorting of resources using `sort=field1,-field2`. A leading `-` indicates descending order.",
+          required: false
+        },
+        %Parameter{
+          name: :page,
+          in: :query,
+          schema: %Schema{
+            type: :object,
+            properties: %{
+              size: %Schema{type: :integer, minimum: 1},
+              number: %Schema{type: :integer, minimum: 1},
+              offset: %Schema{type: :integer, minimum: 0},
+              limit: %Schema{type: :integer, minimum: 1},
+              cursor: %Schema{type: :string}
+            },
+            additionalProperties: false
+          },
+          style: :deepObject,
+          description:
+            "Pagination parameters. Supports various pagination strategies.",
           required: false
         }
       ]

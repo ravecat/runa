@@ -19,12 +19,21 @@ defmodule Runa.Teams do
   def get_teams(opts \\ []) do
     sort = Keyword.get(opts, :sort, [])
     filter = Keyword.get(opts, :filter, [])
+    page = Keyword.get(opts, :page, %{})
 
-    Team
-    |> where(^filter)
-    |> order_by(^sort)
-    |> Repo.all()
-    |> Repo.preload(:projects)
+    query =
+      Team
+      |> where(^filter)
+      |> order_by(^sort)
+      |> preload(:projects)
+
+    cond do
+      is_map_key(page, "number") or is_map_key(page, "size") ->
+        Repo.paginate(query, page: page["number"], page_size: page["size"])
+
+      true ->
+        Repo.all(query)
+    end
   end
 
   @doc """

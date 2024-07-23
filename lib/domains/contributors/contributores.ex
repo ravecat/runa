@@ -3,9 +3,7 @@ defmodule Runa.Contributors do
   The team role context.
   """
 
-  import Ecto.Query, warn: false
-
-  alias Runa.Repo
+  use Runa, :context
 
   alias Runa.Contributors.Contributor
 

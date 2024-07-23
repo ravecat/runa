@@ -2,7 +2,7 @@ defmodule RunaWeb.Serializers.Team do
   @moduledoc """
   Response serializer for team resources
   """
-  use JSONAPI.View
+  use JSONAPI.View, paginator: RunaWeb.Paginator
 
   alias RunaWeb.Formatters
   alias RunaWeb.Serializers

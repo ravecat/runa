@@ -258,4 +258,58 @@ defmodule RunaWeb.TeamControllerTest do
       assert length(response["data"]) == 1
     end
   end
+
+  describe "pagination endpoint" do
+    test "returns paginated resources", ctx do
+      insert_list(5, :team)
+
+      size = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[number]=1&page[size]=#{size}")
+        |> json_response(200)
+
+      assert_schema(
+        response,
+        "Team.IndexResponse",
+        ctx.spec
+      )
+    end
+
+    test "return paginated resources with required links", ctx do
+      insert_list(5, :team)
+
+      size = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[number]=1&page[size]=#{size}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => first,
+                 "last" => last,
+                 "next" => next,
+                 "self" => self
+               }
+             } = response
+
+      assert Enum.all?(
+               [first, last, next, self],
+               &(is_binary(&1) or is_nil(&1))
+             )
+    end
+
+    test "returns paginated resources with required length", ctx do
+      insert_list(5, :team)
+
+      size = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[number]=1&page[size]=#{size}")
+        |> json_response(200)
+
+      assert length(response["data"]) == size
+    end
+  end
 end

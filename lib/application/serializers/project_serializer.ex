@@ -21,7 +21,7 @@ defmodule RunaWeb.Serializers.Project do
 
   def relationships,
     do: [
-      keys: Serializers.Key,
+      keys: Serializers.Key
     ]
 
   def inserted_at_timestamp(data, _conn) do
