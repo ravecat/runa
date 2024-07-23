@@ -3,10 +3,9 @@ defmodule Runa.Keys do
   The Keys context.
   """
 
-  import Ecto.Query, warn: false
+  use Runa, :context
 
   alias Runa.Keys.Key
-  alias Runa.Repo
 
   @doc """
   Returns the list of keys.

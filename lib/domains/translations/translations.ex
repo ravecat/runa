@@ -3,9 +3,8 @@ defmodule Runa.Translations do
   The Translations context.
   """
 
-  import Ecto.Query, warn: false
+  use Runa, :context
 
-  alias Runa.Repo
   alias Runa.Translations.Translation
 
   @doc """

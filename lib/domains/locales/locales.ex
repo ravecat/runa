@@ -3,10 +3,9 @@ defmodule Runa.Locales do
   The Locales context.
   """
 
-  import Ecto.Query, warn: false
+  use Runa, :context
 
   alias Runa.Locales.Locale
-  alias Runa.Repo
 
   @doc """
   Returns the list of locales.

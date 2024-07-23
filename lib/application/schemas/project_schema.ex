@@ -6,7 +6,7 @@ defmodule RunaWeb.Schemas.Projects do
   """
   alias OpenApiSpex.Schema
 
-  use RunaWeb.Schemas ,
+  use RunaWeb.Schemas,
     name: "Project",
     properties: %{
       attributes: %Schema{

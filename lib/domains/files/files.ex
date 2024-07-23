@@ -3,10 +3,9 @@ defmodule Runa.Files do
   The Files context.
   """
 
-  import Ecto.Query, warn: false
+  use Runa, :context
 
   alias Runa.Files.File
-  alias Runa.Repo
 
   @doc """
   Returns the list of files.

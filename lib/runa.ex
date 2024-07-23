@@ -10,6 +10,9 @@ defmodule Runa do
   def context do
     quote do
       import Ecto.Query
+      import Ecto.Changeset
+
+      alias Ecto.Multi
       alias Runa.Repo
     end
   end

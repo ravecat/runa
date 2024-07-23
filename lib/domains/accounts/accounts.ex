@@ -3,15 +3,12 @@ defmodule Runa.Accounts do
   The Accounts context.
   """
 
-  import Ecto.Query, warn: false
+  use Runa, :context
 
   alias Runa.Accounts.User
   alias Runa.Contributors.Contributor
-  alias Runa.Repo
   alias Runa.Roles.Role
   alias Runa.Teams.Team
-
-  alias Ecto.Multi
 
   @roles Application.compile_env(:runa, :permissions)
 

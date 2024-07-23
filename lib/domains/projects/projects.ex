@@ -3,8 +3,7 @@ defmodule Runa.Projects do
   The Projects context.
   """
 
-  import Ecto.Query, warn: false
-  alias Runa.Repo
+  use Runa, :context
 
   alias Runa.Projects.Project
 

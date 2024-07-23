@@ -3,8 +3,7 @@ defmodule Runa.Languages do
   The Languages context.
   """
 
-  import Ecto.Query, warn: false
-  alias Runa.Repo
+  use Runa, :context
 
   alias Runa.Languages.Language
 

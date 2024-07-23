@@ -7,11 +7,10 @@ defmodule RunaWeb.TeamController do
   alias RunaWeb.Schemas
   alias RunaWeb.Serializers
 
-  plug(JSONAPI.QueryParser,
+  plug JSONAPI.QueryParser,
     view: Serializers.Team,
     sort: Serializers.Team.sortable(),
     filter: Serializers.Team.filterable()
-  )
 
   @tags [Serializers.Team.type()]
 
@@ -33,14 +32,38 @@ defmodule RunaWeb.TeamController do
   end
 
   def index(
-        %{assigns: %{jsonapi_query: %{sort: sort, filter: filter}}} = conn,
+        %{assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}} =
+          conn,
         _params
-      ) do
-    teams = Teams.get_teams(sort: sort, filter: filter)
+      )
+      when map_size(page) > 0 do
+    data = Teams.get_teams(sort: sort, filter: filter, page: page)
 
     conn
     |> put_status(200)
-    |> render(:index, data: teams)
+    |> render(:index,
+      data: data.entries,
+      page: %{
+        number: data.page_number,
+        size: data.page_size,
+        total_pages: data.total_pages,
+        total_entries: data.total_entries
+      }
+    )
+  end
+
+  def index(
+        %{assigns: %{jsonapi_query: %{sort: sort, filter: filter}}} = conn,
+        _params
+      ) do
+    data = Teams.get_teams(sort: sort, filter: filter)
+
+    conn
+    |> put_status(200)
+    |> render(
+      :index,
+      data: data
+    )
   end
 
   def show_operation() do
@@ -49,7 +72,7 @@ defmodule RunaWeb.TeamController do
       summary: "Show team",
       description: "Show team details",
       operationId: "getTeam",
-      parameters: [Schemas.Params.path()] ++ Schemas.Params.query(),
+      parameters: [Schemas.Params.path() | Schemas.Params.query()],
       responses: %{
         200 =>
           response(

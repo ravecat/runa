@@ -3,11 +3,10 @@ defmodule Runa.Tokens do
   The Tokens context.
   """
 
-  import Ecto.Query, warn: false
-  import Ecto.Changeset
+  use Runa, :context
+
   import Runa.TokenGenerator
 
-  alias Runa.Repo
   alias Runa.Tokens.Token
 
   @doc """

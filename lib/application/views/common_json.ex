@@ -3,7 +3,7 @@ defmodule RunaWeb.CommonJSON do
     quote do
       import JSONAPI.Serializer
 
-      def index(%{data: data, conn: conn}) do
+      def index(%{data: data, conn: conn} = args) do
         unquote(serializer)
         |> serialize(data, conn)
       end
