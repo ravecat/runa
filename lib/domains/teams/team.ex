@@ -11,6 +11,11 @@ defmodule Runa.Teams.Team do
   alias Runa.Contributors.Contributor
   alias Runa.Projects.Project
 
+  @derive {
+    Flop.Schema,
+    sortable: [:title, :inserted_at, :updated_at], filterable: [:title]
+  }
+
   schema "teams" do
     field :title, :string
     has_many :projects, Project

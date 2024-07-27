@@ -2,9 +2,7 @@ defmodule RunaWeb.Serializers.Key do
   @moduledoc """
   Response serializer for project key resources
   """
-  use JSONAPI.View
-
-  alias RunaWeb.Formatters
+  use RunaWeb, :serializer
 
   def type, do: "keys"
 
@@ -17,12 +15,4 @@ defmodule RunaWeb.Serializers.Key do
       :inserted_at_timestamp,
       :updated_at_timestamp
     ]
-
-  def inserted_at_timestamp(data, _conn) do
-    Formatters.format_datetime_to_timestamp(data.inserted_at)
-  end
-
-  def updated_at_timestamp(data, _conn) do
-    Formatters.format_datetime_to_timestamp(data.updated_at)
-  end
 end

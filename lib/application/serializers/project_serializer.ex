@@ -2,10 +2,7 @@ defmodule RunaWeb.Serializers.Project do
   @moduledoc """
   Response serializer for project resources
   """
-  use JSONAPI.View
-
-  alias RunaWeb.Formatters
-  alias RunaWeb.Serializers
+  use RunaWeb, :serializer
 
   def type, do: "projects"
 
@@ -23,12 +20,4 @@ defmodule RunaWeb.Serializers.Project do
     do: [
       keys: Serializers.Key
     ]
-
-  def inserted_at_timestamp(data, _conn) do
-    Formatters.format_datetime_to_timestamp(data.inserted_at)
-  end
-
-  def updated_at_timestamp(data, _conn) do
-    Formatters.format_datetime_to_timestamp(data.updated_at)
-  end
 end
