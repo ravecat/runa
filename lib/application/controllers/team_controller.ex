@@ -4,13 +4,10 @@ defmodule RunaWeb.TeamController do
 
   alias Runa.Teams
   alias Runa.Teams.Team
-  alias RunaWeb.Schemas
-  alias RunaWeb.Serializers
 
-  plug JSONAPI.QueryParser,
+  use RunaWeb.QueryParser,
     view: Serializers.Team,
-    sort: Serializers.Team.sortable(),
-    filter: Serializers.Team.filterable()
+    schema: Team
 
   @tags [Serializers.Team.type()]
 
@@ -37,19 +34,15 @@ defmodule RunaWeb.TeamController do
         _params
       )
       when map_size(page) > 0 do
-    data = Teams.get_teams(sort: sort, filter: filter, page: page)
-
-    conn
-    |> put_status(200)
-    |> render(:index,
-      data: data.entries,
-      page: %{
-        number: data.page_number,
-        size: data.page_size,
-        total_pages: data.total_pages,
-        total_entries: data.total_entries
-      }
-    )
+    with {:ok, {data, %Flop.Meta{} = meta}} <-
+           Teams.get_teams(sort: sort, filter: filter, page: page) do
+      conn
+      |> put_status(200)
+      |> render(:index,
+        data: data,
+        page: meta
+      )
+    end
   end
 
   def index(

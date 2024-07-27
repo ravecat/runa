@@ -2,10 +2,7 @@ defmodule RunaWeb.Serializers.Team do
   @moduledoc """
   Response serializer for team resources
   """
-  use JSONAPI.View, paginator: RunaWeb.Paginator
-
-  alias RunaWeb.Formatters
-  alias RunaWeb.Serializers
+  use RunaWeb, :serializer
 
   def type, do: "teams"
 
@@ -22,15 +19,4 @@ defmodule RunaWeb.Serializers.Team do
     do: [
       projects: Serializers.Project
     ]
-
-  def inserted_at_timestamp(data, _conn) do
-    Formatters.format_datetime_to_timestamp(data.inserted_at)
-  end
-
-  def updated_at_timestamp(data, _conn) do
-    Formatters.format_datetime_to_timestamp(data.updated_at)
-  end
-
-  def sortable, do: Enum.map(fields(), &Atom.to_string(&1))
-  def filterable, do: Enum.map(fields(), &Atom.to_string(&1))
 end

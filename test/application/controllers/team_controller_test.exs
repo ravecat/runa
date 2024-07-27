@@ -259,7 +259,7 @@ defmodule RunaWeb.TeamControllerTest do
     end
   end
 
-  describe "pagination endpoint" do
+  describe "pagination endpoint (page)" do
     test "returns paginated resources", ctx do
       insert_list(5, :team)
 
@@ -276,7 +276,7 @@ defmodule RunaWeb.TeamControllerTest do
       )
     end
 
-    test "return paginated resources with required links", ctx do
+    test "returns paginated resources with required links", ctx do
       insert_list(5, :team)
 
       size = 2
@@ -310,6 +310,278 @@ defmodule RunaWeb.TeamControllerTest do
         |> json_response(200)
 
       assert length(response["data"]) == size
+    end
+
+    test "returns paginated resources with first link", ctx do
+      insert_list(5, :team)
+
+      size = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[number]=1&page[size]=#{size}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => first,
+                 "last" => _,
+                 "next" => _,
+                 "self" => _
+               }
+             } = response
+
+      uri = URI.parse(first)
+      query = URI.decode_query(uri.query)
+
+      assert Map.has_key?(query, "page[number]")
+      assert Map.has_key?(query, "page[size]")
+      assert Map.get(query, "page[number]") == "1"
+      assert Map.get(query, "page[size]") == to_string(size)
+    end
+
+    test "returns paginated resources with last link", ctx do
+      insert_list(5, :team)
+
+      size = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[number]=1&page[size]=#{size}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => _,
+                 "last" => last,
+                 "next" => _,
+                 "self" => _
+               }
+             } = response
+
+      uri = URI.parse(last)
+      query = URI.decode_query(uri.query)
+
+      assert Map.has_key?(query, "page[number]")
+      assert Map.has_key?(query, "page[size]")
+      assert Map.get(query, "page[number]") == "3"
+      assert Map.get(query, "page[size]") == to_string(size)
+    end
+
+    test "returns paginated resources with next link", ctx do
+      insert_list(5, :team)
+
+      size = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[number]=1&page[size]=#{size}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => _,
+                 "last" => _,
+                 "next" => next,
+                 "self" => _
+               }
+             } = response
+
+      uri = URI.parse(next)
+      query = URI.decode_query(uri.query)
+
+      assert Map.has_key?(query, "page[number]")
+      assert Map.has_key?(query, "page[size]")
+      assert Map.get(query, "page[number]") == "2"
+      assert Map.get(query, "page[size]") == to_string(size)
+    end
+
+    test "returns paginated resources with prev link", ctx do
+      insert_list(5, :team)
+
+      size = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[number]=2&page[size]=#{size}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => _,
+                 "last" => _,
+                 "next" => _,
+                 "prev" => prev,
+                 "self" => _
+               }
+             } = response
+
+      uri = URI.parse(prev)
+      query = URI.decode_query(uri.query)
+
+      assert Map.has_key?(query, "page[number]")
+      assert Map.has_key?(query, "page[size]")
+      assert Map.get(query, "page[number]") == "1"
+      assert Map.get(query, "page[size]") == to_string(size)
+    end
+  end
+
+  describe "pagination endpoint (offset)" do
+    test "returns paginated resources", ctx do
+      insert_list(5, :team)
+
+      limit = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
+        |> json_response(200)
+
+      assert_schema(
+        response,
+        "Team.IndexResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns paginated resources with required length", ctx do
+      insert_list(5, :team)
+
+      limit = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
+        |> json_response(200)
+
+      assert length(response["data"]) == limit
+    end
+
+    test "returns paginated resources with required links", ctx do
+      insert_list(5, :team)
+
+      limit = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => first,
+                 "last" => last,
+                 "next" => next,
+                 "self" => self
+               }
+             } = response
+
+      assert Enum.all?(
+               [first, last, next, self],
+               &(is_binary(&1) or is_nil(&1))
+             )
+    end
+
+    test "returns paginated resources with first link", ctx do
+      insert_list(5, :team)
+
+      limit = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => first,
+                 "last" => _,
+                 "next" => _,
+                 "self" => _
+               }
+             } = response
+
+      uri = URI.parse(first)
+      query = URI.decode_query(uri.query)
+
+      assert Map.has_key?(query, "page[offset]")
+      assert Map.has_key?(query, "page[limit]")
+      assert Map.get(query, "page[offset]") == "0"
+      assert Map.get(query, "page[limit]") == to_string(limit)
+    end
+
+    test "returns paginated resources with last link", ctx do
+      insert_list(5, :team)
+
+      limit = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => _,
+                 "last" => last,
+                 "next" => _,
+                 "self" => _
+               }
+             } = response
+
+      uri = URI.parse(last)
+      query = URI.decode_query(uri.query)
+
+      assert Map.has_key?(query, "page[offset]")
+      assert Map.has_key?(query, "page[limit]")
+      assert Map.get(query, "page[offset]") == "3"
+      assert Map.get(query, "page[limit]") == to_string(limit)
+    end
+
+    test "returns paginated resources with next link", ctx do
+      insert_list(5, :team)
+
+      limit = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => _,
+                 "last" => _,
+                 "next" => next,
+                 "self" => _
+               }
+             } = response
+
+      uri = URI.parse(next)
+      query = URI.decode_query(uri.query)
+
+      assert Map.has_key?(query, "page[offset]")
+      assert Map.has_key?(query, "page[limit]")
+      assert Map.get(query, "page[offset]") == "2"
+      assert Map.get(query, "page[limit]") == to_string(limit)
+    end
+
+    test "returns paginated resources with prev link", ctx do
+      insert_list(5, :team)
+
+      limit = 2
+
+      response =
+        get(ctx.conn, ~p"/api/teams?page[offset]=2&page[limit]=#{limit}")
+        |> json_response(200)
+
+      assert %{
+               "links" => %{
+                 "first" => _,
+                 "last" => _,
+                 "next" => _,
+                 "prev" => prev,
+                 "self" => _
+               }
+             } = response
+
+      uri = URI.parse(prev)
+      query = URI.decode_query(uri.query)
+
+      assert Map.has_key?(query, "page[offset]")
+      assert Map.has_key?(query, "page[limit]")
+      assert Map.get(query, "page[offset]") == "0"
+      assert Map.get(query, "page[limit]") == to_string(limit)
     end
   end
 end

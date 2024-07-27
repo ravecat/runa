@@ -47,6 +47,8 @@ defmodule RunaWeb do
       import RunaWeb.Gettext
 
       alias RunaWeb.FallbackController
+      alias RunaWeb.Schemas
+      alias RunaWeb.Serializers
 
       action_fallback FallbackController
 
@@ -134,6 +136,23 @@ defmodule RunaWeb do
 
       def open_api_operation(action) do
         apply(__MODULE__, :"#{action}_operation", [])
+      end
+    end
+  end
+
+  def serializer do
+    quote do
+      use JSONAPI.View, paginator: RunaWeb.Paginator
+
+      alias RunaWeb.Formatters
+      alias RunaWeb.Serializers
+
+      def inserted_at_timestamp(data, _conn) do
+        Formatters.format_datetime_to_timestamp(data.inserted_at)
+      end
+
+      def updated_at_timestamp(data, _conn) do
+        Formatters.format_datetime_to_timestamp(data.updated_at)
       end
     end
   end

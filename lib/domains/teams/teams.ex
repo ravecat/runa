@@ -29,7 +29,28 @@ defmodule Runa.Teams do
 
     cond do
       is_map_key(page, "number") or is_map_key(page, "size") ->
-        Repo.paginate(query, page: page["number"], page_size: page["size"])
+        Flop.validate_and_run(
+          query,
+          %{
+            page: page["number"],
+            page_size: page["size"],
+            filters: filter,
+            order_by: sort
+          },
+          for: Team
+        )
+
+      is_map_key(page, "offset") or is_map_key(page, "limit") ->
+        Flop.validate_and_run(
+          query,
+          %{
+            offset: page["offset"],
+            limit: page["limit"],
+            filters: filter,
+            order_by: sort
+          },
+          for: Team
+        )
 
       true ->
         Repo.all(query)
