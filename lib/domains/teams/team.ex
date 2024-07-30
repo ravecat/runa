@@ -13,13 +13,17 @@ defmodule Runa.Teams.Team do
 
   @derive {
     Flop.Schema,
-    sortable: [:title, :inserted_at, :updated_at], filterable: [:title]
+    sortable: [:title, :inserted_at, :updated_at, :id],
+    filterable: [:title],
+    default_order: %{
+      order_by: [:inserted_at, :id]
+    }
   }
 
   schema "teams" do
-    field :title, :string
-    has_many :projects, Project
-    many_to_many :users, User, join_through: Contributor
+    field(:title, :string)
+    has_many(:projects, Project)
+    many_to_many(:users, User, join_through: Contributor)
 
     timestamps(type: :utc_datetime)
   end

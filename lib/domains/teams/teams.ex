@@ -23,38 +23,108 @@ defmodule Runa.Teams do
 
     query =
       Team
-      |> where(^filter)
-      |> order_by(^sort)
       |> preload(:projects)
 
-    cond do
-      is_map_key(page, "number") or is_map_key(page, "size") ->
-        Flop.validate_and_run(
-          query,
-          %{
-            page: page["number"],
-            page_size: page["size"],
-            filters: filter,
-            order_by: sort
-          },
-          for: Team
-        )
+    case page do
+      %{} when map_size(page) > 0 ->
+        {order_direction, order_by} = Enum.unzip(sort)
 
-      is_map_key(page, "offset") or is_map_key(page, "limit") ->
-        Flop.validate_and_run(
-          query,
-          %{
-            offset: page["offset"],
-            limit: page["limit"],
-            filters: filter,
-            order_by: sort
-          },
-          for: Team
-        )
+        opts = %{
+          order_by: order_by,
+          order_direction: order_direction,
+          filters: filter
+        }
 
-      true ->
-        Repo.all(query)
+        paginate(%{
+          query: query,
+          page: page,
+          opts: opts
+        })
+
+      _ ->
+        index(%{query: query, sort: sort, filter: filter})
     end
+  end
+
+  def index(%{query: query, sort: sort, filter: filter}) do
+    query
+    |> where(^filter)
+    |> order_by(^sort)
+    |> Repo.all()
+  end
+
+  defp paginate(%{
+         page: %{"number" => number, "size" => size},
+         query: query,
+         opts: opts
+       }) do
+    Flop.validate_and_run(
+      query,
+      Map.merge(opts, %{
+        page: number,
+        page_size: size
+      }),
+      for: Team
+    )
+  end
+
+  defp paginate(%{
+         page: %{"offset" => offset, "limit" => limit},
+         query: query,
+         opts: opts
+       }) do
+    Flop.validate_and_run(
+      query,
+      Map.merge(opts, %{
+        offset: offset,
+        limit: limit
+      }),
+      for: Team
+    )
+  end
+
+  defp paginate(%{
+         page: %{"after" => after_cursor, "size" => size},
+         query: query,
+         opts: opts
+       }) do
+    Flop.validate_and_run(
+      query,
+      Map.merge(opts, %{
+        after: after_cursor,
+        first: size
+      }),
+      for: Team
+    )
+  end
+
+  defp paginate(%{
+         page: %{"before" => before_cursor, "size" => size},
+         query: query,
+         opts: opts
+       }) do
+    Flop.validate_and_run(
+      query,
+      Map.merge(opts, %{
+        before: before_cursor,
+        last: size
+      }),
+      for: Team
+    )
+  end
+
+  defp paginate(%{
+         page: %{"size" => size},
+         query: query,
+         opts: opts
+       }) do
+    Flop.validate_and_run(
+      query,
+      Map.merge(opts, %{
+        first: size
+      }),
+      for: Team
+    )
   end
 
   @doc """

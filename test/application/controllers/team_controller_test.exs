@@ -223,7 +223,7 @@ defmodule RunaWeb.TeamControllerTest do
       )
     end
 
-    test "returns asc/desc sorted resources", ctx do
+    test "returns sorted resources according direction", ctx do
       insert_pair(:team)
 
       asc = get(ctx.conn, ~p"/api/teams?sort=title") |> json_response(200)
@@ -582,6 +582,62 @@ defmodule RunaWeb.TeamControllerTest do
       assert Map.has_key?(query, "page[limit]")
       assert Map.get(query, "page[offset]") == "0"
       assert Map.get(query, "page[limit]") == to_string(limit)
+    end
+  end
+
+  describe "pagination endpoint (cursor)" do
+    test "returns paginated resources for forward direction", ctx do
+      insert_list(5, :team)
+
+      size = 2
+
+      %{"links" => %{"next" => next}} =
+        response =
+        get(ctx.conn, ~p"/api/teams?page[size]=#{size}")
+        |> json_response(200)
+
+      assert_schema(
+        response,
+        "Team.IndexResponse",
+        ctx.spec
+      )
+
+      %{query: query} = URI.parse(next)
+      query_params = Plug.Conn.Query.decode(query)
+
+      response =
+        get(ctx.conn, ~p"/api/teams", query_params)
+        |> json_response(200)
+
+      assert_schema(response, "Team.IndexResponse", ctx.spec)
+    end
+
+    test "returns paginated resources for backward direction", ctx do
+      insert_list(5, :team)
+
+      size = 2
+
+      %{"links" => %{"next" => next}} =
+        response =
+        get(ctx.conn, ~p"/api/teams?page[size]=#{size}")
+        |> json_response(200)
+
+      %{query: query} = URI.parse(next)
+      query_params = Plug.Conn.Query.decode(query)
+
+      %{"links" => %{"prev" => prev}} =
+        response =
+        get(ctx.conn, ~p"/api/teams", query_params)
+        |> json_response(200)
+
+      %{query: query} = URI.parse(prev)
+      query_params = Plug.Conn.Query.decode(query)
+
+      response =
+        get(ctx.conn, ~p"/api/teams", query_params)
+        |> json_response(200)
+
+      assert_schema(response, "Team.IndexResponse", ctx.spec)
     end
   end
 end
