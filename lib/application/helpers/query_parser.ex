@@ -8,6 +8,7 @@ defmodule RunaWeb.QueryParser do
       nil ->
         quote do
           plug JSONAPI.QueryParser, unquote(opts)
+          plug unquote(__MODULE__)
         end
 
       schema ->
@@ -25,7 +26,24 @@ defmodule RunaWeb.QueryParser do
                    |> Flop.Schema.sortable()
                    |> Enum.map(&Atom.to_string/1)
                )
+
+          plug unquote(__MODULE__)
         end
     end
+  end
+
+  def init(opts) do
+    opts
+  end
+
+  def call(
+        %{assigns: %{jsonapi_query: %{sort: nil} = jsonapi_query}} = conn,
+        _opts
+      ) do
+    Plug.Conn.assign(conn, :jsonapi_query, %{jsonapi_query | sort: []})
+  end
+
+  def call(conn, _opts) do
+    conn
   end
 end

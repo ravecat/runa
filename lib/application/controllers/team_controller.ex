@@ -49,14 +49,14 @@ defmodule RunaWeb.TeamController do
         %{assigns: %{jsonapi_query: %{sort: sort, filter: filter}}} = conn,
         _params
       ) do
-    data = Teams.get_teams(sort: sort, filter: filter)
-
-    conn
-    |> put_status(200)
-    |> render(
-      :index,
-      data: data
-    )
+    with data <- Teams.get_teams(sort: sort, filter: filter) do
+      conn
+      |> put_status(200)
+      |> render(
+        :index,
+        data: data
+      )
+    end
   end
 
   def show_operation() do
