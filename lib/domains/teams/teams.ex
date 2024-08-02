@@ -5,16 +5,15 @@ defmodule Runa.Teams do
 
   use Runa, :context
 
+  alias Runa.Paginator
   alias Runa.Teams.Team
 
   @doc """
   Returns the list of teams.
 
   ## Examples
-
       iex> get_teams()
       [%Team{}, ...]
-
   """
   def get_teams(opts \\ []) do
     sort = Keyword.get(opts, :sort, [])
@@ -27,19 +26,13 @@ defmodule Runa.Teams do
 
     case page do
       %{} when map_size(page) > 0 ->
-        {order_direction, order_by} = Enum.unzip(sort)
-
-        opts = %{
-          order_by: order_by,
-          order_direction: order_direction,
-          filters: filter
-        }
-
-        paginate(%{
-          query: query,
+        Paginator.paginate(
+          sort: sort,
           page: page,
-          opts: opts
-        })
+          filter: filter,
+          for: Team,
+          query: query
+        )
 
       _ ->
         index(%{query: query, sort: sort, filter: filter})
@@ -51,80 +44,6 @@ defmodule Runa.Teams do
     |> where(^filter)
     |> order_by(^sort)
     |> Repo.all()
-  end
-
-  defp paginate(%{
-         page: %{"number" => number, "size" => size},
-         query: query,
-         opts: opts
-       }) do
-    Flop.validate_and_run(
-      query,
-      Map.merge(opts, %{
-        page: number,
-        page_size: size
-      }),
-      for: Team
-    )
-  end
-
-  defp paginate(%{
-         page: %{"offset" => offset, "limit" => limit},
-         query: query,
-         opts: opts
-       }) do
-    Flop.validate_and_run(
-      query,
-      Map.merge(opts, %{
-        offset: offset,
-        limit: limit
-      }),
-      for: Team
-    )
-  end
-
-  defp paginate(%{
-         page: %{"after" => after_cursor, "size" => size},
-         query: query,
-         opts: opts
-       }) do
-    Flop.validate_and_run(
-      query,
-      Map.merge(opts, %{
-        after: after_cursor,
-        first: size
-      }),
-      for: Team
-    )
-  end
-
-  defp paginate(%{
-         page: %{"before" => before_cursor, "size" => size},
-         query: query,
-         opts: opts
-       }) do
-    Flop.validate_and_run(
-      query,
-      Map.merge(opts, %{
-        before: before_cursor,
-        last: size
-      }),
-      for: Team
-    )
-  end
-
-  defp paginate(%{
-         page: %{"size" => size},
-         query: query,
-         opts: opts
-       }) do
-    Flop.validate_and_run(
-      query,
-      Map.merge(opts, %{
-        first: size
-      }),
-      for: Team
-    )
   end
 
   @doc """

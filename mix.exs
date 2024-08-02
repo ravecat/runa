@@ -86,7 +86,9 @@ defmodule Runa.MixProject do
       {:ex_machina, "~> 2.7.0", only: :test},
       {:recode, "~> 0.7", only: [:dev, :test]},
       {:open_api_spex, "~> 3.19"},
-      {:flop, "~> 0.25.0"}
+      {:flop, "~> 0.25.0"},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:file_system, "~> 1.0", only: [:dev, :test]},
     ]
   end
 

@@ -11,6 +11,7 @@ defmodule RunaWeb.TeamController do
 
   @tags [Serializers.Team.type()]
 
+  @spec index_operation() :: OpenApiSpex.Operation.t()
   def index_operation() do
     %Operation{
       tags: @tags,
@@ -34,6 +35,8 @@ defmodule RunaWeb.TeamController do
         _params
       )
       when map_size(page) > 0 do
+    dbg(conn)
+
     with {:ok, {data, %Flop.Meta{} = meta}} <-
            Teams.get_teams(sort: sort, filter: filter, page: page) do
       conn
@@ -109,11 +112,9 @@ defmodule RunaWeb.TeamController do
     }
   end
 
-  def create(
-        %{body_params: %Schemas.Teams.CreateBody{data: %{attributes: attrs}}} =
-          conn,
-        _
-      ) do
+  def create(conn, _) do
+    %{data: %{attributes: attrs}} = Map.get(conn, :body_params)
+
     with {:ok, %Team{} = team} <- Teams.create_team(attrs) do
       conn
       |> put_status(201)
@@ -147,10 +148,11 @@ defmodule RunaWeb.TeamController do
   end
 
   def update(
-        %{body_params: %Schemas.Teams.UpdateBody{data: %{attributes: attrs}}} =
-          conn,
+        conn,
         %{id: id}
       ) do
+    %{data: %{attributes: attrs}} = Map.get(conn, :body_params)
+
     with {:ok, team = %Team{}} <- Teams.get_team(id),
          {:ok, %Team{} = data} <- Teams.update_team(team, attrs) do
       render(conn, :show, data: data)
