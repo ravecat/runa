@@ -9,17 +9,20 @@ defmodule RunaWeb.Schemas.Teams do
 
   use RunaWeb.Schemas,
     name: "Team",
-    properties: %{
-      attributes: %Schema{
-        type: :object,
-        properties: %{
-          title: %Schema{
-            type: :string,
-            description: "Team title",
-            pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
-          }
-        },
-        required: [:title]
+    schema: %Schema{
+      type: :object,
+      properties: %{
+        attributes: %Schema{
+          type: :object,
+          properties: %{
+            title: %Schema{
+              type: :string,
+              description: "Team title",
+              pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
+            }
+          },
+          required: [:title]
+        }
       }
     }
 end

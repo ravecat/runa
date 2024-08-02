@@ -618,7 +618,6 @@ defmodule RunaWeb.TeamControllerTest do
       size = 2
 
       %{"links" => %{"next" => next}} =
-        response =
         get(ctx.conn, ~p"/api/teams?page[size]=#{size}")
         |> json_response(200)
 
@@ -626,7 +625,6 @@ defmodule RunaWeb.TeamControllerTest do
       query_params = Plug.Conn.Query.decode(query)
 
       %{"links" => %{"prev" => prev}} =
-        response =
         get(ctx.conn, ~p"/api/teams", query_params)
         |> json_response(200)
 

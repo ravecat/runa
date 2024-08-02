@@ -409,7 +409,7 @@ defmodule RunaWeb.Schemas do
 
   defmacro __using__(opts) do
     name = Keyword.fetch!(opts, :name)
-    properties = Keyword.fetch!(opts, :properties)
+    schema = Keyword.fetch!(opts, :schema)
 
     quote do
       require OpenApiSpex
@@ -423,10 +423,7 @@ defmodule RunaWeb.Schemas do
         OpenApiSpex.schema(%{
           allOf: [
             Schemas.ResourceObject,
-            %Schema{
-              type: :object,
-              properties: unquote(properties)
-            }
+            unquote(schema)
           ]
         })
       end

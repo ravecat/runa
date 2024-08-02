@@ -8,22 +8,25 @@ defmodule RunaWeb.Schemas.Projects do
 
   use RunaWeb.Schemas,
     name: "Project",
-    properties: %{
-      attributes: %Schema{
-        type: :object,
-        properties: %{
-          name: %Schema{
-            type: :string,
-            description: "Project name",
-            pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
+    schema: %Schema{
+      type: :object,
+      properties: %{
+        attributes: %Schema{
+          type: :object,
+          properties: %{
+            name: %Schema{
+              type: :string,
+              description: "Project name",
+              pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
+            },
+            description: %Schema{
+              type: :string,
+              description: "Project description",
+              pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
+            }
           },
-          description: %Schema{
-            type: :string,
-            description: "Project description",
-            pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
-          }
-        },
-        required: [:name]
+          required: [:name]
+        }
       }
     }
 end
