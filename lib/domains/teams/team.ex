@@ -1,11 +1,9 @@
 defmodule Runa.Teams.Team do
   @moduledoc """
-  The schema for teams, which are groups of users
+  The schema for team resource
   """
 
-  use Ecto.Schema
-
-  import Ecto.Changeset
+  use Runa, :schema
 
   alias Runa.Accounts.User
   alias Runa.Contributors.Contributor
@@ -21,11 +19,10 @@ defmodule Runa.Teams.Team do
     }
   }
 
-  schema "teams" do
+  typed_schema "teams" do
     field(:title, :string)
     has_many(:projects, Project)
     many_to_many(:users, User, join_through: Contributor)
-
     timestamps(type: :utc_datetime)
   end
 

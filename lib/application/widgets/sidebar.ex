@@ -37,7 +37,7 @@ defmodule RunaWeb.Components.Sidebar do
   def mount(socket) do
     assigns = %{
       rows: @rows,
-      team_changeset: to_form(Teams.change_team(%Team{}))
+      team_changeset: to_form(Teams.change(%Team{}))
     }
 
     {:ok, assign(socket, assigns)}
@@ -84,7 +84,7 @@ defmodule RunaWeb.Components.Sidebar do
           <:footer>
             <.tab
               type="button"
-              phx-click={show_modal("create_team")}
+              phx-click={show_modal("create")}
               class="cursor-pointer hover:bg-secondary-50"
             >
               Create team
@@ -98,7 +98,7 @@ defmodule RunaWeb.Components.Sidebar do
           </.tab>
         </.link>
       </div>
-      <.modal id="create_team">
+      <.modal id="create">
         <:title>
           Create team
         </:title>
@@ -113,7 +113,7 @@ defmodule RunaWeb.Components.Sidebar do
   def handle_event("validate", %{"team" => params}, socket) do
     form =
       %Team{}
-      |> Teams.change_team(params)
+      |> Teams.change(params)
       |> Map.put(:action, :insert)
       |> to_form()
 
@@ -121,7 +121,7 @@ defmodule RunaWeb.Components.Sidebar do
   end
 
   def handle_event("save", %{"team" => params}, socket) do
-    case Teams.create_team(params) do
+    case Teams.create(params) do
       {:ok, _} ->
         {:noreply, put_flash(socket, :info, "team created")}
 

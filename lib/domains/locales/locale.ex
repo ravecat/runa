@@ -2,9 +2,7 @@ defmodule Runa.Locales.Locale do
   @moduledoc """
   Schema for the locale entity.
   """
-  use Ecto.Schema
-
-  import Ecto.Changeset
+  use Runa, :schema
 
   alias Runa.Languages.Language
   alias Runa.Projects.Project

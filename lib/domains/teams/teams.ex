@@ -5,17 +5,18 @@ defmodule Runa.Teams do
 
   use Runa, :context
 
-  alias Runa.Paginator
   alias Runa.Teams.Team
 
   @doc """
   Returns the list of teams.
 
   ## Examples
-      iex> get_teams()
+      iex> index()
       [%Team{}, ...]
   """
-  def get_teams(opts \\ []) do
+  @spec index(keyword) ::
+          {:ok, {[Team.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
+  def index(opts \\ []) do
     sort = Keyword.get(opts, :sort, [])
     filter = Keyword.get(opts, :filter, [])
     page = Keyword.get(opts, :page, %{})
@@ -27,23 +28,20 @@ defmodule Runa.Teams do
     case page do
       %{} when map_size(page) > 0 ->
         Paginator.paginate(
-          sort: sort,
-          page: page,
-          filter: filter,
-          for: Team,
-          query: query
+          query,
+          %{sort: sort, page: page, filter: filter},
+          for: Team
         )
 
       _ ->
-        index(%{query: query, sort: sort, filter: filter})
-    end
-  end
+        data =
+          query
+          |> where(^filter)
+          |> order_by(^sort)
+          |> Repo.all()
 
-  def index(%{query: query, sort: sort, filter: filter}) do
-    query
-    |> where(^filter)
-    |> order_by(^sort)
-    |> Repo.all()
+        {:ok, {data, %{}}}
+    end
   end
 
   @doc """
@@ -53,14 +51,14 @@ defmodule Runa.Teams do
 
   ## Examples
 
-      iex> get_team(1)
+      iex> get(1)
       {:ok, %Team{}}
 
-      iex> get_team(999)
+      iex> get(999)
       {:error, %Ecto.NoResultsError{}}
 
   """
-  def get_team(id) do
+  def get(id) do
     case Repo.get(Team, id) do
       nil ->
         {:error, %Ecto.NoResultsError{}}
@@ -75,14 +73,14 @@ defmodule Runa.Teams do
 
   ## Examples
 
-      iex> create_team(%{field: value})
+      iex> create(%{field: value})
       {:ok, %Team{}}
 
-      iex> create_team(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_team(attrs \\ %{}) do
+  def create(attrs \\ %{}) do
     %Team{}
     |> Team.changeset(attrs)
     |> Repo.insert()
@@ -93,14 +91,14 @@ defmodule Runa.Teams do
 
   ## Examples
 
-      iex> update_team(team, %{field: new_value})
+      iex> update(team, %{field: new_value})
       {:ok, %Team{}}
 
-      iex> update_team(team, %{field: bad_value})
+      iex> update(team, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_team(%Team{} = team, attrs) do
+  def update(%Team{} = team, attrs) do
     team
     |> Team.changeset(attrs)
     |> Repo.update()
@@ -111,14 +109,14 @@ defmodule Runa.Teams do
 
   ## Examples
 
-      iex> delete_team(team)
+      iex> delete(team)
       {:ok, %Team{}}
 
-      iex> delete_team(team)
+      iex> delete(team)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_team(%Team{} = team) do
+  def delete(%Team{} = team) do
     Repo.delete(team)
   end
 
@@ -127,11 +125,11 @@ defmodule Runa.Teams do
 
   ## Examples
 
-      iex> change_team(team)
+      iex> change(team)
       %Ecto.Changeset{data: %Team{}}
 
   """
-  def change_team(%Team{} = team, attrs \\ %{}) do
+  def change(%Team{} = team, attrs \\ %{}) do
     Team.changeset(team, attrs)
   end
 end

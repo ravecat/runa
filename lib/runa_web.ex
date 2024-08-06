@@ -142,7 +142,7 @@ defmodule RunaWeb do
 
   def serializer do
     quote do
-      use JSONAPI.View, paginator: RunaWeb.Paginator
+      use JSONAPI.View, paginator: RunaWeb.JSONAPI.LinksConstructor
 
       alias RunaWeb.Formatters
       alias RunaWeb.Serializers

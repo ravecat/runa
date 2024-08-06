@@ -2,9 +2,7 @@ defmodule Runa.Projects.Project do
   @moduledoc """
   Schema for the projects entity.
   """
-  use Ecto.Schema
-
-  import Ecto.Changeset
+  use Runa, :schema
 
   alias Runa.Files.File
   alias Runa.Keys.Key

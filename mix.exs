@@ -89,6 +89,7 @@ defmodule Runa.MixProject do
       {:flop, "~> 0.25.0"},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:file_system, "~> 1.0", only: [:dev, :test]},
+      {:typed_ecto_schema, "~> 0.4.1", runtime: false}
     ]
   end
 

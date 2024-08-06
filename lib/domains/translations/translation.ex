@@ -2,9 +2,7 @@ defmodule Runa.Translations.Translation do
   @moduledoc """
   Schema for the translation entity.
   """
-  use Ecto.Schema
-
-  import Ecto.Changeset
+  use Runa, :schema
 
   alias Runa.Keys.Key
 

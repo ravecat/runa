@@ -33,31 +33,14 @@ defmodule RunaWeb.TeamController do
         %{assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}} =
           conn,
         _params
-      )
-      when map_size(page) > 0 do
-    dbg(conn)
-
-    with {:ok, {data, %Flop.Meta{} = meta}} <-
-           Teams.get_teams(sort: sort, filter: filter, page: page) do
+      ) do
+    with {:ok, {data, meta}} <-
+           Teams.index(sort: sort, filter: filter, page: page) do
       conn
       |> put_status(200)
       |> render(:index,
         data: data,
-        page: meta
-      )
-    end
-  end
-
-  def index(
-        %{assigns: %{jsonapi_query: %{sort: sort, filter: filter}}} = conn,
-        _params
-      ) do
-    with data <- Teams.get_teams(sort: sort, filter: filter) do
-      conn
-      |> put_status(200)
-      |> render(
-        :index,
-        data: data
+        meta: meta
       )
     end
   end
@@ -81,7 +64,7 @@ defmodule RunaWeb.TeamController do
   end
 
   def show(conn, %{id: id}) do
-    with {:ok, team = %Team{}} <- Teams.get_team(id) do
+    with {:ok, team = %Team{}} <- Teams.get(id) do
       conn
       |> put_status(200)
       |> render(:show, data: team)
@@ -104,7 +87,7 @@ defmodule RunaWeb.TeamController do
       responses: %{
         201 =>
           response(
-            "200 OK",
+            "201 OK",
             Schemas.Headers.content_type(),
             Schemas.Teams.ShowResponse
           )
@@ -115,7 +98,7 @@ defmodule RunaWeb.TeamController do
   def create(conn, _) do
     %{data: %{attributes: attrs}} = Map.get(conn, :body_params)
 
-    with {:ok, %Team{} = team} <- Teams.create_team(attrs) do
+    with {:ok, %Team{} = team} <- Teams.create(attrs) do
       conn
       |> put_status(201)
       |> render(:show, data: team)
@@ -153,8 +136,8 @@ defmodule RunaWeb.TeamController do
       ) do
     %{data: %{attributes: attrs}} = Map.get(conn, :body_params)
 
-    with {:ok, team = %Team{}} <- Teams.get_team(id),
-         {:ok, %Team{} = data} <- Teams.update_team(team, attrs) do
+    with {:ok, team = %Team{}} <- Teams.get(id),
+         {:ok, %Team{} = data} <- Teams.update(team, attrs) do
       render(conn, :show, data: data)
     end
   end
@@ -173,8 +156,8 @@ defmodule RunaWeb.TeamController do
   end
 
   def delete(conn, %{id: id}) do
-    with {:ok, team = %Team{}} <- Teams.get_team(id),
-         {:ok, %Team{}} <- Teams.delete_team(team) do
+    with {:ok, team = %Team{}} <- Teams.get(id),
+         {:ok, %Team{}} <- Teams.delete(team) do
       conn
       |> put_status(204)
       |> render(:delete)

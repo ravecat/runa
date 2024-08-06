@@ -2,9 +2,7 @@ defmodule Runa.Files.File do
   @moduledoc """
   File schema
   """
-  use Ecto.Schema
-
-  import Ecto.Changeset
+  use Runa, :schema
 
   alias Runa.Projects.Project
 
