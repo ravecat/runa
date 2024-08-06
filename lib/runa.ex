@@ -14,6 +14,17 @@ defmodule Runa do
 
       alias Ecto.Multi
       alias Runa.Repo
+
+      alias Runa.Paginator
+    end
+  end
+
+  def schema do
+    quote do
+      use Ecto.Schema
+      use TypedEctoSchema
+
+      import Ecto.Changeset
     end
   end
 

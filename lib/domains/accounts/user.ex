@@ -2,9 +2,8 @@ defmodule Runa.Accounts.User do
   @moduledoc """
   User schema
   """
-  use Ecto.Schema
 
-  import Ecto.Changeset
+  use Runa, :schema
 
   alias Runa.Contributors.Contributor
   alias Runa.Teams.Team

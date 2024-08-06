@@ -4,9 +4,7 @@ defmodule Runa.Roles.Role do
 
   Available roles: owner (default), admin, editor, viewer.
   """
-  use Ecto.Schema
-
-  import Ecto.Changeset
+  use Runa, :schema
 
   alias Runa.Accounts.User
   alias Runa.Contributors.Contributor

@@ -2,9 +2,7 @@ defmodule Runa.Tokens.Token do
   @moduledoc """
   The api tokens  schema.
   """
-  use Ecto.Schema
-
-  import Ecto.Changeset
+  use Runa, :schema
 
   alias Runa.Accounts.User
 

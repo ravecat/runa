@@ -2,102 +2,73 @@ defmodule Runa.Paginator do
   @moduledoc """
   Paginator module for offset, page and cursor based pagination
   """
-  @type option ::
-          Flop.option()
-          | {:sort, keyword() | nil}
-          | {:filter, keyword() | nil}
-          | {:page, map()}
-          | {:query, Ecto.Query.t()}
+  alias Ecto.Queryable
 
-  @spec paginate([option()]) ::
+  @type params :: %{
+          optional(:sort) => [{atom(), atom()}],
+          optional(:filter) => [any()],
+          optional(:page) => map()
+        }
+
+  @spec paginate(Queryable.t(), params, [Flop.option()]) ::
           {:ok, {[any], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
-  def paginate(opts \\ []) do
-    sort = Keyword.get(opts, :sort, [])
-    filter = Keyword.get(opts, :filter, [])
-    page = Keyword.get(opts, :page, %{})
-    module = Keyword.get(opts, :for, nil)
-    query = Keyword.get(opts, :query, nil)
+  def paginate(query, params, opts \\ []) do
+    sort = Map.get(params, :sort, [])
+    filter = Map.get(params, :filter, [])
+    page = Map.get(params, :page, %{})
 
     {order_direction, order_by} = Enum.unzip(sort)
 
-    paginate_opts = %{
+    flop = %{
       order_by: order_by,
       order_direction: order_direction,
       filters: filter
     }
 
-    do_paginate(query, page, paginate_opts, module)
-  end
+    page_flop = map_to_flop(page)
 
-  @spec do_paginate(Ecto.Query.t(), %{}, map(), module()) ::
-          {:ok, {[any], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
-  defp do_paginate(query, %{"number" => number, "size" => size}, opts, module) do
     Flop.validate_and_run(
       query,
-      Map.merge(opts, %{
-        page: number,
-        page_size: size
-      }),
-      for: module
+      Map.merge(flop, page_flop),
+      opts
     )
   end
 
-  defp do_paginate(query, %{"offset" => offset, "limit" => limit}, opts, module) do
-    Flop.validate_and_run(
-      query,
-      Map.merge(opts, %{
-        offset: offset,
-        limit: limit
-      }),
-      for: module
-    )
+  defp map_to_flop(%{"number" => number, "size" => size}) do
+    %{
+      page: number,
+      page_size: size
+    }
   end
 
-  defp do_paginate(
-         query,
-         %{"after" => after_cursor, "size" => size},
-         opts,
-         module
-       ) do
-    Flop.validate_and_run(
-      query,
-      Map.merge(opts, %{
-        after: after_cursor,
-        first: size
-      }),
-      for: module
-    )
+  defp map_to_flop(%{"offset" => offset, "limit" => limit}) do
+    %{
+      offset: offset,
+      limit: limit
+    }
   end
 
-  defp do_paginate(
-         query,
-         %{"before" => before_cursor, "size" => size},
-         opts,
-         module
-       ) do
-    Flop.validate_and_run(
-      query,
-      Map.merge(opts, %{
-        before: before_cursor,
-        last: size
-      }),
-      for: module
-    )
+  defp map_to_flop(%{"after" => after_cursor, "size" => size}) do
+    %{
+      after: after_cursor,
+      first: size
+    }
   end
 
-  defp do_paginate(query, %{"size" => size}, opts, module) do
-    Flop.validate_and_run(
-      query,
-      Map.merge(opts, %{
-        first: size
-      }),
-      for: module
-    )
+  defp map_to_flop(%{"before" => before_cursor, "size" => size}) do
+    %{
+      before: before_cursor,
+      last: size
+    }
   end
 
-  @spec do_paginate(Ecto.Query.t(), %{}, map(), module()) ::
-          {:ok, {[any], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
-  defp do_paginate(_query, _page, _opts, _module) do
-    {:error, :invalid_pagination_params}
+  defp map_to_flop(%{"size" => size}) do
+    %{
+      first: size
+    }
+  end
+
+  defp map_to_flop(page) do
+    page
   end
 end

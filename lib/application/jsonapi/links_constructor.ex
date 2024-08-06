@@ -1,4 +1,4 @@
-defmodule RunaWeb.Paginator do
+defmodule RunaWeb.JSONAPI.LinksConstructor do
   @moduledoc """
   Page based pagination strategy
   """
@@ -11,7 +11,7 @@ defmodule RunaWeb.Paginator do
         view,
         %{
           assigns: %{
-            page: %Flop.Meta{} = meta,
+            meta: meta,
             jsonapi_query: %{page: %{"size" => _, "number" => _}}
           }
         } = conn,
@@ -58,7 +58,7 @@ defmodule RunaWeb.Paginator do
         view,
         %{
           assigns: %{
-            page: %Flop.Meta{} = meta,
+            meta: meta,
             jsonapi_query: %{page: %{"offset" => _, "limit" => _}}
           }
         } = conn,
@@ -101,8 +101,8 @@ defmodule RunaWeb.Paginator do
         view,
         %{
           assigns: %{
-            page:
-              %Flop.Meta{
+            meta:
+              %{
                 end_cursor: end_cursor,
                 start_cursor: start_cursor,
                 page_size: size
