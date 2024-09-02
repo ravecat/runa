@@ -17,12 +17,12 @@ defmodule RunaWeb.ProjectController do
       summary: "Show project",
       description: "Show project details",
       operationId: "getTeam",
-      parameters: [Schemas.Params.path()],
+      parameters: [Schemas.JSONAPI.Parameters.path()],
       responses: %{
         200 =>
           response(
             "200 OK",
-            Schemas.Headers.content_type(),
+            Schemas.JSONAPI.Headers.content_type(),
             Schemas.Projects.ShowResponse
           )
       }

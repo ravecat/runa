@@ -47,7 +47,7 @@ defmodule RunaWeb.TeamControllerTest do
       get(ctx.conn, ~p"/api/teams/1")
       |> json_response(404)
       |> assert_raw_schema(
-        resolve_schema(Schemas.Error, %{}),
+        resolve_schema(RunaWeb.Schemas.JSONAPI.Error, %{}),
         ctx.spec
       )
     end
@@ -73,7 +73,7 @@ defmodule RunaWeb.TeamControllerTest do
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(422)
       |> assert_raw_schema(
-        resolve_schema(Schemas.Error, %{}),
+        resolve_schema(Schemas.JSONAPI.Error, %{}),
         ctx.spec
       )
     end
@@ -105,7 +105,7 @@ defmodule RunaWeb.TeamControllerTest do
       patch(ctx.conn, ~p"/api/teams/1", body)
       |> json_response(404)
       |> assert_raw_schema(
-        resolve_schema(Schemas.Error, %{}),
+        resolve_schema(Schemas.JSONAPI.Error, %{}),
         ctx.spec
       )
     end

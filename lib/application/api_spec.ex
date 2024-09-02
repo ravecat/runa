@@ -39,7 +39,7 @@ defmodule RunaWeb.APISpec do
           "204" => %Response{
             description: "204 No Content",
             content: %{
-              Schemas.Headers.content_type() => %MediaType{
+              Schemas.JSONAPI.Headers.content_type() => %MediaType{
                 schema: %Schema{type: :object}
               }
             }
