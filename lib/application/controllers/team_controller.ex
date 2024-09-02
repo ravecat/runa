@@ -22,7 +22,7 @@ defmodule RunaWeb.TeamController do
         200 =>
           response(
             "200 OK",
-            Schemas.Headers.content_type(),
+            Schemas.JSONAPI.Headers.content_type(),
             Schemas.Teams.IndexResponse
           )
       }
@@ -51,12 +51,14 @@ defmodule RunaWeb.TeamController do
       summary: "Show team",
       description: "Show team details",
       operationId: "getTeam",
-      parameters: [Schemas.Params.path() | Schemas.Params.query()],
+      parameters: [
+        Schemas.JSONAPI.Parameters.path() | Schemas.JSONAPI.Parameters.query()
+      ],
       responses: %{
         200 =>
           response(
             "200 OK",
-            Schemas.Headers.content_type(),
+            Schemas.JSONAPI.Headers.content_type(),
             Schemas.Teams.ShowResponse
           )
       }
@@ -80,7 +82,7 @@ defmodule RunaWeb.TeamController do
       requestBody:
         request_body(
           "Team request",
-          Schemas.Headers.content_type(),
+          Schemas.JSONAPI.Headers.content_type(),
           Schemas.Teams.CreateBody,
           required: true
         ),
@@ -88,7 +90,7 @@ defmodule RunaWeb.TeamController do
         201 =>
           response(
             "201 OK",
-            Schemas.Headers.content_type(),
+            Schemas.JSONAPI.Headers.content_type(),
             Schemas.Teams.ShowResponse
           )
       }
@@ -111,11 +113,11 @@ defmodule RunaWeb.TeamController do
       summary: "Update team",
       description: "Update team details",
       operationId: "updateTeam",
-      parameters: [Schemas.Params.path()],
+      parameters: [Schemas.JSONAPI.Parameters.path()],
       requestBody:
         request_body(
           "Team request",
-          Schemas.Headers.content_type(),
+          Schemas.JSONAPI.Headers.content_type(),
           Schemas.Teams.UpdateBody,
           required: true
         ),
@@ -123,7 +125,7 @@ defmodule RunaWeb.TeamController do
         200 =>
           response(
             "200 OK",
-            Schemas.Headers.content_type(),
+            Schemas.JSONAPI.Headers.content_type(),
             Schemas.Teams.ShowResponse
           )
       }
@@ -148,7 +150,7 @@ defmodule RunaWeb.TeamController do
       summary: "Delete team",
       description: "Delete team",
       operationId: "deleteTeam",
-      parameters: [Schemas.Params.path()],
+      parameters: [Schemas.JSONAPI.Parameters.path()],
       responses: %{
         204 => %Reference{"$ref": "#/components/responses/204"}
       }
