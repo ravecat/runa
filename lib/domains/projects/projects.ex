@@ -1,6 +1,6 @@
 defmodule Runa.Projects do
   @moduledoc """
-  The Projects context.
+  The projects context.
   """
 
   use Runa, :context
@@ -12,12 +12,36 @@ defmodule Runa.Projects do
 
   ## Examples
 
-      iex> get_projects()
+      iex> index()
       [%Project{}, ...]
 
   """
-  def get_projects do
-    Repo.all(Project) |> Repo.preload(:keys)
+  @spec index(keyword) ::
+          {:ok, {[Project.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
+  def index(opts \\ []) do
+    sort = Keyword.get(opts, :sort, [])
+    filter = Keyword.get(opts, :filter, [])
+    page = Keyword.get(opts, :page, %{})
+
+    query = Project
+
+    case page do
+      %{} when map_size(page) > 0 ->
+        Paginator.paginate(
+          query,
+          %{sort: sort, page: page, filter: filter},
+          for: Project
+        )
+
+      _ ->
+        data =
+          query
+          |> where(^filter)
+          |> order_by(^sort)
+          |> Repo.all()
+
+        {:ok, {data, %{}}}
+    end
   end
 
   @doc """
@@ -25,7 +49,7 @@ defmodule Runa.Projects do
 
   Raises `Ecto.NoResultsError` if the Project does not exist.
   """
-  def get_project(id) do
+  def get(id) do
     case Repo.get(Project, id) do
       nil -> {:error, %Ecto.NoResultsError{}}
       team -> {:ok, Repo.preload(team, :keys)}
@@ -37,14 +61,14 @@ defmodule Runa.Projects do
 
   ## Examples
 
-      iex> create_project(%{field: value})
+      iex> create(%{field: value})
       {:ok, %Project{}}
 
-      iex> create_project(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_project(attrs \\ %{}) do
+  def create(attrs \\ %{}) do
     %Project{}
     |> Project.changeset(attrs)
     |> Repo.insert()
@@ -55,14 +79,14 @@ defmodule Runa.Projects do
 
   ## Examples
 
-      iex> update_project(project, %{field: new_value})
+      iex> update(project, %{field: new_value})
       {:ok, %Project{}}
 
-      iex> update_project(project, %{field: bad_value})
+      iex> update(project, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_project(%Project{} = project, attrs) do
+  def update(%Project{} = project, attrs) do
     project
     |> Project.changeset(attrs)
     |> Repo.update()
@@ -73,14 +97,14 @@ defmodule Runa.Projects do
 
   ## Examples
 
-      iex> delete_project(project)
+      iex> delete(project)
       {:ok, %Project{}}
 
-      iex> delete_project(project)
+      iex> delete(project)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_project(%Project{} = project) do
+  def delete(%Project{} = project) do
     Repo.delete(project)
   end
 
@@ -89,11 +113,11 @@ defmodule Runa.Projects do
 
   ## Examples
 
-      iex> change_project(project)
+      iex> change(project)
       %Ecto.Changeset{data: %Project{}}
 
   """
-  def change_project(%Project{} = project, attrs \\ %{}) do
+  def change(%Project{} = project, attrs \\ %{}) do
     Project.changeset(project, attrs)
   end
 end

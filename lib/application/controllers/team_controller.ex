@@ -1,56 +1,53 @@
 defmodule RunaWeb.TeamController do
   use RunaWeb, :controller
-  use RunaWeb, :openapi
+  use RunaWeb, :jsonapi
 
-  alias Runa.Teams
-  alias Runa.Teams.Team
+  alias Runa.Teams, as: Context
+  alias Runa.Teams.Team, as: Schema
+  alias RunaWeb.Schemas.Teams, as: OperationSchemas
+  alias RunaWeb.Serializers.Team, as: Serializer
 
-  use RunaWeb.QueryParser,
-    view: Serializers.Team,
-    schema: Team
+  use RunaWeb.Plugs.QueryParser,
+    serializer: Serializer,
+    schema: Schema
 
-  @tags [Serializers.Team.type()]
+  @resource Serializer.type()
 
-  @spec index_operation() :: OpenApiSpex.Operation.t()
   def index_operation() do
     %Operation{
-      tags: @tags,
-      summary: "List teams",
-      description: "List all teams related with user account",
-      operationId: "getTeamList",
+      tags: [@resource],
+      summary: "List of current resources",
+      description: "List of current resources",
+      operationId: "getResourcesList-#{@resource}",
       responses: %{
         200 =>
           response(
             "200 OK",
             Schemas.JSONAPI.Headers.content_type(),
-            Schemas.Teams.IndexResponse
+            OperationSchemas.IndexResponse
           )
       }
     }
   end
 
   def index(
-        %{assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}} =
-          conn,
+        %{
+          assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}
+        } = conn,
         _params
       ) do
     with {:ok, {data, meta}} <-
-           Teams.index(sort: sort, filter: filter, page: page) do
-      conn
-      |> put_status(200)
-      |> render(:index,
-        data: data,
-        meta: meta
-      )
+           Context.index(sort: sort, filter: filter, page: page) do
+      conn |> put_status(200) |> render(:index, data: data, meta: meta)
     end
   end
 
   def show_operation() do
     %Operation{
-      tags: @tags,
-      summary: "Show team",
-      description: "Show team details",
-      operationId: "getTeam",
+      tags: [@resource],
+      summary: "Show of current resource",
+      description: "Show of current resource",
+      operationId: "getResource-#{@resource}",
       parameters: [
         Schemas.JSONAPI.Parameters.path() | Schemas.JSONAPI.Parameters.query()
       ],
@@ -59,31 +56,29 @@ defmodule RunaWeb.TeamController do
           response(
             "200 OK",
             Schemas.JSONAPI.Headers.content_type(),
-            Schemas.Teams.ShowResponse
+            OperationSchemas.ShowResponse
           )
       }
     }
   end
 
   def show(conn, %{id: id}) do
-    with {:ok, team = %Team{}} <- Teams.get(id) do
-      conn
-      |> put_status(200)
-      |> render(:show, data: team)
+    with {:ok, data} <- Context.get(id) do
+      conn |> put_status(200) |> render(:show, data: data)
     end
   end
 
   def create_operation() do
     %Operation{
-      tags: @tags,
-      summary: "Create team",
-      description: "Create a new team",
-      operationId: "createTeam",
+      tags: [@resource],
+      summary: "Create new resource",
+      description: "Create new resource",
+      operationId: "createResource-#{@resource}",
       requestBody:
         request_body(
-          "Team request",
+          "Resource request body",
           Schemas.JSONAPI.Headers.content_type(),
-          Schemas.Teams.CreateBody,
+          OperationSchemas.CreateBody,
           required: true
         ),
       responses: %{
@@ -91,7 +86,7 @@ defmodule RunaWeb.TeamController do
           response(
             "201 OK",
             Schemas.JSONAPI.Headers.content_type(),
-            Schemas.Teams.ShowResponse
+            OperationSchemas.ShowResponse
           )
       }
     }
@@ -100,25 +95,23 @@ defmodule RunaWeb.TeamController do
   def create(conn, _) do
     %{data: %{attributes: attrs}} = Map.get(conn, :body_params)
 
-    with {:ok, %Team{} = team} <- Teams.create(attrs) do
-      conn
-      |> put_status(201)
-      |> render(:show, data: team)
+    with {:ok, data} <- Context.create(attrs) do
+      conn |> put_status(201) |> render(:show, data: data)
     end
   end
 
   def update_operation() do
     %Operation{
-      tags: @tags,
-      summary: "Update team",
-      description: "Update team details",
-      operationId: "updateTeam",
+      tags: [@resource],
+      summary: "Update resource",
+      description: "Update resource",
+      operationId: "updateResource-#{@resource}",
       parameters: [Schemas.JSONAPI.Parameters.path()],
       requestBody:
         request_body(
-          "Team request",
+          "Resource request body",
           Schemas.JSONAPI.Headers.content_type(),
-          Schemas.Teams.UpdateBody,
+          OperationSchemas.UpdateBody,
           required: true
         ),
       responses: %{
@@ -126,43 +119,36 @@ defmodule RunaWeb.TeamController do
           response(
             "200 OK",
             Schemas.JSONAPI.Headers.content_type(),
-            Schemas.Teams.ShowResponse
+            OperationSchemas.ShowResponse
           )
       }
     }
   end
 
-  def update(
-        conn,
-        %{id: id}
-      ) do
+  def update(conn, %{id: id}) do
     %{data: %{attributes: attrs}} = Map.get(conn, :body_params)
 
-    with {:ok, team = %Team{}} <- Teams.get(id),
-         {:ok, %Team{} = data} <- Teams.update(team, attrs) do
+    with {:ok, data} <- Context.get(id),
+         {:ok, data} <- Context.update(data, attrs) do
       render(conn, :show, data: data)
     end
   end
 
   def delete_operation() do
     %Operation{
-      tags: @tags,
-      summary: "Delete team",
-      description: "Delete team",
-      operationId: "deleteTeam",
+      tags: [@resource],
+      summary: "Delete resource",
+      description: "Delete resource",
+      operationId: "deleteResource-#{@resource}",
       parameters: [Schemas.JSONAPI.Parameters.path()],
-      responses: %{
-        204 => %Reference{"$ref": "#/components/responses/204"}
-      }
+      responses: %{204 => %Reference{"$ref": "#/components/responses/204"}}
     }
   end
 
   def delete(conn, %{id: id}) do
-    with {:ok, team = %Team{}} <- Teams.get(id),
-         {:ok, %Team{}} <- Teams.delete(team) do
-      conn
-      |> put_status(204)
-      |> render(:delete)
+    with {:ok, data} <- Context.get(id),
+         {:ok, _} <- Context.delete(data) do
+      conn |> put_status(204) |> render(:delete)
     end
   end
 end

@@ -12,31 +12,33 @@ defmodule Runa.TeamsTest do
   import Runa.Factory
 
   setup do
-    {:ok, team: insert(:team) |> Repo.preload(:projects)}
+    team = insert(:team) |> Repo.preload(:projects)
+
+    {:ok, team: team}
   end
 
-  describe "teams" do
-    test "returns all teams", ctx do
-      assert Teams.index() == {:ok, {[ctx.team], %{}}}
+  describe "teams context" do
+    test "returns all entities", ctx do
+      assert {:ok, {[ctx.team], %{}}} == Teams.index()
     end
 
-    test "returns the team with given id", ctx do
+    test "returns entity with given id", ctx do
       assert Teams.get(ctx.team.id) == {:ok, ctx.team}
     end
 
-    test "creates a team with valid data" do
+    test "creates entity with valid data" do
       valid_attrs = %{title: "some title"}
 
       assert {:ok, %Team{}} = Teams.create(valid_attrs)
     end
 
-    test "returns error changeset after create with invalid data" do
+    test "returns error changeset during creation with invalid data" do
       invalid_attrs = %{}
 
       assert {:error, %Ecto.Changeset{}} = Teams.create(invalid_attrs)
     end
 
-    test "updates the team with valid data", ctx do
+    test "updates entity with valid data", ctx do
       update_attrs = %{title: "some updated title"}
 
       assert {:ok, %Team{} = team} = Teams.update(ctx.team, update_attrs)
@@ -52,13 +54,13 @@ defmodule Runa.TeamsTest do
       assert {:ok, ctx.team} == Teams.get(ctx.team.id)
     end
 
-    test "deletes the team", ctx do
+    test "deletes entity", ctx do
       assert {:ok, %Team{}} = Teams.delete(ctx.team)
 
       assert {:error, %Ecto.NoResultsError{}} = Teams.get(ctx.team.id)
     end
 
-    test "returns a team changeset", ctx do
+    test "returns changeset", ctx do
       assert %Ecto.Changeset{} = Teams.change(ctx.team)
     end
   end

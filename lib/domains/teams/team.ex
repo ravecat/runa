@@ -20,6 +20,7 @@ defmodule Runa.Teams.Team do
   }
 
   typed_schema "teams" do
+
     field(:title, :string)
     has_many(:projects, Project)
     many_to_many(:users, User, join_through: Contributor)
@@ -27,8 +28,8 @@ defmodule Runa.Teams.Team do
   end
 
   @doc false
-  def changeset(team, attrs) do
-    team
+  def changeset(data, attrs) do
+    data
     |> cast(attrs, [:title])
     |> validate_required([:title])
   end

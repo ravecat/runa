@@ -5,9 +5,34 @@ defmodule RunaWeb.ProjectControllerTest do
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
 
+  alias OpenApiSpex.Schema
+
   alias RunaWeb.Schemas
 
   @moduletag :projects
+
+  describe "index endpoint" do
+    test "returns list of resources", ctx do
+      team = insert(:team)
+      project = insert(:project, team: team)
+
+      get(ctx.conn, ~p"/api/projects")
+      |> json_response(200)
+      |> assert_schema(
+        "Project.IndexResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns empty list of resources", ctx do
+      get(ctx.conn, ~p"/api/projects")
+      |> json_response(200)
+      |> assert_schema(
+        "Project.IndexResponse",
+        ctx.spec
+      )
+    end
+  end
 
   describe "show endpoint" do
     test "returns resource", ctx do
