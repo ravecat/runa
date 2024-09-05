@@ -12,23 +12,22 @@ defmodule Runa.ProjectsTest do
 
   setup do
     team = insert(:team)
-    project = insert(:project, team: team)
+    project = insert(:project, team: team) |> Ecto.reset_fields([:team])
 
     {:ok, project: project, team: team}
   end
 
   describe "projects context" do
-    test "returns all projects", ctx do
-      assert [project] = Projects.get_projects()
+    test "returns all entities", ctx do
+      assert {:ok, {[ctx.project], %{}}} == Projects.index()
+    end
+
+    test "returns entity with given id", ctx do
+      assert {:ok, project} = Projects.get(ctx.project.id)
       assert project.id == ctx.project.id
     end
 
-    test "returns the project with given id", ctx do
-      assert {:ok, project} = Projects.get_project(ctx.project.id)
-      assert project.id == ctx.project.id
-    end
-
-    test "creates a project with valid data" do
+    test "creates enitity with valid data" do
       team = insert(:team)
 
       valid_attrs = %{
@@ -37,7 +36,7 @@ defmodule Runa.ProjectsTest do
         team_id: team.id
       }
 
-      assert {:ok, %Project{} = project} = Projects.create_project(valid_attrs)
+      assert {:ok, %Project{} = project} = Projects.create(valid_attrs)
       assert project.name == valid_attrs.name
       assert project.description == valid_attrs.description
     end
@@ -45,18 +44,17 @@ defmodule Runa.ProjectsTest do
     test "returns error changeset during creation with invalid data" do
       invalid_attrs = %{name: nil, description: nil}
 
-      assert {:error, %Ecto.Changeset{}} =
-               Projects.create_project(invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Projects.create(invalid_attrs)
     end
 
-    test "updates the project with valid data", ctx do
+    test "updates entity with valid data", ctx do
       update_attrs = %{
         name: "some updated name",
         description: "some updated description"
       }
 
       assert {:ok, %Project{} = project} =
-               Projects.update_project(ctx.project, update_attrs)
+               Projects.update(ctx.project, update_attrs)
 
       assert project.name == "some updated name"
       assert project.description == "some updated description"
@@ -66,18 +64,17 @@ defmodule Runa.ProjectsTest do
       invalid_attrs = %{name: nil, description: nil}
 
       assert {:error, %Ecto.Changeset{}} =
-               Projects.update_project(ctx.project, invalid_attrs)
+               Projects.update(ctx.project, invalid_attrs)
     end
 
-    test "deletes the project", ctx do
-      assert {:ok, %Project{}} = Projects.delete_project(ctx.project)
+    test "deletes entity", ctx do
+      assert {:ok, %Project{}} = Projects.delete(ctx.project)
 
-      assert {:error, %Ecto.NoResultsError{}} =
-               Projects.get_project(ctx.project.id)
+      assert {:error, %Ecto.NoResultsError{}} = Projects.get(ctx.project.id)
     end
 
-    test "returns a project changeset", ctx do
-      assert %Ecto.Changeset{} = Projects.change_project(ctx.project)
+    test "returns changeset", ctx do
+      assert %Ecto.Changeset{} = Projects.change(ctx.project)
     end
   end
 end

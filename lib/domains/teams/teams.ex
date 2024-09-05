@@ -21,9 +21,7 @@ defmodule Runa.Teams do
     filter = Keyword.get(opts, :filter, [])
     page = Keyword.get(opts, :page, %{})
 
-    query =
-      Team
-      |> preload(:projects)
+    query = Team |> preload(:projects)
 
     case page do
       %{} when map_size(page) > 0 ->

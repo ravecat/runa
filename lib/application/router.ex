@@ -43,7 +43,8 @@ defmodule RunaWeb.Router do
     resources "/teams", TeamController,
       only: [:index, :show, :create, :update, :delete]
 
-    resources "/projects", ProjectController, only: [:show]
+    resources "/projects", ProjectController,
+      only: [:index, :show, :create, :update, :delete]
   end
 
   scope "/" do

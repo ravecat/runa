@@ -46,13 +46,28 @@ defmodule RunaWeb do
       import Plug.Conn
       import RunaWeb.Gettext
 
-      alias RunaWeb.FallbackController
       alias RunaWeb.Schemas
-      alias RunaWeb.Serializers
 
-      action_fallback FallbackController
+      action_fallback RunaWeb.FallbackController
 
       unquote(verified_routes())
+    end
+  end
+
+  def jsonapi do
+    quote do
+      import OpenApiSpex.Operation,
+        only: [parameter: 5, request_body: 4, response: 3]
+
+      alias OpenApiSpex.Operation
+      alias OpenApiSpex.Reference
+
+      plug OpenApiSpex.Plug.CastAndValidate,
+        render_error: RunaWeb.FallbackController
+
+      def open_api_operation(action) do
+        apply(__MODULE__, :"#{action}_operation", [])
+      end
     end
   end
 
@@ -82,7 +97,6 @@ defmodule RunaWeb do
 
       alias Phoenix.Template
 
-      # Import convenience functions from controllers
       import Phoenix.Controller,
         only: [
           get_csrf_token: 0,
@@ -90,7 +104,6 @@ defmodule RunaWeb do
           view_template: 1
         ]
 
-      # Include general helpers for rendering HTML
       unquote(html_helpers())
     end
   end
@@ -115,28 +128,6 @@ defmodule RunaWeb do
   def widgets do
     quote do
       alias RunaWeb.Components.Sidebar
-    end
-  end
-
-  def openapi do
-    quote do
-      import OpenApiSpex.Operation,
-        only: [parameter: 5, request_body: 4, response: 3]
-
-      alias OpenApiSpex.JsonErrorResponse
-      alias OpenApiSpex.MediaType
-      alias OpenApiSpex.Operation
-      alias OpenApiSpex.Parameter
-      alias OpenApiSpex.Reference
-      alias OpenApiSpex.Response
-      alias OpenApiSpex.Schema
-
-      plug OpenApiSpex.Plug.CastAndValidate,
-        render_error: RunaWeb.FallbackController
-
-      def open_api_operation(action) do
-        apply(__MODULE__, :"#{action}_operation", [])
-      end
     end
   end
 
@@ -182,9 +173,6 @@ defmodule RunaWeb do
     end
   end
 
-  @doc """
-  When used, dispatch to the appropriate controller/view/etc.
-  """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
   end
