@@ -97,4 +97,72 @@ defmodule RunaWeb.ProjectControllerTest do
       )
     end
   end
+
+  describe "update endpoint" do
+    test "returns resource when data is valid", ctx do
+      team = insert(:team)
+      project = insert(:project, team: team)
+
+      body = %{
+        data: %{
+          type: "projects",
+          id: "#{project.id}",
+          attributes: %{
+            name: "title"
+          }
+        }
+      }
+
+      patch(ctx.conn, ~p"/api/projects/#{project.id}", body)
+      |> json_response(200)
+      |> assert_schema(
+        "Project.ShowResponse",
+        ctx.spec
+      )
+    end
+
+    test "renders errors when data is invalid", ctx do
+      team = insert(:team)
+      project = insert(:project, team: team)
+
+      body = %{
+        data: %{
+          type: "projects",
+          id: "#{project.id}",
+          attributes: %{
+            name: ""
+          }
+        }
+      }
+
+      patch(ctx.conn, ~p"/api/projects/#{project.id}", body)
+      |> json_response(422)
+      |> assert_raw_schema(
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
+        ctx.spec
+      )
+    end
+
+    test "renders errors when resource is not found", ctx do
+      team = insert(:team)
+      project = insert(:project, team: team)
+
+      body = %{
+        data: %{
+          type: "projects",
+          id: "#{project.id}",
+          attributes: %{
+            name: "title"
+          }
+        }
+      }
+
+      patch(ctx.conn, ~p"/api/projects/1", body)
+      |> json_response(409)
+      |> assert_raw_schema(
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
+        ctx.spec
+      )
+    end
+  end
 end

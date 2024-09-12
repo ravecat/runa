@@ -51,7 +51,7 @@ defmodule RunaWeb.ProjectController do
       ],
       responses: %{
         200 =>
-          response(
+        response(
             "200 OK",
             JSONAPI.Schemas.Headers.content_type(),
             OperationSchemas.ShowResponse
