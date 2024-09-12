@@ -165,4 +165,23 @@ defmodule RunaWeb.ProjectControllerTest do
       )
     end
   end
+
+  describe "delete endpoint" do
+    test "returns 204 when resource is deleted", ctx do
+      team = insert(:team)
+      project = insert(:project, team: team)
+
+      delete(ctx.conn, ~p"/api/projects/#{project.id}")
+      |> json_response(204)
+    end
+
+    test "returns errors when resource is not found", ctx do
+      delete(ctx.conn, ~p"/api/projects/1")
+      |> json_response(404)
+      |> assert_raw_schema(
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
+        ctx.spec
+      )
+    end
+  end
 end
