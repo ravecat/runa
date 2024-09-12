@@ -1,4 +1,4 @@
-defmodule RunaWeb.Schemas.JSONAPI.Meta do
+defmodule RunaWeb.JSONAPI.Schemas.Meta do
   require OpenApiSpex
 
   @moduledoc """

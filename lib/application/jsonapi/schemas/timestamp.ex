@@ -1,4 +1,4 @@
-defmodule RunaWeb.Schemas.JSONAPI.Timestamp do
+defmodule RunaWeb.JSONAPI.Schemas.Timestamp do
   require OpenApiSpex
 
   alias OpenApiSpex.Schema

@@ -1,8 +1,8 @@
-defmodule RunaWeb.Schemas.JSONAPI.ResourceIdentifierObject do
+defmodule RunaWeb.JSONAPI.Schemas.ResourceIdentifierObject do
   require OpenApiSpex
 
   alias OpenApiSpex.Schema
-  alias RunaWeb.Schemas.JSONAPI.Meta
+  alias RunaWeb.JSONAPI.Schemas.Meta
 
   @moduledoc """
   The schema for JSONAPI resource identifier object.

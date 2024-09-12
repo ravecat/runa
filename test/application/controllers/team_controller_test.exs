@@ -5,6 +5,7 @@ defmodule RunaWeb.TeamControllerTest do
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
 
+  alias RunaWeb.JSONAPI
   alias RunaWeb.Schemas
 
   @moduletag :teams
@@ -47,7 +48,7 @@ defmodule RunaWeb.TeamControllerTest do
       get(ctx.conn, ~p"/api/teams/1")
       |> json_response(404)
       |> assert_raw_schema(
-        resolve_schema(Schemas.JSONAPI.Error, %{}),
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
         ctx.spec
       )
     end
@@ -73,7 +74,7 @@ defmodule RunaWeb.TeamControllerTest do
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(422)
       |> assert_raw_schema(
-        resolve_schema(Schemas.JSONAPI.Error, %{}),
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
         ctx.spec
       )
     end
@@ -105,7 +106,7 @@ defmodule RunaWeb.TeamControllerTest do
       patch(ctx.conn, ~p"/api/teams/1", body)
       |> json_response(404)
       |> assert_raw_schema(
-        resolve_schema(Schemas.JSONAPI.Error, %{}),
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
         ctx.spec
       )
     end

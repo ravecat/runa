@@ -1,10 +1,10 @@
-defmodule RunaWeb.Schemas.JSONAPI.ResourceLinkage do
+defmodule RunaWeb.JSONAPI.Schemas.ResourceLinkage do
   require OpenApiSpex
 
   alias OpenApiSpex.Schema
-  alias RunaWeb.Schemas.JSONAPI.Link
-  alias RunaWeb.Schemas.JSONAPI.Meta
-  alias RunaWeb.Schemas.JSONAPI.ResourceIdentifierObject
+  alias RunaWeb.JSONAPI.Schemas.Link
+  alias RunaWeb.JSONAPI.Schemas.Meta
+  alias RunaWeb.JSONAPI.Schemas.ResourceIdentifierObject
 
   @moduledoc """
   The schema for JSONAPI resource linkage object.

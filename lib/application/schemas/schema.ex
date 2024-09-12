@@ -31,7 +31,7 @@ defmodule RunaWeb.Schema do
     quote location: :keep do
       require OpenApiSpex
       alias OpenApiSpex.Schema
-      alias RunaWeb.Schemas
+      alias RunaWeb.JSONAPI
 
       unquote(__MODULE__).validate_name!(unquote(name))
       unquote(__MODULE__).validate_schema!(unquote(schema))
@@ -42,7 +42,7 @@ defmodule RunaWeb.Schema do
         """
         OpenApiSpex.schema(%{
           allOf: [
-            Schemas.JSONAPI.ResourceObject,
+            JSONAPI.Schemas.ResourceObject,
             unquote(schema)
           ]
         })
@@ -55,7 +55,7 @@ defmodule RunaWeb.Schema do
           description: "The schema for resource show response",
           type: :object,
           allOf: [
-            Schemas.JSONAPI.Document,
+            JSONAPI.Schemas.Document,
             %Schema{
               type: :object,
               properties: %{
@@ -81,7 +81,7 @@ defmodule RunaWeb.Schema do
           description: "The schema for resource index response",
           type: :object,
           allOf: [
-            Schemas.JSONAPI.Document,
+            JSONAPI.Schemas.Document,
             %Schema{
               type: :object,
               properties: %{
