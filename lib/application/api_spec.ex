@@ -13,7 +13,7 @@ defmodule RunaWeb.APISpec do
   alias OpenApiSpex.Server
   alias RunaWeb.Endpoint
   alias RunaWeb.Router
-  alias RunaWeb.Schemas
+  alias RunaWeb.JSONAPI
 
   @behaviour OpenApi
 
@@ -39,7 +39,7 @@ defmodule RunaWeb.APISpec do
           "204" => %Response{
             description: "204 No Content",
             content: %{
-              Schemas.JSONAPI.Headers.content_type() => %MediaType{
+              JSONAPI.Schemas.Headers.content_type() => %MediaType{
                 schema: %Schema{type: :object}
               }
             }

@@ -21,7 +21,7 @@ defmodule RunaWeb.ProjectController do
         200 =>
           response(
             "200 OK",
-            Schemas.JSONAPI.Headers.content_type(),
+            JSONAPI.Schemas.Headers.content_type(),
             OperationSchemas.IndexResponse
           )
       }
@@ -47,13 +47,13 @@ defmodule RunaWeb.ProjectController do
       description: "Show of current resource",
       operationId: "getResource-#{@resource}",
       parameters: [
-        Schemas.JSONAPI.Parameters.path() | Schemas.JSONAPI.Parameters.query()
+        JSONAPI.Schemas.Parameters.path() | JSONAPI.Schemas.Parameters.query()
       ],
       responses: %{
         200 =>
           response(
             "200 OK",
-            Schemas.JSONAPI.Headers.content_type(),
+            JSONAPI.Schemas.Headers.content_type(),
             OperationSchemas.ShowResponse
           )
       }
@@ -75,7 +75,7 @@ defmodule RunaWeb.ProjectController do
       requestBody:
         request_body(
           "Resource request body",
-          Schemas.JSONAPI.Headers.content_type(),
+          JSONAPI.Schemas.Headers.content_type(),
           OperationSchemas.CreateBody,
           required: true
         ),
@@ -83,7 +83,7 @@ defmodule RunaWeb.ProjectController do
         201 =>
           response(
             "201 OK",
-            Schemas.JSONAPI.Headers.content_type(),
+            JSONAPI.Schemas.Headers.content_type(),
             OperationSchemas.ShowResponse
           )
       }
@@ -106,11 +106,11 @@ defmodule RunaWeb.ProjectController do
       summary: "Update resource",
       description: "Update resource",
       operationId: "updateResource-#{@resource}",
-      parameters: [Schemas.JSONAPI.Parameters.path()],
+      parameters: [JSONAPI.Schemas.Parameters.path()],
       requestBody:
         request_body(
           "Resource request body",
-          Schemas.JSONAPI.Headers.content_type(),
+          JSONAPI.Schemas.Headers.content_type(),
           OperationSchemas.UpdateBody,
           required: true
         ),
@@ -118,7 +118,7 @@ defmodule RunaWeb.ProjectController do
         200 =>
           response(
             "200 OK",
-            Schemas.JSONAPI.Headers.content_type(),
+            JSONAPI.Schemas.Headers.content_type(),
             OperationSchemas.ShowResponse
           )
       }
@@ -140,7 +140,7 @@ defmodule RunaWeb.ProjectController do
       summary: "Delete resource",
       description: "Delete resource",
       operationId: "deleteResource-#{@resource}",
-      parameters: [Schemas.JSONAPI.Parameters.path()],
+      parameters: [JSONAPI.Schemas.Parameters.path()],
       responses: %{204 => %Reference{"$ref": "#/components/responses/204"}}
     }
   end

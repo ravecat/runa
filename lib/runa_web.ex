@@ -65,6 +65,8 @@ defmodule RunaWeb do
       plug OpenApiSpex.Plug.CastAndValidate,
         render_error: RunaWeb.FallbackController
 
+      alias RunaWeb.JSONAPI
+
       def open_api_operation(action) do
         apply(__MODULE__, :"#{action}_operation", [])
       end

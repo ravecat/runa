@@ -1,4 +1,4 @@
-defmodule RunaWeb.Schemas.JSONAPI.Headers do
+defmodule RunaWeb.JSONAPI.Schemas.Headers do
   @moduledoc false
 
   def accept,

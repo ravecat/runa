@@ -1,4 +1,4 @@
-defmodule RunaWeb.Schemas.JSONAPI.Parameters do
+defmodule RunaWeb.JSONAPI.Schemas.Parameters do
   @moduledoc false
   alias OpenApiSpex.Parameter
   alias OpenApiSpex.Schema

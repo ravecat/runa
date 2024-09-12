@@ -1,4 +1,4 @@
-defmodule RunaWeb.Schemas.JSONAPI.Document do
+defmodule RunaWeb.JSONAPI.Schemas.Document do
   @moduledoc """
   The schema for JSONAPI document object.
   """
@@ -6,9 +6,9 @@ defmodule RunaWeb.Schemas.JSONAPI.Document do
   require OpenApiSpex
 
   alias OpenApiSpex.Schema
-  alias RunaWeb.Schemas.JSONAPI.Link
-  alias RunaWeb.Schemas.JSONAPI.ResourceObject
-  alias RunaWeb.Schemas.JSONAPI.Timestamp
+  alias RunaWeb.JSONAPI.Schemas.Link
+  alias RunaWeb.JSONAPI.Schemas.ResourceObject
+  alias RunaWeb.JSONAPI.Schemas.Timestamp
 
   OpenApiSpex.schema(%{
     type: :object,

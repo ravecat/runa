@@ -7,6 +7,8 @@ defmodule RunaWeb.JSONAPICase do
 
   defmacro __using__(_) do
     quote do
+      alias RunaWeb.JSONAPI
+
       setup %{conn: conn} do
         conn =
           conn

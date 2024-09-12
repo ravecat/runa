@@ -6,8 +6,6 @@ defmodule RunaWeb.ProjectControllerTest do
   use RunaWeb.OpenAPICase
 
   alias OpenApiSpex.Schema
-
-  alias RunaWeb.Schemas
   alias RunaWeb.Schemas.Projects, as: OperationSchemas
 
   @moduletag :projects
@@ -52,7 +50,7 @@ defmodule RunaWeb.ProjectControllerTest do
       get(ctx.conn, ~p"/api/projects/1")
       |> json_response(404)
       |> assert_raw_schema(
-        resolve_schema(Schemas.JSONAPI.Error, %{}),
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
         ctx.spec
       )
     end
@@ -94,7 +92,7 @@ defmodule RunaWeb.ProjectControllerTest do
       post(ctx.conn, ~p"/api/projects", body)
       |> json_response(422)
       |> assert_raw_schema(
-        resolve_schema(Schemas.JSONAPI.Error, %{}),
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
         ctx.spec
       )
     end

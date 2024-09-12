@@ -1,4 +1,4 @@
-defmodule RunaWeb.Schemas.JSONAPI.Error do
+defmodule RunaWeb.JSONAPI.Schemas.Error do
   @moduledoc """
   The schema for error object.
   """
