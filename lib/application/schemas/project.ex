@@ -22,7 +22,8 @@ defmodule RunaWeb.Schemas.Projects do
             description: %Schema{
               type: :string,
               description: "Project description",
-              pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/
+              pattern: ~r/[a-zA-Z][a-zA-Z0-9_\s]+/,
+              nullable: true
             }
           },
           required: [:name]

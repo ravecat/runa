@@ -90,10 +90,12 @@ defmodule RunaWeb.ProjectController do
     }
   end
 
-  def create(conn, _) do
-    %{data: %{attributes: attrs}} = Map.get(conn, :body_params)
-
-    with {:ok, data} <- Context.create(attrs) do
+  def create(%{private: %{open_api_spex: open_api_spex}} = conn, _) do
+    with %{data: %{attributes: attrs, relationships: relationships}} =
+           Map.get(open_api_spex, :body_params),
+         %{"team" => %{data: %{id: team_id}}} = relationships,
+         dataset = Map.put(attrs, :team_id, team_id),
+         {:ok, data} <- Context.create(dataset) do
       conn |> put_status(201) |> render(:show, data: data)
     end
   end

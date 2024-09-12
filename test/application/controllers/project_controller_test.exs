@@ -8,13 +8,14 @@ defmodule RunaWeb.ProjectControllerTest do
   alias OpenApiSpex.Schema
 
   alias RunaWeb.Schemas
+  alias RunaWeb.Schemas.Projects, as: OperationSchemas
 
   @moduletag :projects
 
   describe "index endpoint" do
     test "returns list of resources", ctx do
       team = insert(:team)
-      project = insert(:project, team: team)
+      insert(:project, team: team)
 
       get(ctx.conn, ~p"/api/projects")
       |> json_response(200)
@@ -50,6 +51,48 @@ defmodule RunaWeb.ProjectControllerTest do
     test "returns errors when resource is not found", ctx do
       get(ctx.conn, ~p"/api/projects/1")
       |> json_response(404)
+      |> assert_raw_schema(
+        resolve_schema(Schemas.JSONAPI.Error, %{}),
+        ctx.spec
+      )
+    end
+  end
+
+  describe "create endpoint" do
+    test "returns resource when data is valid", ctx do
+      team = insert(:team)
+
+      body = %{
+        data: %{
+          type: "projects",
+          attributes: %{
+            name: "title"
+          },
+          relationships: %{
+            team: %{
+              data: %{
+                id: "#{team.id}",
+                type: "teams",
+                title: "title"
+              }
+            }
+          }
+        }
+      }
+
+      post(ctx.conn, ~p"/api/projects", body)
+      |> json_response(201)
+      |> assert_schema(
+        "Project.ShowResponse",
+        ctx.spec
+      )
+    end
+
+    test "renders errors when data is invalid", ctx do
+      body = Schema.example(OperationSchemas.CreateBody.schema())
+
+      post(ctx.conn, ~p"/api/projects", body)
+      |> json_response(422)
       |> assert_raw_schema(
         resolve_schema(Schemas.JSONAPI.Error, %{}),
         ctx.spec

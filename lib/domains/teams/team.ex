@@ -20,11 +20,10 @@ defmodule Runa.Teams.Team do
   }
 
   typed_schema "teams" do
-
-    field(:title, :string)
-    has_many(:projects, Project)
-    many_to_many(:users, User, join_through: Contributor)
-    timestamps(type: :utc_datetime)
+    field :title, :string
+    has_many :projects, Project
+    many_to_many :users, User, join_through: Contributor
+    timestamps type: :utc_datetime
   end
 
   @doc false
