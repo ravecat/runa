@@ -234,6 +234,15 @@ defmodule RunaWeb.TeamControllerTest do
       assert List.first(asc["data"]) == List.last(desc["data"])
       assert List.last(asc["data"]) == List.first(desc["data"])
     end
+
+    test "returns error when sorting by unknown field", ctx do
+      get(ctx.conn, ~p"/api/teams?sort=unknown")
+      |> json_response(400)
+      |> assert_raw_schema(
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
+        ctx.spec
+      )
+    end
   end
 
   describe "filtering endpoint" do
