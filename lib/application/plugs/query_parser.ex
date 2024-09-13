@@ -3,6 +3,14 @@ defmodule RunaWeb.Plugs.QueryParser do
   Query parser for JSONAPI requests
   """
 
+  alias JSONAPI.Exceptions.InvalidQuery
+  alias RunaWeb.ErrorJSON
+
+  import Plug.Conn
+  import Phoenix.Controller
+
+  @behaviour Plug
+
   defmacro __using__(opts) do
     serializer = Keyword.fetch!(opts, :serializer)
     schema = Keyword.get(opts, :schema)
@@ -26,25 +34,38 @@ defmodule RunaWeb.Plugs.QueryParser do
           []
         end
 
-      plug JSONAPI.QueryParser,
+      plug unquote(__MODULE__),
            [view: unquote(serializer)] ++ unquote(opts) ++ schema_opts
-
-      plug unquote(__MODULE__)
     end
   end
 
   def init(opts) do
-    opts
+    JSONAPI.QueryParser.init(opts)
   end
 
-  def call(
-        %{assigns: %{jsonapi_query: %{sort: nil} = jsonapi_query}} = conn,
-        _opts
-      ) do
-    Plug.Conn.assign(conn, :jsonapi_query, %{jsonapi_query | sort: []})
+  def call(conn, opts) do
+    try do
+      conn
+      |> JSONAPI.QueryParser.call(opts)
+      |> handle_sort_params(opts)
+    rescue
+      error in InvalidQuery ->
+        conn
+        |> put_status(400)
+        |> put_view(json: ErrorJSON, jsonapi: ErrorJSON)
+        |> render(:error, error: error)
+        |> halt()
+    end
   end
 
-  def call(conn, _opts) do
+  defp handle_sort_params(
+         %{assigns: %{jsonapi_query: %{sort: nil} = jsonapi_query}} = conn,
+         _opts
+       ) do
+    assign(conn, :jsonapi_query, %{jsonapi_query | sort: []})
+  end
+
+  defp handle_sort_params(conn, _opts) do
     conn
   end
 end

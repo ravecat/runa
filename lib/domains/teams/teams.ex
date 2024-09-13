@@ -21,7 +21,7 @@ defmodule Runa.Teams do
     filter = Keyword.get(opts, :filter, [])
     page = Keyword.get(opts, :page, %{})
 
-    query = Team |> preload(:projects)
+    query = Team
 
     case page do
       %{} when map_size(page) > 0 ->
@@ -61,8 +61,8 @@ defmodule Runa.Teams do
       nil ->
         {:error, %Ecto.NoResultsError{}}
 
-      team ->
-        {:ok, Repo.preload(team, projects: [:keys])}
+      data ->
+        {:ok, data}
     end
   end
 
@@ -96,8 +96,8 @@ defmodule Runa.Teams do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update(%Team{} = team, attrs) do
-    team
+  def update(%Team{} = data, attrs) do
+    data
     |> Team.changeset(attrs)
     |> Repo.update()
   end
@@ -114,8 +114,8 @@ defmodule Runa.Teams do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete(%Team{} = team) do
-    Repo.delete(team)
+  def delete(%Team{} = data) do
+    Repo.delete(data)
   end
 
   @doc """
@@ -127,7 +127,7 @@ defmodule Runa.Teams do
       %Ecto.Changeset{data: %Team{}}
 
   """
-  def change(%Team{} = team, attrs \\ %{}) do
-    Team.changeset(team, attrs)
+  def change(%Team{} = data, attrs \\ %{}) do
+    Team.changeset(data, attrs)
   end
 end

@@ -48,6 +48,18 @@ defmodule RunaWeb.ErrorJSON do
     }
   end
 
+  def error(%{error: error, conn: %{status: status}}) do
+    %{
+      errors: [
+        %{
+          status: to_string(status),
+          title: error.message,
+          detail: error.message
+        }
+      ]
+    }
+  end
+
   def error(%{errors: errors, conn: %{status: status}}) when is_list(errors) do
     %{
       errors:

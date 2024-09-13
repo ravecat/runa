@@ -12,7 +12,7 @@ defmodule Runa.TeamsTest do
   import Runa.Factory
 
   setup do
-    team = insert(:team) |> Repo.preload(:projects)
+    team = insert(:team) |> Ecto.reset_fields([:projects])
 
     {:ok, team: team}
   end
