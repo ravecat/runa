@@ -7,28 +7,27 @@ defmodule RunaWeb.JSONAPI.View do
   defmacro __using__(serializer: serializer) do
     quote do
       import JSONAPI.Serializer
+      import Pathex
 
-      def index(%{data: data, conn: conn} = args) do
+      def render(_, %{
+            data: data,
+            conn: %{path_params: %{"relationship" => relationship}} = conn
+          }) do
+        relationship_path =
+          path(:data / :relationships / String.to_atom(relationship))
+
+        unquote(serializer)
+        |> serialize(data, conn)
+        |> get(relationship_path)
+      end
+
+      def render(_, %{data: data, conn: conn}) do
         unquote(serializer)
         |> serialize(data, conn)
       end
 
-      def show(%{data: data, conn: conn}) do
-        unquote(serializer)
-        |> serialize(data, conn)
-      end
-
-      def create(%{data: data, conn: conn}) do
-        unquote(serializer)
-        |> serialize(data, conn)
-      end
-
-      def update(%{data: data, conn: conn}) do
-        unquote(serializer)
-        |> serialize(data, conn)
-      end
-
-      def delete(%{conn: conn}) do
+      @dialyzer {:nowarn_function, {:render, 2}}
+      def render(_, %{conn: conn}) do
         %{}
       end
     end

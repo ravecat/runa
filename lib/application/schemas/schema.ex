@@ -1,5 +1,8 @@
 defmodule RunaWeb.Schema do
   alias OpenApiSpex.Schema
+  alias RunaWeb.JSONAPI.Schemas.RelationshipObject
+  alias RunaWeb.JSONAPI.Schemas.ResourceIdentifierObject
+  alias RunaWeb.JSONAPI.Schemas.ResourceObject
 
   def validate_schema!(schema) do
     unless is_struct(schema, OpenApiSpex.Schema) do
@@ -30,8 +33,10 @@ defmodule RunaWeb.Schema do
 
     quote location: :keep do
       require OpenApiSpex
+
       alias OpenApiSpex.Schema
-      alias RunaWeb.JSONAPI
+      alias RunaWeb.JSONAPI.Schemas.Document
+      alias RunaWeb.JSONAPI.Schemas.ResourceObject
 
       unquote(__MODULE__).validate_name!(unquote(name))
       unquote(__MODULE__).validate_schema!(unquote(schema))
@@ -42,7 +47,7 @@ defmodule RunaWeb.Schema do
         """
         OpenApiSpex.schema(%{
           allOf: [
-            JSONAPI.Schemas.ResourceObject,
+            ResourceObject,
             unquote(schema)
           ]
         })
@@ -55,7 +60,7 @@ defmodule RunaWeb.Schema do
           description: "The schema for resource show response",
           type: :object,
           allOf: [
-            JSONAPI.Schemas.Document,
+            Document,
             %Schema{
               type: :object,
               properties: %{
@@ -81,7 +86,7 @@ defmodule RunaWeb.Schema do
           description: "The schema for resource index response",
           type: :object,
           allOf: [
-            JSONAPI.Schemas.Document,
+            Document,
             %Schema{
               type: :object,
               properties: %{
@@ -101,10 +106,69 @@ defmodule RunaWeb.Schema do
           title: "#{unquote(module_name_str)}.CreateBody",
           description: "The body schema for resource creation request",
           type: :object,
+          required: [:data],
           properties: %{
-            data: unquote(module_name)
-          },
-          required: [:data]
+            data: %Schema{
+              nullable: true,
+              anyOf: [
+                ResourceIdentifierObject,
+                %Schema{
+                  type: :array,
+                  items: ResourceIdentifierObject
+                },
+                %Schema{
+                  type: :object,
+                  allOf: [
+                    unquote(module_name),
+                    %Schema{
+                      type: :object,
+                      required: [:attributes],
+                      properties: %{
+                        attributes: %Schema{
+                          type: :object
+                        }
+                      }
+                    }
+                  ]
+                },
+                %Schema{
+                  type: :object,
+                  allOf: [
+                    unquote(module_name),
+                    %Schema{
+                      type: :object,
+                      required: [:relationships],
+                      properties: %{
+                        relationships: %Schema{
+                          type: :object,
+                          additionalProperties: RelationshipObject
+                        }
+                      }
+                    }
+                  ]
+                },
+                %Schema{
+                  type: :object,
+                  allOf: [
+                    unquote(module_name),
+                    %Schema{
+                      type: :object,
+                      required: [:relationships, :attributes],
+                      properties: %{
+                        relationships: %Schema{
+                          type: :object,
+                          additionalProperties: RelationshipObject
+                        },
+                        attributes: %Schema{
+                          type: :object
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
         })
       end
 
@@ -114,19 +178,19 @@ defmodule RunaWeb.Schema do
           title: "#{unquote(module_name_str)}.UpdateBody",
           description: "Request schema body for resource update",
           type: :object,
+          required: [:data],
           properties: %{
             data: %Schema{
-              type: :object,
-              allOf: [
-                unquote(module_name),
+              oneOf: [
+                ResourceObject,
+                ResourceIdentifierObject,
                 %Schema{
-                  type: :object,
-                  required: [:id]
+                  type: :array,
+                  items: ResourceIdentifierObject
                 }
               ]
             }
-          },
-          required: [:data]
+          }
         })
       end
     end

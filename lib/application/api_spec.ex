@@ -12,8 +12,8 @@ defmodule RunaWeb.APISpec do
   alias OpenApiSpex.SecurityScheme
   alias OpenApiSpex.Server
   alias RunaWeb.Endpoint
-  alias RunaWeb.Router
   alias RunaWeb.JSONAPI
+  alias RunaWeb.Router
 
   @behaviour OpenApi
 

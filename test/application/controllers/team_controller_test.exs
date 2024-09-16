@@ -6,7 +6,6 @@ defmodule RunaWeb.TeamControllerTest do
   use RunaWeb.OpenAPICase
 
   alias RunaWeb.JSONAPI
-  alias RunaWeb.Schemas
 
   @moduletag :teams
 
@@ -56,9 +55,14 @@ defmodule RunaWeb.TeamControllerTest do
 
   describe "create endpoint" do
     test "returns resource when data is valid", ctx do
-      body =
-        Schema.example(Schemas.Teams.CreateBody.schema())
-        |> put_in([:data, :attributes, :title], "title")
+      body = %{
+        data: %{
+          type: "teams",
+          attributes: %{
+            title: "title"
+          }
+        }
+      }
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(201)
@@ -69,7 +73,11 @@ defmodule RunaWeb.TeamControllerTest do
     end
 
     test "renders errors when data is invalid", ctx do
-      body = Schema.example(Schemas.Teams.CreateBody.schema())
+      body = %{
+        data: %{
+          type: "teams"
+        }
+      }
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(422)
@@ -84,10 +92,15 @@ defmodule RunaWeb.TeamControllerTest do
     test "returns resource when data is valid", ctx do
       team = insert(:team)
 
-      body =
-        Schema.example(Schemas.Teams.UpdateBody.schema())
-        |> put_in([:data, :id], "#{team.id}")
-        |> put_in([:data, :attributes, :title], "title")
+      body = %{
+        data: %{
+          type: "teams",
+          id: "#{team.id}",
+          attributes: %{
+            title: "updated title"
+          }
+        }
+      }
 
       patch(ctx.conn, ~p"/api/teams/#{team.id}", body)
       |> json_response(200)
@@ -98,10 +111,15 @@ defmodule RunaWeb.TeamControllerTest do
     end
 
     test "returns 404 error when resource doesn't exists", ctx do
-      body =
-        Schema.example(Schemas.Teams.UpdateBody.schema())
-        |> put_in([:data, :id], "1")
-        |> put_in([:data, :attributes, :title], "title")
+      body = %{
+        data: %{
+          type: "teams",
+          id: "1",
+          attributes: %{
+            title: "updated title"
+          }
+        }
+      }
 
       patch(ctx.conn, ~p"/api/teams/1", body)
       |> json_response(404)

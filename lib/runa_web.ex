@@ -60,10 +60,13 @@ defmodule RunaWeb do
         only: [parameter: 5, request_body: 4, response: 3]
 
       alias OpenApiSpex.Operation
+      alias OpenApiSpex.Parameter
       alias OpenApiSpex.Reference
+      alias OpenApiSpex.Schema
 
       plug OpenApiSpex.Plug.CastAndValidate,
-        render_error: RunaWeb.FallbackController
+        render_error: RunaWeb.FallbackController,
+        replace_params: false
 
       alias RunaWeb.JSONAPI
 

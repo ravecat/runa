@@ -12,12 +12,36 @@ defmodule Runa.Locales do
 
   ## Examples
 
-      iex> get_locales()
+      iex> index()
       [%Locale{}, ...]
 
   """
-  def get_locales do
-    Repo.all(Locale)
+  @spec index(keyword) ::
+          {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
+  def index(opts \\ []) do
+    sort = Keyword.get(opts, :sort, [])
+    filter = Keyword.get(opts, :filter, [])
+    page = Keyword.get(opts, :page, %{})
+
+    query = Locale |> preload([:project, :language])
+
+    case page do
+      %{} when map_size(page) > 0 ->
+        Paginator.paginate(
+          query,
+          %{sort: sort, page: page, filter: filter},
+          for: Locale
+        )
+
+      _ ->
+        data =
+          query
+          |> where(^filter)
+          |> order_by(^sort)
+          |> Repo.all()
+
+        {:ok, {data, %{}}}
+    end
   end
 
   @doc """
@@ -27,28 +51,33 @@ defmodule Runa.Locales do
 
   ## Examples
 
-      iex> get_locale!(123)
+      iex> get(123)
       %Locale{}
 
-      iex> get_locale!(456)
+      iex> get(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_locale!(id), do: Repo.get!(Locale, id)
+  def get(id) do
+    case Repo.get(Locale, id) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
+  end
 
   @doc """
   Creates a locale.
 
   ## Examples
 
-      iex> create_locale(%{field: value})
+      iex> create(%{field: value})
       {:ok, %Locale{}}
 
-      iex> create_locale(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_locale(attrs \\ %{}) do
+  def create(attrs \\ %{}) do
     %Locale{}
     |> Locale.changeset(attrs)
     |> Repo.insert()
@@ -59,15 +88,15 @@ defmodule Runa.Locales do
 
   ## Examples
 
-      iex> update_locale(locale, %{field: new_value})
+      iex> update(locale, %{field: new_value})
       {:ok, %Locale{}}
 
-      iex> update_locale(locale, %{field: bad_value})
+      iex> update(locale, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_locale(%Locale{} = locale, attrs) do
-    locale
+  def update(%Locale{} = data, attrs) do
+    data
     |> Locale.changeset(attrs)
     |> Repo.update()
   end
@@ -77,15 +106,15 @@ defmodule Runa.Locales do
 
   ## Examples
 
-      iex> delete_locale(locale)
+      iex> delete(locale)
       {:ok, %Locale{}}
 
-      iex> delete_locale(locale)
+      iex> delete(locale)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_locale(%Locale{} = locale) do
-    Repo.delete(locale)
+  def delete(%Locale{} = data) do
+    Repo.delete(data)
   end
 
   @doc """
@@ -93,11 +122,11 @@ defmodule Runa.Locales do
 
   ## Examples
 
-      iex> change_locale(locale)
+      iex> change(locale)
       %Ecto.Changeset{data: %Locale{}}
 
   """
-  def change_locale(%Locale{} = locale, attrs \\ %{}) do
-    Locale.changeset(locale, attrs)
+  def change(%Locale{} = data, attrs \\ %{}) do
+    Locale.changeset(data, attrs)
   end
 end

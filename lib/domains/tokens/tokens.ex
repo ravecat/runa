@@ -52,7 +52,7 @@ defmodule Runa.Tokens do
   """
   def create_token(attrs \\ %{}) do
     %Token{}
-    |> change(%{token: generate_token()})
+    |> Ecto.Changeset.change(%{token: generate_token()})
     |> Token.changeset(attrs)
     |> Repo.insert()
   end

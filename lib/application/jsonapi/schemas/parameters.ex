@@ -4,14 +4,22 @@ defmodule RunaWeb.JSONAPI.Schemas.Parameters do
   alias OpenApiSpex.Schema
 
   def path,
-    do: %Parameter{
-      name: :id,
-      in: :path,
-      schema: %Schema{type: :integer, minimum: 1},
-      description: "Resource ID",
-      example: 1,
-      required: true
-    }
+    do: [
+      %Parameter{
+        name: :id,
+        in: :path,
+        schema: %Schema{type: :integer, minimum: 1},
+        description: "Resource ID",
+        required: true
+      },
+      %Parameter{
+        name: :relationship,
+        in: :path,
+        schema: %Schema{type: :string},
+        description: "Relationship type",
+        required: false
+      }
+    ]
 
   def query,
     do: [
