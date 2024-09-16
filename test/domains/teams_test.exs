@@ -5,7 +5,6 @@ defmodule Runa.TeamsTest do
 
   @moduletag :teams
 
-  alias Runa.Repo
   alias Runa.Teams
   alias Runa.Teams.Team
 

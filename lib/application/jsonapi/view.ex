@@ -1,4 +1,9 @@
-defmodule RunaWeb.CommonJSON do
+defmodule RunaWeb.JSONAPI.View do
+  @moduledoc """
+  JSONAPI view module
+
+  This module is used to generate JSONAPI responses for resources
+  """
   defmacro __using__(serializer: serializer) do
     quote do
       import JSONAPI.Serializer
