@@ -8,8 +8,6 @@ defmodule RunaWeb.AuthControllerTest do
   alias RunaWeb.AuthController
   alias RunaWeb.Router
 
-  import Runa.Factory
-
   setup do
     insert(:role)
 

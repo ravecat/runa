@@ -4,7 +4,6 @@ defmodule RunaWeb.PageLive.ProfileTest do
   use RunaWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import Runa.Factory
 
   @moduletag :profile
   @roles Application.compile_env(:runa, :permissions)

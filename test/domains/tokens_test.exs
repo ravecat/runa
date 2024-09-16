@@ -7,8 +7,6 @@ defmodule Runa.TokensTest do
   alias Runa.Tokens
   alias Runa.Tokens.Token
 
-  import Runa.Factory
-
   @valid_access_levels Application.compile_env(:runa, :token_access_levels)
 
   setup do

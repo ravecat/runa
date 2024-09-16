@@ -7,8 +7,6 @@ defmodule Runa.AuthTest do
 
   alias Runa.Auth
 
-  import Runa.Factory
-
   setup do
     insert(:role)
 

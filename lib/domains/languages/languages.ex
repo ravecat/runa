@@ -12,12 +12,36 @@ defmodule Runa.Languages do
 
   ## Examples
 
-      iex> get_languages()
+      iex> index()
       [%Language{}, ...]
 
   """
-  def get_languages do
-    Repo.all(Language)
+  @spec index(keyword) ::
+          {:ok, {[Language.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
+  def index(opts \\ []) do
+    sort = Keyword.get(opts, :sort, [])
+    filter = Keyword.get(opts, :filter, [])
+    page = Keyword.get(opts, :page, %{})
+
+    query = Language
+
+    case page do
+      %{} when map_size(page) > 0 ->
+        Paginator.paginate(
+          query,
+          %{sort: sort, page: page, filter: filter},
+          for: Language
+        )
+
+      _ ->
+        data =
+          query
+          |> where(^filter)
+          |> order_by(^sort)
+          |> Repo.all()
+
+        {:ok, {data, %{}}}
+    end
   end
 
   @doc """
@@ -27,28 +51,33 @@ defmodule Runa.Languages do
 
   ## Examples
 
-      iex> get_language!(123)
+      iex> get(123)
       %Language{}
 
-      iex> get_language!(456)
+      iex> get(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_language!(id), do: Repo.get!(Language, id)
+  def get(id) do
+    case Repo.get(Language, id) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
+  end
 
   @doc """
   Creates a language.
 
   ## Examples
 
-      iex> create_language(%{field: value})
+      iex> create(%{field: value})
       {:ok, %Language{}}
 
-      iex> create_language(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_language(attrs \\ %{}) do
+  def create(attrs \\ %{}) do
     %Language{}
     |> Language.changeset(attrs)
     |> Repo.insert()
@@ -59,14 +88,14 @@ defmodule Runa.Languages do
 
   ## Examples
 
-      iex> update_language(language, %{field: new_value})
+      iex> update(language, %{field: new_value})
       {:ok, %Language{}}
 
-      iex> update_language(language, %{field: bad_value})
+      iex> update(language, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_language(%Language{} = language, attrs) do
+  def update(%Language{} = language, attrs) do
     language
     |> Language.changeset(attrs)
     |> Repo.update()
@@ -77,14 +106,14 @@ defmodule Runa.Languages do
 
   ## Examples
 
-      iex> delete_language(language)
+      iex> delete(language)
       {:ok, %Language{}}
 
-      iex> delete_language(language)
+      iex> delete(language)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_language(%Language{} = language) do
+  def delete(%Language{} = language) do
     Repo.delete(language)
   end
 
@@ -93,11 +122,11 @@ defmodule Runa.Languages do
 
   ## Examples
 
-      iex> change_language(language)
+      iex> change(language)
       %Ecto.Changeset{data: %Language{}}
 
   """
-  def change_language(%Language{} = language, attrs \\ %{}) do
+  def change(%Language{} = language, attrs \\ %{}) do
     Language.changeset(language, attrs)
   end
 end

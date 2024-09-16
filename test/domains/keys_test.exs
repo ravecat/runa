@@ -8,8 +8,6 @@ defmodule Runa.KeysTest do
   alias Runa.Keys
   alias Runa.Keys.Key
 
-  import Runa.Factory
-
   setup do
     team = insert(:team)
     project = insert(:project, team: team)

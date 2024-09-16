@@ -9,8 +9,6 @@ defmodule Runa.TeamsTest do
   alias Runa.Teams
   alias Runa.Teams.Team
 
-  import Runa.Factory
-
   setup do
     team = insert(:team) |> Ecto.reset_fields([:projects])
 

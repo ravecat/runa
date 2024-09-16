@@ -5,6 +5,7 @@ defmodule RunaWeb.Router do
 
   alias RunaWeb.APISpec
   alias RunaWeb.AuthController
+  alias RunaWeb.LanguageController
   alias RunaWeb.Layouts
   alias RunaWeb.Plug.Authentication
   alias RunaWeb.PageController
@@ -45,6 +46,8 @@ defmodule RunaWeb.Router do
 
     resources "/projects", ProjectController,
       only: [:index, :show, :create, :update, :delete]
+
+    resources "/languages", LanguageController, only: [:index]
   end
 
   scope "/" do
