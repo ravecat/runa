@@ -7,11 +7,11 @@ defmodule RunaWeb.Router do
   alias RunaWeb.AuthController
   alias RunaWeb.LanguageController
   alias RunaWeb.Layouts
-  alias RunaWeb.Plug.Authentication
   alias RunaWeb.PageController
   alias RunaWeb.PageLive
-  alias RunaWeb.TeamController
+  alias RunaWeb.Plug.Authentication
   alias RunaWeb.ProjectController
+  alias RunaWeb.TeamController
   alias RunaWeb.Telemetry
   alias RunaWeb.UserData
 
@@ -31,7 +31,10 @@ defmodule RunaWeb.Router do
   pipeline :api do
     plug OpenApiSpex.Plug.PutApiSpec, module: APISpec
     plug :accepts, ["jsonapi"]
-    plug JSONAPI.EnsureSpec
+
+    plug JSONAPI.ContentTypeNegotiation
+    plug JSONAPI.FormatRequired
+    plug JSONAPI.ResponseContentType
     plug JSONAPI.Deserializer
     plug JSONAPI.UnderscoreParameters
   end
@@ -46,6 +49,10 @@ defmodule RunaWeb.Router do
 
     resources "/projects", ProjectController,
       only: [:index, :show, :create, :update, :delete]
+
+    resources "/projects/:id/relationships/:relationship", ProjectController,
+      only: [:show, :create, :update, :delete],
+      singleton: true
 
     resources "/languages", LanguageController, only: [:index]
   end

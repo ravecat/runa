@@ -40,6 +40,8 @@ defmodule RunaWeb.ConnCase do
       import Phoenix.ConnTest
       import RunaWeb.ConnCase
       import Runa.Factory
+
+      require Pathex
     end
   end
 

@@ -6,6 +6,16 @@ defmodule RunaWeb.ErrorJSONTest do
 
   alias RunaWeb.ErrorJSON
 
+  setup do
+    conn =
+      put_status(
+        build_conn(),
+        422
+      )
+
+    {:ok, conn: conn}
+  end
+
   test "renders 404" do
     assert ErrorJSON.render("404.json", %{}) == %{
              errors: [%{detail: "Not Found", status: "404", title: "Not Found"}]
@@ -25,7 +35,7 @@ defmodule RunaWeb.ErrorJSONTest do
              }
   end
 
-  test "renders changeset errors" do
+  test "renders changeset errors", ctx do
     changeset = %Ecto.Changeset{
       types: %{},
       errors: [
@@ -37,21 +47,25 @@ defmodule RunaWeb.ErrorJSONTest do
       ]
     }
 
-    assert ErrorJSON.error(%{changeset: changeset}) == %{
+    assert ErrorJSON.error(%{changeset: changeset, conn: ctx.conn}) == %{
              errors: [
                %{
+                 status: "422",
                  title: "description is too long",
                  source: %{pointer: "/data/attributes/description"}
                },
                %{
+                 status: "422",
                  title: "title can't be blank",
                  source: %{pointer: "/data/attributes/title"}
                },
                %{
+                 status: "422",
                  title: "title is too short",
                  source: %{pointer: "/data/attributes/title"}
                },
                %{
+                 status: "422",
                  title: "member_count must be greater than 0",
                  source: %{pointer: "/data/attributes/member_count"}
                }

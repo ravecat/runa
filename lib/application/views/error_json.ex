@@ -29,16 +29,16 @@ defmodule RunaWeb.ErrorJSON do
   @doc """
   Renders errors.
   """
-  def error(%{changeset: changeset}) do
+  def error(%{changeset: changeset, conn: %{status: status}}) do
     # When encoded, the changeset returns its errors
     # as a JSON object. So we just pass it forward.
-
     %{
       errors:
         Ecto.Changeset.traverse_errors(changeset, &translate_error/1)
         |> Enum.map(fn {field, messages} ->
           Enum.map(messages, fn message ->
             %{
+              status: to_string(status),
               title: "#{field} #{message}",
               source: %{pointer: "/data/attributes/#{field}"}
             }
@@ -60,17 +60,26 @@ defmodule RunaWeb.ErrorJSON do
     }
   end
 
-  def error(%{errors: errors, conn: %{status: status}}) when is_list(errors) do
+  def error(%{errors: errors, conn: %{status: status}})
+      when is_list(errors) do
     %{
       errors:
         Enum.map(errors, fn error ->
-          %{
-            status: to_string(status),
-            source: %{
-              pointer: OpenApiSpex.path_to_string(error)
-            },
-            title: to_string(error)
-          }
+          if match?(%OpenApiSpex.Cast.Error{}, error) do
+            %{
+              status: to_string(status),
+              source: %{
+                pointer: OpenApiSpex.path_to_string(error)
+              },
+              title: to_string(error)
+            }
+          else
+            %{
+              status: to_string(status),
+              title: error.message,
+              detail: error.message
+            }
+          end
         end)
     }
   end

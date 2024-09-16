@@ -17,7 +17,7 @@ defmodule Runa.Languages do
 
   """
   @spec index(keyword) ::
-          {:ok, {[Language.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
+          {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
   def index(opts \\ []) do
     sort = Keyword.get(opts, :sort, [])
     filter = Keyword.get(opts, :filter, [])

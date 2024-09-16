@@ -3,9 +3,7 @@ defmodule RunaWeb.JSONAPI.Schemas.Timestamp do
 
   alias OpenApiSpex.Schema
 
-  @moduledoc """
-  The schema for JSONAPI timestamp object.
-  """
+  @moduledoc false
   OpenApiSpex.schema(%{
     type: :object,
     description:

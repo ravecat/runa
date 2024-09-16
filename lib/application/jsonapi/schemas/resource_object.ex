@@ -6,18 +6,17 @@ defmodule RunaWeb.JSONAPI.Schemas.ResourceObject do
   require OpenApiSpex
 
   alias OpenApiSpex.Schema
-  alias RunaWeb.JSONAPI.Schemas.Link
+  alias RunaWeb.JSONAPI.Schemas.LinksObject
   alias RunaWeb.JSONAPI.Schemas.Meta
-  alias RunaWeb.JSONAPI.Schemas.ResourceLinkage
+  alias RunaWeb.JSONAPI.Schemas.RelationshipObject
 
   OpenApiSpex.schema(%{
     type: :object,
+    description: "Resource object according to JSON:API specification",
     required: [:type],
-    additionalProperties: false,
     properties: %{
       type: %Schema{type: :string, description: "Resource type"},
       id: %Schema{type: :string, description: "Resource ID"},
-      lid: %Schema{type: :string, description: "Resource local ID"},
       attributes: %Schema{
         type: :object,
         description:
@@ -27,18 +26,11 @@ defmodule RunaWeb.JSONAPI.Schemas.ResourceObject do
         type: :object,
         description:
           "a relationships object describing relationships between the resource and other JSON:API resources",
-        additionalProperties: ResourceLinkage
+        additionalProperties: RelationshipObject
       },
-      links: %Schema{
-        type: :object,
-        minProperties: 1,
-        properties: %{
-          self: Link,
-          related: Link
-        },
-        additionalProperties: false
-      },
+      links: LinksObject,
       meta: Meta
-    }
+    },
+    additionalProperties: false
   })
 end

@@ -10,12 +10,13 @@ defmodule Runa do
   def context do
     quote do
       import Ecto.Query
-      import Ecto.Changeset
+      import Ecto.Changeset, except: [change: 2]
 
       alias Ecto.Multi
       alias Runa.Repo
 
       alias Runa.Paginator
+      alias Runa.JSONAPI
     end
   end
 

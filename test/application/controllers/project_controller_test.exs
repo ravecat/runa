@@ -5,15 +5,18 @@ defmodule RunaWeb.ProjectControllerTest do
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
 
-  alias OpenApiSpex.Schema
-  alias RunaWeb.Schemas.Projects, as: OperationSchemas
-
   @moduletag :projects
+
+  setup do
+    team = insert(:team)
+    language = insert(:language)
+
+    {:ok, team: team, language: language}
+  end
 
   describe "index endpoint" do
     test "returns list of resources", ctx do
-      team = insert(:team)
-      insert(:project, team: team)
+      insert(:project, team: ctx.team)
 
       get(ctx.conn, ~p"/api/projects")
       |> json_response(200)
@@ -35,8 +38,7 @@ defmodule RunaWeb.ProjectControllerTest do
 
   describe "show endpoint" do
     test "returns resource", ctx do
-      team = insert(:team)
-      project = insert(:project, team: team)
+      project = insert(:project, team: ctx.team)
 
       get(ctx.conn, ~p"/api/projects/#{project.id}")
       |> json_response(200)
@@ -58,8 +60,6 @@ defmodule RunaWeb.ProjectControllerTest do
 
   describe "create endpoint" do
     test "returns resource when data is valid", ctx do
-      team = insert(:team)
-
       body = %{
         data: %{
           type: "projects",
@@ -69,9 +69,8 @@ defmodule RunaWeb.ProjectControllerTest do
           relationships: %{
             team: %{
               data: %{
-                id: "#{team.id}",
-                type: "teams",
-                title: "title"
+                id: "#{ctx.team.id}",
+                type: "teams"
               }
             }
           }
@@ -87,7 +86,21 @@ defmodule RunaWeb.ProjectControllerTest do
     end
 
     test "renders errors when data is invalid", ctx do
-      body = Schema.example(OperationSchemas.CreateBody.schema())
+      body = %{
+        data: %{
+          type: "projects",
+          attributes: %{},
+          relationships: %{
+            team: %{
+              data: %{
+                id: "#{ctx.team.id}",
+                type: "teams",
+                title: "title"
+              }
+            }
+          }
+        }
+      }
 
       post(ctx.conn, ~p"/api/projects", body)
       |> json_response(422)
@@ -100,8 +113,7 @@ defmodule RunaWeb.ProjectControllerTest do
 
   describe "update endpoint" do
     test "returns resource when data is valid", ctx do
-      team = insert(:team)
-      project = insert(:project, team: team)
+      project = insert(:project, team: ctx.team)
 
       body = %{
         data: %{
@@ -122,8 +134,7 @@ defmodule RunaWeb.ProjectControllerTest do
     end
 
     test "renders errors when data is invalid", ctx do
-      team = insert(:team)
-      project = insert(:project, team: team)
+      project = insert(:project, team: ctx.team)
 
       body = %{
         data: %{
@@ -144,8 +155,7 @@ defmodule RunaWeb.ProjectControllerTest do
     end
 
     test "renders errors when resource is not found", ctx do
-      team = insert(:team)
-      project = insert(:project, team: team)
+      project = insert(:project, team: ctx.team)
 
       body = %{
         data: %{
@@ -158,7 +168,7 @@ defmodule RunaWeb.ProjectControllerTest do
       }
 
       patch(ctx.conn, ~p"/api/projects/1", body)
-      |> json_response(409)
+      |> json_response(404)
       |> assert_raw_schema(
         resolve_schema(JSONAPI.Schemas.Error, %{}),
         ctx.spec
@@ -167,9 +177,8 @@ defmodule RunaWeb.ProjectControllerTest do
   end
 
   describe "delete endpoint" do
-    test "returns 204 when resource is deleted", ctx do
-      team = insert(:team)
-      project = insert(:project, team: team)
+    test "returns no content when resource is deleted", ctx do
+      project = insert(:project, team: ctx.team)
 
       delete(ctx.conn, ~p"/api/projects/#{project.id}")
       |> json_response(204)
@@ -182,6 +191,154 @@ defmodule RunaWeb.ProjectControllerTest do
         resolve_schema(JSONAPI.Schemas.Error, %{}),
         ctx.spec
       )
+    end
+  end
+
+  describe "relationships endpoint (languages)" do
+    test "returns list of associations", ctx do
+      project = insert(:project, team: ctx.team)
+      insert(:locale, project: project, language: ctx.language)
+
+      response =
+        get(ctx.conn, ~p"/api/projects/#{project.id}/relationships/languages")
+        |> json_response(200)
+
+      assert_schema(
+        response,
+        "Document",
+        ctx.spec
+      )
+
+      Enum.each(
+        response["data"],
+        &assert_schema(&1, "ResourceIdentifierObject", ctx.spec)
+      )
+    end
+
+    test "updates resources", ctx do
+      project = insert(:project, team: ctx.team)
+      language = insert(:language)
+      insert(:locale, project: project, language: ctx.language)
+
+      body = %{
+        data: [
+          %{
+            id: "#{language.id}",
+            type: "languages"
+          }
+        ]
+      }
+
+      response =
+        patch(
+          ctx.conn,
+          ~p"/api/projects/#{project.id}/relationships/languages",
+          body
+        )
+        |> json_response(200)
+
+      assert_schema(
+        response,
+        "Document",
+        ctx.spec
+      )
+
+      assert length(response["data"]) == 1
+
+      relationship = get_in(response, ["data", Access.at(0)])
+
+      assert_schema(
+        relationship,
+        "ResourceIdentifierObject",
+        ctx.spec
+      )
+
+      assert relationship["id"] == "#{language.id}"
+    end
+
+    test "returns error on update with non-existing association", ctx do
+      project = insert(:project, team: ctx.team)
+
+      body = %{
+        data: [
+          %{
+            id: "1",
+            type: "languages"
+          }
+        ]
+      }
+
+      patch(
+        ctx.conn,
+        ~p"/api/projects/#{project.id}/relationships/languages",
+        body
+      )
+      |> json_response(422)
+      |> assert_raw_schema(
+        resolve_schema(JSONAPI.Schemas.Error, %{}),
+        ctx.spec
+      )
+    end
+
+    test "creates associations", ctx do
+      project = insert(:project, team: ctx.team)
+      language = insert(:language)
+
+      insert(:locale, project: project, language: ctx.language)
+
+      body = %{
+        data: [
+          %{
+            id: "#{language.id}",
+            type: "languages"
+          }
+        ]
+      }
+
+      response =
+        post(
+          ctx.conn,
+          ~p"/api/projects/#{project.id}/relationships/languages",
+          body
+        )
+        |> json_response(201)
+
+      assert length(response["data"]) == 2
+
+      Enum.each(
+        response["data"],
+        &assert_schema(&1, "ResourceIdentifierObject", ctx.spec)
+      )
+    end
+
+    test "deletes associations", ctx do
+      project = insert(:project, team: ctx.team)
+      language = insert(:language)
+
+      insert(:locale, project: project, language: ctx.language)
+      insert(:locale, project: project, language: language)
+
+      body = %{
+        data: [
+          %{
+            id: "#{language.id}",
+            type: "languages"
+          }
+        ]
+      }
+
+      delete(
+        ctx.conn,
+        ~p"/api/projects/#{project.id}/relationships/languages",
+        body
+      )
+      |> json_response(204)
+
+      response =
+        get(ctx.conn, ~p"/api/projects/#{project.id}/relationships/languages")
+        |> json_response(200)
+
+      assert length(response["data"]) == 1
     end
   end
 end

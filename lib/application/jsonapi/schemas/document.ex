@@ -6,12 +6,11 @@ defmodule RunaWeb.JSONAPI.Schemas.Document do
   require OpenApiSpex
 
   alias OpenApiSpex.Schema
-  alias RunaWeb.JSONAPI.Schemas.Link
+  alias RunaWeb.JSONAPI.Schemas.LinksObject
   alias RunaWeb.JSONAPI.Schemas.ResourceObject
   alias RunaWeb.JSONAPI.Schemas.Timestamp
 
   OpenApiSpex.schema(%{
-    type: :object,
     oneOf: [
       %Schema{
         type: :object,
@@ -23,18 +22,7 @@ defmodule RunaWeb.JSONAPI.Schemas.Document do
         type: :object,
         description: "Document schema for successed operation",
         properties: %{
-          links: %Schema{
-            type: :object,
-            minProperties: 1,
-            properties: %{
-              self: Link,
-              first: Link,
-              last: Link,
-              prev: Link,
-              next: Link
-            },
-            additionalProperties: false
-          },
+          links: LinksObject,
           data: %Schema{
             oneOf: [
               %Schema{
