@@ -9,8 +9,6 @@ defmodule Runa.AccountsTest do
   alias Runa.Accounts
   alias Runa.Accounts.User
 
-  import Runa.Factory
-
   setup do
     user = insert(:user)
     {:ok, user: user}

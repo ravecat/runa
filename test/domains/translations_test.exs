@@ -8,8 +8,6 @@ defmodule Runa.TranslationsTest do
   alias Runa.Translations
   alias Runa.Translations.Translation
 
-  import Runa.Factory
-
   setup do
     team = insert(:team)
     project = insert(:project, team: team)

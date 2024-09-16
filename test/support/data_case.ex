@@ -25,6 +25,7 @@ defmodule Runa.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Runa.DataCase
+      import Runa.Factory
     end
   end
 

@@ -8,8 +8,6 @@ defmodule Runa.LanguagesTest do
   alias Runa.Languages
   alias Runa.Languages.Language
 
-  import Runa.Factory
-
   setup do
     language = insert(:language)
 
@@ -18,11 +16,11 @@ defmodule Runa.LanguagesTest do
 
   describe "languages" do
     test "returns all languages", ctx do
-      assert Languages.get_languages() == [ctx.language]
+      assert {:ok, {[ctx.language], %{}}} == Languages.index()
     end
 
     test "returns the language with given id", ctx do
-      assert Languages.get_language!(ctx.language.id) == ctx.language
+      assert {:ok, ctx.language} == Languages.get(ctx.language.id)
     end
 
     test "creates a language with valid data", ctx do
@@ -34,7 +32,7 @@ defmodule Runa.LanguagesTest do
       }
 
       assert {:ok, %Language{} = language} =
-               Languages.create_language(valid_attrs)
+               Languages.create(valid_attrs)
 
       assert language.title == Atom.to_string(ctx.test)
       assert language.wals_code == Atom.to_string(ctx.test)
@@ -51,7 +49,7 @@ defmodule Runa.LanguagesTest do
       }
 
       assert {:error, %Ecto.Changeset{}} =
-               Languages.create_language(invalid_attrs)
+               Languages.create(invalid_attrs)
     end
 
     test "updates the language with valid data", ctx do
@@ -63,7 +61,7 @@ defmodule Runa.LanguagesTest do
       }
 
       assert {:ok, %Language{} = language} =
-               Languages.update_language(ctx.language, update_attrs)
+               Languages.update(ctx.language, update_attrs)
 
       assert language.id == ctx.language.id
       assert language.title == Atom.to_string(ctx.test)
@@ -81,21 +79,19 @@ defmodule Runa.LanguagesTest do
       }
 
       assert {:error, %Ecto.Changeset{}} =
-               Languages.update_language(ctx.language, invalid_attrs)
+               Languages.update(ctx.language, invalid_attrs)
 
-      assert ctx.language == Languages.get_language!(ctx.language.id)
+      assert {:ok, ctx.language} == Languages.get(ctx.language.id)
     end
 
     test "deletes the language", ctx do
-      assert {:ok, %Language{}} = Languages.delete_language(ctx.language)
+      assert {:ok, %Language{}} = Languages.delete(ctx.language)
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Languages.get_language!(ctx.language.id)
-      end
+      assert {:error, %Ecto.NoResultsError{}} = Languages.get(ctx.language.id)
     end
 
     test "returns a language changeset", ctx do
-      assert %Ecto.Changeset{} = Languages.change_language(ctx.language)
+      assert %Ecto.Changeset{} = Languages.change(ctx.language)
     end
   end
 end

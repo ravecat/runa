@@ -9,7 +9,6 @@ defmodule RunaWeb.Widgets.SidebarTest do
   alias RunaWeb.Components.Sidebar
 
   import Phoenix.LiveViewTest
-  import Runa.Factory
 
   describe "sidebar" do
     setup do

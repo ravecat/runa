@@ -8,8 +8,6 @@ defmodule Runa.LocalesTest do
   alias Runa.Locales
   alias Runa.Locales.Locale
 
-  import Runa.Factory
-
   setup do
     team = insert(:team)
     project = insert(:project, team: team)

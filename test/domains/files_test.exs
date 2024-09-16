@@ -8,8 +8,6 @@ defmodule Runa.FilesTest do
   alias Runa.Files
   alias Runa.Files.File
 
-  import Runa.Factory
-
   setup do
     team = insert(:team)
     project = insert(:project, team: team)

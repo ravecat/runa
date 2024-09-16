@@ -9,8 +9,6 @@ defmodule Runa.ContributorsTest do
   alias Runa.Contributors.Contributor
   alias Runa.Repo
 
-  import Runa.Factory
-
   @roles Application.compile_env(:runa, :permissions)
 
   setup do
