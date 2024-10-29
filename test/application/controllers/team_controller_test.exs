@@ -5,8 +5,6 @@ defmodule RunaWeb.TeamControllerTest do
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
 
-  alias RunaWeb.JSONAPI
-
   @moduletag :teams
 
   describe "index endpoint" do
@@ -46,8 +44,8 @@ defmodule RunaWeb.TeamControllerTest do
     test "returns errors when resource is not found", ctx do
       get(ctx.conn, ~p"/api/teams/1")
       |> json_response(404)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end
@@ -81,8 +79,8 @@ defmodule RunaWeb.TeamControllerTest do
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(422)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end
@@ -123,8 +121,8 @@ defmodule RunaWeb.TeamControllerTest do
 
       patch(ctx.conn, ~p"/api/teams/1", body)
       |> json_response(404)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end
@@ -256,8 +254,8 @@ defmodule RunaWeb.TeamControllerTest do
     test "returns error when sorting by unknown field", ctx do
       get(ctx.conn, ~p"/api/teams?sort=unknown")
       |> json_response(400)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end

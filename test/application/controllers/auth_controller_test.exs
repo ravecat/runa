@@ -1,7 +1,7 @@
 defmodule RunaWeb.AuthControllerTest do
   @moduledoc false
 
-  use RunaWeb.ConnCase
+  use RunaWeb.ConnCase, async: true
 
   @moduletag :auth
 
@@ -29,8 +29,7 @@ defmodule RunaWeb.AuthControllerTest do
         })
         |> get(~p"/logout")
 
-      assert get_flash(conn, :info) ==
-               "You have been logged out!"
+      assert Flash.get(conn.assigns.flash, :info) == "You have been logged out!"
 
       assert redirected_to(conn) == ~p"/"
 
@@ -52,7 +51,9 @@ defmodule RunaWeb.AuthControllerTest do
       |> get(~p"/auth/auth0/callback")
       |> AuthController.callback(%{})
 
-    assert get_flash(conn, :info) ==
+    alias Phoenix.Flash
+
+    assert Flash.get(conn.assigns.flash, :info) ==
              "Successfully authenticated as #{auth.info.name}."
 
     assert redirected_to(conn) == ~p"/profile"
@@ -73,7 +74,7 @@ defmodule RunaWeb.AuthControllerTest do
       |> get(~p"/auth/auth0/callback")
       |> AuthController.callback(%{})
 
-    assert get_flash(conn, :error) ==
+    assert Flash.get(conn.assigns.flash, :error) ==
              "Failed to authenticate."
 
     assert redirected_to(conn) == ~p"/"

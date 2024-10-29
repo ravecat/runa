@@ -8,7 +8,7 @@ defmodule RunaWeb.Schemas.Teams do
   alias OpenApiSpex.Schema
 
   use RunaWeb.Schema,
-    name: :team,
+    name: "team",
     schema: %Schema{
       type: :object,
       properties: %{

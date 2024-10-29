@@ -51,8 +51,8 @@ defmodule RunaWeb.ProjectControllerTest do
     test "returns errors when resource is not found", ctx do
       get(ctx.conn, ~p"/api/projects/1")
       |> json_response(404)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end
@@ -104,8 +104,8 @@ defmodule RunaWeb.ProjectControllerTest do
 
       post(ctx.conn, ~p"/api/projects", body)
       |> json_response(422)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end
@@ -148,8 +148,8 @@ defmodule RunaWeb.ProjectControllerTest do
 
       patch(ctx.conn, ~p"/api/projects/#{project.id}", body)
       |> json_response(422)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end
@@ -169,8 +169,8 @@ defmodule RunaWeb.ProjectControllerTest do
 
       patch(ctx.conn, ~p"/api/projects/1", body)
       |> json_response(404)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end
@@ -187,8 +187,8 @@ defmodule RunaWeb.ProjectControllerTest do
     test "returns errors when resource is not found", ctx do
       delete(ctx.conn, ~p"/api/projects/1")
       |> json_response(404)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end
@@ -274,8 +274,8 @@ defmodule RunaWeb.ProjectControllerTest do
         body
       )
       |> json_response(422)
-      |> assert_raw_schema(
-        resolve_schema(JSONAPI.Schemas.Error, %{}),
+      |> assert_schema(
+        "Error",
         ctx.spec
       )
     end

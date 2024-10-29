@@ -5,6 +5,7 @@ defmodule RunaWeb.ProjectController do
 
   alias Runa.Projects
   alias Runa.Projects.Project
+  alias RunaWeb.JSONAPI
   alias RunaWeb.Schemas.Projects, as: OperationSchemas
   alias RunaWeb.Serializers.Project, as: Serializer
 
@@ -12,6 +13,7 @@ defmodule RunaWeb.ProjectController do
     serializer: Serializer
 
   import Pathex
+  import RunaWeb.APISpec
 
   plug RunaWeb.JSONAPI.Plug.ValidateRelationships, schema: Project
 
@@ -23,14 +25,15 @@ defmodule RunaWeb.ProjectController do
       summary: "List of current resources",
       description: "List of current resources",
       operationId: "getResourcesList-#{@resource}",
-      responses: %{
-        200 =>
-          response(
-            "200 OK",
-            JSONAPI.Schemas.Headers.content_type(),
-            OperationSchemas.IndexResponse
-          )
-      }
+      responses:
+        generate_responses(%{
+          200 =>
+            response(
+              "200 OK",
+              JSONAPI.Schemas.Headers.content_type(),
+              OperationSchemas.IndexResponse
+            )
+        })
     }
   end
 

@@ -1,5 +1,5 @@
 defmodule RunaWeb.PageControllerTest do
-  use RunaWeb.ConnCase
+  use RunaWeb.ConnCase, async: true
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")

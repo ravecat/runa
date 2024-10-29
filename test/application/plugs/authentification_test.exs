@@ -1,7 +1,7 @@
 defmodule RunaWeb.Plug.AuthenticationTest do
   @moduledoc false
 
-  use RunaWeb.ConnCase
+  use RunaWeb.ConnCase, async: true
 
   alias RunaWeb.Plug.Authentication
 
@@ -13,7 +13,7 @@ defmodule RunaWeb.Plug.AuthenticationTest do
       |> put_session(:current_user, nil)
       |> Authentication.call(nil)
 
-    assert get_flash(conn, :error) ==
+    assert Flash.get(conn.assigns.flash, :error) ==
              "You can't access that page"
 
     assert redirected_to(conn) == ~p"/"

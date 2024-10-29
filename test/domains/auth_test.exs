@@ -1,7 +1,7 @@
 defmodule Runa.AuthTest do
   @moduledoc false
 
-  use RunaWeb.ConnCase
+  use RunaWeb.ConnCase, async: true
 
   @moduletag :auth
 
