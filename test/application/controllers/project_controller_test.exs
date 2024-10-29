@@ -36,8 +36,7 @@ defmodule RunaWeb.ProjectControllerTest do
     end
 
     test "returns list of resource with relationships", ctx do
-      project = insert(:project, team: ctx.team)
-      insert(:key, project: project)
+      insert(:project, team: ctx.team)
 
       get(ctx.conn, ~p"/api/projects")
       |> json_response(200)

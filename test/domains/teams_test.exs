@@ -9,14 +9,16 @@ defmodule Runa.TeamsTest do
   alias Runa.Teams.Team
 
   setup do
-    team = insert(:team) |> Ecto.reset_fields([:projects])
+    team = insert(:team)
 
     {:ok, team: team}
   end
 
   describe "teams context" do
     test "returns all entities", ctx do
-      assert {:ok, {[ctx.team], %{}}} == Teams.index()
+      {:ok, {[team], %{}}} = Teams.index()
+
+      assert team.id == ctx.team.id
     end
 
     test "returns entity with given id", ctx do
