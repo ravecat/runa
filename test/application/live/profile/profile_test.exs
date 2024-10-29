@@ -1,7 +1,7 @@
 defmodule RunaWeb.PageLive.ProfileTest do
   @moduledoc false
 
-  use RunaWeb.ConnCase
+  use RunaWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
 

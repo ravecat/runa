@@ -1,4 +1,24 @@
 defmodule RunaWeb.Schema do
+  @moduledoc """
+  Macros for generating JSON:API schemas.
+
+  Resulted schemas include to the current module and represent a Open API schema for the resource.
+
+  ## Examples
+
+  ```elixir
+  defmodule MySchema do
+    use RunaWeb.Schema, name: "MySchema", schema: %Schema{
+      type: :object,
+      properties: %{
+        name: %Schema{
+          type: :string
+        }
+      }
+    }
+  end
+  ```
+  """
   alias OpenApiSpex.Schema
   alias RunaWeb.JSONAPI.Schemas.RelationshipObject
   alias RunaWeb.JSONAPI.Schemas.ResourceIdentifierObject
@@ -13,23 +33,24 @@ defmodule RunaWeb.Schema do
   end
 
   def validate_name!(name) do
-    unless is_atom(name) or is_binary(name) do
+    unless is_binary(name) do
       raise CompileError,
         description:
-          "Invalid module name format: #{inspect(name)}. Expected an atom or a string."
+          "Invalid module name format: #{inspect(name)}. Expected a string."
     end
   end
 
+  @spec __using__(
+          Keyword.t(
+            name: String.t(),
+            schema: Schema.t()
+          )
+        ) :: Macro.t()
   defmacro __using__(opts) do
     name = Keyword.fetch!(opts, :name)
     schema = Keyword.fetch!(opts, :schema)
 
-    module_name_str = name |> to_string() |> Macro.camelize()
-
-    module_name =
-      module_name_str
-      |> List.wrap()
-      |> Module.concat()
+    module = Module.concat([Macro.camelize(name)])
 
     quote location: :keep do
       require OpenApiSpex
@@ -41,10 +62,7 @@ defmodule RunaWeb.Schema do
       unquote(__MODULE__).validate_name!(unquote(name))
       unquote(__MODULE__).validate_schema!(unquote(schema))
 
-      defmodule unquote(module_name) do
-        @moduledoc """
-        The schema for #{unquote(module_name_str)} resource
-        """
+      defmodule unquote(module) do
         OpenApiSpex.schema(%{
           allOf: [
             ResourceObject,
@@ -56,7 +74,7 @@ defmodule RunaWeb.Schema do
       defmodule ShowResponse do
         @moduledoc false
         OpenApiSpex.schema(%{
-          title: "#{unquote(module_name_str)}.ShowResponse",
+          title: "#{inspect(unquote(module))}.ShowResponse",
           description: "The schema for resource show response",
           type: :object,
           allOf: [
@@ -66,10 +84,10 @@ defmodule RunaWeb.Schema do
               properties: %{
                 data: %Schema{
                   oneOf: [
-                    unquote(module_name),
+                    unquote(module),
                     %Schema{
                       type: :array,
-                      items: unquote(module_name)
+                      items: unquote(module)
                     }
                   ]
                 }
@@ -82,7 +100,7 @@ defmodule RunaWeb.Schema do
       defmodule IndexResponse do
         @moduledoc false
         OpenApiSpex.schema(%{
-          title: "#{unquote(module_name_str)}.IndexResponse",
+          title: "#{inspect(unquote(module))}.IndexResponse",
           description: "The schema for resource index response",
           type: :object,
           allOf: [
@@ -92,7 +110,7 @@ defmodule RunaWeb.Schema do
               properties: %{
                 data: %Schema{
                   type: :array,
-                  items: unquote(module_name)
+                  items: unquote(module)
                 }
               }
             }
@@ -103,7 +121,7 @@ defmodule RunaWeb.Schema do
       defmodule CreateBody do
         @moduledoc false
         OpenApiSpex.schema(%{
-          title: "#{unquote(module_name_str)}.CreateBody",
+          title: "#{inspect(unquote(module))}.CreateBody",
           description: "The body schema for resource creation request",
           type: :object,
           required: [:data],
@@ -119,7 +137,7 @@ defmodule RunaWeb.Schema do
                 %Schema{
                   type: :object,
                   allOf: [
-                    unquote(module_name),
+                    unquote(module),
                     %Schema{
                       type: :object,
                       required: [:attributes],
@@ -134,7 +152,7 @@ defmodule RunaWeb.Schema do
                 %Schema{
                   type: :object,
                   allOf: [
-                    unquote(module_name),
+                    unquote(module),
                     %Schema{
                       type: :object,
                       required: [:relationships],
@@ -150,7 +168,7 @@ defmodule RunaWeb.Schema do
                 %Schema{
                   type: :object,
                   allOf: [
-                    unquote(module_name),
+                    unquote(module),
                     %Schema{
                       type: :object,
                       required: [:relationships, :attributes],
@@ -175,7 +193,7 @@ defmodule RunaWeb.Schema do
       defmodule UpdateBody do
         @moduledoc false
         OpenApiSpex.schema(%{
-          title: "#{unquote(module_name_str)}.UpdateBody",
+          title: "#{inspect(unquote(module))}.UpdateBody",
           description: "Request schema body for resource update",
           type: :object,
           required: [:data],

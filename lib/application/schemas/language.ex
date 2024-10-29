@@ -5,7 +5,7 @@ defmodule RunaWeb.Schemas.Languages do
   alias OpenApiSpex.Schema
 
   use RunaWeb.Schema,
-    name: :language,
+    name: "language",
     schema: %Schema{
       type: :object,
       properties: %{

@@ -11,6 +11,7 @@ defmodule RunaWeb.JSONAPI.Schemas.Document do
   alias RunaWeb.JSONAPI.Schemas.Timestamp
 
   OpenApiSpex.schema(%{
+    type: :object,
     oneOf: [
       %Schema{
         type: :object,

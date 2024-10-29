@@ -41,6 +41,8 @@ defmodule RunaWeb.ConnCase do
       import RunaWeb.ConnCase
       import Runa.Factory
 
+      alias Phoenix.Flash
+
       require Pathex
     end
   end

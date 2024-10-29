@@ -1,7 +1,7 @@
 defmodule RunaWeb.Widgets.SidebarTest do
   @moduledoc false
 
-  use RunaWeb.ConnCase
+  use RunaWeb.ConnCase, async: true
 
   @moduletag :sidebar
   @roles Application.compile_env(:runa, :permissions)

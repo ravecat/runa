@@ -8,15 +8,9 @@ defmodule RunaWeb.OpenAPICase do
   defmacro __using__(_) do
     quote do
       import OpenApiSpex.TestAssertions
-      import OpenApiSpex
 
-      alias OpenApiSpex.Schema
-      alias RunaWeb.APISpec
-
-      setup do
-        spec = APISpec.spec()
-
-        {:ok, spec: spec}
+      setup_all do
+        {:ok, spec: RunaWeb.APISpec.spec()}
       end
     end
   end
