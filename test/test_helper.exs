@@ -1,4 +1,4 @@
-ExUnit.configure(exclude: :skip, async: true, slowest: 10, slowest_modules: 10)
+ExUnit.configure(exclude: :skip, async: true)
 
 {:ok, _} = Application.ensure_all_started(:ex_machina)
 

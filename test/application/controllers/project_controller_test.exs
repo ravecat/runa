@@ -34,6 +34,18 @@ defmodule RunaWeb.ProjectControllerTest do
         ctx.spec
       )
     end
+
+    test "returns list of resource with relationships", ctx do
+      project = insert(:project, team: ctx.team)
+      insert(:key, project: project)
+
+      get(ctx.conn, ~p"/api/projects")
+      |> json_response(200)
+      |> get_in(["data", Access.at(0), "relationships"])
+      |> Enum.each(fn {_, value} ->
+        assert_schema(value, "RelationshipObject", ctx.spec)
+      end)
+    end
   end
 
   describe "show endpoint" do
@@ -56,10 +68,21 @@ defmodule RunaWeb.ProjectControllerTest do
         ctx.spec
       )
     end
+
+    test "returns resource with relationships", ctx do
+      project = insert(:project, team: ctx.team)
+
+      get(ctx.conn, ~p"/api/projects/#{project.id}")
+      |> json_response(200)
+      |> get_in(["data", "relationships"])
+      |> Enum.each(fn {_, value} ->
+        assert_schema(value, "RelationshipObject", ctx.spec)
+      end)
+    end
   end
 
   describe "create endpoint" do
-    test "returns resource when data is valid", ctx do
+    test "returns resource", ctx do
       body = %{
         data: %{
           type: "projects",
@@ -85,7 +108,7 @@ defmodule RunaWeb.ProjectControllerTest do
       )
     end
 
-    test "renders errors when data is invalid", ctx do
+    test "returns errors when data is invalid", ctx do
       body = %{
         data: %{
           type: "projects",
