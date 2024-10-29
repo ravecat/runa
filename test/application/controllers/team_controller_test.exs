@@ -27,6 +27,18 @@ defmodule RunaWeb.TeamControllerTest do
         ctx.spec
       )
     end
+
+    test "returns resources with relationships", ctx do
+      team = insert(:team)
+      insert(:project, team: team)
+
+      get(ctx.conn, ~p"/api/teams")
+      |> json_response(200)
+      |> get_in(["data", Access.at(0), "relationships"])
+      |> Enum.each(fn {_, value} ->
+        assert_schema(value, "RelationshipObject", ctx.spec)
+      end)
+    end
   end
 
   describe "show endpoint" do
@@ -48,6 +60,18 @@ defmodule RunaWeb.TeamControllerTest do
         "Error",
         ctx.spec
       )
+    end
+
+    test "returns resource with relationships", ctx do
+      team = insert(:team)
+      insert(:project, team: team)
+
+      get(ctx.conn, ~p"/api/teams/#{team.id}")
+      |> json_response(200)
+      |> get_in(["data", "relationships"])
+      |> Enum.each(fn {_, value} ->
+        assert_schema(value, "RelationshipObject", ctx.spec)
+      end)
     end
   end
 
