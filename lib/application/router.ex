@@ -5,6 +5,7 @@ defmodule RunaWeb.Router do
 
   alias RunaWeb.APISpec
   alias RunaWeb.AuthController
+  alias RunaWeb.FileController
   alias RunaWeb.LanguageController
   alias RunaWeb.Layouts
   alias RunaWeb.PageController
@@ -55,6 +56,7 @@ defmodule RunaWeb.Router do
       singleton: true
 
     resources "/languages", LanguageController, only: [:index]
+    resources "/files", FileController, only: [:create]
   end
 
   scope "/" do

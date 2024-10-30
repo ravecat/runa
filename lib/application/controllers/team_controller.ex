@@ -21,12 +21,14 @@ defmodule RunaWeb.TeamController do
       description: "List of current resources",
       operationId: "getResourcesList-#{@resource}",
       responses: %{
-        200 =>
-          response(
-            "200 OK",
-            JSONAPI.Schemas.Headers.content_type(),
-            OperationSchemas.IndexResponse
-          )
+        200 => %Response{
+          description: "Resource list",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.IndexResponse
+            }
+          }
+        }
       }
     }
   end
@@ -52,12 +54,14 @@ defmodule RunaWeb.TeamController do
       parameters:
         JSONAPI.Schemas.Parameters.path() ++ JSONAPI.Schemas.Parameters.query(),
       responses: %{
-        200 =>
-          response(
-            "200 OK",
-            JSONAPI.Schemas.Headers.content_type(),
-            OperationSchemas.ShowResponse
-          )
+        200 => %Response{
+          description: "Resource item",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.ShowResponse
+            }
+          }
+        }
       }
     }
   end
@@ -74,20 +78,24 @@ defmodule RunaWeb.TeamController do
       summary: "Create new resource",
       description: "Create new resource",
       operationId: "createResource-#{@resource}",
-      requestBody:
-        request_body(
-          "Resource request body",
-          JSONAPI.Schemas.Headers.content_type(),
-          OperationSchemas.CreateBody,
-          required: true
-        ),
+      requestBody: %RequestBody{
+        description: "Resource request body",
+        content: %{
+          "application/vnd.api+json" => %MediaType{
+            schema: OperationSchemas.CreateBody
+          }
+        },
+        required: true
+      },
       responses: %{
-        201 =>
-          response(
-            "201 OK",
-            JSONAPI.Schemas.Headers.content_type(),
-            OperationSchemas.ShowResponse
-          )
+        201 => %Response{
+          description: "Resource item",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.ShowResponse
+            }
+          }
+        }
       }
     }
   end
@@ -112,20 +120,24 @@ defmodule RunaWeb.TeamController do
       description: "Update resource",
       operationId: "updateResource-#{@resource}",
       parameters: JSONAPI.Schemas.Parameters.path(),
-      requestBody:
-        request_body(
-          "Resource request body",
-          JSONAPI.Schemas.Headers.content_type(),
-          OperationSchemas.UpdateBody,
-          required: true
-        ),
+      requestBody: %RequestBody{
+        description: "Resource request body",
+        content: %{
+          "application/vnd.api+json" => %MediaType{
+            schema: OperationSchemas.UpdateBody
+          }
+        },
+        required: true
+      },
       responses: %{
-        200 =>
-          response(
-            "200 OK",
-            JSONAPI.Schemas.Headers.content_type(),
-            OperationSchemas.ShowResponse
-          )
+        200 => %Response{
+          description: "Resource item",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.ShowResponse
+            }
+          }
+        }
       }
     }
   end

@@ -35,13 +35,13 @@ defmodule Runa.FilesTest do
         project_id: project.id
       }
 
-      assert {:ok, %File{} = file} = Files.create_file(valid_attrs)
+      assert {:ok, %File{} = file} = Files.create(valid_attrs)
       assert file.filename == Atom.to_string(ctx.test)
     end
 
     test "returns error changeset during creation with invalid data" do
       invalid_attrs = %{filename: nil}
-      assert {:error, %Ecto.Changeset{}} = Files.create_file(invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Files.create(invalid_attrs)
     end
 
     test "updates the file with valid data ", ctx do
