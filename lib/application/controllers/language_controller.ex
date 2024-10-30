@@ -18,12 +18,14 @@ defmodule RunaWeb.LanguageController do
       description: "List of current resources",
       operationId: "getResourcesList-#{@resource}",
       responses: %{
-        200 =>
-          response(
-            "200 OK",
-            JSONAPI.Schemas.Headers.content_type(),
-            OperationSchemas.IndexResponse
-          )
+        200 => %Response{
+          description: "Resource list",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.IndexResponse
+            }
+          }
+        }
       }
     }
   end

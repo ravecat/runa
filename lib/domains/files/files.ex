@@ -41,17 +41,22 @@ defmodule Runa.Files do
 
   ## Examples
 
-      iex> create_file(%{field: value})
+      iex> create(%{field: value})
       {:ok, %File{}}
 
-      iex> create_file(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_file(attrs \\ %{}) do
+  @spec create(map) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def create(attrs \\ %{}) do
     %File{}
     |> File.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, file} -> {:ok, Repo.preload(file, :project)}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """

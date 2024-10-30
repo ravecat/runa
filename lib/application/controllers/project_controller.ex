@@ -5,14 +5,12 @@ defmodule RunaWeb.ProjectController do
 
   alias Runa.Projects
   alias Runa.Projects.Project
-  alias RunaWeb.JSONAPI
   alias RunaWeb.Schemas.Projects, as: OperationSchemas
   alias RunaWeb.Serializers.Project, as: Serializer
 
   use RunaWeb.Plugs.QueryParser,
     serializer: Serializer
 
-  import Pathex
   import RunaWeb.APISpec
 
   plug RunaWeb.JSONAPI.Plug.ValidateRelationships, schema: Project
@@ -27,12 +25,14 @@ defmodule RunaWeb.ProjectController do
       operationId: "getResourcesList-#{@resource}",
       responses:
         generate_responses(%{
-          200 =>
-            response(
-              "200 OK",
-              JSONAPI.Schemas.Headers.content_type(),
-              OperationSchemas.IndexResponse
-            )
+          200 => %Response{
+            description: "Resource list",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.IndexResponse
+              }
+            }
+          }
         })
     }
   end
@@ -58,12 +58,14 @@ defmodule RunaWeb.ProjectController do
       parameters:
         JSONAPI.Schemas.Parameters.path() ++ JSONAPI.Schemas.Parameters.query(),
       responses: %{
-        200 =>
-          response(
-            "200 OK",
-            JSONAPI.Schemas.Headers.content_type(),
-            OperationSchemas.ShowResponse
-          )
+        200 => %Response{
+          description: "Resource item",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.ShowResponse
+            }
+          }
+        }
       }
     }
   end
@@ -80,20 +82,23 @@ defmodule RunaWeb.ProjectController do
       summary: "Create new resource",
       description: "Create new resource",
       operationId: "createResource-#{@resource}",
-      requestBody:
-        request_body(
-          "Resource request body",
-          JSONAPI.Schemas.Headers.content_type(),
-          OperationSchemas.CreateBody,
-          required: true
-        ),
+      requestBody: %RequestBody{
+        description: "Resource request body",
+        content: %{
+          "application/vnd.api+json" => %MediaType{
+            schema: OperationSchemas.CreateBody
+          }
+        }
+      },
       responses: %{
-        201 =>
-          response(
-            "201 OK",
-            JSONAPI.Schemas.Headers.content_type(),
-            OperationSchemas.ShowResponse
-          )
+        201 => %Response{
+          description: "Resource item",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.ShowResponse
+            }
+          }
+        }
       }
     }
   end
@@ -119,14 +124,12 @@ defmodule RunaWeb.ProjectController do
   def create(
         %{
           body_params: %{
-            "data" => %{"relationships" => relationships, "attributes" => attrs}
+            "data" => %{"relationships" => _, "attributes" => _}
           }
         } = conn,
-        _
+        params
       ) do
-    with team_id <- get(relationships, path("team" / "data" / "id")),
-         attrs = Map.put(attrs, "team_id", team_id),
-         {:ok, data} <- Projects.create(attrs) do
+    with {:ok, data} <- Projects.create(params) do
       conn |> put_status(201) |> render(data: data)
     end
   end
@@ -138,20 +141,24 @@ defmodule RunaWeb.ProjectController do
       description: "Update resource",
       operationId: "updateResource-#{@resource}",
       parameters: JSONAPI.Schemas.Parameters.path(),
-      requestBody:
-        request_body(
-          "Resource request body",
-          JSONAPI.Schemas.Headers.content_type(),
-          OperationSchemas.UpdateBody,
-          required: true
-        ),
+      requestBody: %RequestBody{
+        description: "Resource request body",
+        content: %{
+          "application/vnd.api+json" => %MediaType{
+            schema: OperationSchemas.UpdateBody
+          }
+        },
+        required: true
+      },
       responses: %{
-        200 =>
-          response(
-            "200 OK",
-            JSONAPI.Schemas.Headers.content_type(),
-            OperationSchemas.ShowResponse
-          )
+        200 => %Response{
+          description: "Resource item",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.ShowResponse
+            }
+          }
+        }
       }
     }
   end
