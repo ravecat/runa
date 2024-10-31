@@ -15,4 +15,10 @@ defmodule RunaWeb.Serializers.Key do
       :inserted_at_timestamp,
       :updated_at_timestamp
     ]
+
+
+  def relationships,
+    do: [
+      project: RunaWeb.Serializers.Project
+    ]
 end

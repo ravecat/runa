@@ -11,8 +11,6 @@ defmodule RunaWeb.ProjectController do
   use RunaWeb.Plugs.QueryParser,
     serializer: Serializer
 
-  import RunaWeb.APISpec
-
   plug RunaWeb.JSONAPI.Plug.ValidateRelationships, schema: Project
 
   @resource Serializer.type()

@@ -43,6 +43,7 @@ defmodule RunaWeb do
         formats: [:html, :json, :jsonapi],
         layouts: [html: RunaWeb.Layouts]
 
+      import RunaWeb.APISpec
       import Plug.Conn
       import RunaWeb.Gettext
 
@@ -59,13 +60,13 @@ defmodule RunaWeb do
       import OpenApiSpex.Operation,
         only: [parameter: 5, request_body: 4, response: 3]
 
+      alias OpenApiSpex.MediaType
       alias OpenApiSpex.Operation
       alias OpenApiSpex.Parameter
       alias OpenApiSpex.Reference
-      alias OpenApiSpex.Schema
-      alias OpenApiSpex.MediaType
       alias OpenApiSpex.RequestBody
       alias OpenApiSpex.Response
+      alias OpenApiSpex.Schema
 
       plug OpenApiSpex.Plug.CastAndValidate,
         render_error: RunaWeb.FallbackController,
