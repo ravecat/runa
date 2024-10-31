@@ -41,17 +41,22 @@ defmodule Runa.Keys do
 
   ## Examples
 
-      iex> create_key(%{field: value})
+      iex> create(%{field: value})
       {:ok, %Key{}}
 
-      iex> create_key(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_key(attrs \\ %{}) do
+  @spec create(map) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def create(attrs \\ %{}) do
     %Key{}
     |> Key.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, data} -> {:ok, Repo.preload(data, :project)}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """

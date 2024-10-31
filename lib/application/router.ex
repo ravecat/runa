@@ -15,6 +15,7 @@ defmodule RunaWeb.Router do
   alias RunaWeb.TeamController
   alias RunaWeb.Telemetry
   alias RunaWeb.UserData
+  alias RunaWeb.KeyController
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -57,6 +58,7 @@ defmodule RunaWeb.Router do
 
     resources "/languages", LanguageController, only: [:index]
     resources "/files", FileController, only: [:create]
+    resources "/keys", KeyController, only: [:create]
   end
 
   scope "/" do

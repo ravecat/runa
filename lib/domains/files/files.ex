@@ -54,7 +54,7 @@ defmodule Runa.Files do
     |> File.changeset(attrs)
     |> Repo.insert()
     |> case do
-      {:ok, file} -> {:ok, Repo.preload(file, :project)}
+      {:ok, data} -> {:ok, Repo.preload(data, :project)}
       {:error, changeset} -> {:error, changeset}
     end
   end

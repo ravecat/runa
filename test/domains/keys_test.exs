@@ -36,14 +36,14 @@ defmodule Runa.KeysTest do
         project_id: project.id
       }
 
-      assert {:ok, %Key{} = key} = Keys.create_key(valid_attrs)
+      assert {:ok, %Key{} = key} = Keys.create(valid_attrs)
       assert key.name == "some name"
       assert key.description == "some description"
     end
 
     test "returns error changeset during create with invalid data" do
       invalid_attrs = %{name: nil, description: nil}
-      assert {:error, %Ecto.Changeset{}} = Keys.create_key(invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Keys.create(invalid_attrs)
     end
 
     test "updates the key with valid data", ctx do

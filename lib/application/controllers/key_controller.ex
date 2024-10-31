@@ -1,17 +1,17 @@
-defmodule RunaWeb.FileController do
+defmodule RunaWeb.KeyController do
   use RunaWeb, :controller
   use RunaWeb, :jsonapi
   use Runa.JSONAPI
 
+  alias Runa.Keys
+  alias Runa.Keys.Key
+  alias RunaWeb.Schemas.Keys, as: OperationSchemas
+  alias RunaWeb.Serializers.Key, as: Serializer
+
   use RunaWeb.Plugs.QueryParser,
     serializer: Serializer
 
-  alias Runa.Files
-  alias Runa.Files.File
-  alias RunaWeb.Schemas.Files, as: OperationSchemas
-  alias RunaWeb.Serializers.File, as: Serializer
-
-  plug RunaWeb.JSONAPI.Plug.ValidateRelationships, schema: File
+  plug RunaWeb.JSONAPI.Plug.ValidateRelationships, schema: Key
 
   @resource Serializer.type()
 
@@ -27,24 +27,24 @@ defmodule RunaWeb.FileController do
           "application/vnd.api+json" => %MediaType{
             schema: OperationSchemas.CreateBody
           }
-        },
-        required: true
+        }
       },
-      responses: %{
-        201 => %Response{
-          description: "Resource created",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_responses(%{
+          200 => %Response{
+            description: "Resource list",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
   def create(conn, params) do
-    with {:ok, data} <- Files.create(params) do
+    with {:ok, data} <- Keys.create(params) do
       conn |> put_status(201) |> render(data: data)
     end
   end
