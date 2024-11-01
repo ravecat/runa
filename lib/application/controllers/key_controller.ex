@@ -48,4 +48,30 @@ defmodule RunaWeb.KeyController do
       conn |> put_status(201) |> render(data: data)
     end
   end
+
+  def show_operation() do
+    %Operation{
+      tags: [@resource],
+      summary: "Show of current resource",
+      description: "Show of current resource",
+      operationId: "getResource-#{@resource}",
+      parameters: JSONAPI.Schemas.Parameters.path(),
+      responses: %{
+        200 => %Response{
+          description: "Resource item",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.ShowResponse
+            }
+          }
+        }
+      }
+    }
+  end
+
+  def show(conn, %{"id" => id}) do
+    with {:ok, data} <- Keys.get(id) do
+      conn |> put_status(200) |> render(data: data)
+    end
+  end
 end

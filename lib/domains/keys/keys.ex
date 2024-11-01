@@ -27,14 +27,24 @@ defmodule Runa.Keys do
 
   ## Examples
 
-      iex> get_key!(123)
-      %Key{}
+      iex> get(123)
+      {:ok, %Key{}}
 
-      iex> get_key!(456)
-      ** (Ecto.NoResultsError)
+      iex> get(456)
+      {:error, %Ecto.NoResultsError{}}
 
   """
-  def get_key!(id), do: Repo.get!(Key, id)
+  def get(id) do
+    query =
+      from p in Key,
+        where: p.id == ^id,
+        preload: [:project]
+
+    case Repo.one(query) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
+  end
 
   @doc """
   Creates a key.

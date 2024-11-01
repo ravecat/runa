@@ -23,7 +23,7 @@ defmodule Runa.KeysTest do
     end
 
     test "returns the key with given id", ctx do
-      assert key = Keys.get_key!(ctx.key.id)
+      assert {:ok, %Key{} = key} = Keys.get(ctx.key.id)
       assert key.id == ctx.key.id
     end
 
@@ -66,7 +66,7 @@ defmodule Runa.KeysTest do
 
     test "deletes the key", ctx do
       assert {:ok, %Key{}} = Keys.delete_key(ctx.key)
-      assert_raise Ecto.NoResultsError, fn -> Keys.get_key!(ctx.key.id) end
+      assert {:error, %Ecto.NoResultsError{}} = Keys.get(ctx.key.id)
     end
 
     test "returns a key changeset", ctx do

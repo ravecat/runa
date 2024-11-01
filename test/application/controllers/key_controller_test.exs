@@ -42,7 +42,7 @@ defmodule RunaWeb.KeyControllerTest do
       )
     end
 
-    test "returns errors when relationships are missing", ctx do
+    test "returns errors when required relationships are missing", ctx do
       body = %{
         data: %{
           type: "keys",
@@ -86,6 +86,39 @@ defmodule RunaWeb.KeyControllerTest do
         "Error",
         ctx.spec
       )
+    end
+  end
+
+  describe "show endpoint" do
+    test "returns resource", ctx do
+      key = insert(:key, project: ctx.project)
+
+      get(ctx.conn, ~p"/api/keys/#{key.id}")
+      |> json_response(200)
+      |> assert_schema(
+        "Keys.ShowResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns errors when resource is not found", ctx do
+      get(ctx.conn, ~p"/api/keys/1")
+      |> json_response(404)
+      |> assert_schema(
+        "Error",
+        ctx.spec
+      )
+    end
+
+    test "returns resource with relationships", ctx do
+      key = insert(:key, project: ctx.project)
+
+      get(ctx.conn, ~p"/api/keys/#{key.id}")
+      |> json_response(200)
+      |> get_in(["data", "relationships"])
+      |> Enum.each(fn {_, value} ->
+        assert_schema(value, "RelationshipObject", ctx.spec)
+      end)
     end
   end
 end
