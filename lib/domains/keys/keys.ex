@@ -12,12 +12,36 @@ defmodule Runa.Keys do
 
   ## Examples
 
-      iex> list_keys()
+      iex> index()
       [%Key{}, ...]
 
   """
-  def list_keys do
-    Repo.all(Key)
+  @spec index(keyword) ::
+          {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
+  def index(opts \\ []) do
+    sort = Keyword.get(opts, :sort, [])
+    filter = Keyword.get(opts, :filter, [])
+    page = Keyword.get(opts, :page, %{})
+
+    query = Key |> preload([:project])
+
+    case page do
+      %{} when map_size(page) > 0 ->
+        Paginator.paginate(
+          query,
+          %{sort: sort, page: page, filter: filter},
+          for: Key
+        )
+
+      _ ->
+        data =
+          query
+          |> where(^filter)
+          |> order_by(^sort)
+          |> Repo.all()
+
+        {:ok, {data, %{}}}
+    end
   end
 
   @doc """

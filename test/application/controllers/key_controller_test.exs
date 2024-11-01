@@ -121,4 +121,36 @@ defmodule RunaWeb.KeyControllerTest do
       end)
     end
   end
+
+  describe "index endpoint" do
+    test "returns list of resources", ctx do
+      insert(:key, project: ctx.project)
+
+      get(ctx.conn, ~p"/api/keys")
+      |> json_response(200)
+      |> assert_schema(
+        "Keys.IndexResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns empty list of resources", ctx do
+      get(ctx.conn, ~p"/api/keys")
+      |> json_response(200)
+      |> assert_schema(
+        "Keys.IndexResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns list of resources with relationships", ctx do
+      insert(:key, project: ctx.project)
+
+      get(ctx.conn, ~p"/api/keys")
+      |> json_response(200)
+      |> get_in(["data", Access.all(), "relationships"])
+      |> Enum.flat_map(&Map.values/1)
+      |> Enum.each(&assert_schema(&1, "RelationshipObject", ctx.spec))
+    end
+  end
 end

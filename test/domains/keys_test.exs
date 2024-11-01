@@ -18,8 +18,8 @@ defmodule Runa.KeysTest do
 
   describe "keys context" do
     test "returns all keys", ctx do
-      assert [key] = Keys.list_keys()
-      assert key.id == ctx.key.id
+      assert {:ok, {keys, _}} = Keys.index()
+      assert Enum.any?(keys, fn key -> key.id == ctx.key.id end)
     end
 
     test "returns the key with given id", ctx do
