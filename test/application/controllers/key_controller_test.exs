@@ -153,4 +153,94 @@ defmodule RunaWeb.KeyControllerTest do
       |> Enum.each(&assert_schema(&1, "RelationshipObject", ctx.spec))
     end
   end
+
+  describe "update endpoint" do
+    test "updates resource", ctx do
+      key = insert(:key, project: ctx.project)
+
+      body = %{
+        data: %{
+          id: "#{key.id}",
+          type: "keys",
+          attributes: %{
+            name: "name",
+            description: "description"
+          },
+          relationships: %{
+            project: %{
+              data: %{
+                id: "#{ctx.project.id}",
+                type: "projects"
+              }
+            }
+          }
+        }
+      }
+
+      patch(ctx.conn, ~p"/api/keys/#{key.id}", body)
+      |> json_response(200)
+      |> assert_schema(
+        "Keys.ShowResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns 404 error when resource doesn't exists", ctx do
+      body = %{
+        data: %{
+          type: "keys",
+          id: "1",
+          attributes: %{
+            name: "name",
+            description: "description"
+          },
+          relationships: %{
+            project: %{
+              data: %{
+                id: "#{ctx.project.id}",
+                type: "projects"
+              }
+            }
+          }
+        }
+      }
+
+      patch(ctx.conn, ~p"/api/keys/1", body)
+      |> json_response(404)
+      |> assert_schema(
+        "Error",
+        ctx.spec
+      )
+    end
+
+    test "returns errors when attributes are invalid", ctx do
+      key = insert(:key, project: ctx.project)
+
+      body = %{
+        data: %{
+          id: "#{key.id}",
+          type: "keys",
+          attributes: %{
+            name: nil,
+            description: nil
+          },
+          relationships: %{
+            project: %{
+              data: %{
+                id: "#{ctx.project.id}",
+                type: "projects"
+              }
+            }
+          }
+        }
+      }
+
+      patch(ctx.conn, ~p"/api/keys/#{key.id}", body)
+      |> json_response(422)
+      |> assert_schema(
+        "Error",
+        ctx.spec
+      )
+    end
+  end
 end

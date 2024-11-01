@@ -52,7 +52,7 @@ defmodule Runa.KeysTest do
         description: "some updated description"
       }
 
-      assert {:ok, %Key{} = key} = Keys.update_key(ctx.key, update_attrs)
+      assert {:ok, %Key{} = key} = Keys.update(ctx.key, update_attrs)
       assert key.name == "some updated name"
       assert key.description == "some updated description"
     end
@@ -61,7 +61,7 @@ defmodule Runa.KeysTest do
       invalid_attrs = %{name: nil, description: nil}
 
       assert {:error, %Ecto.Changeset{}} =
-               Keys.update_key(ctx.key, invalid_attrs)
+               Keys.update(ctx.key, invalid_attrs)
     end
 
     test "deletes the key", ctx do

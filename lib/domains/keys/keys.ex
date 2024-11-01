@@ -98,14 +98,16 @@ defmodule Runa.Keys do
 
   ## Examples
 
-      iex> update_key(key, %{field: new_value})
+      iex> update(key, %{field: new_value})
       {:ok, %Key{}}
 
-      iex> update_key(key, %{field: bad_value})
+      iex> update(key, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_key(%Key{} = key, attrs) do
+  @spec update(Ecto.Schema.t(), map) ::
+          {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def update(%Key{} = key, attrs) do
     key
     |> Key.changeset(attrs)
     |> Repo.update()
