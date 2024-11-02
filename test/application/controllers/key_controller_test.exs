@@ -243,4 +243,22 @@ defmodule RunaWeb.KeyControllerTest do
       )
     end
   end
+
+  describe "delete endpoint" do
+    test "deletes resource", ctx do
+      key = insert(:key, project: ctx.project)
+
+      delete(ctx.conn, ~p"/api/keys/#{key.id}")
+      |> json_response(204)
+    end
+
+    test "returns error when resource doesn't exists", ctx do
+      delete(ctx.conn, ~p"/api/keys/1")
+      |> json_response(404)
+      |> assert_schema(
+        "Error",
+        ctx.spec
+      )
+    end
+  end
 end

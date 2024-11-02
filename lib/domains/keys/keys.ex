@@ -118,14 +118,14 @@ defmodule Runa.Keys do
 
   ## Examples
 
-      iex> delete_key(key)
+      iex> delete(key)
       {:ok, %Key{}}
 
-      iex> delete_key(key)
+      iex> delete(key)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_key(%Key{} = key) do
+  def delete(%Key{} = key) do
     Repo.delete(key)
   end
 

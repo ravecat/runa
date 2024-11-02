@@ -137,4 +137,28 @@ defmodule RunaWeb.KeyController do
       conn |> put_status(200) |> render(data: data)
     end
   end
+
+  def delete_operation() do
+    %Operation{
+      tags: [@resource],
+      summary: "Delete current resource",
+      description: "Delete current resource",
+      operationId: "deleteResource-#{@resource}",
+      responses: %{
+        204 => %Reference{"$ref": "#/components/responses/204"}
+      }
+    }
+  end
+
+  def delete(
+        %{
+          path_params: %{"id" => id}
+        } = conn,
+        _
+      ) do
+    with {:ok, data} <- Keys.get(id),
+         {:ok, _} <- Keys.delete(data) do
+      conn |> put_status(204) |> render(data: data)
+    end
+  end
 end

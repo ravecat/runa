@@ -58,7 +58,7 @@ defmodule RunaWeb.Router do
 
     resources "/languages", LanguageController, only: [:index]
     resources "/files", FileController, only: [:create]
-    resources "/keys", KeyController, only: [:create, :show, :index, :update]
+    resources "/keys", KeyController, only: [:create, :show, :index, :update, :delete]
   end
 
   scope "/" do

@@ -65,7 +65,7 @@ defmodule Runa.KeysTest do
     end
 
     test "deletes the key", ctx do
-      assert {:ok, %Key{}} = Keys.delete_key(ctx.key)
+      assert {:ok, %Key{}} = Keys.delete(ctx.key)
       assert {:error, %Ecto.NoResultsError{}} = Keys.get(ctx.key.id)
     end
 
