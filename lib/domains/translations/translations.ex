@@ -27,14 +27,24 @@ defmodule Runa.Translations do
 
   ## Examples
 
-      iex> get_translation!(123)
+      iex> get(123)
       %Translation{}
 
-      iex> get_translation!(456)
+      iex> get(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_translation!(id), do: Repo.get!(Translation, id)
+  def get(id) do
+    query =
+      from t in Translation,
+        where: t.id == ^id,
+        preload: [:key, :language]
+
+    case Repo.one(query) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
+  end
 
   @doc """
   Creates a translation.
@@ -82,14 +92,14 @@ defmodule Runa.Translations do
 
   ## Examples
 
-      iex> delete_translation(translation)
+      iex> delete(translation)
       {:ok, %Translation{}}
 
-      iex> delete_translation(translation)
+      iex> delete(translation)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_translation(%Translation{} = translation) do
+  def delete(%Translation{} = translation) do
     Repo.delete(translation)
   end
 
@@ -98,11 +108,11 @@ defmodule Runa.Translations do
 
   ## Examples
 
-      iex> change_translation(translation)
+      iex> change(translation)
       %Ecto.Changeset{data: %Translation{}}
 
   """
-  def change_translation(%Translation{} = translation, attrs \\ %{}) do
+  def change(%Translation{} = translation, attrs \\ %{}) do
     Translation.changeset(translation, attrs)
   end
 end
