@@ -118,4 +118,114 @@ defmodule RunaWeb.TranslationControllerTest do
       end)
     end
   end
+
+  describe "update endpoint" do
+    test "updates resource", ctx do
+      translation = insert(:translation, key: ctx.key, language: ctx.language)
+
+      body = %{
+        data: %{
+          id: "#{translation.id}",
+          type: "translations",
+          attributes: %{
+            translation: "updated translation content"
+          },
+          relationships: %{
+            key: %{
+              data: %{
+                id: "#{ctx.key.id}",
+                type: "keys"
+              }
+            },
+            language: %{
+              data: %{
+                id: "#{ctx.language.id}",
+                type: "languages"
+              }
+            }
+          }
+        }
+      }
+
+      patch(ctx.conn, ~p"/api/translations/#{translation.id}", body)
+      |> json_response(200)
+      |> assert_schema(
+        "Translations.ShowResponse",
+        ctx.spec
+      )
+
+      get(ctx.conn, ~p"/api/translations/#{translation.id}")
+      |> json_response(200)
+      |> get_in(["data", "attributes", "translation"])
+      |> assert("updated translation content")
+    end
+
+    test "returns 404 error when resource doesn't exists", ctx do
+      body = %{
+        data: %{
+          type: "translations",
+          id: "1",
+          attributes: %{
+            translation: "updated translation content"
+          },
+          relationships: %{
+            key: %{
+              data: %{
+                id: "#{ctx.key.id}",
+                type: "keys"
+              }
+            },
+            language: %{
+              data: %{
+                id: "#{ctx.language.id}",
+                type: "languages"
+              }
+            }
+          }
+        }
+      }
+
+      patch(ctx.conn, ~p"/api/translations/1", body)
+      |> json_response(404)
+      |> assert_schema(
+        "Error",
+        ctx.spec
+      )
+    end
+
+    test "returns errors when attributes are invalid", ctx do
+      translation = insert(:translation, key: ctx.key, language: ctx.language)
+
+      body = %{
+        data: %{
+          id: "#{translation.id}",
+          type: "translations",
+          attributes: %{
+            translation: nil
+          },
+          relationships: %{
+            key: %{
+              data: %{
+                id: "#{ctx.key.id}",
+                type: "keys"
+              }
+            },
+            language: %{
+              data: %{
+                id: "#{ctx.language.id}",
+                type: "languages"
+              }
+            }
+          }
+        }
+      }
+
+      patch(ctx.conn, ~p"/api/translations/#{translation.id}", body)
+      |> json_response(422)
+      |> assert_schema(
+        "Error",
+        ctx.spec
+      )
+    end
+  end
 end
