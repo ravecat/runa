@@ -13,8 +13,10 @@ defmodule Runa.TranslationsTest do
     project = insert(:project, team: team)
     key = insert(:key, project: project)
     translation = insert(:translation, key: key)
+    language = insert(:language)
 
-    {:ok, translation: translation, key: key, project: project}
+    {:ok,
+     translation: translation, key: key, project: project, language: language}
   end
 
   describe "translations" do
@@ -29,11 +31,14 @@ defmodule Runa.TranslationsTest do
     end
 
     test "creates a translation with valid data", ctx do
-      key = insert(:key, project: ctx.project)
-      valid_attrs = %{translation: Atom.to_string(ctx.test), key_id: key.id}
+      attrs = %{
+        translation: Atom.to_string(ctx.test),
+        key_id: ctx.key.id,
+        language_id: ctx.language.id
+      }
 
       assert {:ok, %Translation{} = translation} =
-               Translations.create_translation(valid_attrs)
+               Translations.create(attrs)
 
       assert translation.translation == Atom.to_string(ctx.test)
     end
@@ -42,14 +47,18 @@ defmodule Runa.TranslationsTest do
       invalid_attrs = %{key_id: nil}
 
       assert {:error, %Ecto.Changeset{}} =
-               Translations.create_translation(invalid_attrs)
+               Translations.create(invalid_attrs)
     end
 
     test "updates the translation with valid data", ctx do
-      update_attrs = %{translation: Atom.to_string(ctx.test)}
+      attrs = %{
+        translation: Atom.to_string(ctx.test),
+        language_id: ctx.language.id,
+        key_id: ctx.key.id
+      }
 
       assert {:ok, %Translation{} = translation} =
-               Translations.update_translation(ctx.translation, update_attrs)
+               Translations.update(ctx.translation, attrs)
 
       assert translation.translation == Atom.to_string(ctx.test)
     end
@@ -59,7 +68,7 @@ defmodule Runa.TranslationsTest do
       invalid_attrs = %{translation: 11, key_id: key.id}
 
       assert {:error, %Ecto.Changeset{}} =
-               Translations.update_translation(ctx.translation, invalid_attrs)
+               Translations.update(ctx.translation, invalid_attrs)
     end
 
     test "deletes the translation", ctx do

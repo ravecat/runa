@@ -6,6 +6,7 @@ defmodule Runa.Languages.Language do
 
   alias Runa.Locales.Locale
   alias Runa.Projects.Project
+  alias Runa.Translations.Translation
 
   schema "languages" do
     field :wals_code, :string
@@ -13,6 +14,7 @@ defmodule Runa.Languages.Language do
     field :glotto_code, :string
     field :title, :string
     many_to_many :projects, Project, join_through: Locale
+    has_many :translations, Translation
 
     timestamps(type: :utc_datetime)
   end
