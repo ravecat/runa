@@ -228,4 +228,25 @@ defmodule RunaWeb.TranslationControllerTest do
       )
     end
   end
+
+  describe "delete endpoint" do
+    test "deletes resource", ctx do
+      translation = insert(:translation, key: ctx.key, language: ctx.language)
+
+      delete(ctx.conn, ~p"/api/translations/#{translation.id}")
+      |> json_response(204)
+
+      get(ctx.conn, ~p"/api/translations/#{translation.id}")
+      |> json_response(404)
+    end
+
+    test "returns error when resource doesn't exists", ctx do
+      delete(ctx.conn, ~p"/api/translations/1")
+      |> json_response(404)
+      |> assert_schema(
+        "Error",
+        ctx.spec
+      )
+    end
+  end
 end
