@@ -74,4 +74,36 @@ defmodule RunaWeb.TranslationController do
       conn |> put_status(200) |> render(data: data)
     end
   end
+
+  def update_operation() do
+    %Operation{
+      tags: [@resource],
+      summary: "Update current resource",
+      description: "Update current resource",
+      operationId: "updateResource-#{@resource}",
+      responses: %{
+        200 => %Response{
+          description: "Resource item",
+          content: %{
+            "application/vnd.api+json" => %MediaType{
+              schema: OperationSchemas.ShowResponse
+            }
+          }
+        }
+      }
+    }
+  end
+
+  def update(
+        %{
+          body_params: %{"data" => %{"attributes" => attrs}},
+          path_params: %{"id" => id}
+        } = conn,
+        _
+      ) do
+    with {:ok, data} <- Translations.get(id),
+         {:ok, data} <- Translations.update(data, attrs) do
+      conn |> put_status(200) |> render(data: data)
+    end
+  end
 end
