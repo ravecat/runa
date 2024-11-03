@@ -41,17 +41,22 @@ defmodule Runa.Translations do
 
   ## Examples
 
-      iex> create_translation(%{field: value})
+      iex> create(%{field: value})
       {:ok, %Translation{}}
 
-      iex> create_translation(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_translation(attrs \\ %{}) do
+  @spec create(map) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def create(attrs \\ %{}) do
     %Translation{}
     |> Translation.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, data} -> {:ok, Repo.preload(data, [:key, :language])}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -59,14 +64,14 @@ defmodule Runa.Translations do
 
   ## Examples
 
-      iex> update_translation(translation, %{field: new_value})
+      iex> update(translation, %{field: new_value})
       {:ok, %Translation{}}
 
-      iex> update_translation(translation, %{field: bad_value})
+      iex> update(translation, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_translation(%Translation{} = translation, attrs) do
+  def update(%Translation{} = translation, attrs) do
     translation
     |> Translation.changeset(attrs)
     |> Repo.update()

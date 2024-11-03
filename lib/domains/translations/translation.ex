@@ -5,10 +5,12 @@ defmodule Runa.Translations.Translation do
   use Runa, :schema
 
   alias Runa.Keys.Key
+  alias Runa.Languages.Language
 
   schema "translations" do
     field :translation, :string
     belongs_to :key, Key
+    belongs_to :language, Language
 
     timestamps(type: :utc_datetime)
   end
@@ -16,8 +18,9 @@ defmodule Runa.Translations.Translation do
   @doc false
   def changeset(translation, attrs) do
     translation
-    |> cast(attrs, [:translation, :key_id])
-    |> validate_required([:key_id])
+    |> cast(attrs, [:translation, :key_id, :language_id])
+    |> validate_required([:translation, :key_id, :language_id])
     |> foreign_key_constraint(:key_id)
+    |> foreign_key_constraint(:language_id)
   end
 end
