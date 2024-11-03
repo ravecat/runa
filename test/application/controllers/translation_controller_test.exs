@@ -85,4 +85,37 @@ defmodule RunaWeb.TranslationControllerTest do
       )
     end
   end
+
+  describe "show endpoint" do
+    test "returns resource", ctx do
+      translation = insert(:translation, key: ctx.key, language: ctx.language)
+
+      get(ctx.conn, ~p"/api/translations/#{translation.id}")
+      |> json_response(200)
+      |> assert_schema(
+        "Translations.ShowResponse",
+        ctx.spec
+      )
+    end
+
+    test "returns errors when resource is not found", ctx do
+      get(ctx.conn, ~p"/api/translations/1")
+      |> json_response(404)
+      |> assert_schema(
+        "Error",
+        ctx.spec
+      )
+    end
+
+    test "returns resource with relationships", ctx do
+      translation = insert(:translation, key: ctx.key, language: ctx.language)
+
+      get(ctx.conn, ~p"/api/translations/#{translation.id}")
+      |> json_response(200)
+      |> get_in(["data", "relationships"])
+      |> Enum.each(fn {_, value} ->
+        assert_schema(value, "RelationshipObject", ctx.spec)
+      end)
+    end
+  end
 end

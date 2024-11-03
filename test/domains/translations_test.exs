@@ -26,7 +26,7 @@ defmodule Runa.TranslationsTest do
     end
 
     test "returns the translation with given id", ctx do
-      assert translation = Translations.get_translation!(ctx.translation.id)
+      assert {:ok, translation} = Translations.get(ctx.translation.id)
       assert translation.id == ctx.translation.id
     end
 
@@ -44,10 +44,10 @@ defmodule Runa.TranslationsTest do
     end
 
     test "returns error changeset during creation with invalid data" do
-      invalid_attrs = %{key_id: nil}
+      attrs = %{key_id: nil}
 
       assert {:error, %Ecto.Changeset{}} =
-               Translations.create(invalid_attrs)
+               Translations.create(attrs)
     end
 
     test "updates the translation with valid data", ctx do
@@ -64,25 +64,23 @@ defmodule Runa.TranslationsTest do
     end
 
     test "returns error changeset during update with invalid data", ctx do
-      key = insert(:key, project: ctx.project)
-      invalid_attrs = %{translation: 11, key_id: key.id}
+      attrs = %{translation: 11, key_id: ctx.key.id}
 
       assert {:error, %Ecto.Changeset{}} =
-               Translations.update(ctx.translation, invalid_attrs)
+               Translations.update(ctx.translation, attrs)
     end
 
     test "deletes the translation", ctx do
       assert {:ok, %Translation{}} =
-               Translations.delete_translation(ctx.translation)
+               Translations.delete(ctx.translation)
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Translations.get_translation!(ctx.translation.id)
-      end
+      assert {:error, %Ecto.NoResultsError{}} =
+               Translations.get(ctx.translation.id)
     end
 
     test "returns a translation changeset", ctx do
       assert %Ecto.Changeset{} =
-               Translations.change_translation(ctx.translation)
+               Translations.change(ctx.translation)
     end
   end
 end
