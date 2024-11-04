@@ -30,7 +30,7 @@ defmodule RunaWeb.TranslationController do
         }
       },
       responses:
-        generate_responses(%{
+        generate_response_schemas(:create, %{
           200 => %Response{
             description: "Translation created",
             content: %{
@@ -56,16 +56,17 @@ defmodule RunaWeb.TranslationController do
       description: "Show of current resource",
       operationId: "getResource-#{@resource}",
       parameters: JSONAPI.Schemas.Parameters.path(),
-      responses: %{
-        200 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:show, %{
+          200 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -81,16 +82,17 @@ defmodule RunaWeb.TranslationController do
       summary: "Update current resource",
       description: "Update current resource",
       operationId: "updateResource-#{@resource}",
-      responses: %{
-        200 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:update, %{
+          200 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -113,9 +115,7 @@ defmodule RunaWeb.TranslationController do
       summary: "Delete current resource",
       description: "Delete current resource",
       operationId: "deleteResource-#{@resource}",
-      responses: %{
-        204 => %Reference{"$ref": "#/components/responses/204"}
-      }
+      responses: generate_response_schemas(:delete)
     }
   end
 

@@ -22,7 +22,7 @@ defmodule RunaWeb.ProjectController do
       description: "List of current resources",
       operationId: "getResourcesList-#{@resource}",
       responses:
-        generate_responses(%{
+        generate_response_schemas(:index, %{
           200 => %Response{
             description: "Resource list",
             content: %{
@@ -55,16 +55,17 @@ defmodule RunaWeb.ProjectController do
       operationId: "getResource-#{@resource}",
       parameters:
         JSONAPI.Schemas.Parameters.path() ++ JSONAPI.Schemas.Parameters.query(),
-      responses: %{
-        200 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:show, %{
+          200 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -88,16 +89,17 @@ defmodule RunaWeb.ProjectController do
           }
         }
       },
-      responses: %{
-        201 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:create, %{
+          201 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -148,16 +150,17 @@ defmodule RunaWeb.ProjectController do
         },
         required: true
       },
-      responses: %{
-        200 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:update, %{
+          200 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -199,7 +202,7 @@ defmodule RunaWeb.ProjectController do
       description: "Delete resource",
       operationId: "deleteResource-#{@resource}",
       parameters: JSONAPI.Schemas.Parameters.path(),
-      responses: %{204 => %Reference{"$ref": "#/components/responses/204"}}
+      responses: generate_response_schemas(:delete)
     }
   end
 

@@ -66,6 +66,14 @@ defmodule RunaWeb.APISpec do
               }
             }
           },
+          "202" => %Response{
+            description: "202 Accepted",
+            content: %{
+              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+                schema: JSONAPI.Schemas.Document
+              }
+            }
+          },
           "204" => %Response{
             description: "204 No Content",
             content: %{
@@ -139,22 +147,56 @@ defmodule RunaWeb.APISpec do
     |> OpenApiSpex.resolve_schema_modules()
   end
 
+  @type operation_type :: :index | :show | :create | :update | :delete
   @type responses :: %{
           (integer | :default) => Response.t() | Reference.t()
         }
-  @spec generate_responses(responses) :: responses
-  def generate_responses(responses \\ %{}) do
-    Map.merge(
-      %{
-        400 => %Reference{"$ref": "#/components/responses/400"},
-        401 => %Reference{"$ref": "#/components/responses/401"},
-        403 => %Reference{"$ref": "#/components/responses/403"},
-        404 => %Reference{"$ref": "#/components/responses/404"},
-        409 => %Reference{"$ref": "#/components/responses/409"},
-        422 => %Reference{"$ref": "#/components/responses/422"},
-        500 => %Reference{"$ref": "#/components/responses/500"}
-      },
-      responses
-    )
+  @spec generate_response_schemas(operation_type(), responses()) :: responses()
+  def generate_response_schemas(operation_type, responses \\ %{}) do
+    base_responses = %{
+      400 => %Reference{"$ref": "#/components/responses/400"},
+      401 => %Reference{"$ref": "#/components/responses/401"},
+      403 => %Reference{"$ref": "#/components/responses/403"},
+      404 => %Reference{"$ref": "#/components/responses/404"},
+      500 => %Reference{"$ref": "#/components/responses/500"}
+    }
+
+    operation_specific_responses =
+      case operation_type do
+        :index ->
+          Map.merge(base_responses, %{
+            200 => %Reference{"$ref": "#/components/responses/200"}
+          })
+
+        :show ->
+          Map.merge(base_responses, %{
+            200 => %Reference{"$ref": "#/components/responses/200"}
+          })
+
+        :create ->
+          Map.merge(base_responses, %{
+            201 => %Reference{"$ref": "#/components/responses/201"},
+            202 => %Reference{"$ref": "#/components/responses/202"},
+            204 => %Reference{"$ref": "#/components/responses/204"},
+            409 => %Reference{"$ref": "#/components/responses/409"}
+          })
+
+        :update ->
+          Map.merge(base_responses, %{
+            200 => %Reference{"$ref": "#/components/responses/200"},
+            202 => %Reference{"$ref": "#/components/responses/202"},
+            204 => %Reference{"$ref": "#/components/responses/204"},
+            409 => %Reference{"$ref": "#/components/responses/409"}
+          })
+
+        :delete ->
+          Map.merge(base_responses, %{
+            200 => %Reference{"$ref": "#/components/responses/200"},
+            202 => %Reference{"$ref": "#/components/responses/202"},
+            204 => %Reference{"$ref": "#/components/responses/204"}
+          })
+      end
+
+    Map.merge(operation_specific_responses, responses)
   end
 end

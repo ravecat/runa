@@ -30,7 +30,7 @@ defmodule RunaWeb.KeyController do
         }
       },
       responses:
-        generate_responses(%{
+        generate_response_schemas(:create, %{
           200 => %Response{
             description: "Resource list",
             content: %{
@@ -56,16 +56,17 @@ defmodule RunaWeb.KeyController do
       description: "Show of current resource",
       operationId: "getResource-#{@resource}",
       parameters: JSONAPI.Schemas.Parameters.path(),
-      responses: %{
-        200 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:show, %{
+          200 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -81,16 +82,17 @@ defmodule RunaWeb.KeyController do
       summary: "List of current resources",
       description: "List of current resources",
       operationId: "getResourcesList-#{@resource}",
-      responses: %{
-        200 => %Response{
-          description: "Resource list",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.IndexResponse
+      responses:
+        generate_response_schemas(:index, %{
+          200 => %Response{
+            description: "Resource list",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.IndexResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -112,16 +114,17 @@ defmodule RunaWeb.KeyController do
       summary: "Update current resource",
       description: "Update current resource",
       operationId: "updateResource-#{@resource}",
-      responses: %{
-        200 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:update, %{
+          200 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -144,9 +147,7 @@ defmodule RunaWeb.KeyController do
       summary: "Delete current resource",
       description: "Delete current resource",
       operationId: "deleteResource-#{@resource}",
-      responses: %{
-        204 => %Reference{"$ref": "#/components/responses/204"}
-      }
+      responses: generate_response_schemas(:delete)
     }
   end
 
