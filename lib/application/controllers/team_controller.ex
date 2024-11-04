@@ -20,16 +20,17 @@ defmodule RunaWeb.TeamController do
       summary: "List of current resources",
       description: "List of current resources",
       operationId: "getResourcesList-#{@resource}",
-      responses: %{
-        200 => %Response{
-          description: "Resource list",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.IndexResponse
+      responses:
+        generate_response_schemas(:index, %{
+          200 => %Response{
+            description: "Resource list",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.IndexResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -53,16 +54,17 @@ defmodule RunaWeb.TeamController do
       operationId: "getResource-#{@resource}",
       parameters:
         JSONAPI.Schemas.Parameters.path() ++ JSONAPI.Schemas.Parameters.query(),
-      responses: %{
-        200 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:show, %{
+          200 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -87,16 +89,17 @@ defmodule RunaWeb.TeamController do
         },
         required: true
       },
-      responses: %{
-        201 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:create, %{
+          201 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -129,16 +132,17 @@ defmodule RunaWeb.TeamController do
         },
         required: true
       },
-      responses: %{
-        200 => %Response{
-          description: "Resource item",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:update, %{
+          200 => %Response{
+            description: "Resource item",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
@@ -164,7 +168,7 @@ defmodule RunaWeb.TeamController do
       description: "Delete resource",
       operationId: "deleteResource-#{@resource}",
       parameters: JSONAPI.Schemas.Parameters.path(),
-      responses: %{204 => %Reference{"$ref": "#/components/responses/204"}}
+      responses: generate_response_schemas(:delete)
     }
   end
 

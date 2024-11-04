@@ -30,16 +30,17 @@ defmodule RunaWeb.FileController do
         },
         required: true
       },
-      responses: %{
-        201 => %Response{
-          description: "Resource created",
-          content: %{
-            "application/vnd.api+json" => %MediaType{
-              schema: OperationSchemas.ShowResponse
+      responses:
+        generate_response_schemas(:create, %{
+          201 => %Response{
+            description: "Resource created",
+            content: %{
+              "application/vnd.api+json" => %MediaType{
+                schema: OperationSchemas.ShowResponse
+              }
             }
           }
-        }
-      }
+        })
     }
   end
 
