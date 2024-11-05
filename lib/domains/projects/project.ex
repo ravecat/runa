@@ -7,7 +7,7 @@ defmodule Runa.Projects.Project do
   alias Runa.Files.File
   alias Runa.Keys.Key
   alias Runa.Languages.Language
-  alias Runa.Locales.Locale
+  alias Runa.Languages.Locale
   alias Runa.Teams.Team
 
   schema "projects" do

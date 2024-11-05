@@ -8,40 +8,21 @@ defmodule Runa.Languages do
   alias Runa.Languages.Language
 
   @doc """
-  Returns the list of languages.
+  Returns the list of languages with pagination metadata.
 
   ## Examples
 
       iex> index()
-      [%Language{}, ...]
+      {:ok, {[%Language{}, ...], %Flop.Meta{}}}
 
+      iex> index(%{page: 2, page_size: 10})
+      {:ok, {[%Language{}, ...], %Flop.Meta{}}}
   """
-  @spec index(keyword) ::
+  @spec index(Paginator.params()) ::
           {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
-  def index(opts \\ []) do
-    sort = Keyword.get(opts, :sort, [])
-    filter = Keyword.get(opts, :filter, [])
-    page = Keyword.get(opts, :page, %{})
-
-    query = Language
-
-    case page do
-      %{} when map_size(page) > 0 ->
-        Paginator.paginate(
-          query,
-          %{sort: sort, page: page, filter: filter},
-          for: Language
-        )
-
-      _ ->
-        data =
-          query
-          |> where(^filter)
-          |> order_by(^sort)
-          |> Repo.all()
-
-        {:ok, {data, %{}}}
-    end
+  def index(opts \\ %{}) do
+    Language
+    |> paginate(opts, for: Language)
   end
 
   @doc """

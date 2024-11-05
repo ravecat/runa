@@ -2,7 +2,7 @@ defmodule RunaWeb.LanguageController do
   use RunaWeb, :controller
   use RunaWeb, :jsonapi
 
-  alias Runa.Languages, as: Context
+  alias Runa.Languages
   alias RunaWeb.Schemas.Languages, as: OperationSchemas
   alias RunaWeb.Serializers.Language, as: Serializer
 
@@ -38,7 +38,7 @@ defmodule RunaWeb.LanguageController do
         _params
       ) do
     with {:ok, {data, meta}} <-
-           Context.index(sort: sort, filter: filter, page: page) do
+           Languages.index(%{sort: sort, filter: filter, page: page}) do
       conn |> put_status(200) |> render(data: data, meta: meta)
     end
   end

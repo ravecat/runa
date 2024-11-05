@@ -9,7 +9,7 @@ defmodule Runa.Factory do
   alias Runa.Files.File
   alias Runa.Keys.Key
   alias Runa.Languages.Language
-  alias Runa.Locales.Locale
+  alias Runa.Languages.Locale
   alias Runa.Projects.Project
   alias Runa.Roles.Role
   alias Runa.Teams.Team

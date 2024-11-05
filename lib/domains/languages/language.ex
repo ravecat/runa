@@ -4,7 +4,7 @@ defmodule Runa.Languages.Language do
   """
   use Runa, :schema
 
-  alias Runa.Locales.Locale
+  alias Runa.Languages.Locale
   alias Runa.Projects.Project
   alias Runa.Translations.Translation
 

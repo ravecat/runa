@@ -14,32 +14,12 @@ defmodule Runa.Teams do
       iex> index()
       [%Team{}, ...]
   """
-  @spec index(keyword) ::
+  @spec index(Paginator.params()) ::
           {:ok, {[Team.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
-  def index(opts \\ []) do
-    sort = Keyword.get(opts, :sort, [])
-    filter = Keyword.get(opts, :filter, [])
-    page = Keyword.get(opts, :page, %{})
-
-    query = Team |> preload([:projects])
-
-    case page do
-      %{} when map_size(page) > 0 ->
-        Paginator.paginate(
-          query,
-          %{sort: sort, page: page, filter: filter},
-          for: Team
-        )
-
-      _ ->
-        data =
-          query
-          |> where(^filter)
-          |> order_by(^sort)
-          |> Repo.all()
-
-        {:ok, {data, %{}}}
-    end
+  def index(opts \\ %{}) do
+    Team
+    |> preload([:projects])
+    |> paginate(opts, for: Team)
   end
 
   @doc """
