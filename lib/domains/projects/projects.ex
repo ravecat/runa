@@ -35,7 +35,7 @@ defmodule Runa.Projects do
     query =
       from p in Project,
         where: p.id == ^id,
-        preload: [:keys, :languages]
+        preload: [:keys, :languages, :team]
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}

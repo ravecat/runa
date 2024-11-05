@@ -18,14 +18,14 @@ defmodule RunaWeb.FallbackController do
 
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
-    |> put_status(422)
+    |> put_status(409)
     |> put_view(json: ErrorJSON, jsonapi: ErrorJSON)
     |> render(:error, changeset: changeset)
   end
 
   def call(conn, errors) when is_list(errors) do
     conn
-    |> put_status(422)
+    |> put_status(409)
     |> put_view(json: ErrorJSON, jsonapi: ErrorJSON)
     |> render(:error, errors: errors)
   end

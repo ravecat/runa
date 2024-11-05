@@ -102,7 +102,7 @@ defmodule RunaWeb.TeamControllerTest do
       }
 
       post(ctx.conn, ~p"/api/teams", body)
-      |> json_response(422)
+      |> json_response(409)
       |> assert_schema(
         "Error",
         ctx.spec

@@ -122,14 +122,6 @@ defmodule RunaWeb.APISpec do
               }
             }
           },
-          "422" => %Response{
-            description: "422 Unprocessable Entity",
-            content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
-                schema: JSONAPI.Schemas.Error
-              }
-            }
-          },
           "500" => %Response{
             description: "500 Internal Server Error",
             content: %{
