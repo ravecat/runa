@@ -103,7 +103,7 @@ defmodule RunaWeb.KeyController do
         _params
       ) do
     with {:ok, {data, meta}} <-
-           Keys.index(sort: sort, filter: filter, page: page) do
+           Keys.index(%{sort: sort, filter: filter, page: page}) do
       conn |> put_status(200) |> render(data: data, meta: meta)
     end
   end

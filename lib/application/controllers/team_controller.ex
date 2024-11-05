@@ -41,7 +41,7 @@ defmodule RunaWeb.TeamController do
         _params
       ) do
     with {:ok, {data, meta}} <-
-           Context.index(sort: sort, filter: filter, page: page) do
+           Context.index(%{sort: sort, filter: filter, page: page}) do
       conn |> put_status(200) |> render(data: data, meta: meta)
     end
   end

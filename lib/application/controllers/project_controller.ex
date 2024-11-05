@@ -42,7 +42,7 @@ defmodule RunaWeb.ProjectController do
         _params
       ) do
     with {:ok, {data, meta}} <-
-           Projects.index(sort: sort, filter: filter, page: page) do
+           Projects.index(%{sort: sort, filter: filter, page: page}) do
       conn |> put_status(200) |> render(data: data, meta: meta)
     end
   end

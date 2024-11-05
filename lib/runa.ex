@@ -13,10 +13,11 @@ defmodule Runa do
       import Ecto.Changeset, except: [change: 2]
 
       alias Ecto.Multi
-      alias Runa.Repo
-
-      alias Runa.Paginator
       alias Runa.JSONAPI
+      alias Runa.Repo
+      alias Runa.Paginator
+
+      import Runa.Paginator
     end
   end
 

@@ -8,40 +8,22 @@ defmodule Runa.Projects do
   alias Runa.Projects.Project
 
   @doc """
-  Returns the list of projects.
+  Returns the list of projects with pagination metadata.
 
   ## Examples
 
       iex> index()
-      [%Project{}, ...]
+      {:ok, {[%Project{}, ...], %Flop.Meta{}}}
 
+      iex> index(%{page: 2, page_size: 10})
+      {:ok, {[%Project{}, ...], %Flop.Meta{}}}
   """
-  @spec index(keyword) ::
+  @spec index(Paginator.params()) ::
           {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
-  def index(opts \\ []) do
-    sort = Keyword.get(opts, :sort, [])
-    filter = Keyword.get(opts, :filter, [])
-    page = Keyword.get(opts, :page, %{})
-
-    query = Project |> preload([:keys, :languages, :team, :files])
-
-    case page do
-      %{} when map_size(page) > 0 ->
-        Paginator.paginate(
-          query,
-          %{sort: sort, page: page, filter: filter},
-          for: Project
-        )
-
-      _ ->
-        data =
-          query
-          |> where(^filter)
-          |> order_by(^sort)
-          |> Repo.all()
-
-        {:ok, {data, %{}}}
-    end
+  def index(opts \\ %{}) do
+    Project
+    |> preload([:keys, :languages, :team, :files])
+    |> paginate(opts, for: Project)
   end
 
   @doc """

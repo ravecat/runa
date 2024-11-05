@@ -3,20 +3,37 @@ defmodule Runa.Paginator do
   Paginator module for offset, page and cursor based pagination
   """
   alias Ecto.Queryable
+  import Ecto.Query
+  alias Runa.Repo
+
+  @type page_number_params :: %{
+          :number => integer(),
+          :size => integer()
+        }
+
+  @type offset_params :: %{
+          :offset => integer(),
+          :limit => integer()
+        }
+
+  @type cursor_params :: %{
+          :size => integer(),
+          optional(:after) => String.t(),
+          optional(:before) => String.t()
+        }
 
   @type params :: %{
           optional(:sort) => [{atom(), atom()}],
-          optional(:filter) => [any()],
-          optional(:page) => map()
+          optional(:filter) => [{atom(), term()}],
+          optional(:page) =>
+            page_number_params() | offset_params() | cursor_params()
         }
 
   @spec paginate(Queryable.t(), params, [Flop.option()]) ::
           {:ok, {[any], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
-  def paginate(query, params, opts \\ []) do
+  def paginate(query, %{page: page} = params, opts) when map_size(page) > 0 do
     sort = Map.get(params, :sort, [])
     filter = Map.get(params, :filter, [])
-    page = Map.get(params, :page, %{})
-
     {order_direction, order_by} = Enum.unzip(sort)
 
     flop = %{
@@ -32,6 +49,19 @@ defmodule Runa.Paginator do
       Map.merge(flop, page_flop),
       opts
     )
+  end
+
+  def paginate(query, params, _opts) do
+    sort = Map.get(params, :sort, [])
+    filter = Map.get(params, :filter, [])
+
+    data =
+      query
+      |> where(^filter)
+      |> order_by(^sort)
+      |> Repo.all()
+
+    {:ok, {data, %{}}}
   end
 
   defp map_to_flop(%{"number" => number, "size" => size}) do

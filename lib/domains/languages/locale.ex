@@ -1,4 +1,4 @@
-defmodule Runa.Locales.Locale do
+defmodule Runa.Languages.Locale do
   @moduledoc """
   Schema for the locale entity.
   """
