@@ -42,7 +42,7 @@ defmodule RunaWeb.JSONAPI.Plug.ValidateRelationships do
         ]
 
         conn
-        |> put_status(422)
+        |> put_status(409)
         |> put_view(json: ErrorJSON, jsonapi: ErrorJSON)
         |> render(:error, errors: errors)
         |> halt()

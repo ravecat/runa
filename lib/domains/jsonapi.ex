@@ -61,7 +61,25 @@ defmodule Runa.JSONAPI do
           atom(),
           list(ResourceIdentifierObject.t())
         ) ::
-          term()
+          {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def delete_relationships(parent_schema, key, attrs) when is_nil(attrs) do
+    parent_schema
+    |> Repo.preload(key)
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.put_change(:"#{key}_id", nil)
+    |> parent_schema.__struct__.changeset()
+    |> Repo.update()
+  end
+
+  def delete_relationships(parent_schema, key, attrs) when attrs == [] do
+    parent_schema
+    |> Repo.preload(key)
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.put_assoc(key, [])
+    |> parent_schema.__struct__.changeset()
+    |> Repo.update()
+  end
+
   def delete_relationships(parent_schema, key, attrs) when is_list(attrs) do
     ids = Enum.map(attrs, & &1["id"])
 

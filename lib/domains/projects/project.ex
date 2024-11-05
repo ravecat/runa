@@ -16,12 +16,15 @@ defmodule Runa.Projects.Project do
     has_many :files, File
     has_many :keys, Key
     belongs_to :team, Team
-    many_to_many :languages, Language, join_through: Locale, on_replace: :delete
+
+    many_to_many :languages, Language,
+      join_through: Locale,
+      on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
 
-  def changeset(struct, attrs) do
+  def changeset(struct, attrs \\ %{}) do
     struct
     |> cast(attrs, [:name, :description, :team_id])
     |> validate_required([:name, :team_id])

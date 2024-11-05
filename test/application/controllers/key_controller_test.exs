@@ -54,7 +54,7 @@ defmodule RunaWeb.KeyControllerTest do
       }
 
       post(ctx.conn, ~p"/api/keys", body)
-      |> json_response(422)
+      |> json_response(409)
       |> assert_schema(
         "Error",
         ctx.spec
@@ -81,7 +81,7 @@ defmodule RunaWeb.KeyControllerTest do
       }
 
       post(ctx.conn, ~p"/api/keys", body)
-      |> json_response(422)
+      |> json_response(409)
       |> assert_schema(
         "Error",
         ctx.spec
@@ -236,7 +236,7 @@ defmodule RunaWeb.KeyControllerTest do
       }
 
       patch(ctx.conn, ~p"/api/keys/#{key.id}", body)
-      |> json_response(422)
+      |> json_response(409)
       |> assert_schema(
         "Error",
         ctx.spec

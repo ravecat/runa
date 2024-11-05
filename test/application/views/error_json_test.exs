@@ -10,7 +10,7 @@ defmodule RunaWeb.ErrorJSONTest do
     conn =
       put_status(
         build_conn(),
-        422
+        409
       )
 
     {:ok, conn: conn}
@@ -50,22 +50,22 @@ defmodule RunaWeb.ErrorJSONTest do
     assert ErrorJSON.error(%{changeset: changeset, conn: ctx.conn}) == %{
              errors: [
                %{
-                 status: "422",
+                 status: "409",
                  title: "description is too long",
                  source: %{pointer: "/data/attributes/description"}
                },
                %{
-                 status: "422",
+                 status: "409",
                  title: "title can't be blank",
                  source: %{pointer: "/data/attributes/title"}
                },
                %{
-                 status: "422",
+                 status: "409",
                  title: "title is too short",
                  source: %{pointer: "/data/attributes/title"}
                },
                %{
-                 status: "422",
+                 status: "409",
                  title: "member_count must be greater than 0",
                  source: %{pointer: "/data/attributes/member_count"}
                }
