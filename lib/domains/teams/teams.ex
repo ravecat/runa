@@ -37,12 +37,14 @@ defmodule Runa.Teams do
 
   """
   def get(id) do
-    case Repo.get(Team, id) do
-      nil ->
-        {:error, %Ecto.NoResultsError{}}
+    query =
+      from p in Team,
+        where: p.id == ^id,
+        preload: [:projects]
 
-      data ->
-        {:ok, data}
+    case Repo.one(query) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
     end
   end
 

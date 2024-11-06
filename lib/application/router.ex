@@ -50,6 +50,10 @@ defmodule RunaWeb.Router do
     resources "/teams", TeamController,
       only: [:index, :show, :create, :update, :delete]
 
+    resources "/teams/:id/relationships/:relationship", TeamController,
+      only: [:show],
+      singleton: true
+
     resources "/projects", ProjectController,
       only: [:index, :show, :create, :update, :delete]
 

@@ -688,4 +688,24 @@ defmodule RunaWeb.TeamControllerTest do
       assert_schema(response, "Team.IndexResponse", ctx.spec)
     end
   end
+
+  describe "relationships endpoint (projects)" do
+    test "returns list of associations", ctx do
+      team = insert(:team)
+      project = insert(:project, team: team)
+
+      response =
+        get(ctx.conn, ~p"/api/teams/#{team.id}/relationships/projects")
+        |> json_response(200)
+
+      assert_schema(
+        response,
+        "Document",
+        ctx.spec
+      )
+
+      get_in(response, ["data"])
+      |> Enum.each(&assert_schema(&1, "ResourceIdentifierObject", ctx.spec))
+    end
+  end
 end

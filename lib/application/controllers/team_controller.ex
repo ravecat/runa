@@ -2,9 +2,8 @@ defmodule RunaWeb.TeamController do
   use RunaWeb, :controller
   use RunaWeb, :jsonapi
 
-  alias Runa.Teams, as: Context
+  alias Runa.Teams
   alias Runa.Teams.Team, as: Schema
-
   alias RunaWeb.Schemas.Teams, as: OperationSchemas
   alias RunaWeb.Serializers.Team, as: Serializer
 
@@ -41,7 +40,7 @@ defmodule RunaWeb.TeamController do
         _params
       ) do
     with {:ok, {data, meta}} <-
-           Context.index(%{sort: sort, filter: filter, page: page}) do
+           Teams.index(%{sort: sort, filter: filter, page: page}) do
       conn |> put_status(200) |> render(data: data, meta: meta)
     end
   end
@@ -69,7 +68,7 @@ defmodule RunaWeb.TeamController do
   end
 
   def show(conn, %{"id" => id}) do
-    with {:ok, data} <- Context.get(id) do
+    with {:ok, data} <- Teams.get(id) do
       conn |> put_status(200) |> render(data: data)
     end
   end
@@ -111,7 +110,7 @@ defmodule RunaWeb.TeamController do
         } = conn,
         _
       ) do
-    with {:ok, data} <- Context.create(attrs) do
+    with {:ok, data} <- Teams.create(attrs) do
       conn |> put_status(201) |> render(data: data)
     end
   end
@@ -155,8 +154,8 @@ defmodule RunaWeb.TeamController do
         } = conn,
         _
       ) do
-    with {:ok, data} <- Context.get(id),
-         {:ok, data} <- Context.update(data, attrs) do
+    with {:ok, data} <- Teams.get(id),
+         {:ok, data} <- Teams.update(data, attrs) do
       render(conn, data: data)
     end
   end
@@ -173,8 +172,8 @@ defmodule RunaWeb.TeamController do
   end
 
   def delete(conn, %{"id" => id}) do
-    with {:ok, data} <- Context.get(id),
-         {:ok, _} <- Context.delete(data) do
+    with {:ok, data} <- Teams.get(id),
+         {:ok, _} <- Teams.delete(data) do
       conn |> put_status(204) |> render(:show)
     end
   end
