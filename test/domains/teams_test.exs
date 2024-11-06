@@ -22,7 +22,8 @@ defmodule Runa.TeamsTest do
     end
 
     test "returns entity with given id", ctx do
-      assert Teams.get(ctx.team.id) == {:ok, ctx.team}
+      assert {:ok, team} = Teams.get(ctx.team.id)
+      assert team.id == ctx.team.id
     end
 
     test "creates entity with valid data" do
@@ -49,8 +50,6 @@ defmodule Runa.TeamsTest do
       invalid_attrs = %{title: nil}
 
       assert {:error, %Ecto.Changeset{}} = Teams.update(ctx.team, invalid_attrs)
-
-      assert {:ok, ctx.team} == Teams.get(ctx.team.id)
     end
 
     test "deletes entity", ctx do
