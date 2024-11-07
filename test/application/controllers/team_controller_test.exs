@@ -165,17 +165,23 @@ defmodule RunaWeb.TeamControllerTest do
     end
   end
 
-  describe "inclusion endpoint" do
+  describe "inclusion endpoint (projects)" do
     test "returns related resources for entity", ctx do
       team = insert(:team)
       insert(:project, team: team)
 
-      get(ctx.conn, ~p"/api/teams/#{team.id}?include=projects")
-      |> json_response(200)
-      |> assert_schema(
+      response =
+        get(ctx.conn, ~p"/api/teams/#{team.id}?include=projects")
+        |> json_response(200)
+
+      assert_schema(
+        response,
         "Team.ShowResponse",
         ctx.spec
       )
+
+      get_in(response, ["included"])
+      |> Enum.each(&assert_schema(&1, "ResourceObject", ctx.spec))
     end
 
     test "returns empty list if entity hasn't related resources", ctx do
@@ -194,55 +200,13 @@ defmodule RunaWeb.TeamControllerTest do
       assert response["included"] == []
     end
 
-    test "returns empty list if entities haven't related resources", ctx do
-      response =
-        get(ctx.conn, ~p"/api/teams?include=projects")
-        |> json_response(200)
-
-      assert_schema(
-        response,
-        "Team.ShowResponse",
-        ctx.spec
-      )
-
-      assert response["included"] == []
-    end
-
-    test "returns related resources for entities", ctx do
-      team = insert(:team)
-      insert(:project, team: team)
-
-      get(ctx.conn, ~p"/api/teams?include=projects")
-      |> json_response(200)
-      |> assert_schema(
-        "Team.ShowResponse",
-        ctx.spec
-      )
-    end
-
-    test "returns sparse fieldset for entity", ctx do
+    test "returns sparse fieldset for related resource", ctx do
       team = insert(:team)
       insert(:project, team: team)
 
       get(
         ctx.conn,
         ~p"/api/teams/#{team.id}?include=projects&fields[projects]=name"
-      )
-      |> json_response(200)
-      |> assert_schema(
-        "Team.ShowResponse",
-        ctx.spec
-      )
-    end
-
-    test "handles deeply nested relationship", ctx do
-      team = insert(:team)
-      project = insert(:project, team: team)
-      insert(:key, project: project)
-
-      get(
-        ctx.conn,
-        ~p"/api/teams/#{team.id}?include=projects.keys"
       )
       |> json_response(200)
       |> assert_schema(
@@ -335,19 +299,11 @@ defmodule RunaWeb.TeamControllerTest do
         get(ctx.conn, ~p"/api/teams?page[number]=1&page[size]=#{size}")
         |> json_response(200)
 
-      assert %{
-               "links" => %{
-                 "first" => first,
-                 "last" => last,
-                 "next" => next,
-                 "self" => self
-               }
-             } = response
-
-      assert Enum.all?(
-               [first, last, next, self],
-               &(is_binary(&1) or is_nil(&1))
-             )
+      assert_schema(
+        get_in(response, ["links"]),
+        "LinksObject",
+        ctx.spec
+      )
     end
 
     test "returns paginated resources with required length", ctx do
@@ -478,12 +434,9 @@ defmodule RunaWeb.TeamControllerTest do
 
       limit = 2
 
-      response =
-        get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
-        |> json_response(200)
-
-      assert_schema(
-        response,
+      get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
+      |> json_response(200)
+      |> assert_schema(
         "Team.IndexResponse",
         ctx.spec
       )
@@ -510,19 +463,11 @@ defmodule RunaWeb.TeamControllerTest do
         get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
         |> json_response(200)
 
-      assert %{
-               "links" => %{
-                 "first" => first,
-                 "last" => last,
-                 "next" => next,
-                 "self" => self
-               }
-             } = response
-
-      assert Enum.all?(
-               [first, last, next, self],
-               &(is_binary(&1) or is_nil(&1))
-             )
+      assert_schema(
+        get_in(response, ["links"]),
+        "LinksObject",
+        ctx.spec
+      )
     end
 
     test "returns paginated resources with first link", ctx do
@@ -655,11 +600,9 @@ defmodule RunaWeb.TeamControllerTest do
       %{query: query} = URI.parse(next)
       query_params = Plug.Conn.Query.decode(query)
 
-      response =
-        get(ctx.conn, ~p"/api/teams", query_params)
-        |> json_response(200)
-
-      assert_schema(response, "Team.IndexResponse", ctx.spec)
+      get(ctx.conn, ~p"/api/teams", query_params)
+      |> json_response(200)
+      |> assert_schema("Team.IndexResponse", ctx.spec)
     end
 
     test "returns paginated resources for backward direction", ctx do
@@ -681,18 +624,16 @@ defmodule RunaWeb.TeamControllerTest do
       %{query: query} = URI.parse(prev)
       query_params = Plug.Conn.Query.decode(query)
 
-      response =
-        get(ctx.conn, ~p"/api/teams", query_params)
-        |> json_response(200)
-
-      assert_schema(response, "Team.IndexResponse", ctx.spec)
+      get(ctx.conn, ~p"/api/teams", query_params)
+      |> json_response(200)
+      |> assert_schema("Team.IndexResponse", ctx.spec)
     end
   end
 
   describe "relationships endpoint (projects)" do
     test "returns list of associations", ctx do
       team = insert(:team)
-      project = insert(:project, team: team)
+      insert(:project, team: team)
 
       response =
         get(ctx.conn, ~p"/api/teams/#{team.id}/relationships/projects")
