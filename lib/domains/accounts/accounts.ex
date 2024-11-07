@@ -39,7 +39,7 @@ defmodule Runa.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id), do: Repo.get!(User, id) |> Repo.preload(:teams)
 
   def get_user_by(attrs \\ []) do
     Repo.get_by(User, attrs)

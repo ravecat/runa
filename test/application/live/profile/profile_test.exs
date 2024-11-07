@@ -20,7 +20,7 @@ defmodule RunaWeb.PageLive.ProfileTest do
     test "can see projects page", ctx do
       {:ok, _show_live, html} =
         ctx.conn
-        |> put_session(:current_user, Map.take(ctx.user, [:email, :uid]))
+        |> put_session(:user_id, ctx.user.id)
         |> live(~p"/profile")
 
       assert html =~ ctx.user.name

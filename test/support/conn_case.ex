@@ -33,6 +33,7 @@ defmodule RunaWeb.ConnCase do
 
       use RunaWeb, :verified_routes
       use ExUnit.Case
+      use Repatch.ExUnit
 
       # Import conveniences for testing with connections
       import Plug.Conn
@@ -40,6 +41,9 @@ defmodule RunaWeb.ConnCase do
       import Phoenix.ConnTest
       import RunaWeb.ConnCase
       import Runa.Factory
+      import Mock
+      import RunaWeb.Router
+      import Phoenix.Controller, only: [fetch_flash: 2]
 
       alias Phoenix.Flash
 
@@ -55,6 +59,7 @@ defmodule RunaWeb.ConnCase do
       |> Plug.Session.call(@session_opts)
       |> Plug.Conn.fetch_session()
       |> Phoenix.Controller.fetch_flash()
+      |> Plug.Conn.put_private(:phoenix_endpoint, RunaWeb.Endpoint)
 
     {:ok, conn: conn}
   end

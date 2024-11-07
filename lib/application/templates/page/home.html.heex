@@ -1,27 +1,21 @@
-<header>
-  <nav class="flex w-full max-w-[64rem] mx-auto items-center px-8 py-4 justify-between">
-    <.link href={~p"/"}>
-      <.icon icon="logo" class="w-[4rem]" />
-    </.link>
-    <.link
-      class="inline-flex items-center justify-center h-[2rem] rounded border border-primary px-6 py-2 bg-primary text-background focus:outline-none focus:primary active:bg-primary"
-      href={~p"/auth/auth0"}
-    >
-      Log in
-    </.link>
-  </nav>
-</header>
-<main>
-  <div>
-    <article>
+<main class="min-h-screen flex items-center">
+  <div class="flex w-full max-w-[64rem] mx-auto px-8">
+    <article class="w-full">
       <section>
-        <div class="mx-auto max-w-[64rem] px-[2rem] py-[4rem]">
-          <h1 class="sm:text-[6rem] text-5xl leading-tight font-semibold">
+        <div class="flex flex-col items-center text-center">
+          <.icon icon="logo" class="w-[4rem] m-4" />
+          <%!-- <h1 class="text-4xl sm:text-4xl leading-tight">
             Cloud-based localization management system
           </h1>
-          <h2 class="text-2xl py-[2rem]">
+          <h2 class="text-xl py-[2rem]">
             for your web, mobile apps, games and digital content.
-          </h2>
+          </h2> --%>
+          <.link
+            class="w-full inline-flex items-center justify-center h-[2rem] rounded px-6 py-2 bg-primary text-background focus:outline-none focus:primary active:bg-primary"
+            href={~p"/session/google"}
+          >
+            Continue with Google
+          </.link>
         </div>
       </section>
     </article>

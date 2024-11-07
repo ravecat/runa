@@ -56,8 +56,10 @@ config :phoenix, :json_library, Jason
 
 # Configure uberauth
 config :ueberauth, Ueberauth,
+  base_path: "/session",
   providers: [
-    auth0: {Ueberauth.Strategy.Auth0, []}
+    auth0: {Ueberauth.Strategy.Auth0, []},
+    google: {Ueberauth.Strategy.Google, [default_scope: "email profile"]}
   ],
   json_library: Poison
 

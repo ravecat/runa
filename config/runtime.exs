@@ -1,4 +1,7 @@
 import Config
+import Dotenvy
+
+source!([".env", System.get_env()])
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -108,3 +111,7 @@ config :ueberauth, Ueberauth.Strategy.Auth0.OAuth,
   client_id: System.get_env("AUTH0_CLIENT_ID"),
   client_secret: System.get_env("AUTH0_CLIENT_SECRET"),
   redirect_uri: System.get_env("AUTH0_REDIRECT_URI")
+
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: env!("GOOGLE_CLIENT_ID", :string),
+  client_secret: env!("GOOGLE_CLIENT_SECRET", :string)
