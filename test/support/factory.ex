@@ -71,24 +71,6 @@ defmodule Runa.Factory do
     |> evaluate_lazy_attributes()
   end
 
-  def auth_factory(attrs) do
-    %Ueberauth.Auth{
-      uid: sequence(:uid, &"auth#{&1}"),
-      provider: :auth0,
-      info: %Ueberauth.Auth.Info{
-        name: "John Doe",
-        email: "john@mail.com",
-        first_name: "John",
-        last_name: "Doe",
-        urls: %{avatar_url: "https://example.com/image.jpg"},
-        nickname: "johndoe",
-        image: "https://example.com/image.jpg"
-      }
-    }
-    |> merge_attributes(attrs)
-    |> evaluate_lazy_attributes()
-  end
-
   def language_factory(attrs) do
     %Language{
       glotto_code: sequence(:wals_code, &"glotto_code_#{&1}"),

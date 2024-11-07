@@ -39,6 +39,7 @@ defmodule Runa.MixProject do
       extra_applications: [
         :ueberauth,
         :ueberauth_auth0,
+        :ueberauth_google,
         :logger,
         :runtime_tools
       ]
@@ -56,6 +57,7 @@ defmodule Runa.MixProject do
     [
       {:poison, "~> 5.0"},
       {:ueberauth_auth0, "~> 2.0"},
+      {:ueberauth_google, "~> 0.12"},
       {:ueberauth, "~> 0.10"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.18", only: :test},
@@ -81,7 +83,7 @@ defmodule Runa.MixProject do
       {:csv, "~> 3.2"},
       {:phoenix_template, "~> 1.0"},
       {:mock, "~> 0.3.0", only: :test},
-      {:hammox, "~> 0.7", only: :test},
+      {:repatch, "~> 1.0", only: :test},
       {:jsonapi, "~> 1.7.1"},
       {:ex_machina, "~> 2.7.0", only: :test},
       {:recode, "~> 0.7", only: [:dev, :test]},
@@ -89,7 +91,8 @@ defmodule Runa.MixProject do
       {:flop, "~> 0.25.0"},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:file_system, "~> 1.0", only: [:dev, :test]},
-      {:typed_ecto_schema, "~> 0.4.1", runtime: false}
+      {:typed_ecto_schema, "~> 0.4.1", runtime: false},
+      {:dotenvy, "~> 0.8.0", only: [:dev, :test]}
     ]
   end
 

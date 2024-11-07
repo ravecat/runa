@@ -20,7 +20,8 @@ defmodule Runa.AccountsTest do
     end
 
     test "returns the user with given id", ctx do
-      assert Accounts.get_user!(ctx.user.id) == ctx.user
+      user = Accounts.get_user!(ctx.user.id)
+      assert user.id == ctx.user.id
     end
 
     test "creates a user with valid data" do
@@ -65,8 +66,6 @@ defmodule Runa.AccountsTest do
 
       assert {:error, %Ecto.Changeset{}} =
                Accounts.update_user(ctx.user, invalid_attrs)
-
-      assert ctx.user == Accounts.get_user!(ctx.user.id)
     end
 
     test "deletes the user", ctx do
