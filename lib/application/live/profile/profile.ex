@@ -6,8 +6,16 @@ defmodule RunaWeb.PageLive.Profile do
   alias RunaWeb.UserLive.FormComponent
 
   @impl true
-  def handle_params(_params, _url, %{assigns: %{live_action: :show}} = socket) do
-    socket = assign(socket, %{page_title: "Profile"})
+  def handle_params(
+        _params,
+        _url,
+        %{assigns: %{live_action: :show, user: user}} = socket
+      ) do
+    socket =
+      assign(socket, %{
+        page_title: "Profile",
+        user: user
+      })
 
     {:noreply, socket}
   end
@@ -17,10 +25,12 @@ defmodule RunaWeb.PageLive.Profile do
         _url,
         %{assigns: %{live_action: :edit}} = socket
       ) do
+    {:ok, user} = Accounts.get(id)
+
     socket =
       socket
       |> assign(:page_title, "Edit profile")
-      |> assign(:user, Accounts.get_user!(id))
+      |> assign(:user, user)
 
     {:noreply, socket}
   end
@@ -32,8 +42,9 @@ defmodule RunaWeb.PageLive.Profile do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    user = Accounts.get_user!(id)
-    {:ok, _} = Accounts.delete_user(user)
+    {:ok, user} = Accounts.get(id)
+
+    {:ok, _} = Accounts.delete(user)
 
     {:noreply, stream_delete(socket, :users, user)}
   end
