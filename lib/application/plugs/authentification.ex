@@ -18,7 +18,7 @@ defmodule RunaWeb.Plugs.Authentication do
       user = conn.assigns[:current_user] ->
         put_current_user(conn, user)
 
-      user = user_id && Accounts.get_user!(user_id) ->
+      user = Accounts.get_user_by_id(user_id) ->
         put_current_user(conn, user)
 
       true ->
@@ -47,7 +47,7 @@ defmodule RunaWeb.Plugs.Authentication do
 
   def authenticate_by_auth_data(%Ueberauth.Auth{} = auth) do
     result =
-      Accounts.create_or_find_user(%{
+      Accounts.create_or_find(%{
         uid: auth.uid,
         email: fetch_email(auth),
         name: fetch_name(auth),

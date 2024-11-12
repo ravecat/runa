@@ -113,7 +113,6 @@ defmodule Runa.MixProject do
         "assets.build"
       ],
       "ecto.seed": [
-        "run priv/repo/roles.exs",
         "seed.languages"
       ],
       "ecto.setup": [

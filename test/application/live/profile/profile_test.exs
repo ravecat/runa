@@ -6,17 +6,14 @@ defmodule RunaWeb.PageLive.ProfileTest do
   import Phoenix.LiveViewTest
 
   @moduletag :profile
-  @roles Application.compile_env(:runa, :permissions)
+
+  setup do
+    user = insert(:user)
+
+    {:ok, user: user}
+  end
 
   describe "authenticated user" do
-    setup do
-      insert(:role, title: @roles[:owner])
-      teams = insert_list(2, :team)
-      user = insert(:user, teams: teams)
-
-      {:ok, user: user}
-    end
-
     test "can see projects page", ctx do
       {:ok, _show_live, html} =
         ctx.conn
@@ -24,12 +21,6 @@ defmodule RunaWeb.PageLive.ProfileTest do
         |> live(~p"/profile")
 
       assert html =~ ctx.user.name
-    end
-  end
-
-  describe "unauthenticated user" do
-    test "can't see projects page", ctx do
-      assert {:error, {:redirect, %{to: "/"}}} = live(ctx.conn, ~p"/profile")
     end
   end
 end

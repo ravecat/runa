@@ -16,7 +16,7 @@ defmodule RunaWeb.Router do
   alias RunaWeb.TeamController
   alias RunaWeb.Telemetry
   alias RunaWeb.TranslationController
-  alias RunaWeb.UserData
+  alias RunaWeb.Session
 
   @auth_path Application.compile_env(:ueberauth, Ueberauth)[:base_path]
 
@@ -86,7 +86,7 @@ defmodule RunaWeb.Router do
     delete "/logout", SessionController, :logout
   end
 
-  live_session :default, on_mount: UserData do
+  live_session :default, on_mount: Session do
     scope "/profile" do
       pipe_through [:browser, Authentication]
 

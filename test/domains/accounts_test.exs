@@ -4,47 +4,49 @@ defmodule Runa.AccountsTest do
   use Runa.DataCase
 
   @moduletag :accounts
-  @roles Application.compile_env(:runa, :permissions)
 
   alias Runa.Accounts
   alias Runa.Accounts.User
 
   setup do
     user = insert(:user)
+
     {:ok, user: user}
   end
 
   describe "users" do
-    test "returns all users", ctx do
-      assert Accounts.get_users() == [ctx.user]
+    test "returns all entities", ctx do
+      data = Accounts.index()
+
+      Enum.each(data, &assert(is_struct(&1, User)))
     end
 
-    test "returns the user with given id", ctx do
-      user = Accounts.get_user!(ctx.user.id)
-      assert user.id == ctx.user.id
+    @tag :only
+    test "returns the entity with given id", ctx do
+      assert {:ok, entity} = Accounts.get(ctx.user.id)
+
+      assert entity.id == ctx.user.id
     end
 
-    test "creates a user with valid data" do
-      insert(:role, title: @roles[:owner])
-
+    test "creates an entity with valid data" do
       valid_attrs = %{
         name: "some name",
         uid: "xxx",
         email: "peter.parker@mail.com"
       }
 
-      assert {:ok, %User{} = user} = Accounts.create_or_find_user(valid_attrs)
+      assert {:ok, %User{} = entity} = Accounts.create_or_find(valid_attrs)
 
-      assert user.name == valid_attrs.name
-      assert user.uid == valid_attrs.uid
-      assert user.email == valid_attrs.email
+      assert entity.name == valid_attrs.name
+      assert entity.uid == valid_attrs.uid
+      assert entity.email == valid_attrs.email
     end
 
-    test "returns error during creation a user with invalid data" do
+    test "returns error during creation with invalid data" do
       invalid_attrs = %{uid: nil, email: nil}
 
       assert {:error, %Ecto.Changeset{} = changeset} =
-               Accounts.create_or_find_user(invalid_attrs)
+               Accounts.create_or_find(invalid_attrs)
 
       assert changeset.errors == [
                uid: {"can't be blank", [validation: :required]},
@@ -52,32 +54,30 @@ defmodule Runa.AccountsTest do
              ]
     end
 
-    test "updates the user with valid data", ctx do
+    test "updates the entity with valid data", ctx do
       update_attrs = %{name: "some updated name"}
 
-      assert {:ok, %User{} = user} =
-               Accounts.update_user(ctx.user, update_attrs)
+      assert {:ok, %User{} = entity} =
+               Accounts.update(ctx.user, update_attrs)
 
-      assert user.name == "some updated name"
+      assert entity.name == "some updated name"
     end
 
-    test "updates a user with invalid data", ctx do
+    test "updates with invalid data returns error", ctx do
       invalid_attrs = %{uid: nil, email: nil}
 
       assert {:error, %Ecto.Changeset{}} =
-               Accounts.update_user(ctx.user, invalid_attrs)
+               Accounts.update(ctx.user, invalid_attrs)
     end
 
-    test "deletes the user", ctx do
-      assert {:ok, %User{}} = Accounts.delete_user(ctx.user)
+    test "deletes the entity", ctx do
+      assert {:ok, %User{}} = Accounts.delete(ctx.user)
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_user!(ctx.user.id)
-      end
+      assert {:error, %Ecto.NoResultsError{}} = Accounts.get(ctx.user.id)
     end
 
-    test "returns a user changeset", ctx do
-      assert %Ecto.Changeset{} = Accounts.change_user(ctx.user)
+    test "returns an entity changeset", ctx do
+      assert %Ecto.Changeset{} = Accounts.change(ctx.user)
     end
   end
 end

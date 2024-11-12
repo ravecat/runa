@@ -12,43 +12,53 @@ defmodule Runa.Contributors do
 
   ## Examples
 
-      iex> get_contributors()
+      iex> index()
       [%Contributor{}, ...]
 
   """
-  def get_contributors do
+  def index do
     Repo.all(Contributor)
   end
 
   @doc """
   Gets a single contributor.
 
-  Raises `Ecto.NoResultsError` if the Team role does not exist.
+  Returns {:ok, contributor} or {:error, %Ecto.NoResultsError{}} if not found.
 
   ## Examples
 
-      iex> get_contributor!(123)
-      %Contributor{}
+      iex> get(id)
+      {:ok, %Contributor{}}
 
-      iex> get_contributor!(456)
-      ** (Ecto.NoResultsError)
+      iex> get(non_existing_id)
+      {:error, %Ecto.NoResultsError{}}
 
   """
-  def get_contributor!(id), do: Repo.get!(Contributor, id)
+  def get(id) do
+    query =
+      from p in Contributor,
+        where: p.id == ^id,
+        preload: [:team, :user]
+
+    case Repo.one(query) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
+  end
 
   @doc """
   Creates a contributor.
 
   ## Examples
 
-      iex> create_contributor(%{field: value})
+      iex> create(%{field: value})
       {:ok, %Contributor{}}
 
-      iex> create_contributor(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_contributor(attrs \\ %{}) do
+  def create(attrs \\ %{}) do
     %Contributor{}
     |> Contributor.changeset(attrs)
     |> Repo.insert()
@@ -59,15 +69,14 @@ defmodule Runa.Contributors do
 
   ## Examples
 
-      iex> update_contributor(contributor, %{field: new_value})
+      iex> update(contributor, %{field: new_value})
       {:ok, %Contributor{}}
 
-      iex> update_contributor(contributor, %{field: bad_value})
+      iex> update(contributor, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-
-  def update_contributor(%Contributor{} = contributor, attrs) do
+  def update(%Contributor{} = contributor, attrs) do
     contributor
     |> Contributor.changeset(attrs)
     |> Repo.update()
@@ -78,14 +87,14 @@ defmodule Runa.Contributors do
 
   ## Examples
 
-      iex> delete_contributor(contributor)
+      iex> delete(contributor)
       {:ok, %Contributor{}}
 
-      iex> delete_contributor(contributor)
+      iex> delete(contributor)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_contributor(%Contributor{} = contributor) do
+  def delete(%Contributor{} = contributor) do
     Repo.delete(contributor)
   end
 
@@ -94,14 +103,11 @@ defmodule Runa.Contributors do
 
   ## Examples
 
-      iex> change_contributor(contributor)
+      iex> change(contributor)
       %Ecto.Changeset{data: %Contributor{}}
 
   """
-  def change_contributor(
-        %Contributor{} = contributor,
-        attrs \\ %{}
-      ) do
+  def change(%Contributor{} = contributor, attrs \\ %{}) do
     Contributor.changeset(contributor, attrs)
   end
 end

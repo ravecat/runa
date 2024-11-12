@@ -30,15 +30,20 @@ defmodule Runa.ProjectsTest do
     test "creates enitity with valid data" do
       team = insert(:team)
 
-      valid_attrs = %{
+      attrs = %{
         name: "some name",
         description: "some description",
         team_id: team.id
       }
 
-      assert {:ok, %Project{} = project} = Projects.create(valid_attrs)
-      assert project.name == valid_attrs.name
-      assert project.description == valid_attrs.description
+      assert {:ok, %Project{name: name, description: description}} =
+               Projects.create(attrs)
+
+      assert attrs == %{
+               name: name,
+               description: description,
+               team_id: team.id
+             }
     end
 
     test "returns error changeset during creation with invalid data" do

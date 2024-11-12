@@ -22,7 +22,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "assigns user from db when user_id present in session", ctx do
-      Repatch.patch(Accounts, :get_user!, fn _ -> ctx.user end)
+      Repatch.patch(Accounts, :get, fn _ -> {:ok, ctx.user} end)
 
       conn =
         put_session(ctx.conn, :user_id, ctx.user.id)
@@ -31,6 +31,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
       assert conn.assigns.current_user == ctx.user
     end
 
+    @tag :only
     test "assigns nil to current_user when user_id not present in session",
          ctx do
       conn = Authentication.call(ctx.conn, [])
@@ -67,7 +68,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     test "fetches uid" do
       auth_data = %Ueberauth.Auth{uid: "123"}
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.uid == "123"
 
         {:ok, %Accounts.User{}}
@@ -83,7 +84,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         }
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.avatar == "https://example.com/avatar.jpg"
 
         {:ok, %Accounts.User{}}
@@ -97,7 +98,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         info: %{image: "https://example.com/avatar.jpg"}
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.avatar == "https://example.com/avatar.jpg"
 
         {:ok, %Accounts.User{}}
@@ -109,7 +110,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     test "returns nil when no avatar is available" do
       auth_data = %Ueberauth.Auth{}
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.avatar == nil
 
         {:ok, %Accounts.User{}}
@@ -123,7 +124,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         info: %{email: "user@example.com"}
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.email == "user@example.com"
         {:ok, %Accounts.User{}}
       end)
@@ -136,7 +137,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         info: %{}
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.email == nil
         {:ok, %Accounts.User{}}
       end)
@@ -149,7 +150,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         info: %{name: "John Doe"}
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "John Doe"
         {:ok, %Accounts.User{}}
       end)
@@ -165,7 +166,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         }
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "John Doe"
         {:ok, %Accounts.User{}}
       end)
@@ -181,7 +182,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         }
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "John"
         {:ok, %Accounts.User{}}
       end)
@@ -194,7 +195,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         info: %{nickname: "johndoe"}
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "johndoe"
         {:ok, %Accounts.User{}}
       end)
@@ -207,7 +208,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         info: %{email: "john@example.com"}
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "john@example.com"
         {:ok, %Accounts.User{}}
       end)
@@ -220,7 +221,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         info: %{}
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == nil
         {:ok, %Accounts.User{}}
       end)
@@ -233,7 +234,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         info: %{nickname: "johndoe"}
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.nickname == "johndoe"
         {:ok, %Accounts.User{}}
       end)
@@ -246,7 +247,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
         info: %{}
       }
 
-      Repatch.patch(Accounts, :create_or_find_user, fn params ->
+      Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.nickname == nil
         {:ok, %Accounts.User{}}
       end)

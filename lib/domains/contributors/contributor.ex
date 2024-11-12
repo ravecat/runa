@@ -1,16 +1,18 @@
 defmodule Runa.Contributors.Contributor do
   @moduledoc """
-  Schema for team role, representing the relationship between a user, a team, and a role.
+  Schema representing the relationship between a user and a team with associated role.
   """
   use Runa, :schema
 
   alias Runa.Accounts
-  alias Runa.Roles
   alias Runa.Teams
 
+  @roles [owner: 8, admin: 4, editor: 2, viewer: 1]
+
   schema "contributors" do
+    field :role, Ecto.Enum, values: @roles
+
     belongs_to :user, Accounts.User
-    belongs_to :role, Roles.Role
     belongs_to :team, Teams.Team
 
     timestamps(type: :utc_datetime)
@@ -22,11 +24,10 @@ defmodule Runa.Contributors.Contributor do
     |> cast(attrs, [
       :user_id,
       :team_id,
-      :role_id
+      :role
     ])
-    |> validate_required([:user_id, :team_id, :role_id])
+    |> validate_required([:user_id, :team_id, :role])
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:team_id)
-    |> foreign_key_constraint(:role_id)
   end
 end

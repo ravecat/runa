@@ -11,12 +11,10 @@ defmodule Runa.Factory do
   alias Runa.Languages.Language
   alias Runa.Languages.Locale
   alias Runa.Projects.Project
-  alias Runa.Roles.Role
   alias Runa.Teams.Team
   alias Runa.Tokens.Token
   alias Runa.Translations.Translation
 
-  @roles Application.compile_env(:runa, :permissions)
   @valid_access_levels Application.compile_env(:runa, :token_access_levels)
 
   def team_factory(attrs) do
@@ -36,28 +34,25 @@ defmodule Runa.Factory do
     |> evaluate_lazy_attributes()
   end
 
-  def role_factory(attrs) do
-    %Role{
-      title: @roles[:owner]
-    }
-    |> merge_attributes(attrs)
-    |> evaluate_lazy_attributes()
-  end
-
   def user_factory(attrs) do
     %User{
       email: sequence(:email, &"user#{&1}@example.com"),
       uid: sequence(:uid, &"uid#{&1}"),
       name: sequence(:name, &"user name #{&1}"),
       avatar: sequence(:avatar, &"https://img.example.com/#{&1}.png"),
-      nickname: sequence(:nickname, &"nickname #{&1}")
+      nickname: sequence(:nickname, &"nickname #{&1}"),
+      contributors: [
+        build(:contributor, team: fn -> build(:team) end, role: :owner)
+      ]
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end
 
   def contributor_factory(attrs) do
-    %Contributor{}
+    %Contributor{
+      role: :viewer
+    }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end

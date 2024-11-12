@@ -7,70 +7,83 @@ defmodule Runa.Accounts do
 
   alias Runa.Accounts.User
   alias Runa.Contributors.Contributor
-  alias Runa.Roles.Role
   alias Runa.Teams.Team
-
-  @roles Application.compile_env(:runa, :permissions)
 
   @doc """
   Returns the list of users.
 
   ## Examples
 
-      iex> get_users()
+      iex> index()
       [%User{}, ...]
 
   """
-  def get_users do
-    Repo.all(User)
+  def index do
+    User
+    |> Repo.all()
+    |> Repo.preload([:contributors, :teams])
   end
 
   @doc """
   Gets a single user.
 
-  Raises `Ecto.NoResultsError` if the User does not exist.
+  Returns {:error, %Ecto.NoResultsError{}} if the User does not exist.
 
   ## Examples
 
-      iex> get_user!(123)
-      %User{}
+      iex> get(123)
+      {:ok, %User{}}
 
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
+      iex> get(456)
+      {:error, %Ecto.NoResultsError{}}
 
   """
-  def get_user!(id), do: Repo.get!(User, id) |> Repo.preload(:teams)
+  def get(id) do
+    query =
+      from u in User,
+        where: u.id == ^id,
+        preload: [:teams]
 
-  def get_user_by(attrs \\ []) do
+    case Repo.one(query) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
+  end
+
+  def get_by(attrs \\ []) do
     Repo.get_by(User, attrs)
     |> Repo.preload(:teams)
+  end
+
+  def get_user_by_id(nil), do: nil
+
+  def get_user_by_id(id) do
+    case get(id) do
+      {:ok, user} -> user
+      _ -> nil
+    end
   end
 
   @doc """
   Creates or finds user.
   """
-  def create_or_find_user(attrs \\ %{}) do
+  def create_or_find(attrs \\ %{}) do
     with %Ecto.Changeset{valid?: true} <- User.changeset(%User{}, attrs),
          nil <- Repo.get_by(User, email: attrs.email),
          {:ok, %{user: %User{} = user}} <-
            Multi.new()
-           |> Multi.one(
-             :role,
-             from(r in Role, where: r.title == ^@roles[:owner])
-           )
            |> Multi.insert(:user, User.changeset(%User{}, attrs))
            |> Multi.insert(:team, fn %{user: user} ->
              Team.changeset(%Team{}, %{title: "#{user.name}'s Team"})
            end)
            |> Multi.insert(:contributor, fn %{
                                               user: user,
-                                              team: team,
-                                              role: role
+                                              team: team
                                             } ->
              Contributor.changeset(%Contributor{}, %{
                user_id: user.id,
                team_id: team.id,
-               role_id: role.id
+               role: :owner
              })
            end)
            |> Repo.transaction() do
@@ -92,14 +105,14 @@ defmodule Runa.Accounts do
 
   ## Examples
 
-      iex> update_user(user, %{field: new_value})
+      iex> update(%User{} = user, %{field: new_value})
       {:ok, %User{}}
 
-      iex> update_user(user, %{field: bad_value})
+      iex> update(%User{} = user, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user(%User{} = user, attrs) do
+  def update(%User{} = user, attrs) do
     user
     |> User.changeset(attrs)
     |> Repo.update()
@@ -110,14 +123,14 @@ defmodule Runa.Accounts do
 
   ## Examples
 
-      iex> delete_user(user)
+      iex> delete(%User{} = user)
       {:ok, %User{}}
 
-      iex> delete_user(user)
+      iex> delete(%User{} = user)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_user(%User{} = user) do
+  def delete(%User{} = user) do
     Repo.delete(user)
   end
 
@@ -126,11 +139,11 @@ defmodule Runa.Accounts do
 
   ## Examples
 
-      iex> change_user(user)
+      iex> change(%User{} = user, %{field: new_value})
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user(%User{} = user, attrs \\ %{}) do
+  def change(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
   end
 end

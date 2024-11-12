@@ -10,12 +10,6 @@ import Config
 config :runa,
   ecto_repos: [Runa.Repo],
   generators: [timestamp_type: :utc_datetime],
-  permissions: %{
-    owner: "owner",
-    admin: "admin",
-    editor: "editor",
-    viewer: "viewer"
-  },
   token_access_levels: %{
     read: 0,
     write: 1

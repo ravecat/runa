@@ -7,97 +7,86 @@ defmodule Runa.ContributorsTest do
 
   alias Runa.Contributors
   alias Runa.Contributors.Contributor
-  alias Runa.Repo
-
-  @roles Application.compile_env(:runa, :permissions)
 
   setup do
     team = insert(:team)
     user = insert(:user)
-    role = insert(:role, title: @roles[:owner])
-    contributor = insert(:contributor, role: role, team: team, user: user)
 
-    {:ok, contributor: contributor}
+    contributor =
+      insert(:contributor, team: team, user: user)
+
+    {:ok, contributor: contributor, team: team, user: user}
   end
 
-  describe "contributors" do
-    test "returns all contributors", ctx do
-      assert [contributor] = Contributors.get_contributors()
+  describe "contributors context" do
+    test "returns all entities" do
+      data = Contributors.index()
 
+      Enum.each(data, &assert(is_struct(&1, Contributor)))
+    end
+
+    test "returns an entity with given id", ctx do
+      assert {:ok, contributor} = Contributors.get(ctx.contributor.id)
       assert contributor.id == ctx.contributor.id
-      assert contributor.role_id == ctx.contributor.role_id
-      assert contributor.team_id == ctx.contributor.team_id
-      assert contributor.user_id == ctx.contributor.user_id
     end
 
-    test "returns the record with given set", ctx do
-      assert ctx.contributor ==
-               Contributors.get_contributor!(ctx.contributor.id)
-               |> Repo.preload([:team, :user, :role])
+    test "returns error if entity does not exist" do
+      assert {:error, %Ecto.NoResultsError{}} = Contributors.get(123)
     end
 
-    test "creates a contributor with valid data", ctx do
-      user = insert(:user)
-      team = insert(:team)
+    test "creates an entity with valid data", ctx do
+      attrs = %{
+        team_id: ctx.team.id,
+        user_id: ctx.user.id,
+        role: :owner
+      }
 
-      assert {:ok, %Contributor{}} =
-               Contributors.create_contributor(%{
-                 team_id: team.id,
-                 user_id: user.id,
-                 role_id: ctx.contributor.role_id
-               })
+      assert {:ok, %Contributor{}} = Contributors.create(attrs)
     end
 
     test "returns error changeset after creation with invalid data" do
-      assert {:error, %Ecto.Changeset{}} = Contributors.create_contributor(%{})
+      assert {:error, %Ecto.Changeset{}} = Contributors.create(%{})
     end
 
-    test "updates the contributor with valid data ", ctx do
-      user = insert(:user)
-      team = insert(:team)
-
-      update_attrs = %{
-        team_id: team.id,
-        user_id: user.id
+    test "updates the entity with valid data ", ctx do
+      attrs = %{
+        team_id: ctx.team.id,
+        user_id: ctx.user.id,
+        role: :owner
       }
 
+      assert ctx.contributor.role == :viewer
+
       assert {:ok, %Contributors.Contributor{} = contributor} =
-               Contributors.update_contributor(
+               Contributors.update(
                  ctx.contributor,
-                 update_attrs
+                 attrs
                )
 
-      assert contributor.team_id == team.id
+      assert contributor.id == ctx.contributor.id
+      assert contributor.role == :owner
     end
 
-    test "returns error changeset with invalid data", ctx do
-      invalid_attrs = %{
+    test "returns error changeset on update with invalid data", ctx do
+      attrs = %{
         team_id: nil
       }
 
       assert {:error, %Ecto.Changeset{}} =
-               Contributors.update_contributor(ctx.contributor, invalid_attrs)
-
-      assert contributor = Contributors.get_contributor!(ctx.contributor.id)
-
-      assert contributor.id == ctx.contributor.id
-      assert contributor.role_id == ctx.contributor.role_id
-      assert contributor.team_id == ctx.contributor.team_id
-      assert contributor.user_id == ctx.contributor.user_id
+               Contributors.update(ctx.contributor, attrs)
     end
 
-    test "deletes the contributor", ctx do
+    test "deletes the entity", ctx do
       assert {:ok, %Contributors.Contributor{}} =
-               Contributors.delete_contributor(ctx.contributor)
+               Contributors.delete(ctx.contributor)
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Contributors.get_contributor!(ctx.contributor.id)
-      end
+      assert {:error, %Ecto.NoResultsError{}} =
+               Contributors.get(ctx.contributor.id)
     end
 
-    test "returns a contributor changeset", ctx do
+    test "returns an entity changeset", ctx do
       assert %Ecto.Changeset{} =
-               Contributors.change_contributor(ctx.contributor)
+               Contributors.change(ctx.contributor)
     end
   end
 end

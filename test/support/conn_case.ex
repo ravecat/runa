@@ -46,6 +46,7 @@ defmodule RunaWeb.ConnCase do
       import Phoenix.Controller, only: [fetch_flash: 2]
 
       alias Phoenix.Flash
+      alias Runa.Repo
 
       require Pathex
     end
