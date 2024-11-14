@@ -11,12 +11,15 @@ defmodule RunaWeb.Router do
   alias RunaWeb.PageController
   alias RunaWeb.PageLive
   alias RunaWeb.Plugs.Authentication
+  alias RunaWeb.Plugs.DevAuthentication
   alias RunaWeb.ProjectController
+  alias RunaWeb.Session
   alias RunaWeb.SessionController
   alias RunaWeb.TeamController
   alias RunaWeb.Telemetry
   alias RunaWeb.TranslationController
-  alias RunaWeb.Session
+
+  import RunaWeb.Plugs.Authentication, only: [authenticate: 2]
 
   @auth_path Application.compile_env(:ueberauth, Ueberauth)[:base_path]
 
@@ -27,6 +30,8 @@ defmodule RunaWeb.Router do
     plug :put_root_layout, html: {Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug DevAuthentication
+    plug Authentication
   end
 
   pipeline :api do
@@ -88,7 +93,7 @@ defmodule RunaWeb.Router do
 
   live_session :default, on_mount: Session do
     scope "/profile" do
-      pipe_through [:browser, Authentication]
+      pipe_through [:browser, :authenticate]
 
       live "/", PageLive.Profile, :show
       live "/:id/edit", PageLive.Profile, :edit

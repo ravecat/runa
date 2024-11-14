@@ -48,6 +48,7 @@ defmodule Runa.MixProject do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -85,7 +86,7 @@ defmodule Runa.MixProject do
       {:mock, "~> 0.3.0", only: :test},
       {:repatch, "~> 1.0", only: :test},
       {:jsonapi, "~> 1.7.1"},
-      {:ex_machina, "~> 2.7.0", only: :test},
+      {:ex_machina, "~> 2.7.0", only: [:dev, :test]},
       {:recode, "~> 0.7", only: [:dev, :test]},
       {:open_api_spex, "~> 3.21.1"},
       {:flop, "~> 0.25.0"},
@@ -113,12 +114,12 @@ defmodule Runa.MixProject do
         "assets.build"
       ],
       "ecto.seed": [
-        "seed.languages"
+        "seed.languages",
+        "seed.data"
       ],
       "ecto.setup": [
         "ecto.create",
-        "ecto.migrate",
-        "ecto.seed"
+        "ecto.migrate"
       ],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: [

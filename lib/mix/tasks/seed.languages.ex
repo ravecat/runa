@@ -11,12 +11,6 @@ defmodule Mix.Tasks.Seed.Languages do
 
   @requirements ["app.start"]
   @url "https://gist.githubusercontent.com/ravecat/a47ca0ebf170f3dc00f17bc408d6aba1/raw/b2f1651fa9c2aea8c0c4d282c13fbee20bb00e8f/languages.csv"
-  @headers [
-    :wals_code,
-    :iso_code,
-    :glottocode,
-    :Name
-  ]
 
   def run(_args) do
     case fetch_csv_data(@url) do
@@ -25,7 +19,7 @@ defmodule Mix.Tasks.Seed.Languages do
 
       err ->
         IO.warn(err)
-        raise CsvRequestError
+        raise FetchError
     end
   end
 
@@ -34,43 +28,49 @@ defmodule Mix.Tasks.Seed.Languages do
   end
 
   defp handle_data(data) do
-    [data]
-    |> CSV.decode(headers: @headers)
-    |> Stream.drop(1)
-    |> Stream.map(fn {:ok,
-                      %{
-                        wals_code: wals_code,
-                        iso_code: iso_code,
-                        glottocode: glotto_code,
-                        Name: title
-                      }} ->
-      %{
-        wals_code: wals_code,
-        iso_code: iso_code,
-        glotto_code: glotto_code,
-        title: title
-      }
-    end)
-    |> Stream.each(&handle_row/1)
-    |> Stream.run()
-  end
+    now = DateTime.truncate(DateTime.utc_now(), :second)
 
-  defp handle_row(params) do
-    changeset = Language.changeset(%Language{}, params)
+    languages =
+      [data]
+      |> CSV.decode(
+        headers: [
+          :wals_code,
+          :iso_code,
+          :glottocode,
+          :Name
+        ]
+      )
+      |> Stream.drop(1)
+      |> Stream.map(fn {:ok,
+                        %{
+                          wals_code: wals_code,
+                          iso_code: iso_code,
+                          glottocode: glotto_code,
+                          Name: title
+                        }} ->
+        %{
+          wals_code: wals_code,
+          iso_code: iso_code,
+          glotto_code: glotto_code,
+          title: title,
+          inserted_at: now,
+          updated_at: now
+        }
+      end)
+      |> Enum.to_list()
 
-    case Repo.insert(changeset,
-           on_conflict: {:replace_all_except, [:id, :wals_code]},
-           conflict_target: :wals_code
-         ) do
-      {:ok, _language} ->
-        Logger.info("Language inserted successfully")
+    {count, _} =
+      Repo.insert_all(
+        Language,
+        languages,
+        on_conflict: {:replace_all_except, [:id, :wals_code]},
+        conflict_target: [:wals_code]
+      )
 
-      {:error, changeset} ->
-        Logger.error(changeset)
-    end
+    Logger.info("#{count} languages inserted successfully")
   end
 end
 
-defmodule CsvRequestError do
+defmodule FetchError do
   defexception message: "Unable to fetch data"
 end
