@@ -11,44 +11,14 @@ defmodule RunaWeb.Components.Sidebar do
 
   embed_templates "../templates/team/*"
 
-  @rows [
-    %{
-      title: "Projects",
-      icon: "project",
-      href: "/"
-    },
-    %{
-      title: "Team",
-      icon: "settings",
-      href: "/"
-    },
-    %{
-      title: "Profile",
-      icon: "settings",
-      href: "/"
-    },
-    %{
-      title: "Logout",
-      icon: "logout",
-      href: "/"
-    }
-  ]
-
-  def mount(socket) do
-    assigns = %{
-      rows: @rows,
-      team_changeset: to_form(Teams.change(%Team{}))
-    }
-
-    {:ok, assign(socket, assigns)}
-  end
-
   def update(assigns, socket) do
     active_team = List.first(assigns.user.teams || [])
 
-    assigns = Map.put(assigns, :active_team, active_team)
-
-    {:ok, assign(socket, assigns)}
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(active_team: active_team)
+     |> assign_new(:team_changeset, fn -> to_form(Teams.change(%Team{})) end)}
   end
 
   def render(assigns) do
@@ -91,10 +61,9 @@ defmodule RunaWeb.Components.Sidebar do
             </.tab>
           </:footer>
         </.dropdown>
-        <.link :for={row <- @rows} href="#">
+        <.link href={~p"/session/logout"} method="delete">
           <.tab class="cursor-pointer hover:bg-accent-100 hover:text-accent-700">
-            <.icon icon={row[:icon]} />
-            <%= row[:title] %>
+            <.icon icon="logout" /> Logout
           </.tab>
         </.link>
       </div>

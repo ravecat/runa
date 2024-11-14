@@ -19,6 +19,10 @@ defmodule RunaWeb.SessionController do
 
   plug Ueberauth
 
+  def request(conn, _params) do
+    conn
+  end
+
   def callback(
         %{assigns: %{ueberauth_failure: _fails}} = conn,
         _params
