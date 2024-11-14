@@ -25,19 +25,17 @@ defmodule RunaWeb.Widgets.SidebarTest do
       assert html =~ html_escape(team.title)
     end
 
-    test "renders menu items", ctx do
-      html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
-
-      assert html =~ "Profile"
-      assert html =~ "Projects"
-      assert html =~ "Team"
-      assert html =~ "Logout"
-    end
-
     test "renders team list", ctx do
       html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
 
       assert html =~ "Create team"
+    end
+
+    test "renders logout link", ctx do
+      html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
+
+      assert html =~ "href=\"#{~p"/session/logout"}\""
+      assert html =~ "Logout"
     end
   end
 end
