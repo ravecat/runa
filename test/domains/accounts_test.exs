@@ -15,7 +15,7 @@ defmodule Runa.AccountsTest do
   end
 
   describe "users" do
-    test "returns all entities", ctx do
+    test "returns all entities" do
       data = Accounts.index()
 
       Enum.each(data, &assert(is_struct(&1, User)))
