@@ -16,7 +16,6 @@ defmodule RunaWeb.Serializers.Key do
       :updated_at_timestamp
     ]
 
-
   def relationships,
     do: [
       project: RunaWeb.Serializers.Project

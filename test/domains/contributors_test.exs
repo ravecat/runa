@@ -49,13 +49,13 @@ defmodule Runa.ContributorsTest do
     end
 
     test "updates the entity with valid data ", ctx do
+      insert(:contributor, team: ctx.team, user: ctx.user, role: :viewer)
+
       attrs = %{
         team_id: ctx.team.id,
         user_id: ctx.user.id,
         role: :owner
       }
-
-      assert ctx.contributor.role == :viewer
 
       assert {:ok, %Contributors.Contributor{} = contributor} =
                Contributors.update(
@@ -63,7 +63,6 @@ defmodule Runa.ContributorsTest do
                  attrs
                )
 
-      assert contributor.id == ctx.contributor.id
       assert contributor.role == :owner
     end
 

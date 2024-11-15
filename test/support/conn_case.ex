@@ -44,6 +44,7 @@ defmodule RunaWeb.ConnCase do
       import Mock
       import RunaWeb.Router
       import Phoenix.Controller, only: [fetch_flash: 2]
+      import LiveIsolatedComponent
 
       alias Phoenix.Flash
       alias Runa.Repo

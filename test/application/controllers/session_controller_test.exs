@@ -20,8 +20,6 @@ defmodule RunaWeb.SessionControllerTest do
      user: insert(:user)}
   end
 
-
-
   describe "session controller" do
     test "redirects user to Google for authentication", ctx do
       conn = get(ctx.conn, "/session/google")

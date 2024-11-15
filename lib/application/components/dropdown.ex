@@ -45,7 +45,7 @@ defmodule RunaWeb.Components.Dropdown do
       </summary>
       <%!-- [TODO] Required css modules functionality https://ravecat.fibery.io/Runa/Features-282#Task/css-modules-integration-19 --%>
       <div
-        class="absolute w-[16rem] bg-background rounded divide-y divide-secondary-100 border border-secondary-100 bg-background shadow-lg"
+        class="absolute w-[16rem] rounded divide-y divide-secondary border border-secondary shadow-lg bg-background-50 dark:bg-background-50"
         style={[
           %{
             "top" => [

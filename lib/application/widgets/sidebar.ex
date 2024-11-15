@@ -30,7 +30,7 @@ defmodule RunaWeb.Components.Sidebar do
       <div class="px-[.5rem]">
         <.dropdown position="right">
           <:summary>
-            <.tab class="cursor-pointer hover:bg-background-100">
+            <.tab class="cursor-pointer hover:bg-secondary">
               <.avatar alt="" src={@user.avatar} />
               <.info class="grow text-sm">
                 <:title>
@@ -44,7 +44,7 @@ defmodule RunaWeb.Components.Sidebar do
           <:menu>
             <.tab
               :for={team <- @user.teams}
-              class="cursor-pointer hover:bg-secondary-50"
+              class="cursor-pointer hover:bg-secondary"
             >
               <.link :if={team} href="#">
                 <%= team.title %>
@@ -55,14 +55,14 @@ defmodule RunaWeb.Components.Sidebar do
             <.tab
               type="button"
               phx-click={show_modal("create")}
-              class="cursor-pointer hover:bg-secondary-50"
+              class="cursor-pointer hover:bg-secondary"
             >
               Create team
             </.tab>
           </:footer>
         </.dropdown>
         <.link href={~p"/session/logout"} method="delete">
-          <.tab class="cursor-pointer hover:bg-background-100">
+          <.tab class="cursor-pointer hover:bg-secondary">
             <.icon icon="logout" /> Logout
           </.tab>
         </.link>
