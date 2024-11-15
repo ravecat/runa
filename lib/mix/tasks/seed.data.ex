@@ -21,6 +21,10 @@ defmodule Mix.Tasks.Seed.Data do
       "TRUNCATE TABLE users, teams, contributors, projects, locales, keys, translations, tokens CASCADE"
     )
 
-    insert(:user, email: @email)
+    user = insert(:user, email: @email)
+
+    insert_list(10, :contributor, user: user, team: fn -> insert(:team) end)
+
+    Logger.info("Finished seeding development data")
   end
 end

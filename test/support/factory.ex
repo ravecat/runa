@@ -39,11 +39,11 @@ defmodule Runa.Factory do
       email: Faker.Internet.email(),
       uid: Faker.UUID.v4(),
       name: Faker.Person.name(),
-      avatar: Faker.Avatar.image_url(),
       nickname: Faker.Pokemon.name(),
-      contributors: [
-        build(:contributor, team: fn -> build(:team) end, role: :owner)
-      ]
+      avatar: Faker.Avatar.image_url(),
+      contributors: fn ->
+        build_list(1, :contributor, team: fn -> build(:team) end)
+      end
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
@@ -51,7 +51,7 @@ defmodule Runa.Factory do
 
   def contributor_factory(attrs) do
     %Contributor{
-      role: :viewer
+      role: sequence(:role, [:owner, :admin, :editor, :viewer])
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()

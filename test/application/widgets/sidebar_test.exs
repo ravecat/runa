@@ -15,7 +15,7 @@ defmodule RunaWeb.Widgets.SidebarTest do
     {:ok, user: user}
   end
 
-  describe "sidebar" do
+  describe "sidebar (essential information)" do
     test "renders user avatar", ctx do
       html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
 
@@ -32,21 +32,31 @@ defmodule RunaWeb.Widgets.SidebarTest do
       html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
 
       assert Enum.any?(ctx.user.teams, fn team ->
-        html =~ html_escape(team.title)
-      end)
+               html =~ html_escape(team.title)
+             end)
     end
 
-    test "renders team list", ctx do
-      html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
+    test "renders logout link", ctx do
+      html = render_component(Sidebar, user: ctx.user, id: ctx.test)
+
+      assert html =~ "href=\"#{~p"/session/logout"}\""
+      assert html =~ "Logout"
+    end
+  end
+
+  describe "sidebar (team list)" do
+    test "renders create team tab", ctx do
+      html = render_component(Sidebar, user: ctx.user, id: ctx.test)
 
       assert html =~ "Create team"
     end
 
-    test "renders logout link", ctx do
-      html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
+    test "renders team list", ctx do
+      html = render_component(Sidebar, user: ctx.user, id: ctx.test)
 
-      assert html =~ "href=\"#{~p"/session/logout"}\""
-      assert html =~ "Logout"
+      assert Enum.any?(ctx.user.teams, fn team ->
+               html =~ html_escape(team.title)
+             end)
     end
   end
 end
