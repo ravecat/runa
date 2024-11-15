@@ -1,4 +1,4 @@
-defmodule RunaWeb.PageLive.ProfileTest do
+defmodule RunaWeb.Live.ProfileTest do
   @moduledoc false
 
   use RunaWeb.ConnCase, async: true

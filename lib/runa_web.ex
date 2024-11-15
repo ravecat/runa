@@ -82,10 +82,10 @@ defmodule RunaWeb do
 
   def live_view do
     quote do
+      alias Runa.PubSub
+
       use Phoenix.LiveView,
         layout: {RunaWeb.Layouts, :app}
-
-      alias Phoenix.Template
 
       unquote(html_helpers())
     end
@@ -93,8 +93,9 @@ defmodule RunaWeb do
 
   def live_component do
     quote do
+      alias Runa.PubSub
+
       use Phoenix.LiveComponent
-      alias Phoenix.Template
 
       unquote(html_helpers())
     end
@@ -131,12 +132,6 @@ defmodule RunaWeb do
       import RunaWeb.Components.Input
       import RunaWeb.Components.Label
       import RunaWeb.Components.Form
-    end
-  end
-
-  def widgets do
-    quote do
-      alias RunaWeb.Components.Sidebar
     end
   end
 

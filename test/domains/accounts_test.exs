@@ -21,7 +21,6 @@ defmodule Runa.AccountsTest do
       Enum.each(data, &assert(is_struct(&1, User)))
     end
 
-    @tag :only
     test "returns the entity with given id", ctx do
       assert {:ok, entity} = Accounts.get(ctx.user.id)
 

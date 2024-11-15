@@ -26,7 +26,7 @@ body {
     --text-900: #f0f2f4;
     --text-950: #f8fafc;
 
-    --background: var(--background-100);
+    --background: var(--background-50);
     --background-50: #ffffff;
     --background-100: #f8f9fb;
     --background-200: #f1f3f6;

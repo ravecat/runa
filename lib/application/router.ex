@@ -8,12 +8,11 @@ defmodule RunaWeb.Router do
   alias RunaWeb.KeyController
   alias RunaWeb.LanguageController
   alias RunaWeb.Layouts
+  alias RunaWeb.Live
   alias RunaWeb.PageController
-  alias RunaWeb.PageLive
   alias RunaWeb.Plugs.Authentication
   alias RunaWeb.Plugs.DevAuthentication
   alias RunaWeb.ProjectController
-  alias RunaWeb.Session
   alias RunaWeb.SessionController
   alias RunaWeb.TeamController
   alias RunaWeb.Telemetry
@@ -91,13 +90,10 @@ defmodule RunaWeb.Router do
     delete "/logout", SessionController, :logout
   end
 
-  live_session :default, on_mount: Session do
-    scope "/profile" do
-      pipe_through [:browser, :authenticate]
+  scope "/profile" do
+    pipe_through [:browser, :authenticate]
 
-      live "/", PageLive.Profile, :show
-      live "/:id/edit", PageLive.Profile, :edit
-    end
+    live "/", Live.Profile, :show
   end
 
   # Enable LiveDashboard in development

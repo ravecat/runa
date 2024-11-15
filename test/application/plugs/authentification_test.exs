@@ -31,7 +31,6 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
       assert conn.assigns.current_user == ctx.user
     end
 
-    @tag :only
     test "assigns nil to current_user when user_id not present in session",
          ctx do
       conn = Authentication.call(ctx.conn, [])
