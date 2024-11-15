@@ -23,14 +23,14 @@ defmodule RunaWeb.Components.Sidebar do
 
   def render(assigns) do
     ~H"""
-    <aside class="flex h-screen flex-col bg-accent-50">
+    <aside class="flex h-screen flex-col bg-background">
       <div class="px-[1rem] py-[1rem]">
         <.icon icon="logo" class="w-[4rem]" />
       </div>
       <div class="px-[.5rem]">
         <.dropdown position="right">
           <:summary>
-            <.tab class="cursor-pointer hover:bg-accent-100 hover:text-accent-700">
+            <.tab class="cursor-pointer hover:bg-background-100">
               <.avatar alt="" src={@user.avatar} />
               <.info class="grow text-sm">
                 <:title>
@@ -62,7 +62,7 @@ defmodule RunaWeb.Components.Sidebar do
           </:footer>
         </.dropdown>
         <.link href={~p"/session/logout"} method="delete">
-          <.tab class="cursor-pointer hover:bg-accent-100 hover:text-accent-700">
+          <.tab class="cursor-pointer hover:bg-background-100">
             <.icon icon="logout" /> Logout
           </.tab>
         </.link>

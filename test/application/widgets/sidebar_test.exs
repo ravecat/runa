@@ -16,13 +16,24 @@ defmodule RunaWeb.Widgets.SidebarTest do
   end
 
   describe "sidebar" do
-    test "renders wokrspace info", ctx do
-      team = List.first(ctx.user.teams)
+    test "renders user avatar", ctx do
+      html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
 
+      assert html =~ ctx.user.avatar
+    end
+
+    test "renders user name", ctx do
       html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
 
       assert html =~ html_escape(ctx.user.name)
-      assert html =~ html_escape(team.title)
+    end
+
+    test "renders team title", ctx do
+      html = render_component(Sidebar, %{user: ctx.user, id: ctx.test})
+
+      assert Enum.any?(ctx.user.teams, fn team ->
+        html =~ html_escape(team.title)
+      end)
     end
 
     test "renders team list", ctx do

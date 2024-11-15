@@ -10,14 +10,14 @@ defmodule RunaWeb.Plugs.DevAuthentication do
   @email Application.compile_env(:runa, :authentication)[:email]
 
   def call(conn, _opts) do
-    cond do
-      user = Mix.env() == :dev && Accounts.get_by(email: @email) ->
-        conn
-        |> put_session(:user_id, user.id)
-        |> configure_session(renew: true)
+    user = Mix.env() == :dev && Accounts.get_by(email: @email)
 
-      true ->
-        conn
+    if user do
+      conn
+      |> put_session(:user_id, user.id)
+      |> configure_session(renew: true)
+    else
+      conn
     end
   end
 end
