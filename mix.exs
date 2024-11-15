@@ -93,7 +93,8 @@ defmodule Runa.MixProject do
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:file_system, "~> 1.0", only: [:dev, :test]},
       {:typed_ecto_schema, "~> 0.4.1", runtime: false},
-      {:dotenvy, "~> 0.8.0", only: [:dev, :test]}
+      {:dotenvy, "~> 0.8.0", only: [:dev, :test]},
+      {:faker, "~> 0.18", only: [:dev, :test]}
     ]
   end
 

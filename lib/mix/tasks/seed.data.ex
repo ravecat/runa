@@ -13,6 +13,7 @@ defmodule Mix.Tasks.Seed.Data do
 
   @requirements ["app.start"]
   @email Application.compile_env(:runa, :authentication)[:email]
+
   def run(_args) do
     Logger.info("Starting to seed development data...")
 

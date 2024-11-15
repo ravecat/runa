@@ -7,3 +7,4 @@ ExUnit.start()
 Ecto.Adapters.SQL.Sandbox.mode(Runa.Repo, :manual)
 
 Repatch.setup()
+Faker.start()

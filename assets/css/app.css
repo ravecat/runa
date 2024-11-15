@@ -13,7 +13,7 @@ body {
 
 @layer base {
   :root {
-    --text: #2f3541;
+    --text: var(--text-700);
     --text-50: #f0f2f4;
     --text-100: #e1e4ea;
     --text-200: #c4c9d4;
@@ -26,7 +26,7 @@ body {
     --text-900: #15181e;
     --text-950: #0b0c0f;
 
-    --background: #ffffff;
+    --background: var(--background-50);
     --background-50: #f2f2f2;
     --background-100: #e6e6e6;
     --background-200: #cccccc;
@@ -39,7 +39,7 @@ body {
     --background-900: #1a1a1a;
     --background-950: #0d0d0d;
 
-    --primary: #335984;
+    --primary: var(--primary-100);
     --primary-50: #edf2f8;
     --primary-100: #dae5f1;
     --primary-200: #b6cbe2;
@@ -52,7 +52,7 @@ body {
     --primary-900: #0e1925;
     --primary-950: #070c12;
 
-    --secondary: #b7c0d1;
+    --secondary: var(--secondary-50);
     --secondary-50: #eff1f5;
     --secondary-100: #e0e4eb;
     --secondary-200: #c1c9d7;
@@ -65,7 +65,7 @@ body {
     --secondary-900: #14181f;
     --secondary-950: #0a0c10;
 
-    --accent: #124659;
+    --accent: var(--accent-600);
     --accent-50: #eaf6fb;
     --accent-100: #d5edf6;
     --accent-200: #aadcee;
@@ -78,7 +78,7 @@ body {
     --accent-900: #09212a;
     --accent-950: #041115;
 
-    --error: #be6069;
+    --error: var(--error-100);
     --error-50: #f8edee;
     --error-100: #f0dbdd;
     --error-200: #e1b7bb;
@@ -91,7 +91,7 @@ body {
     --error-900: #240f11;
     --error-950: #120708;
 
-    --danger: #d18771;
+    --danger: var(--danger-100);
     --danger-50: #f9efec;
     --danger-100: #f3dfd8;
     --danger-200: #e6beb2;
@@ -104,7 +104,7 @@ body {
     --danger-900: #27130c;
     --danger-950: #130906;
 
-    --warning: #ebca89;
+    --warning: var(--warning-100);
     --warning-50: #fbf5e9;
     --warning-100: #f8ecd3;
     --warning-200: #f0d8a8;
@@ -117,7 +117,7 @@ body {
     --warning-900: #2c2007;
     --warning-950: #161004;
 
-    --success: #a3be8c;
+    --success: var(--success-100);
     --success-50: #f2f6ef;
     --success-100: #e5edde;
     --success-200: #ccdabe;
@@ -130,7 +130,7 @@ body {
     --success-900: #192112;
     --success-950: #0d1009;
 
-    --info: #b48ead;
+    --info: var(--info-100);
     --info-50: #f5f0f4;
     --info-100: #ebe0e9;
     --info-200: #d6c2d2;
@@ -145,7 +145,7 @@ body {
   }
 
   .dark {
-    --text: #bec4d0;
+    --text: var(--text-100);
     --text-50: #0b0c0f;
     --text-100: #15181e;
     --text-200: #2b303b;
@@ -158,7 +158,7 @@ body {
     --text-900: #e1e4ea;
     --text-950: #f0f2f4;
 
-    --background: #000000;
+    --background: var(--background-100);
     --background-50: #0d0d0d;
     --background-100: #1a1a1a;
     --background-200: #333333;
@@ -171,7 +171,7 @@ body {
     --background-900: #e6e6e6;
     --background-950: #f2f2f2;
 
-    --primary: #7ba1cc;
+    --primary: var(--primary-100);
     --primary-50: #070c12;
     --primary-100: #0e1925;
     --primary-200: #1d3249;
@@ -184,7 +184,7 @@ body {
     --primary-900: #dae5f1;
     --primary-950: #edf2f8;
 
-    --secondary: #2e3748;
+    --secondary: var(--secondary-100);
     --secondary-50: #0a0c10;
     --secondary-100: #14181f;
     --secondary-200: #28303e;
@@ -197,7 +197,7 @@ body {
     --secondary-900: #e0e4eb;
     --secondary-950: #eff1f5;
 
-    --accent: #a6daed;
+    --accent: var(--accent-100);
     --accent-50: #041115;
     --accent-100: #09212a;
     --accent-200: #114355;
@@ -210,7 +210,7 @@ body {
     --accent-900: #d5edf6;
     --accent-950: #eaf6fb;
 
-    --error: #9f414b;
+    --error: var(--error-100);
     --error-50: #120708;
     --error-100: #240f11;
     --error-200: #481e22;
@@ -223,7 +223,7 @@ body {
     --error-900: #f0dbdd;
     --error-950: #f8edee;
 
-    --danger: #8e452e;
+    --danger: var(--danger-100);
     --danger-50: #130906;
     --danger-100: #27130c;
     --danger-200: #4d2519;
@@ -236,7 +236,7 @@ body {
     --danger-900: #f3dfd8;
     --danger-950: #f9efec;
 
-    --warning: #765514;
+    --warning: var(--warning-100);
     --warning-50: #161004;
     --warning-100: #2c2007;
     --warning-200: #573f0f;
@@ -249,7 +249,7 @@ body {
     --warning-900: #f8ecd3;
     --warning-950: #fbf5e9;
 
-    --success: #587240;
+    --success: var(--success-100);
     --success-50: #0d1009;
     --success-100: #192112;
     --success-200: #334125;
@@ -262,7 +262,7 @@ body {
     --success-900: #e5edde;
     --success-950: #f2f6ef;
 
-    --info: #714B6A;
+    --info: var(--info-100);
     --info-50: #0f0a0e;
     --info-100: #1f141d;
     --info-200: #3d2939;

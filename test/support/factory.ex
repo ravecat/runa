@@ -19,7 +19,7 @@ defmodule Runa.Factory do
 
   def team_factory(attrs) do
     %Team{
-      title: sequence(:title, &"team title #{&1}")
+      title: Faker.Company.buzzword_prefix()
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
@@ -36,11 +36,11 @@ defmodule Runa.Factory do
 
   def user_factory(attrs) do
     %User{
-      email: sequence(:email, &"user#{&1}@example.com"),
-      uid: sequence(:uid, &"uid#{&1}"),
-      name: sequence(:name, &"user name #{&1}"),
-      avatar: sequence(:avatar, &"https://img.example.com/#{&1}.png"),
-      nickname: sequence(:nickname, &"nickname #{&1}"),
+      email: Faker.Internet.email(),
+      uid: Faker.UUID.v4(),
+      name: Faker.Person.name(),
+      avatar: Faker.Avatar.image_url(),
+      nickname: Faker.Pokemon.name(),
       contributors: [
         build(:contributor, team: fn -> build(:team) end, role: :owner)
       ]
