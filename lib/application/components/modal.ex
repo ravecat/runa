@@ -37,7 +37,7 @@ defmodule RunaWeb.Components.Modal do
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
-      class="flex hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-lvh max-h-full  backdrop-blur-sm"
+      class="flex hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-lvh max-h-full backdrop-blur-sm"
       aria-overlay="true"
       aria-modal="true"
       aria-hidden={!@show}
@@ -48,7 +48,7 @@ defmodule RunaWeb.Components.Modal do
     >
       <div
         id={"#{@id}-bg"}
-        class="fixed inset-0 bg-secondary-300 opacity-30 transition-opacity"
+        class="fixed inset-0 bg-secondary opacity-30 transition-opacity"
         aria-hidden="true"
       />
       <div
@@ -56,17 +56,17 @@ defmodule RunaWeb.Components.Modal do
         phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
         phx-key="escape"
         phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-        class="relative p-4 w-full max-w-2xl max-h-full"
+        class="relative p-[4rem] w-full max-w-2xl max-h-full"
       >
         <div class="relative bg-background rounded shadow-lg" id={"#{@id}-content"}>
-          <div class="flex justify-between items-center py-3 px-4">
-            <h3 class="text-text text-lg">
+          <div class="flex justify-between items-center py-[1rem] px-[1rem]">
+            <h3 class="text-lg">
               <%= render_slot(@title) %>
             </h3>
             <.icon
               phx-click={JS.exec("data-cancel", to: "##{@id}")}
-              class="cursor-pointer p-[.5rem] opacity-20 hover:opacity-40"
-              aria-label="close"
+              class="cursor-pointer p-[.5rem]"
+              aria-label="Close modal"
               type="button"
               icon="x-mark"
             />
