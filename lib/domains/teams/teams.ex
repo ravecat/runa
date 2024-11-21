@@ -5,6 +5,9 @@ defmodule Runa.Teams do
 
   use Runa, :context
 
+  alias Runa.Accounts.User
+  alias Runa.Contributors
+  alias Runa.Contributors.Contributor
   alias Runa.Teams.Team
 
   @doc """
@@ -64,6 +67,24 @@ defmodule Runa.Teams do
     %Team{}
     |> Team.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create(attrs, %User{} = user) do
+    Multi.new()
+    |> Multi.insert(:team, change(%Team{}, attrs))
+    |> Multi.insert(
+      :contributor,
+      &Contributors.change(%Contributor{}, %{
+        user_id: user.id,
+        team_id: &1.team.id,
+        role: :owner
+      })
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{team: team}} -> {:ok, team}
+      {:error, _, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """

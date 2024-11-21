@@ -21,6 +21,22 @@ defmodule Runa.Contributors do
   end
 
   @doc """
+  Returns a contributor by attributes.
+
+  ## Examples
+
+      iex> get_by(user_id: 1, team_id: 1)
+      {:ok, %Contributor{}}
+
+      iex> get_by(user_id: 1)
+      {:error, %Ecto.NoResultsError{}}
+
+  """
+  def get_by(attrs \\ []) do
+    Repo.get_by(Contributor, attrs)
+  end
+
+  @doc """
   Gets a single contributor.
 
   Returns {:ok, contributor} or {:error, %Ecto.NoResultsError{}} if not found.
