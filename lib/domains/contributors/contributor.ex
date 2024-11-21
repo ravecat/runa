@@ -27,7 +27,7 @@ defmodule Runa.Contributors.Contributor do
       :role
     ])
     |> validate_required([:user_id, :team_id, :role])
-    |> foreign_key_constraint(:user_id)
-    |> foreign_key_constraint(:team_id)
+    |> assoc_constraint(:user)
+    |> assoc_constraint(:team)
   end
 end

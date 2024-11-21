@@ -5,6 +5,9 @@ defmodule Runa.TeamsTest do
 
   @moduletag :teams
 
+  alias Runa.Accounts.User
+  alias Runa.Contributors
+  alias Runa.Contributors.Contributor
   alias Runa.Teams
   alias Runa.Teams.Team
 
@@ -15,10 +18,10 @@ defmodule Runa.TeamsTest do
   end
 
   describe "teams context" do
-    test "returns all entities", ctx do
-      {:ok, {[team], %{}}} = Teams.index()
+    test "returns all entities" do
+      {:ok, {data, %{}}} = Teams.index()
 
-      assert team.id == ctx.team.id
+      Enum.each(data, &assert(is_struct(&1, Team)))
     end
 
     test "returns entity with given id", ctx do
@@ -38,12 +41,26 @@ defmodule Runa.TeamsTest do
       assert {:error, %Ecto.Changeset{}} = Teams.create(invalid_attrs)
     end
 
+    test "creates entity with linked user" do
+      user = insert(:user)
+
+      assert {:ok, %Team{} = team} = Teams.create(%{title: "some title"}, user)
+
+      assert %Contributor{} =
+               Contributors.get_by(user_id: user.id, team_id: team.id)
+    end
+
+    test "returns error changeset during creation with invalid linked user" do
+      assert {:error, %Ecto.Changeset{}} =
+               Teams.create(%{title: "some title"}, %User{id: 1})
+    end
+
     test "updates entity with valid data", ctx do
       update_attrs = %{title: "some updated title"}
 
-      assert {:ok, %Team{} = team} = Teams.update(ctx.team, update_attrs)
+      assert {:ok, %Team{} = data} = Teams.update(ctx.team, update_attrs)
 
-      assert team.title == "some updated title"
+      assert data.title == "some updated title"
     end
 
     test "returns error changeset after update with invalid data", ctx do

@@ -18,11 +18,18 @@ defmodule RunaWeb.Plugs.Authentication do
       user = conn.assigns[:current_user] ->
         put_current_user(conn, user)
 
-      user = Accounts.get_user_by_id(user_id) ->
+      user = user_id && get_user_from_session(user_id) ->
         put_current_user(conn, user)
 
       true ->
         assign(conn, :current_user, nil)
+    end
+  end
+
+  defp get_user_from_session(user_id) do
+    case Accounts.get(user_id) do
+      {:ok, user} -> user
+      _ -> nil
     end
   end
 

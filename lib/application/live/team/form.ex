@@ -50,7 +50,7 @@ defmodule RunaWeb.TeamLive.Form do
   end
 
   defp save(socket, :new, attrs) do
-    case Teams.create(attrs) do
+    case Teams.create(attrs, socket.assigns.user) do
       {:ok, data} ->
         PubSub.broadcast("teams:#{socket.assigns.user.id}", {:created_team, data})
 

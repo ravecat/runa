@@ -6,6 +6,7 @@ defmodule Runa.Accounts do
   use Runa, :context
 
   alias Runa.Accounts.User
+  alias Runa.Contributors
   alias Runa.Contributors.Contributor
   alias Runa.Teams.Team
 
@@ -38,6 +39,8 @@ defmodule Runa.Accounts do
       {:error, %Ecto.NoResultsError{}}
 
   """
+  def get(nil), do: {:error, %Ecto.NoResultsError{}}
+
   def get(id) do
     query =
       from u in User,
@@ -55,37 +58,24 @@ defmodule Runa.Accounts do
     |> Repo.preload(:teams)
   end
 
-  def get_user_by_id(nil), do: nil
-
-  def get_user_by_id(id) do
-    case get(id) do
-      {:ok, user} -> user
-      _ -> nil
-    end
-  end
-
   @doc """
   Creates or finds user.
   """
   def create_or_find(attrs \\ %{}) do
-    with %Ecto.Changeset{valid?: true} <- User.changeset(%User{}, attrs),
+    with %Ecto.Changeset{valid?: true} <- change(%User{}, attrs),
          nil <- Repo.get_by(User, email: attrs.email),
          {:ok, %{user: %User{} = user}} <-
            Multi.new()
-           |> Multi.insert(:user, User.changeset(%User{}, attrs))
-           |> Multi.insert(:team, fn %{user: user} ->
-             Team.changeset(%Team{}, %{title: "#{user.name}'s Team"})
-           end)
-           |> Multi.insert(:contributor, fn %{
-                                              user: user,
-                                              team: team
-                                            } ->
-             Contributor.changeset(%Contributor{}, %{
-               user_id: user.id,
-               team_id: team.id,
+           |> Multi.insert(:user, change(%User{}, attrs))
+           |> Multi.insert(:team, &%Team{title: "#{&1.user.name}'s Team"})
+           |> Multi.insert(
+             :contributor,
+             &Contributors.change(%Contributor{}, %{
+               user_id: &1.user.id,
+               team_id: &1.team.id,
                role: :owner
              })
-           end)
+           )
            |> Repo.transaction() do
       {:ok, user}
     else
