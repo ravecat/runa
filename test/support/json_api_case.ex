@@ -5,24 +5,30 @@ defmodule RunaWeb.JSONAPICase do
   JSON API responses.
   """
 
-  defmacro __using__(_) do
+  use ExUnit.CaseTemplate
+
+  using do
     quote do
       alias RunaWeb.JSONAPI
-
-      setup %{conn: conn} do
-        conn =
-          conn
-          |> put_req_header("accept", "application/vnd.api+json")
-          |> case do
-            %{method: method} ->
-              put_req_header(conn, "content-type", "application/vnd.api+json")
-
-            _ ->
-              conn
-          end
-
-        {:ok, conn: conn}
-      end
     end
+  end
+
+  setup %{conn: conn} do
+    conn =
+      conn
+      |> Plug.Conn.put_req_header("accept", "application/vnd.api+json")
+      |> case do
+        %{method: _method} ->
+          Plug.Conn.put_req_header(
+            conn,
+            "content-type",
+            "application/vnd.api+json"
+          )
+
+        _ ->
+          conn
+      end
+
+    {:ok, conn: conn}
   end
 end

@@ -7,73 +7,84 @@ defmodule Runa.TokensTest do
   alias Runa.Tokens
   alias Runa.Tokens.Token
 
-  @valid_access_levels Application.compile_env(:runa, :token_access_levels)
-
   setup do
     user = insert(:user)
-    token = insert(:token, user: user)
+    token = insert(:token, user: user, access: :read)
 
     {:ok, token: token, user: user}
   end
 
-  describe "tokens" do
-    test "return all tokens", ctx do
-      assert [token] = Tokens.get_tokens()
+  describe "tokens context" do
+    test "returns all entities", ctx do
+      assert data = Tokens.index(ctx.user)
 
-      assert token.id == ctx.token.id
+      Enum.each(data, &assert(is_struct(&1, Token)))
     end
 
-    test "return the token with given id", ctx do
-      assert token = Tokens.get_token!(ctx.token.id)
+    test "creates entity with valid data", ctx do
+      assert {:ok, %Token{} = token} =
+               Tokens.create(%{
+                 access: :read,
+                 user_id: ctx.user.id,
+                 token: "token"
+               })
 
-      assert token.id == ctx.token.id
-      assert token.access == ctx.token.access
+      assert token.access == :read
+      assert token.user_id == ctx.user.id
+      assert token.hash != nil
+    end
+
+    test "returns error changeset during creation with invalid data", ctx do
+      assert {:error, %Ecto.Changeset{}} =
+               Tokens.create(%{access: nil, user_id: ctx.user.id})
+    end
+
+    test "updates access", ctx do
+      token = insert(:token, access: :read, user: ctx.user)
+
+      assert {:ok, %Token{} = token} =
+               Tokens.update(token, %{access: :write})
+
+      assert token.access == :write
+    end
+
+    test "ignores fields other than access on update", ctx do
+      user = insert(:user)
+
+      assert {:ok, %Token{} = token} =
+               Tokens.update(ctx.token, %{access: :write, user_id: user.id})
+
+      assert token.access == :write
       assert token.user_id == ctx.user.id
     end
 
-    test "create a token with valid data", ctx do
-      valid_attrs = %{access: @valid_access_levels[:read], user_id: ctx.user.id}
-
-      assert {:ok, %Token{} = token} = Tokens.create_token(valid_attrs)
-      assert token.access == @valid_access_levels[:read]
-      assert String.length(token.token) == 32
-      assert Regex.match?(~r/^[A-Za-z0-9_-]+$/, token.token)
-    end
-
-    test "return error changeset during creation with invalid data" do
-      invalid_attrs = %{access: nil, token: nil}
-
-      assert {:error, %Ecto.Changeset{}} = Tokens.create_token(invalid_attrs)
-    end
-
-    test "update the token with valid data", ctx do
-      update_attrs = %{
-        access: @valid_access_levels[:read]
-      }
-
-      assert {:ok, %Token{} = token} =
-               Tokens.update_token(ctx.token, update_attrs)
-
-      assert token.access == @valid_access_levels[:read]
-    end
-
-    test "return error changeset during update with invalid data", ctx do
-      invalid_attrs = %{access: nil, token: nil}
-
+    test "returns error changeset during update with invalid data", ctx do
       assert {:error, %Ecto.Changeset{}} =
-               Tokens.update_token(ctx.token, invalid_attrs)
+               Tokens.update(ctx.token, %{access: nil})
     end
 
-    test "delete the token", ctx do
-      assert {:ok, %Token{}} = Tokens.delete_token(ctx.token)
+    test "deletes entity", ctx do
+      assert {:ok, %Token{}} = Tokens.delete(ctx.token)
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Tokens.get_token!(ctx.token.id)
-      end
+      assert Repo.get(Token, ctx.token.id) == nil
     end
 
-    test "return a token changeset", ctx do
-      assert %Ecto.Changeset{} = Tokens.change_token(ctx.token)
+    test "returns changeset", ctx do
+      assert %Ecto.Changeset{} = Tokens.change(ctx.token)
+    end
+  end
+
+  describe "token generation" do
+    test "generates token with required length" do
+      token = Tokens.generate()
+
+      assert String.length(token) == 32
+    end
+
+    test "generates token with url-safe symbols" do
+      token = Tokens.generate()
+
+      assert Regex.match?(~r/^[A-Za-z0-9_-]+$/, token)
     end
   end
 end

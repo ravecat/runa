@@ -1,4 +1,4 @@
-defmodule RunaWeb.JSONAPI.Schemas.Headers do
+defmodule RunaWeb.JSONAPI.Headers do
   @moduledoc false
 
   def accept,
@@ -6,4 +6,7 @@ defmodule RunaWeb.JSONAPI.Schemas.Headers do
 
   def content_type,
     do: "application/vnd.api+json"
+
+  def api_key,
+    do: "x-api-key"
 end

@@ -4,6 +4,7 @@ defmodule RunaWeb.KeyControllerTest do
   use RunaWeb.ConnCase, async: true
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
+  use RunaWeb.VerifiedConnCase
 
   @moduletag :keys
 

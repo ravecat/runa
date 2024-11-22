@@ -5,13 +5,15 @@ defmodule RunaWeb.OpenAPICase do
   JSON API responses.
   """
 
-  defmacro __using__(_) do
+  use ExUnit.CaseTemplate
+
+  using do
     quote do
       import OpenApiSpex.TestAssertions
-
-      setup_all do
-        {:ok, spec: RunaWeb.APISpec.spec()}
-      end
     end
+  end
+
+  setup_all do
+    {:ok, spec: RunaWeb.APISpec.spec()}
   end
 end
