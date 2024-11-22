@@ -30,7 +30,7 @@ defmodule Runa.DataCase do
   end
 
   setup tags do
-    Runa.DataCase.setup_sandbox(tags)
+    setup_sandbox(tags)
     :ok
   end
 

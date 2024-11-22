@@ -9,11 +9,7 @@ import Config
 
 config :runa,
   ecto_repos: [Runa.Repo],
-  generators: [timestamp_type: :utc_datetime],
-  token_access_levels: %{
-    read: 0,
-    write: 1
-  }
+  generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
 config :runa, RunaWeb.Endpoint,

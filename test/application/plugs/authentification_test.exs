@@ -10,7 +10,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     %{user: insert(:user)}
   end
 
-  describe "plug initialization" do
+  describe "authentication plug" do
     test "re-assigns user when already existing in connection", ctx do
       conn =
         ctx.conn
@@ -63,7 +63,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
   end
 
-  describe "authenticate data processing" do
+  describe "authentication data processing" do
     test "fetches uid" do
       auth_data = %Ueberauth.Auth{uid: "123"}
 

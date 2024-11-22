@@ -12,6 +12,7 @@ defmodule RunaWeb.Router do
   alias RunaWeb.PageController
   alias RunaWeb.Plugs.Authentication
   alias RunaWeb.Plugs.DevAuthentication
+  alias RunaWeb.Plugs.APIKeyVerification
   alias RunaWeb.ProjectController
   alias RunaWeb.SessionController
   alias RunaWeb.TeamController
@@ -34,8 +35,9 @@ defmodule RunaWeb.Router do
   end
 
   pipeline :api do
-    plug OpenApiSpex.Plug.PutApiSpec, module: APISpec
     plug :accepts, ["jsonapi"]
+    plug APIKeyVerification
+    plug OpenApiSpex.Plug.PutApiSpec, module: APISpec
 
     plug JSONAPI.ContentTypeNegotiation
     plug JSONAPI.FormatRequired
@@ -77,12 +79,11 @@ defmodule RunaWeb.Router do
     pipe_through :browser
 
     get "/openapi", OpenApiSpex.Plug.SwaggerUI, path: "/api"
-
     get "/", PageController, :home
   end
 
   scope @auth_path do
-    pipe_through [:browser]
+    pipe_through :browser
 
     get "/:provider", SessionController, :request
     get "/:provider/callback", SessionController, :callback

@@ -12,10 +12,9 @@ defmodule Runa.Factory do
   alias Runa.Languages.Locale
   alias Runa.Projects.Project
   alias Runa.Teams.Team
+  alias Runa.Tokens
   alias Runa.Tokens.Token
   alias Runa.Translations.Translation
-
-  @valid_access_levels Application.compile_env(:runa, :token_access_levels)
 
   def team_factory(attrs) do
     %Team{
@@ -58,9 +57,12 @@ defmodule Runa.Factory do
   end
 
   def token_factory(attrs) do
+    token = attrs[:token] || Tokens.generate()
+    hash = Tokens.hash(token)
+
     %Token{
-      token: sequence(:token, &"token#{&1}"),
-      access: sequence(:access, Map.values(@valid_access_levels))
+      hash: hash,
+      token: token
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()

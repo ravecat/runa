@@ -20,6 +20,9 @@ defmodule RunaWeb.APISpec do
 
   def spec() do
     %OpenApi{
+      security: [
+        %{"ApiKeyAuth" => []}
+      ],
       servers: [
         Server.from_endpoint(Endpoint)
       ],
@@ -33,7 +36,7 @@ defmodule RunaWeb.APISpec do
           "ApiKeyAuth" => %SecurityScheme{
             type: "apiKey",
             in: "header",
-            name: "X-API-KEY"
+            name: JSONAPI.Headers.api_key()
           }
         },
         schemas: %{
@@ -53,7 +56,7 @@ defmodule RunaWeb.APISpec do
           "200" => %Response{
             description: "200 OK",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: JSONAPI.Schemas.Document
               }
             }
@@ -61,7 +64,7 @@ defmodule RunaWeb.APISpec do
           "201" => %Response{
             description: "201 Created",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: JSONAPI.Schemas.Document
               }
             }
@@ -69,7 +72,7 @@ defmodule RunaWeb.APISpec do
           "202" => %Response{
             description: "202 Accepted",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: JSONAPI.Schemas.Document
               }
             }
@@ -77,7 +80,7 @@ defmodule RunaWeb.APISpec do
           "204" => %Response{
             description: "204 No Content",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: %Schema{type: :object}
               }
             }
@@ -85,7 +88,7 @@ defmodule RunaWeb.APISpec do
           "400" => %Response{
             description: "400 Bad Request",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: JSONAPI.Schemas.Error
               }
             }
@@ -93,7 +96,7 @@ defmodule RunaWeb.APISpec do
           "401" => %Response{
             description: "401 Unauthorized",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: JSONAPI.Schemas.Error
               }
             }
@@ -101,7 +104,7 @@ defmodule RunaWeb.APISpec do
           "403" => %Response{
             description: "403 Forbidden",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: JSONAPI.Schemas.Error
               }
             }
@@ -109,7 +112,7 @@ defmodule RunaWeb.APISpec do
           "404" => %Response{
             description: "404 Not Found",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: JSONAPI.Schemas.Error
               }
             }
@@ -117,7 +120,7 @@ defmodule RunaWeb.APISpec do
           "409" => %Response{
             description: "409 Conflict",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: JSONAPI.Schemas.Error
               }
             }
@@ -125,16 +128,13 @@ defmodule RunaWeb.APISpec do
           "500" => %Response{
             description: "500 Internal Server Error",
             content: %{
-              JSONAPI.Schemas.Headers.content_type() => %MediaType{
+              JSONAPI.Headers.content_type() => %MediaType{
                 schema: JSONAPI.Schemas.Error
               }
             }
           }
         }
-      },
-      security: [
-        %{"ApiKeyAuth" => []}
-      ]
+      }
     }
     |> OpenApiSpex.resolve_schema_modules()
   end

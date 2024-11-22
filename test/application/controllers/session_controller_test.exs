@@ -2,6 +2,7 @@ defmodule RunaWeb.SessionControllerTest do
   @moduledoc false
 
   use RunaWeb.ConnCase, async: true
+
   alias RunaWeb.SessionController
 
   @moduletag :session

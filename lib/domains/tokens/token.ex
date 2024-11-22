@@ -5,13 +5,14 @@ defmodule Runa.Tokens.Token do
   use Runa, :schema
 
   alias Runa.Accounts.User
+  alias Runa.Tokens
 
-  @valid_access_levels Application.compile_env(:runa, :token_access_levels)
-                       |> Map.values()
+  @access_levels [write: 4, read: 2, suspended: 1]
 
   schema "tokens" do
-    field :token, :string
-    field :access, :integer
+    field :hash, :string
+    field :token, :string, virtual: true
+    field :access, Ecto.Enum, values: @access_levels
     belongs_to :user, User
 
     timestamps(type: :utc_datetime)
@@ -20,9 +21,25 @@ defmodule Runa.Tokens.Token do
   @doc false
   def changeset(token, attrs) do
     token
-    |> cast(attrs, [:access, :user_id])
-    |> validate_required([:access, :token, :user_id])
-    |> validate_inclusion(:access, @valid_access_levels)
-    |> foreign_key_constraint(:user_id)
+    |> cast(attrs, [:access, :user_id, :token])
+    |> validate_required([:access, :user_id, :token])
+    |> assoc_constraint(:user)
+    |> put_hash()
+  end
+
+  def update_changeset(token, attrs) do
+    token
+    |> cast(attrs, [:access])
+    |> validate_required([:access])
+  end
+
+  defp put_hash(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{token: token}} ->
+        put_change(changeset, :hash, Tokens.hash(token))
+
+      _ ->
+        changeset
+    end
   end
 end

@@ -5,55 +5,49 @@ defmodule Runa.Tokens do
 
   use Runa, :context
 
-  import Runa.TokenGenerator
-
   alias Runa.Tokens.Token
 
   @doc """
-  Returns the list of tokens.
-
-  ## Examples
-
-      iex> get_tokens()
-      [%Token{}, ...]
-
+  Return token
   """
-  def get_tokens do
-    Repo.all(Token)
+
+  def get(token) when is_binary(token) do
+    case Repo.get_by(Token, hash: hash(token)) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
   end
 
   @doc """
-  Gets a single token.
-
-  Raises `Ecto.NoResultsError` if the Token does not exist.
+  Return all tokens.
 
   ## Examples
 
-      iex> get_token!(123)
-      %Token{}
-
-      iex> get_token!(456)
-      ** (Ecto.NoResultsError)
+      iex> index()
+      [%Token{}, ...]
 
   """
-  def get_token!(id), do: Repo.get!(Token, id)
+  def index(user) do
+    Token
+    |> where(user_id: ^user.id)
+    |> Repo.all()
+  end
 
   @doc """
   Creates a token.
 
   ## Examples
 
-      iex> create_token(%{field: value})
+      iex> create(%{field: value})
       {:ok, %Token{}}
 
-      iex> create_token(%{field: bad_value})
+      iex> create(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_token(attrs \\ %{}) do
+  def create(attrs \\ %{}) do
     %Token{}
-    |> Ecto.Changeset.change(%{token: generate_token()})
-    |> Token.changeset(attrs)
+    |> change(attrs)
     |> Repo.insert()
   end
 
@@ -62,16 +56,16 @@ defmodule Runa.Tokens do
 
   ## Examples
 
-      iex> update_token(token, %{field: new_value})
+      iex> update(token, %{field: new_value})
       {:ok, %Token{}}
 
-      iex> update_token(token, %{field: bad_value})
+      iex> update(token, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_token(%Token{} = token, attrs) do
+  def update(%Token{} = token, attrs) do
     token
-    |> Token.changeset(attrs)
+    |> Token.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -80,14 +74,14 @@ defmodule Runa.Tokens do
 
   ## Examples
 
-      iex> delete_token(token)
+      iex> delete(token)
       {:ok, %Token{}}
 
-      iex> delete_token(token)
+      iex> delete(token)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_token(%Token{} = token) do
+  def delete(%Token{} = token) do
     Repo.delete(token)
   end
 
@@ -96,11 +90,25 @@ defmodule Runa.Tokens do
 
   ## Examples
 
-      iex> change_token(token)
+      iex> change(token)
       %Ecto.Changeset{data: %Token{}}
 
   """
-  def change_token(%Token{} = token, attrs \\ %{}) do
+  def change(%Token{} = token, attrs \\ %{}) do
     Token.changeset(token, attrs)
+  end
+
+  @doc """
+  Generate a token for a user.
+  """
+  def generate do
+    :crypto.strong_rand_bytes(24) |> Base.url_encode64(padding: false)
+  end
+
+  @doc """
+  Generate a hash for a token.
+  """
+  def hash(token) when is_binary(token) do
+    :crypto.hash(:sha256, token) |> Base.encode16(case: :lower)
   end
 end

@@ -32,7 +32,6 @@ defmodule RunaWeb.ConnCase do
       @endpoint RunaWeb.Endpoint
 
       use RunaWeb, :verified_routes
-      use ExUnit.Case
       use Repatch.ExUnit
 
       # Import conveniences for testing with connections
@@ -40,8 +39,8 @@ defmodule RunaWeb.ConnCase do
       import Plug.HTML
       import Phoenix.ConnTest
       import RunaWeb.ConnCase
-      import Runa.Factory
       import Mock
+      import Runa.Factory
       import RunaWeb.Router
       import Phoenix.Controller, only: [fetch_flash: 2]
       import LiveIsolatedComponent
