@@ -5,15 +5,13 @@
   <div class="px-[.5rem]">
     <.dropdown entries={@streams.teams} id="teams">
       <:summary>
-        <.tab class="cursor-pointer hover:bg-secondary">
-          <.avatar alt="avatar" src={@user.avatar} />
-          <.info class="grow text-sm">
-            <:title>
-              <%= @active_team.title || "-" %>
-            </:title>
-            <:info><%= @user.name %></:info>
-          </.info>
-        </.tab>
+        <.avatar alt="avatar" src={@user.avatar} />
+        <.info class="grow text-sm">
+          <:title>
+            <%= @active_team.title || "-" %>
+          </:title>
+          <:info><%= @user.name %></:info>
+        </.info>
       </:summary>
       <:row :let={team}>
         <%= team.title %>

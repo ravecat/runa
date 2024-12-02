@@ -10,6 +10,7 @@ defmodule RunaWeb.Live.Profile do
   import RunaWeb.Components.Avatar
   import RunaWeb.Components.Button
   import RunaWeb.Components.Icon
+  import RunaWeb.Components.Table
   import RunaWeb.Formatters
 
   @impl true

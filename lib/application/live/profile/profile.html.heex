@@ -22,57 +22,32 @@
     API keys for external services (removed after the creator is removed from the platform)
   </div>
 
-  <div class="overflow-y-auto sm:overflow-visible">
-    <table class="min-w-full divide-y divide-accent dark:divide-accent text-sm">
-      <thead>
-        <tr>
-          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
-            Key
-          </th>
-          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
-            Owner
-          </th>
-          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
-            Created at
-          </th>
-          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
-            Status
-          </th>
-          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
-          </th>
-        </tr>
-      </thead>
-
-      <tbody class="divide-y divide-accent dark:divide-accent">
-        <tr :for={token <- @user.tokens}>
-          <td class="whitespace-nowrap p-2">
-            <%= token.id %>
-          </td>
-          <td class="whitespace-nowrap p-2">
-            <%= @user.name %>
-            <span class="text-xs">
-              <%= @user.email %>
-            </span>
-          </td>
-          <td class="whitespace-nowrap p-2">
-            <%= format_datetime_to_view(token.inserted_at) %>
-          </td>
-          <td class="whitespace-nowrap p-2 isolation-isolate">
-            <.dropdown
-              entries={@access_levels}
-              id="statuses"
-              row_fn={fn {label, _} -> label end}
-            >
-              <:summary>
-                <%= token.access %>
-              </:summary>
-            </.dropdown>
-          </td>
-          <td class="whitespace-nowrap p-2">
-            <.icon class="hover:text-accent cursor-pointer" icon="trash" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <.table id="api_keys" rows={@user.tokens}>
+    <:col :let={token} label="Key">
+      <%= token.id %>
+    </:col>
+    <:col label="Owner">
+      <%= @user.name %>
+      <span class="text-xs">
+        <%= @user.email %>
+      </span>
+    </:col>
+    <:col :let={token} label="Created at">
+      <%= format_datetime_to_view(token.inserted_at) %>
+    </:col>
+    <:col :let={token} label="Status">
+      <.dropdown
+        entries={@access_levels}
+        id="statuses"
+        row_item={fn {label, _} -> label end}
+      >
+        <:summary>
+          <%= token.access %>
+        </:summary>
+      </.dropdown>
+    </:col>
+    <:action>
+      <.icon class="hover:text-accent cursor-pointer" icon="trash" />
+    </:action>
+  </.table>
 </div>
