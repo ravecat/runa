@@ -19,7 +19,7 @@ defmodule RunaWeb.Components.Icon do
         "background-color: currentColor;"
       ]}
       class={[
-        "block min-w-[1rem] min-h-[1rem]",
+        "inline-block min-w-[1rem] min-h-[1rem] align-text-top",
         @class
       ]}
       {@rest}

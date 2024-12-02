@@ -26,7 +26,7 @@ defmodule RunaWeb.Components.Dropdown do
   attr :id, :string, required: true
   attr :entries, :list, required: true
 
-  attr :row_fn, :any,
+  attr :row_item, :any,
     default: &Function.identity/1,
     doc: "the function for mapping each entry data to the row content"
 
@@ -55,7 +55,7 @@ defmodule RunaWeb.Components.Dropdown do
       with %{entries: %Phoenix.LiveView.LiveStream{}} <- assigns do
         assigns
         |> assign(row_id: assigns.row_id || fn {id, _item} -> id end)
-        |> assign(row_fn: fn {_, item} -> assigns.row_fn.(item) end)
+        |> assign(row_item: fn {_, item} -> assigns.row_item.(item) end)
         |> assign(
           row_click:
             assigns.row_click && fn {_, item} -> assigns.row_click.(item) end
@@ -123,9 +123,9 @@ defmodule RunaWeb.Components.Dropdown do
             id={@row_id && @row_id.(row)}
           >
             <%= if @row != [] do %>
-              <%= render_slot(@row, @row_fn.(row)) %>
+              <%= render_slot(@row, @row_item.(row)) %>
             <% else %>
-              <%= @row_fn.(row) %>
+              <%= @row_item.(row) %>
             <% end %>
           </li>
         </ul>
