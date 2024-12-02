@@ -21,14 +21,16 @@ defmodule RunaWeb.Components.Modal do
   alias Phoenix.LiveView.JS
 
   import RunaWeb.Components.Commands
-  import RunaWeb.Components.Icon
 
-  attr :id, :string, required: true
+  attr :id, :string, default: "modal"
   attr :show, :boolean, default: false
   attr :on_cancel, JS, default: %JS{}
   attr :on_confirm, JS, default: %JS{}
   slot :title, required: true
   slot :content, required: true
+
+  slot :action,
+    doc: "the slot for showing modal actions"
 
   def modal(assigns) do
     ~H"""
@@ -58,21 +60,22 @@ defmodule RunaWeb.Components.Modal do
         phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
         class="relative p-[4rem] w-full max-w-2xl max-h-full"
       >
-        <div class="relative bg-background rounded shadow-lg" id={"#{@id}-content"}>
-          <div class="flex justify-between items-center py-[1rem] px-[1rem]">
+        <div
+          class="relative flex flex-col min-h-full gap-2 bg-background rounded shadow-lg p-4 min-h-[10rem] gap-4"
+          id={"#{@id}-content"}
+        >
+          <div class="flex justify-between items-center">
             <h3 class="text-lg">
               <%= render_slot(@title) %>
             </h3>
-            <.icon
-              phx-click={JS.exec("data-cancel", to: "##{@id}")}
-              class="cursor-pointer p-[.5rem]"
-              aria-label="Close modal"
-              type="button"
-              icon="x-mark"
-            />
           </div>
-          <div class="p-[1rem] overflow-y-auto">
+          <div class="overflow-y-auto">
             <%= render_slot(@content) %>
+          </div>
+          <div :if={@action != []} class="flex justify-end gap-2">
+            <%= for action <- @action do %>
+              <%= render_slot(action, {@on_cancel, @on_confirm}) %>
+            <% end %>
           </div>
         </div>
       </div>

@@ -17,7 +17,7 @@
         <%= team.title %>
       </:row>
       <:footer>
-        <.button phx-click="open_modal">
+        <.button phx-click="open_create_team_modal">
           Create team
         </.button>
       </:footer>
@@ -29,10 +29,9 @@
     </.link>
   </div>
   <.modal
-    :if={@is_visible_modal}
+    :if={@is_visible_create_team_modal}
     show
-    id="modal"
-    on_cancel={JS.push("close_modal")}
+    on_cancel={JS.push("close_create_team_modal")}
   >
     <:title>
       Create team

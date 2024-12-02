@@ -1,6 +1,6 @@
 defmodule RunaWeb.Components.Table do
-  @doc """
-  Renders a table with generic styling.
+  @moduledoc """
+  This module is responsible for rendering a table with generic styling.
 
   ## Examples
 
@@ -36,7 +36,7 @@ defmodule RunaWeb.Components.Table do
 
   def table(assigns) do
     assigns =
-      with %{entries: %Phoenix.LiveView.LiveStream{}} <- assigns do
+      with %{rows: %Phoenix.LiveView.LiveStream{}} <- assigns do
         assigns
         |> assign(row_id: assigns.row_id || fn {id, _item} -> id end)
         |> assign(row_item: fn {_, item} -> assigns.row_item.(item) end)

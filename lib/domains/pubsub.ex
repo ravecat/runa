@@ -1,4 +1,7 @@
 defmodule Runa.PubSub do
+  @moduledoc """
+  This module is responsible for broadcasting messages to the pubsub system.
+  """
   require Logger
 
   def broadcast(topic, payload) do

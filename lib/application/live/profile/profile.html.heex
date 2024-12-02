@@ -12,17 +12,17 @@
   </.info>
 </.tab>
 <div class="w-full p-4 rounded flex-col gap-4 flex mb-4 border border-accent">
-  <div class="flex flex-row justify-between">
+  <div class="flex flex-row justify-between items-center">
     <h2 class="text-lg font-medium">API keys</h2>
-    <.button class="flex space-between gap-2">
-      <.icon icon="plus" />Create key
+    <.button class="flex justify-between gap-2">
+      <.icon icon="plus" /> Create key
     </.button>
   </div>
   <div class="text-sm leading-normal">
     API keys for external services (removed after the creator is removed from the platform)
   </div>
 
-  <.table id="api_keys" rows={@user.tokens}>
+  <.table id="api_keys" rows={@streams.tokens}>
     <:col :let={token} label="Key">
       <%= token.id %>
     </:col>
@@ -38,16 +38,49 @@
     <:col :let={token} label="Status">
       <.dropdown
         entries={@access_levels}
-        id="statuses"
+        id={"status-dropdown-#{token.id}"}
         row_item={fn {label, _} -> label end}
+        data-token-status-id={token.id}
       >
         <:summary>
           <%= token.access %>
         </:summary>
       </.dropdown>
     </:col>
-    <:action>
-      <.icon class="hover:text-accent cursor-pointer" icon="trash" />
+    <:action :let={token}>
+      <button
+        type="button"
+        role="button"
+        class="flex rounded px-1 py-1 hover:bg-accent cursor-pointer"
+        phx-click="open_delete_token_modal"
+        phx-value-id={token.id}
+        aria-label="Delete API key"
+        data-token-id={token.id}
+      >
+        <.icon icon="trash" />
+      </button>
     </:action>
   </.table>
 </div>
+<.modal
+  :if={@is_visible_delete_token_modal}
+  show
+  on_cancel={JS.push("close_delete_token_modal")}
+>
+  <:title>
+    Delete API key?
+  </:title>
+  <:content>
+    Are you sure?
+  </:content>
+  <:action :let={{on_cancel, _}}>
+    <.button phx-click={on_cancel}>Cancel</.button>
+    <.button
+      phx-click="delete_token"
+      phx-value-id={@token_id_to_delete}
+      phx-disable-with="Processing..."
+    >
+      Delete
+    </.button>
+  </:action>
+</.modal>

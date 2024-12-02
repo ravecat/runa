@@ -5,8 +5,6 @@ defmodule RunaWeb.Live.SidebarTest do
 
   alias RunaWeb.Live.Sidebar
 
-  import Phoenix.LiveViewTest
-
   @moduletag :sidebar
 
   setup do
