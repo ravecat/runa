@@ -3,7 +3,7 @@
     <.icon icon="logo" class="w-[4rem]" />
   </div>
   <div class="px-[.5rem]">
-    <.dropdown position="right">
+    <.dropdown entries={@streams.teams} id="teams">
       <:summary>
         <.tab class="cursor-pointer hover:bg-secondary">
           <.avatar alt="avatar" src={@user.avatar} />
@@ -13,28 +13,15 @@
             </:title>
             <:info><%= @user.name %></:info>
           </.info>
-          <.icon icon="shevron-right" />
         </.tab>
       </:summary>
-      <:menu>
-        <div id="streamed_teams" phx-update="stream">
-          <.tab
-            :for={{id, team} <- @streams.teams}
-            id={id}
-            class="cursor-pointer hover:bg-secondary"
-          >
-            <.link :if={team} href="#">
-              <%= team.title %>
-            </.link>
-          </.tab>
-        </div>
-      </:menu>
+      <:row :let={team}>
+        <%= team.title %>
+      </:row>
       <:footer>
-        <.tab class="cursor-pointer hover:bg-secondary">
-          <.button phx-click="open_modal">
-            Create team
-          </.button>
-        </.tab>
+        <.button phx-click="open_modal">
+          Create team
+        </.button>
       </:footer>
     </.dropdown>
     <.link href={~p"/session/logout"} method="delete">

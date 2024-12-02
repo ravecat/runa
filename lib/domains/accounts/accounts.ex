@@ -45,7 +45,7 @@ defmodule Runa.Accounts do
     query =
       from u in User,
         where: u.id == ^id,
-        preload: [:teams]
+        preload: [:teams, :tokens]
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -55,7 +55,7 @@ defmodule Runa.Accounts do
 
   def get_by(attrs \\ []) do
     Repo.get_by(User, attrs)
-    |> Repo.preload(:teams)
+    |> Repo.preload([:teams, :tokens])
   end
 
   @doc """

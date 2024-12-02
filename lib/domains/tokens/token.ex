@@ -42,4 +42,6 @@ defmodule Runa.Tokens.Token do
         changeset
     end
   end
+
+  def access_levels, do: @access_levels
 end
