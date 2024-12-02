@@ -8,11 +8,10 @@ defmodule RunaWeb.Router do
   alias RunaWeb.KeyController
   alias RunaWeb.LanguageController
   alias RunaWeb.Layouts
-  alias RunaWeb.Live
   alias RunaWeb.PageController
+  alias RunaWeb.Plugs.APIKeyVerification
   alias RunaWeb.Plugs.Authentication
   alias RunaWeb.Plugs.DevAuthentication
-  alias RunaWeb.Plugs.APIKeyVerification
   alias RunaWeb.ProjectController
   alias RunaWeb.SessionController
   alias RunaWeb.TeamController
@@ -91,10 +90,10 @@ defmodule RunaWeb.Router do
     delete "/logout", SessionController, :logout
   end
 
-  scope "/profile" do
+  scope "/profile", RunaWeb.Live do
     pipe_through [:browser, :authenticate]
 
-    live "/", Live.Profile, :show
+    live "/", Profile, :show
   end
 
   # Enable LiveDashboard in development

@@ -11,3 +11,68 @@
     <:info><%= @user.email %></:info>
   </.info>
 </.tab>
+<div class="w-full p-4 rounded flex-col gap-4 flex mb-4 border border-accent">
+  <div class="flex flex-row justify-between">
+    <h2 class="text-lg font-medium">API keys</h2>
+    <.button class="flex space-between gap-2">
+      <.icon icon="plus" />Create key
+    </.button>
+  </div>
+  <div class="text-sm leading-normal">
+    API keys for external services (removed after the creator is removed from the platform)
+  </div>
+
+  <div class="overflow-y-auto sm:overflow-visible">
+    <table class="min-w-full divide-y divide-accent dark:divide-accent text-sm">
+      <thead>
+        <tr>
+          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
+            Key
+          </th>
+          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
+            Owner
+          </th>
+          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
+            Created at
+          </th>
+          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
+            Status
+          </th>
+          <th class="whitespace-nowrap p-2 font-medium text-left uppercase">
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-accent dark:divide-accent">
+        <tr :for={token <- @user.tokens}>
+          <td class="whitespace-nowrap p-2">
+            <%= token.id %>
+          </td>
+          <td class="whitespace-nowrap p-2">
+            <%= @user.name %>
+            <span class="text-xs">
+              <%= @user.email %>
+            </span>
+          </td>
+          <td class="whitespace-nowrap p-2">
+            <%= format_datetime_to_view(token.inserted_at) %>
+          </td>
+          <td class="whitespace-nowrap p-2 isolation-isolate">
+            <.dropdown
+              entries={@access_levels}
+              id="statuses"
+              row_fn={fn {label, _} -> label end}
+            >
+              <:summary>
+                <%= token.access %>
+              </:summary>
+            </.dropdown>
+          </td>
+          <td class="whitespace-nowrap p-2">
+            <.icon class="hover:text-accent cursor-pointer" icon="trash" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

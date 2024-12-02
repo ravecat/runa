@@ -25,6 +25,8 @@ defmodule Mix.Tasks.Seed.Data do
 
     insert_list(10, :contributor, user: user, team: fn -> insert(:team) end)
 
+    insert_list(10, :token, user: user)
+
     Logger.info("Finished seeding development data")
   end
 end

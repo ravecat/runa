@@ -4,30 +4,64 @@ defmodule RunaWeb.Components.Dropdown do
 
   ## Examples
     <.dropdown>
-      <:button><.button>Send!</.button></:button>
+      <:summary>
+        Hello! Choose an option
+      </:summary>
       <:menu>
         <.link href="#">Profile</.link>
         <.link href="#">Settings</.link>
         <.link href="#">Logout</.link>
       </:menu>
+      <:footer>
+        <.button>Footer</.button>
+      </:footer>
     </.dropdown>
   """
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
 
+  import RunaWeb.Components.Icon
+
+  attr :id, :string, required: true
+  attr :entries, :list, required: true
+
+  attr :row_fn, :any,
+    default: &Function.identity/1,
+    doc: "the function for mapping each entry data to the row content"
+
+  attr :row_click, :any,
+    default: nil,
+    doc: "the function for handling phx-click on each row"
+
   attr :class, :string, default: nil
+
+  attr :row_id, :any,
+    default: nil,
+    doc: "the function for generating the row id"
+
   attr :rest, :global
 
   attr :position, :string,
     default: "bottom",
     values: ["top", "bottom", "left", "right"]
 
-  slot :summary, required: true
-  slot :menu, required: true
+  slot :summary
+  slot :row
   slot :footer
 
   def dropdown(assigns) do
+    assigns =
+      with %{entries: %Phoenix.LiveView.LiveStream{}} <- assigns do
+        assigns
+        |> assign(row_id: assigns.row_id || fn {id, _item} -> id end)
+        |> assign(row_fn: fn {_, item} -> assigns.row_fn.(item) end)
+        |> assign(
+          row_click:
+            assigns.row_click && fn {_, item} -> assigns.row_click.(item) end
+        )
+      end
+
     ~H"""
     <details
       phx-click-away={JS.remove_attribute("open")}
@@ -35,42 +69,72 @@ defmodule RunaWeb.Components.Dropdown do
       aria-orientation="vertical"
       data-state="closed"
       class={[
-        "phx-submit-loading:opacity-75 relative",
+        "group relative phx-submit-loading:opacity-75",
         @class
       ]}
       {@rest}
     >
-      <summary class="list-none">
-        <%= render_slot(@summary) %>
+      <summary class="list-none rounded flex items-center justify-between border border-accent cursor-pointer w-full p-[.5rem] gap-[.25rem] text-ellipsis overflow-hidden select-none whitespace-nowrap bg-background dark:bg-background">
+        <%= if @summary != [] do %>
+          <%= render_slot(@summary) %>
+          <.icon
+            icon="shevron-right"
+            class="rotate-90 transition-transform duration-300 group-open:rotate-[270deg]"
+          />
+        <% else %>
+          Select an option
+          <.icon
+            icon="shevron-right"
+            class="rotate-90 transition-transform duration-200"
+          />
+        <% end %>
       </summary>
-      <%!-- [TODO] Required css modules functionality https://ravecat.fibery.io/Runa/Features-282#Task/css-modules-integration-19 --%>
       <div
-        class="absolute w-[16rem] rounded divide-y divide-secondary border border-secondary shadow-lg bg-background-50 dark:bg-background-50"
+        class="absolute p-1 rounded border border-secondary shadow-lg bg-background dark:bg-background z-10 min-w-[100%] max-h-[80vh]"
         style={[
           %{
             "top" => [
-              "transform: translate(0, calc(-100% - 0.5rem));",
+              "transform: translate(0, calc(-100% - 0.25rem));",
               "top: 0;"
             ],
             "bottom" => [
-              "transform: translate(0, calc(0% + 0.5rem));"
+              "transform: translate(0, calc(0% + 0.25rem));"
             ],
             "left" => [
-              "transform: translate(calc(-100% - 0.5rem), 0);",
+              "transform: translate(calc(-100% - 0.25rem), 0);",
               "top: 0;"
             ],
             "right" => [
-              "transform: translate(calc(100% + 0.5rem), 0);",
+              "transform: translate(calc(100% + 0.25rem), 0);",
               "top: 0;",
               "right: 0"
             ]
           }[@position]
         ]}
       >
-        <div class="p-[.25rem]">
-          <%= render_slot(@menu) %>
-        </div>
-        <div class="p-[.25rem]">
+        <ul
+          phx-update={match?(%Phoenix.LiveView.LiveStream{}, @entries) && "stream"}
+          id={@id}
+        >
+          <li
+            :for={row <- @entries}
+            phx-click={@row_click && @row_click.(row)}
+            class="rounded flex items-center p-2 gap-[.25rem] text-ellipsis overflow-hidden whitespace-nowrap cursor-pointer hover:bg-secondary"
+            id={@row_id && @row_id.(row)}
+          >
+            <%= if @row != [] do %>
+              <%= render_slot(@row, @row_fn.(row)) %>
+            <% else %>
+              <%= @row_fn.(row) %>
+            <% end %>
+          </li>
+        </ul>
+
+        <div
+          :if={@footer != []}
+          id="footer"
+          class="rounded flex items-center p-2 gap-[.25rem] text-ellipsis overflow-hidden whitespace-nowrap cursor-pointer hover:bg-secondary"
+        >
           <%= render_slot(@footer) %>
         </div>
       </div>

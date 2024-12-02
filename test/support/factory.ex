@@ -62,7 +62,8 @@ defmodule Runa.Factory do
 
     %Token{
       hash: hash,
-      token: token
+      token: token,
+      access: sequence(:access, [:read, :write, :suspended])
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()

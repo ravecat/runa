@@ -3,10 +3,17 @@ defmodule RunaWeb.Live.Sidebar do
   Renders a application sidebar.
   """
   use RunaWeb, :live_view
-  use RunaWeb, :components
 
   alias Runa.Accounts
   alias Runa.Teams.Team
+
+  import RunaWeb.Components.Dropdown
+  import RunaWeb.Components.Tab
+  import RunaWeb.Components.Modal
+  import RunaWeb.Components.Info
+  import RunaWeb.Components.Avatar
+  import RunaWeb.Components.Button
+  import RunaWeb.Components.Icon
 
   @impl true
   def mount(_params, %{"user_id" => user_id}, socket) do

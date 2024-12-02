@@ -1,9 +1,12 @@
 defmodule RunaWeb.TeamLive.Form do
   use RunaWeb, :live_component
-  use RunaWeb, :components
 
   alias Runa.Teams
   alias Runa.Teams.Team
+
+  import RunaWeb.Components.Form
+  import RunaWeb.Components.Button
+  import RunaWeb.Components.Input
 
   @impl true
   def update(%{data: %Team{} = data} = assigns, socket) do
@@ -52,7 +55,10 @@ defmodule RunaWeb.TeamLive.Form do
   defp save(socket, :new, attrs) do
     case Teams.create(attrs, socket.assigns.user) do
       {:ok, data} ->
-        PubSub.broadcast("teams:#{socket.assigns.user.id}", {:created_team, data})
+        PubSub.broadcast(
+          "teams:#{socket.assigns.user.id}",
+          {:created_team, data}
+        )
 
         {:noreply, put_flash(socket, :info, "Team created successfully")}
 
