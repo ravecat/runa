@@ -42,6 +42,9 @@ defmodule Runa.Factory do
       avatar: Faker.Avatar.image_url(),
       contributors: fn ->
         build_list(1, :contributor, team: fn -> build(:team) end)
+      end,
+      tokens: fn ->
+        build_list(3, :token)
       end
     }
     |> merge_attributes(attrs)

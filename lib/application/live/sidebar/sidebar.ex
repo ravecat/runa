@@ -26,7 +26,7 @@ defmodule RunaWeb.Live.Sidebar do
     socket =
       socket
       |> assign(:user, user)
-      |> assign(:is_visible_modal, false)
+      |> assign(:is_visible_create_team_modal, false)
       |> assign(:active_team, List.first(user.teams) || %Team{title: nil})
       |> assign(:team, %Team{})
       |> stream(:teams, user.teams)
@@ -39,7 +39,7 @@ defmodule RunaWeb.Live.Sidebar do
     socket =
       socket
       |> stream_insert(:teams, data)
-      |> assign(:is_visible_modal, false)
+      |> assign(:is_visible_create_team_modal, false)
 
     {:noreply, socket}
   end
@@ -48,12 +48,12 @@ defmodule RunaWeb.Live.Sidebar do
   def handle_info(_, socket), do: {:noreply, socket}
 
   @impl true
-  def handle_event("open_modal", _, socket) do
-    {:noreply, assign(socket, :is_visible_modal, true)}
+  def handle_event("open_create_team_modal", _, socket) do
+    {:noreply, assign(socket, :is_visible_create_team_modal, true)}
   end
 
   @impl true
-  def handle_event("close_modal", _, socket) do
-    {:noreply, assign(socket, :is_visible_modal, false)}
+  def handle_event("close_create_team_modal", _, socket) do
+    {:noreply, assign(socket, :is_visible_create_team_modal, false)}
   end
 end

@@ -11,6 +11,29 @@ body {
   font-variation-settings: "wdth" 100;
 }
 
+.loader {
+  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+  mask: var(--_m);
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
+  animation: spinner 1s infinite linear;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.icon {
+  -webkit-mask: var(--icon-url) no-repeat;
+  mask: var(--icon-url) no-repeat;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
 @layer base {
   :root {
     --text: var(--text-100);

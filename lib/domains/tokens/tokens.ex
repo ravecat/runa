@@ -85,6 +85,10 @@ defmodule Runa.Tokens do
     Repo.delete(token)
   end
 
+  def delete(id) do
+    Repo.get_by(Token, id: id) |> Repo.delete()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking token changes.
 

@@ -1,4 +1,9 @@
 defmodule RunaWeb.VerifiedConnCase do
+  @moduledoc """
+  This module is responsible for setting up a connection with a verified API key.
+
+  Require for test cases with verified API key.
+  """
   use ExUnit.CaseTemplate
 
   import Runa.Factory
