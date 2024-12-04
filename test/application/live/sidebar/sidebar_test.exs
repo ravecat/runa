@@ -78,9 +78,9 @@ defmodule RunaWeb.Live.SidebarTest do
              |> element("button", "Create team")
              |> render_click()
 
-      assert view
-             |> element("form")
-             |> render_submit(%{"team" => %{"title" => team}})
+      view
+      |> element("form")
+      |> render_submit(%{"team" => %{"title" => team}})
 
       assert render_async(view) =~ team
     end
@@ -93,9 +93,9 @@ defmodule RunaWeb.Live.SidebarTest do
              |> element("button", "Create team")
              |> render_click()
 
-      assert view
-             |> element("form")
-             |> render_submit(%{"team" => %{"title" => ""}})
+      view
+      |> element("form")
+      |> render_submit(%{"team" => %{"title" => ""}})
 
       assert has_element?(view, "p", "can't be blank")
     end

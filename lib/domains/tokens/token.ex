@@ -13,6 +13,7 @@ defmodule Runa.Tokens.Token do
     field :hash, :string
     field :token, :string, virtual: true
     field :access, Ecto.Enum, values: @access_levels
+    field :title, :string
     belongs_to :user, User
 
     timestamps(type: :utc_datetime)
@@ -21,9 +22,10 @@ defmodule Runa.Tokens.Token do
   @doc false
   def changeset(token, attrs) do
     token
-    |> cast(attrs, [:access, :user_id, :token])
-    |> validate_required([:access, :user_id, :token])
+    |> cast(attrs, [:access, :user_id, :title])
+    |> validate_required([:access, :user_id, :title])
     |> assoc_constraint(:user)
+    |> put_token()
     |> put_hash()
   end
 
@@ -31,6 +33,16 @@ defmodule Runa.Tokens.Token do
     token
     |> cast(attrs, [:access])
     |> validate_required([:access])
+  end
+
+  defp put_token(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true} ->
+        put_change(changeset, :token, Tokens.generate())
+
+      _ ->
+        changeset
+    end
   end
 
   defp put_hash(changeset) do

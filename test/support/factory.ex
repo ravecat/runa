@@ -66,7 +66,8 @@ defmodule Runa.Factory do
     %Token{
       hash: hash,
       token: token,
-      access: sequence(:access, [:read, :write, :suspended])
+      access: sequence(:access, [:read, :write, :suspended]),
+      title: Faker.Pokemon.name()
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()

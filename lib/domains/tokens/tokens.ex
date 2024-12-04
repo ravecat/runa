@@ -5,6 +5,7 @@ defmodule Runa.Tokens do
 
   use Runa, :context
 
+  alias Runa.Accounts.User
   alias Runa.Tokens.Token
 
   @doc """
@@ -47,6 +48,13 @@ defmodule Runa.Tokens do
   """
   def create(attrs \\ %{}) do
     %Token{}
+    |> change(attrs)
+    |> Repo.insert()
+  end
+
+  def create(attrs, %User{} = user) do
+    user
+    |> Ecto.build_assoc(:tokens, attrs)
     |> change(attrs)
     |> Repo.insert()
   end

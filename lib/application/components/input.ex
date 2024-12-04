@@ -50,7 +50,7 @@ defmodule RunaWeb.Components.Input do
   attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
 
   attr :prompt, :string,
-    default: nil,
+    default: "",
     doc: "the prompt for select inputs"
 
   attr :options, :list,
@@ -123,7 +123,9 @@ defmodule RunaWeb.Components.Input do
         multiple={@multiple}
         {@rest}
       >
-        <option :if={@prompt} value=""><%= @prompt %></option>
+        <option :if={@prompt} hidden disabled selected value="">
+          <%= @prompt %>
+        </option>
         <%= Phoenix.HTML.Form.options_for_select(
           @options,
           @value

@@ -26,7 +26,7 @@ defmodule Runa.TokensTest do
                Tokens.create(%{
                  access: :read,
                  user_id: ctx.user.id,
-                 token: "token"
+                 title: Atom.to_string(ctx.test)
                })
 
       assert token.access == :read
