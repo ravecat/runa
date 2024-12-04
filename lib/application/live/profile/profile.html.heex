@@ -14,7 +14,10 @@
 <div class="w-full p-4 rounded flex-col gap-4 flex mb-4 border border-accent">
   <div class="flex flex-row justify-between items-center">
     <h2 class="text-lg font-medium">API keys</h2>
-    <.button class="flex justify-between gap-2">
+    <.button
+      phx-click="open_create_token_modal"
+      class="flex justify-between gap-2"
+    >
       <.icon icon="plus" /> Create key
     </.button>
   </div>
@@ -24,7 +27,7 @@
 
   <.table id="api_keys" rows={@streams.tokens}>
     <:col :let={token} label="Key">
-      <%= token.id %>
+      <%= token.title %>
     </:col>
     <:col label="Owner">
       <%= @user.name %>
@@ -75,12 +78,26 @@
   </:content>
   <:action :let={{on_cancel, _}}>
     <.button phx-click={on_cancel}>Cancel</.button>
-    <.button
-      phx-click="delete_token"
-      phx-value-id={@token_id_to_delete}
-      phx-disable-with="Processing..."
-    >
+    <.button phx-click="delete_token" phx-value-id={@token_id_to_delete}>
       Delete
     </.button>
   </:action>
+</.modal>
+<.modal
+  :if={@is_visible_create_token_modal}
+  show
+  on_cancel={JS.push("close_create_token_modal")}
+>
+  <:title>
+    Create API key
+  </:title>
+  <:content>
+    <.live_component
+      module={RunaWeb.Live.Token.Form}
+      data={@token}
+      user={@user}
+      action={:new}
+      id="create_token"
+    />
+  </:content>
 </.modal>

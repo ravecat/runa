@@ -10,7 +10,7 @@ defmodule RunaWeb.Components.Button do
 
   import RunaWeb.Components.Spinner
 
-  attr :type, :string, default: nil
+  attr :type, :string, default: "button"
   attr :class, :string, default: nil
   attr :rest, :global
 
@@ -20,7 +20,7 @@ defmodule RunaWeb.Components.Button do
     ~H"""
     <button
       phx-disable-with=""
-      type={@type || "button"}
+      type={@type}
       class={[
         "group",
         "phx-submit-loading:opacity-75",
@@ -31,9 +31,7 @@ defmodule RunaWeb.Components.Button do
       {@rest}
     >
       <.spinner class="group-[.phx-click-loading]:block hidden" />
-      <span class="group-[.phx-click-loading]:hidden">
-        <%= render_slot(@inner_block) %>
-      </span>
+      <%= render_slot(@inner_block) %>
     </button>
     """
   end

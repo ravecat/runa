@@ -29,7 +29,9 @@ defmodule RunaWeb.Live.Profile do
         socket =
           socket
           |> assign(:is_visible_delete_token_modal, false)
+          |> assign(:is_visible_create_token_modal, false)
           |> assign(access_levels: Token.access_levels())
+          |> assign(token: %Token{})
           |> assign(user: user)
           |> stream(:tokens, user.tokens)
 
@@ -58,6 +60,16 @@ defmodule RunaWeb.Live.Profile do
   end
 
   @impl true
+  def handle_info({:created_token, data}, socket) do
+    socket =
+      socket
+      |> stream_insert(:tokens, data)
+      |> assign(:is_visible_create_token_modal, false)
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("open_delete_token_modal", %{"id" => id}, socket) do
     socket =
       socket
@@ -70,6 +82,16 @@ defmodule RunaWeb.Live.Profile do
   @impl true
   def handle_event("close_delete_token_modal", _, socket) do
     {:noreply, assign(socket, :is_visible_delete_token_modal, false)}
+  end
+
+  @impl true
+  def handle_event("open_create_token_modal", _, socket) do
+    {:noreply, assign(socket, :is_visible_create_token_modal, true)}
+  end
+
+  @impl true
+  def handle_event("close_create_token_modal", _, socket) do
+    {:noreply, assign(socket, :is_visible_create_token_modal, false)}
   end
 
   @impl true

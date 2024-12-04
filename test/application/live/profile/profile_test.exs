@@ -121,4 +121,81 @@ defmodule RunaWeb.Live.ProfileTest do
       end
     end
   end
+
+  describe "create token modal" do
+    test "rendered by clicking create token button", ctx do
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/profile")
+
+      refute has_element?(view, "#modal")
+
+      view
+      |> element("button", "Create key")
+      |> render_click()
+
+      assert has_element?(view, "#modal")
+    end
+
+    test "creates token by clicking create button", ctx do
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/profile")
+
+      title = Atom.to_string(ctx.test)
+
+      view
+      |> element("button", "Create key")
+      |> render_click()
+
+      view
+      |> element("form")
+      |> render_submit(%{
+        "token" => %{"access" => "read", "title" => title}
+      })
+
+      refute has_element?(view, "p", "can't be blank")
+      refute has_element?(view, "p", "is invalid")
+
+      assert has_element?(view, "td", title)
+    end
+
+    test "renders error when title is blank", ctx do
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/profile")
+
+      view
+      |> element("button", "Create key")
+      |> render_click()
+
+      view
+      |> element("form")
+      |> render_submit(%{"token" => %{"access" => "read", "title" => ""}})
+
+      assert has_element?(view, "p", "can't be blank")
+    end
+
+    test "renders error when access is invalid", ctx do
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/profile")
+
+      title = Atom.to_string(ctx.test)
+
+      view
+      |> element("button", "Create key")
+      |> render_click()
+
+      view
+      |> element("form")
+      |> render_submit(%{"token" => %{"access" => "invalid", "title" => title}})
+
+      assert has_element?(view, "p", "is invalid")
+    end
+  end
 end

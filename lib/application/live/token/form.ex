@@ -1,21 +1,22 @@
-defmodule RunaWeb.Live.Team.Form do
+defmodule RunaWeb.Live.Token.Form do
   use RunaWeb, :live_component
 
-  alias Runa.Teams
-  alias Runa.Teams.Team
+  alias Runa.Tokens
+  alias Runa.Tokens.Token
 
   import RunaWeb.Components.Form
   import RunaWeb.Components.Button
   import RunaWeb.Components.Input
 
   @impl true
-  def update(%{data: %Team{} = data} = assigns, socket) do
+  def update(%{data: %Token{} = data} = assigns, socket) do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign_new(:form, fn ->
-       to_form(Teams.change(data))
-     end)}
+     |> assign_new(:access, fn ->
+       Enum.map(Token.access_levels(), fn {label, _} -> {label, label} end)
+     end)
+     |> assign_new(:form, fn -> to_form(Tokens.change(data)) end)}
   end
 
   @impl true
@@ -29,6 +30,14 @@ defmodule RunaWeb.Live.Team.Form do
         phx-target={@myself}
       >
         <.input type="text" field={@form[:title]} label="Title" />
+
+        <.input
+          type="select"
+          field={@form[:access]}
+          label="Access"
+          options={@access}
+        />
+
         <:actions>
           <.button type="submit">
             Create
@@ -40,27 +49,27 @@ defmodule RunaWeb.Live.Team.Form do
   end
 
   @impl true
-  def handle_event("validate", %{"team" => attrs}, socket) do
+  def handle_event("validate", %{"token" => attrs}, socket) do
     changeset =
-      Teams.change(socket.assigns.data, attrs)
+      Tokens.change(socket.assigns.data, attrs)
 
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 
   @impl true
-  def handle_event("save", %{"team" => attrs}, socket) do
+  def handle_event("save", %{"token" => attrs}, socket) do
     save(socket, socket.assigns.action, attrs)
   end
 
   defp save(socket, :new, attrs) do
-    case Teams.create(attrs, socket.assigns.user) do
+    case Tokens.create(attrs, socket.assigns.user) do
       {:ok, data} ->
         PubSub.broadcast(
-          "teams:#{socket.assigns.user.id}",
-          {:created_team, data}
+          "tokens:#{socket.assigns.user.id}",
+          {:created_token, data}
         )
 
-        {:noreply, put_flash(socket, :info, "Team created successfully")}
+        {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
