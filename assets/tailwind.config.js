@@ -9,6 +9,9 @@ module.exports = {
   darkMode: ["selector", '[data-mode="dark"]'],
   content: ["./js/**/*.js", "../lib/**/*.*ex"],
   theme: {
+    borderColor: {
+      DEFAULT: "var(--secondary-200)",
+    },
     colors: {
       transparent: "transparent",
       current: "currentColor",
@@ -28,17 +31,9 @@ module.exports = {
       },
       background: {
         DEFAULT: "var(--background)",
-        50: "var(--background-50)",
-        100: "var(--background-100)",
-        200: "var(--background-200)",
-        300: "var(--background-300)",
-        400: "var(--background-400)",
-        500: "var(--background-500)",
-        600: "var(--background-600)",
-        700: "var(--background-700)",
-        800: "var(--background-800)",
-        900: "var(--background-900)",
-        950: "var(--background-950)",
+        base: "var(--background-base)",
+        alt: "var(--background-alt)",
+        hover: "var(--background-hover)",
       },
       primary: {
         DEFAULT: "var(--primary)",
