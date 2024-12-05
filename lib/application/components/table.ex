@@ -48,7 +48,7 @@ defmodule RunaWeb.Components.Table do
 
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class="min-w-full divide-y divide-accent dark:divide-accent">
+      <table class="min-w-full divide-y divide-secondary dark:divide-secondary">
         <thead class="text-left whitespace-nowrap uppercase text-sm">
           <tr>
             <th :for={col <- @col} class="p-2 font-medium">
@@ -60,7 +60,7 @@ defmodule RunaWeb.Components.Table do
         <tbody
           id={@id}
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
-          class="relative divide-y divide-accent dark:divide-accent text-sm"
+          class="relative divide-y divide-secondary dark:divide-secondary text-sm"
         >
           <tr :for={row <- @rows} id={@row_id && @row_id.(row)}>
             <td
