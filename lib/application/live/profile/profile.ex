@@ -8,7 +8,6 @@ defmodule RunaWeb.Live.Profile do
   alias Runa.Tokens
   alias Runa.Tokens.Token
 
-  import RunaWeb.Components.Dropdown
   import RunaWeb.Components.Tab
   import RunaWeb.Components.Info
   import RunaWeb.Components.Avatar
@@ -29,8 +28,10 @@ defmodule RunaWeb.Live.Profile do
         socket =
           socket
           |> assign(:is_visible_delete_token_modal, false)
-          |> assign(:is_visible_create_token_modal, false)
-          |> assign(access_levels: Token.access_levels())
+          |> assign(:is_visible_token_modal, false)
+          |> assign_new(:access, fn ->
+            Enum.map(Token.access_levels(), fn {label, _} -> {label, label} end)
+          end)
           |> assign(token: %Token{})
           |> assign(user: user)
           |> stream(:tokens, user.tokens)
@@ -64,45 +65,95 @@ defmodule RunaWeb.Live.Profile do
     socket =
       socket
       |> stream_insert(:tokens, data)
-      |> assign(:is_visible_create_token_modal, false)
+      |> assign(:token, %Token{})
+      |> assign(:is_visible_token_modal, false)
 
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:updated_token, data}, socket) do
+    socket =
+      socket
+      |> stream_delete(:tokens, data)
+      |> stream_insert(:tokens, data)
+      |> assign(:token, %Token{})
+      |> assign(:is_visible_token_modal, false)
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info(_, socket) do
     {:noreply, socket}
   end
 
   @impl true
   def handle_event("open_delete_token_modal", %{"id" => id}, socket) do
+    case Tokens.get(id) do
+      {:ok, data} ->
+        socket =
+          socket
+          |> assign(:token, data)
+          |> assign(:is_visible_delete_token_modal, true)
+
+        {:noreply, socket}
+
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, "Failed to delete token")}
+    end
+  end
+
+  @impl true
+  def handle_event("close_delete_token_modal", _, socket) do
     socket =
       socket
-      |> assign(:token_id_to_delete, id)
-      |> assign(:is_visible_delete_token_modal, true)
+      |> assign(:token, %Token{})
+      |> assign(:is_visible_delete_token_modal, false)
 
     {:noreply, socket}
   end
 
   @impl true
-  def handle_event("close_delete_token_modal", _, socket) do
-    {:noreply, assign(socket, :is_visible_delete_token_modal, false)}
+  def handle_event("open_token_modal", %{"id" => id}, socket) do
+    case Tokens.get(id) do
+      {:ok, token} ->
+        socket =
+          socket
+          |> assign(:token, token)
+          |> assign(:is_visible_token_modal, true)
+
+        {:noreply, socket}
+
+      _ ->
+        {:noreply, socket}
+    end
   end
 
   @impl true
-  def handle_event("open_create_token_modal", _, socket) do
-    {:noreply, assign(socket, :is_visible_create_token_modal, true)}
+  def handle_event("open_token_modal", _, socket) do
+    {:noreply, assign(socket, :is_visible_token_modal, true)}
   end
 
   @impl true
-  def handle_event("close_create_token_modal", _, socket) do
-    {:noreply, assign(socket, :is_visible_create_token_modal, false)}
+  def handle_event("close_token_modal", _, socket) do
+    socket =
+      socket
+      |> assign(:token, %Token{})
+      |> assign(:is_visible_token_modal, false)
+
+    {:noreply, socket}
   end
 
   @impl true
-  def handle_event("delete_token", %{"id" => id}, socket) do
-    case Tokens.delete(id) do
+  def handle_event("delete_token", _, socket) do
+    case Tokens.delete(socket.assigns.token.id) do
       {:ok, data} ->
         socket =
           socket
           |> stream_delete(:tokens, data)
+          |> assign(:token, %Token{})
           |> assign(:is_visible_delete_token_modal, false)
-          |> assign(:token_id_to_delete, nil)
 
         {:noreply, socket}
 

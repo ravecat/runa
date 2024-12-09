@@ -29,7 +29,7 @@ defmodule RunaWeb.Components.Modal do
   slot :title, required: true
   slot :content, required: true
 
-  slot :action,
+  slot :actions,
     doc: "the slot for showing modal actions"
 
   def modal(assigns) do
@@ -70,12 +70,10 @@ defmodule RunaWeb.Components.Modal do
             </h3>
           </div>
           <div class="overflow-y-auto">
-            <%= render_slot(@content) %>
+            <%= render_slot(@content, {@on_cancel, @on_confirm}) %>
           </div>
-          <div :if={@action != []} class="flex justify-end gap-2">
-            <%= for action <- @action do %>
-              <%= render_slot(action, {@on_cancel, @on_confirm}) %>
-            <% end %>
+          <div :if={@actions != []} class="flex justify-end gap-2">
+            <%= render_slot(@actions, {@on_cancel, @on_confirm}) %>
           </div>
         </div>
       </div>

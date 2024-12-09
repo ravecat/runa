@@ -11,10 +11,10 @@
     <:info><%= @user.email %></:info>
   </.info>
 </.tab>
-<div class="w-full p-4 rounded flex-col gap-4 flex mb-4 border border-secondary">
+<div class="w-full p-4 rounded flex-col gap-4 flex mb-4 border">
   <div class="flex flex-row justify-between items-center">
     <h2 class="text-lg font-medium">API keys</h2>
-    <.button phx-click="open_create_token_modal">
+    <.button phx-click="open_token_modal" aria-label="Create token">
       <.icon icon="plus" /> Create key
     </.button>
   </div>
@@ -22,7 +22,7 @@
     API keys for external services (removed after the creator is removed from the platform)
   </div>
 
-  <.table id="api_keys" rows={@streams.tokens}>
+  <.table id="api_keys" rows={@streams.tokens} aria-label="API keys">
     <:col :let={token} label="Key">
       <%= token.title %>
     </:col>
@@ -35,26 +35,33 @@
     <:col :let={token} label="Created at">
       <%= format_datetime_to_view(token.inserted_at) %>
     </:col>
+    <:col :let={token} label="Updated at">
+      <%= format_datetime_to_view(token.updated_at) %>
+    </:col>
     <:col :let={token} label="Status">
-      <.dropdown
-        entries={@access_levels}
-        id={"status-dropdown-#{token.id}"}
-        row_item={fn {label, _} -> label end}
-        data-token-status-id={token.id}
-      >
-        <:summary>
-          <%= token.access %>
-        </:summary>
-      </.dropdown>
+      <%= token.access %>
     </:col>
     <:action :let={token}>
       <button
         type="button"
         role="button"
-        class="flex rounded px-1 py-1 hover:bg-accent cursor-pointer"
+        class="flex rounded p-1 hover:bg-accent cursor-pointer transition-colors duration-300"
+        phx-click="open_token_modal"
+        phx-value-id={token.id}
+        aria-label="Update token"
+        data-token-id={token.id}
+      >
+        <.icon icon="pencil" />
+      </button>
+    </:action>
+    <:action :let={token}>
+      <button
+        type="button"
+        role="button"
+        class="flex rounded p-1 hover:bg-warning cursor-pointer transition-colors duration-300"
         phx-click="open_delete_token_modal"
         phx-value-id={token.id}
-        aria-label="Delete API key"
+        aria-label="Delete token"
         data-token-id={token.id}
       >
         <.icon icon="trash" />
@@ -68,33 +75,54 @@
   on_cancel={JS.push("close_delete_token_modal")}
 >
   <:title>
-    Delete API key?
+    Delete token data?
   </:title>
   <:content>
     Are you sure?
   </:content>
-  <:action :let={{on_cancel, _}}>
-    <.button phx-click={on_cancel}>Cancel</.button>
-    <.button phx-click="delete_token" phx-value-id={@token_id_to_delete}>
+  <:actions :let={{on_cancel, _}}>
+    <.button variant="secondary" phx-click={on_cancel}>Cancel</.button>
+    <.button
+      variant="danger"
+      phx-click="delete_token"
+      type="submit"
+      aria-label="Confirm delete token"
+    >
       Delete
     </.button>
-  </:action>
+  </:actions>
 </.modal>
 <.modal
-  :if={@is_visible_create_token_modal}
+  :if={@is_visible_token_modal}
   show
-  on_cancel={JS.push("close_create_token_modal")}
+  on_cancel={JS.push("close_token_modal")}
 >
   <:title>
-    Create API key
+    <%= if @token.id, do: "Update API key", else: "Create API key" %>
   </:title>
-  <:content>
+  <:content :let={{on_cancel, _}}>
     <.live_component
       module={RunaWeb.Live.Token.Form}
       data={@token}
       user={@user}
-      action={:new}
-      id="create_token"
-    />
+      id={if @token.id, do: "update_token", else: "create_token"}
+    >
+      <:actions>
+        <.button variant="secondary" phx-click={on_cancel}>Cancel</.button>
+        <.button
+          aria-label={
+            if @token.id,
+              do: "Confirm update token",
+              else: "Confirm create token"
+          }
+          variant="warning"
+          phx-click={if @token.id, do: "update_token", else: "create_token"}
+          phx-value-id={@token.id}
+          type="submit"
+        >
+          <%= if @token.id, do: "Update", else: "Create" %>
+        </.button>
+      </:actions>
+    </.live_component>
   </:content>
 </.modal>

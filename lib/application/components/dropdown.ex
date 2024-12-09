@@ -90,7 +90,7 @@ defmodule RunaWeb.Components.Dropdown do
         <% end %>
       </summary>
       <div
-        class="absolute p-1 rounded border border-secondary shadow-lg bg-background dark:bg-background z-10 min-w-[100%] max-h-[80vh]"
+        class="absolute p-1 rounded border shadow-lg bg-background dark:bg-background z-10 min-w-[100%] max-h-[80vh]"
         style={[
           %{
             "top" => [
@@ -119,7 +119,7 @@ defmodule RunaWeb.Components.Dropdown do
           <li
             :for={row <- @entries}
             phx-click={@row_click && @row_click.(row)}
-            class="rounded flex items-center p-2 gap-[.25rem] text-ellipsis overflow-hidden whitespace-nowrap cursor-pointer hover:bg-secondary"
+            class="rounded flex items-center p-2 gap-[.25rem] text-ellipsis overflow-hidden whitespace-nowrap cursor-pointer hover:bg-background-hover"
             id={@row_id && @row_id.(row)}
           >
             <%= if @row != [] do %>
@@ -133,7 +133,7 @@ defmodule RunaWeb.Components.Dropdown do
         <div
           :if={@footer != []}
           id="footer"
-          class="rounded flex items-center p-2 gap-[.25rem] text-ellipsis overflow-hidden whitespace-nowrap cursor-pointer hover:bg-secondary"
+          class="rounded flex items-center p-2 gap-[.25rem] text-ellipsis overflow-hidden whitespace-nowrap cursor-pointer"
         >
           <%= render_slot(@footer) %>
         </div>
