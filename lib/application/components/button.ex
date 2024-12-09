@@ -14,7 +14,7 @@ defmodule RunaWeb.Components.Button do
 
   attr :variant, :string,
     default: "primary",
-    values: ["primary", "secondary", "accent", "warning"]
+    values: ["primary", "secondary", "accent", "warning", "danger"]
 
   attr :class, :string, default: nil
   attr :rest, :global

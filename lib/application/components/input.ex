@@ -102,7 +102,7 @@ defmodule RunaWeb.Components.Input do
           name={@name}
           value="true"
           checked={@checked}
-          class="rounded border-secondary-200 text-secondary-200 focus:ring-0"
+          class="rounded border text-secondary-200 focus:ring-0"
           {@rest}
         />
         <%= @label %>
@@ -114,12 +114,12 @@ defmodule RunaWeb.Components.Input do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+    <div phx-feedback-for={@name} class="flex flex-col gap-2">
+      <.label :if={@label} for={@id}><%= @label %></.label>
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-secondary bg-background shadow-sm focus:border-secondary-400 focus:ring-0 sm:text-sm"
+        class="block w-full rounded-md border bg-background shadow-sm focus:border-secondary-400 focus:ring-0 sm:text-sm"
         multiple={@multiple}
         {@rest}
       >
@@ -138,13 +138,13 @@ defmodule RunaWeb.Components.Input do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+    <div phx-feedback-for={@name} class="flex flex-col gap-2">
+      <.label :if={@label} for={@id}><%= @label %></.label>
       <textarea
         id={@id}
         name={@name}
         class={[
-          "mt-2 block w-full rounded text-secondary-100 focus:ring-0 sm:text-sm sm:leading-6",
+          "block w-full rounded text-secondary-100 focus:ring-0 sm:text-sm sm:leading-6",
           "min-h-[6rem] phx-no-feedback:border-secondary-300 phx-no-feedback:focus:border-secondary-400",
           @errors == [] && "border-secondary-300 focus:border-secondary-400",
           @errors != [] && "border-error-400 focus:border-error-400"
@@ -160,7 +160,7 @@ defmodule RunaWeb.Components.Input do
   def input(assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label :if={@label} for={@id}><%= @label %></.label>
       <input
         type={@type}
         name={@name}

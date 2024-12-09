@@ -31,8 +31,8 @@ defmodule Runa.Tokens.Token do
 
   def update_changeset(token, attrs) do
     token
-    |> cast(attrs, [:access])
-    |> validate_required([:access])
+    |> cast(attrs, [:access, :title])
+    |> validate_required([:access, :title])
   end
 
   defp put_token(changeset) do

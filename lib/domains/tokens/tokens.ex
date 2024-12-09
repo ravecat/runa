@@ -11,8 +11,18 @@ defmodule Runa.Tokens do
   @doc """
   Return token
   """
+  def get(id) do
+    query =
+      from t in Token,
+        where: t.id == ^id
 
-  def get(token) when is_binary(token) do
+    case Repo.one(query) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
+  end
+
+  def get_by_token(token) do
     case Repo.get_by(Token, hash: hash(token)) do
       nil -> {:error, %Ecto.NoResultsError{}}
       data -> {:ok, data}
@@ -28,7 +38,7 @@ defmodule Runa.Tokens do
       [%Token{}, ...]
 
   """
-  def index(user) do
+  def index(%User{} = user) do
     Token
     |> where(user_id: ^user.id)
     |> Repo.all()
@@ -71,7 +81,9 @@ defmodule Runa.Tokens do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update(%Token{} = token, attrs) do
+  def update(%Token{} = token, attrs \\ %{}) do
+    :timer.sleep(1000)
+
     token
     |> Token.update_changeset(attrs)
     |> Repo.update()
@@ -122,5 +134,11 @@ defmodule Runa.Tokens do
   """
   def hash(token) when is_binary(token) do
     :crypto.hash(:sha256, token) |> Base.encode16(case: :lower)
+  end
+
+  def apply(token, attrs) do
+    token
+    |> change(attrs)
+    |> Ecto.Changeset.apply_changes()
   end
 end

@@ -27,6 +27,9 @@ defmodule RunaWeb.Components.Table do
     doc:
       "the function for mapping each row before calling the :col and :action slots"
 
+  attr :class, :string, default: ""
+  attr :rest, :global
+
   slot :col, required: true do
     attr :label, :string
   end
@@ -47,8 +50,14 @@ defmodule RunaWeb.Components.Table do
       end
 
     ~H"""
-    <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class="min-w-full divide-y divide-secondary dark:divide-secondary">
+    <div class="overflow-y-auto sm:overflow-visible">
+      <table
+        class={[
+          "min-w-full divide-y divide-secondary dark:divide-secondary",
+          @class
+        ]}
+        {@rest}
+      >
         <thead class="text-left whitespace-nowrap uppercase text-sm">
           <tr>
             <th :for={col <- @col} class="p-2 font-medium">
@@ -70,7 +79,7 @@ defmodule RunaWeb.Components.Table do
             >
               <%= render_slot(col, @row_item.(row)) %>
             </td>
-            <td :if={@action != []} class="whitespace-nowrap p-2">
+            <td :if={@action != []} class="flex whitespace-nowrap p-2">
               <%= for action <- @action do %>
                 <%= render_slot(action, @row_item.(row)) %>
               <% end %>
