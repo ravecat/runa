@@ -69,7 +69,7 @@ defmodule Runa.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.0"},
       {:phoenix_live_reload, "~> 1.5", only: :dev},
-      {:phoenix_live_view, "~> 0.20.2"},
+      {:phoenix_live_view, "~> 1.0.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
@@ -94,7 +94,6 @@ defmodule Runa.MixProject do
       {:typed_ecto_schema, "~> 0.4.1", runtime: false},
       {:dotenvy, "~> 0.8.0", only: [:dev, :test]},
       {:faker, "~> 0.18", only: [:dev, :test]},
-      {:live_isolated_component, "~> 0.8.0", only: [:dev, :test]},
       {:pbkdf2_elixir, "~> 2.0"}
     ]
   end

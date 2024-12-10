@@ -59,9 +59,9 @@ defmodule RunaWeb.Components.Flash do
       <div :if={@title} class="flex items-center gap-2">
         <.icon :if={@kind == :info} class="h-5 w-5" icon="information-circle" />
         <.icon :if={@kind == :error} class="h-5 w-5" icon="exclamation-circle" />
-        <strong class="block font-medium"><%= @title %></strong>
+        <strong class="block font-medium">{@title}</strong>
       </div>
-      <p class="mt-2 text-sm text-red-700"><%= msg %></p>
+      <p class="mt-2 text-sm text-red-700">{msg}</p>
     </div>
     """
   end
@@ -94,7 +94,7 @@ defmodule RunaWeb.Components.Flash do
         phx-connected={hide("#client-error")}
         hidden
       >
-        <%= gettext("Attempting to reconnect") %>
+        {gettext("Attempting to reconnect")}
         <.icon icon="arrow-path" />
       </.flash>
 
@@ -106,7 +106,7 @@ defmodule RunaWeb.Components.Flash do
         phx-connected={hide("#server-error")}
         hidden
       >
-        <%= gettext("Hang in there while we get back on track") %>
+        {gettext("Hang in there while we get back on track")}
         <.icon icon="arrow-path" />
       </.flash>
     </div>

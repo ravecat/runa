@@ -76,7 +76,7 @@ defmodule RunaWeb.Components.Dropdown do
     >
       <summary class="list-none rounded flex items-center justify-between border border-accent cursor-pointer w-full p-[.5rem] gap-[.25rem] text-ellipsis overflow-hidden select-none whitespace-nowrap bg-background dark:bg-background">
         <%= if @summary != [] do %>
-          <%= render_slot(@summary) %>
+          {render_slot(@summary)}
           <.icon
             icon="shevron-right"
             class="rotate-90 transition-transform duration-300 group-open:rotate-[270deg]"
@@ -123,9 +123,9 @@ defmodule RunaWeb.Components.Dropdown do
             id={@row_id && @row_id.(row)}
           >
             <%= if @row != [] do %>
-              <%= render_slot(@row, @row_item.(row)) %>
+              {render_slot(@row, @row_item.(row))}
             <% else %>
-              <%= @row_item.(row) %>
+              {@row_item.(row)}
             <% end %>
           </li>
         </ul>
@@ -135,7 +135,7 @@ defmodule RunaWeb.Components.Dropdown do
           id="footer"
           class="rounded flex items-center p-2 gap-[.25rem] text-ellipsis overflow-hidden whitespace-nowrap cursor-pointer"
         >
-          <%= render_slot(@footer) %>
+          {render_slot(@footer)}
         </div>
       </div>
     </details>

@@ -105,9 +105,9 @@ defmodule RunaWeb.Components.Input do
           class="rounded border text-secondary-200 focus:ring-0"
           {@rest}
         />
-        <%= @label %>
+        {@label}
       </label>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -115,7 +115,7 @@ defmodule RunaWeb.Components.Input do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name} class="flex flex-col gap-2">
-      <.label :if={@label} for={@id}><%= @label %></.label>
+      <.label :if={@label} for={@id}>{@label}</.label>
       <select
         id={@id}
         name={@name}
@@ -124,14 +124,14 @@ defmodule RunaWeb.Components.Input do
         {@rest}
       >
         <option :if={@prompt} hidden disabled selected value="">
-          <%= @prompt %>
+          {@prompt}
         </option>
-        <%= Phoenix.HTML.Form.options_for_select(
+        {Phoenix.HTML.Form.options_for_select(
           @options,
           @value
-        ) %>
+        )}
       </select>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -139,7 +139,7 @@ defmodule RunaWeb.Components.Input do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name} class="flex flex-col gap-2">
-      <.label :if={@label} for={@id}><%= @label %></.label>
+      <.label :if={@label} for={@id}>{@label}</.label>
       <textarea
         id={@id}
         name={@name}
@@ -151,7 +151,7 @@ defmodule RunaWeb.Components.Input do
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -160,7 +160,7 @@ defmodule RunaWeb.Components.Input do
   def input(assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label :if={@label} for={@id}><%= @label %></.label>
+      <.label :if={@label} for={@id}>{@label}</.label>
       <input
         type={@type}
         name={@name}
@@ -174,7 +174,7 @@ defmodule RunaWeb.Components.Input do
         ]}
         {@rest}
       />
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -225,7 +225,7 @@ defmodule RunaWeb.Components.Input do
     ~H"""
     <p class="mt-3 flex gap-3 text-sm leading-6 text-error-600 phx-no-feedback:hidden">
       <.icon icon="exclamation-circle" class="mt-0.5 h-5 w-5 flex-none" />
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </p>
     """
   end

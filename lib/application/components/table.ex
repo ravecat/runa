@@ -61,7 +61,7 @@ defmodule RunaWeb.Components.Table do
         <thead class="text-left whitespace-nowrap uppercase text-sm">
           <tr>
             <th :for={col <- @col} class="p-2 font-medium">
-              <%= col[:label] %>
+              {col[:label]}
             </th>
             <th :if={@action != []} class="relative"></th>
           </tr>
@@ -77,11 +77,11 @@ defmodule RunaWeb.Components.Table do
               phx-click={@row_click && @row_click.(row)}
               class="whitespace-nowrap p-2"
             >
-              <%= render_slot(col, @row_item.(row)) %>
+              {render_slot(col, @row_item.(row))}
             </td>
             <td :if={@action != []} class="flex whitespace-nowrap p-2">
               <%= for action <- @action do %>
-                <%= render_slot(action, @row_item.(row)) %>
+                {render_slot(action, @row_item.(row))}
               <% end %>
             </td>
           </tr>

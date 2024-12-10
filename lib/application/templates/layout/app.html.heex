@@ -1,12 +1,12 @@
 <div class="flex">
   <.flash_group flash={@flash} />
   <div class="w-[16rem]">
-    <%= live_render(@socket, RunaWeb.Live.Sidebar, id: "sidebar") %>
+    {live_render(@socket, RunaWeb.Live.Sidebar, id: "sidebar")}
   </div>
   <article class="grow p-[.5rem]">
-    <h2 class="text-xl"><%= @page_title %></h2>
+    <h2 class="text-xl">{@page_title}</h2>
     <div class="py-[1rem]">
-      <%= @inner_content %>
+      {@inner_content}
     </div>
   </article>
 </div>

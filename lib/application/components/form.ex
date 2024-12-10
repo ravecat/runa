@@ -37,9 +37,9 @@ defmodule RunaWeb.Components.Form do
       as={@as}
       {@rest}
     >
-      <%= render_slot(@inner_block, f) %>
+      {render_slot(@inner_block, f)}
       <div :for={action <- @actions} class="flex gap-[1rem] justify-end">
-        <%= render_slot(action, f) %>
+        {render_slot(action, f)}
       </div>
     </.form>
     """
