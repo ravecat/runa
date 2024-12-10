@@ -8,13 +8,13 @@
         <.avatar alt="avatar" src={@user.avatar} />
         <.info class="grow text-sm">
           <:title>
-            <%= @active_team.title || "-" %>
+            {@active_team.title || "-"}
           </:title>
-          <:info><%= @user.name %></:info>
+          <:info>{@user.name}</:info>
         </.info>
       </:summary>
       <:row :let={team}>
-        <%= team.title %>
+        {team.title}
       </:row>
       <:footer>
         <.button phx-click="open_create_team_modal">

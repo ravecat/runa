@@ -66,14 +66,14 @@ defmodule RunaWeb.Components.Modal do
         >
           <div class="flex justify-between items-center">
             <h3 class="text-lg">
-              <%= render_slot(@title) %>
+              {render_slot(@title)}
             </h3>
           </div>
           <div class="overflow-y-auto">
-            <%= render_slot(@content, {@on_cancel, @on_confirm}) %>
+            {render_slot(@content, {@on_cancel, @on_confirm})}
           </div>
           <div :if={@actions != []} class="flex justify-end gap-2">
-            <%= render_slot(@actions, {@on_cancel, @on_confirm}) %>
+            {render_slot(@actions, {@on_cancel, @on_confirm})}
           </div>
         </div>
       </div>

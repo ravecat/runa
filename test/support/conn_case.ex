@@ -43,7 +43,6 @@ defmodule RunaWeb.ConnCase do
       import Runa.Factory
       import RunaWeb.Router
       import Phoenix.Controller, only: [fetch_flash: 2]
-      import LiveIsolatedComponent
       import Phoenix.LiveViewTest
 
       alias Phoenix.Flash

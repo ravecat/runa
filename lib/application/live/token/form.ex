@@ -47,7 +47,7 @@ defmodule RunaWeb.Live.Token.Form do
           label="Access"
           options={@access}
         />
-        <%= render_slot(@actions, @form) %>
+        {render_slot(@actions, @form)}
       </.custom_form>
     </div>
     """

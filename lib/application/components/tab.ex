@@ -17,7 +17,7 @@ defmodule RunaWeb.Components.Tab do
       ]}
       {@rest}
     >
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </div>
     """
   end

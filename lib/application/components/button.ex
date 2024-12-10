@@ -50,7 +50,7 @@ defmodule RunaWeb.Components.Button do
     >
       <.spinner class="group-[.phx-submit-loading]:block hidden" />
       <span class="group-[.phx-submit-loading]:hidden flex items-center justify-center gap-2">
-        <%= render_slot(@inner_block) %>
+        {render_slot(@inner_block)}
       </span>
     </button>
     """
