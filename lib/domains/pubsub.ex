@@ -11,4 +11,8 @@ defmodule Runa.PubSub do
   def subscribe(topic) do
     Phoenix.PubSub.subscribe(Runa.PubSub, topic)
   end
+
+  def unsubscribe(topic) do
+    Phoenix.PubSub.unsubscribe(Runa.PubSub, topic)
+  end
 end
