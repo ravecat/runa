@@ -93,7 +93,7 @@ defmodule RunaWeb.Router do
   scope "/profile", RunaWeb.Live do
     pipe_through [:browser, :authenticate]
 
-    live "/", Profile, :show
+    live "/", Profile
   end
 
   # Enable LiveDashboard in development

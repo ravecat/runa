@@ -98,6 +98,7 @@ defmodule RunaWeb do
       alias Phoenix.LiveView.JS
 
       import RunaWeb.Components.Commands
+      import Tails
 
       unquote(html_helpers())
     end

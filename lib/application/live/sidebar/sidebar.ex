@@ -8,9 +8,8 @@ defmodule RunaWeb.Live.Sidebar do
   alias Runa.Teams.Team
 
   import RunaWeb.Components.Dropdown
-  import RunaWeb.Components.Tab
+  import RunaWeb.Components.Pill
   import RunaWeb.Components.Modal
-  import RunaWeb.Components.Info
   import RunaWeb.Components.Avatar
   import RunaWeb.Components.Button
   import RunaWeb.Components.Icon

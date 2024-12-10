@@ -6,9 +6,12 @@ defmodule RunaWeb.Live.Profile do
 
   alias Runa.Accounts
 
-  import RunaWeb.Components.Tab
-  import RunaWeb.Components.Info
   import RunaWeb.Components.Avatar
+  import RunaWeb.Components.Card
+  import RunaWeb.Components.Icon
+  import RunaWeb.Components.Input
+  import RunaWeb.Components.Form
+  import RunaWeb.Formatters
 
   @impl true
   def mount(_params, %{"user_id" => user_id}, socket) do
@@ -18,10 +21,17 @@ defmodule RunaWeb.Live.Profile do
 
     case Accounts.get(user_id) do
       {:ok, user} ->
+        formatted_user = %{
+          user
+          | inserted_at: format_datetime_to_view(user.inserted_at),
+            updated_at: format_datetime_to_view(user.updated_at)
+        }
+
         socket =
-          assign(socket,
-            user: user
-          )
+          assign_new(socket, :user_form_data, fn ->
+            to_form(Accounts.change(formatted_user))
+          end)
+          |> assign(:user, formatted_user)
 
         {:ok, socket}
 
@@ -36,15 +46,6 @@ defmodule RunaWeb.Live.Profile do
       _ ->
         {:ok, redirect(socket, to: ~p"/")}
     end
-  end
-
-  @impl true
-  def handle_params(
-        _params,
-        _url,
-        %{assigns: %{live_action: :show}} = socket
-      ) do
-    {:noreply, assign(socket, :page_title, "Profile")}
   end
 
   @impl true

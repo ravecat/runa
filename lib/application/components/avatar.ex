@@ -2,7 +2,7 @@ defmodule RunaWeb.Components.Avatar do
   @moduledoc """
   Renders an icon.
   """
-  use RunaWeb, :html
+  use RunaWeb, :component
 
   attr :src, :string, required: true
   attr :class, :string, default: nil
@@ -10,7 +10,11 @@ defmodule RunaWeb.Components.Avatar do
 
   def avatar(assigns) do
     ~H"""
-    <img src={@src} class={["size-10 rounded-full object-cover", @class]} {@rest} />
+    <img
+      src={@src}
+      class={merge("size-10 rounded-full object-cover shadow-sm", @class) |> to_string()}
+      {@rest}
+    />
     """
   end
 end
