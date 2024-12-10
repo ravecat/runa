@@ -9,7 +9,7 @@ defmodule RunaWeb.Components.Table do
         <:col :let={user} label="username"><%= user.username %></:col>
       </.table>
   """
-  use Phoenix.Component
+  use RunaWeb, :component
 
   attr :id, :string, required: true
   attr :rows, :list, required: true

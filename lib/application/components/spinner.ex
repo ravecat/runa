@@ -1,5 +1,5 @@
 defmodule RunaWeb.Components.Spinner do
-  use Phoenix.Component
+  use RunaWeb, :component
 
   attr :class, :string, default: nil
   attr :rest, :global

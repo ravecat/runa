@@ -25,7 +25,7 @@ defmodule RunaWeb.Components.Input do
       <.input name="my-input" errors={["oh no!"]} />
   """
 
-  use Phoenix.Component
+  use RunaWeb, :component
 
   import RunaWeb.Components.Label
   import RunaWeb.Components.Icon

@@ -3,7 +3,7 @@ defmodule RunaWeb.Components.Label do
   Renders a label.
   """
 
-  use Phoenix.Component
+  use RunaWeb, :component
 
   attr :for, :string, default: nil
   slot :inner_block, required: true
