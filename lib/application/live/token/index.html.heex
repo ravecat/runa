@@ -1,6 +1,6 @@
 <.card>
   <div class="flex flex-row justify-between items-center">
-    <h2 class="text-lg font-medium">API keys</h2>
+    <span class="text-lg font-medium">API keys</span>
     <.button phx-click="open_token_modal" aria-label="Create token">
       <.icon icon="plus" /> Create key
     </.button>
@@ -11,22 +11,22 @@
 
   <.table id="tokens" rows={@streams.tokens} aria-label="API keys">
     <:col :let={token} label="Key">
-      <%= token.title %>
+      {token.title}
     </:col>
     <:col label="Owner">
-      <%= @user.name %>
+      {@user.name}
       <span class="text-xs">
-        <%= @user.email %>
+        {@user.email}
       </span>
     </:col>
     <:col :let={token} label="Created at">
-      <%= format_datetime_to_view(token.inserted_at) %>
+      {format_datetime_to_view(token.inserted_at)}
     </:col>
     <:col :let={token} label="Updated at">
-      <%= format_datetime_to_view(token.updated_at) %>
+      {format_datetime_to_view(token.updated_at)}
     </:col>
     <:col :let={token} label="Status">
-      <%= token.access %>
+      {token.access}
     </:col>
     <:action :let={token}>
       <button
@@ -85,7 +85,7 @@
   on_cancel={JS.push("close_token_modal")}
 >
   <:title>
-    <%= if @token.id, do: "Update API key", else: "Create API key" %>
+    {if @token.id, do: "Update API key", else: "Create API key"}
   </:title>
   <:content :let={{on_cancel, _}}>
     <.live_component
@@ -107,7 +107,7 @@
           phx-value-id={@token.id}
           type="submit"
         >
-          <%= if @token.id, do: "Update", else: "Create" %>
+          {if @token.id, do: "Update", else: "Create"}
         </.button>
       </:actions>
     </.live_component>

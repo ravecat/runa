@@ -13,13 +13,16 @@ defmodule RunaWeb.Components.Card do
   def card(assigns) do
     ~H"""
     <div
-      class={[
-        "w-full p-4 rounded flex-col gap-4 flex mb-4 border",
-        @class
-      ]}
+      class={
+        merge(
+          "w-full p-4 rounded flex-col gap-4 flex border",
+          @class
+        )
+        |> to_string()
+      }
       {@rest}
     >
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </div>
     """
   end

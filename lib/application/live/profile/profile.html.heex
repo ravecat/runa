@@ -1,14 +1,59 @@
-<.tab class="justify-between">
-  <.info>
-    <:title>Name</:title>
-    <:info>{@user.name}</:info>
-  </.info>
-  <.avatar src={@user.avatar} />
-</.tab>
-<.tab>
-  <.info>
-    <:title>Email</:title>
-    <:info>{@user.email}</:info>
-  </.info>
-</.tab>
-<%= live_render(@socket, RunaWeb.Live.Token.Index, id: "api_keys") %>
+<.card>
+  <span class="text-lg font-medium">Profile</span>
+  <div class="text-sm leading-normal">
+    These settings are personal to you, these wont't be affected the rest of the workspace
+  </div>
+  <.custom_form
+    for={@user_form_data}
+    phx-change="validate"
+    phx-submit="save"
+    class="grid grid-cols-[1fr,1fr] gap-4"
+    aria-label="Profile form"
+  >
+    <div class="flex items-center gap-4">
+      <.avatar
+        class="w-16 h-16"
+        src={Phoenix.HTML.Form.input_value(@user_form_data, :avatar)}
+        aria-label="Profile avatar"
+      />
+      <div class="flex-1">
+        <.input type="text" field={@user_form_data[:name]} aria-label="Profile name">
+          <:label>
+            <.icon icon="name" />Name
+          </:label>
+        </.input>
+      </div>
+    </div>
+    <.input
+      type="text"
+      field={@user_form_data[:email]}
+      readonly
+      aria-label="Profile email"
+    >
+      <:label>
+        <.icon icon="email" />Email
+      </:label>
+    </.input>
+    <.input
+      type="text"
+      field={@user_form_data[:inserted_at]}
+      readonly
+      aria-label="Account creation date"
+    >
+      <:label>
+        <.icon icon="calendar" />Created at
+      </:label>
+    </.input>
+    <.input
+      type="text"
+      field={@user_form_data[:updated_at]}
+      readonly
+      aria-label="Last profile update date"
+    >
+      <:label>
+        <.icon icon="calendar" />Updated at
+      </:label>
+    </.input>
+  </.custom_form>
+</.card>
+{live_render(@socket, RunaWeb.Live.Token.Index, id: "api_keys")}

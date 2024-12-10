@@ -94,7 +94,8 @@ defmodule Runa.MixProject do
       {:typed_ecto_schema, "~> 0.4.1", runtime: false},
       {:dotenvy, "~> 0.8.0", only: [:dev, :test]},
       {:faker, "~> 0.18", only: [:dev, :test]},
-      {:pbkdf2_elixir, "~> 2.0"}
+      {:pbkdf2_elixir, "~> 2.0"},
+      {:tails, "~> 0.1.11"}
     ]
   end
 
