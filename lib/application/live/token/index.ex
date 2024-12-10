@@ -15,6 +15,7 @@ defmodule RunaWeb.Live.Token.Index do
   import RunaWeb.Components.Table
   import RunaWeb.Components.Modal
   import RunaWeb.Formatters
+  import RunaWeb.Components.Card
 
   @impl true
   def mount(_params, %{"user_id" => user_id}, socket) do
