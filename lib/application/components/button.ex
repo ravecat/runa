@@ -6,7 +6,7 @@ defmodule RunaWeb.Components.Button do
     <.button>Send!</.button>
     <.button phx-click="go" class="ml-2">Send!</.button>
   """
-  use Phoenix.Component
+  use RunaWeb, :component
 
   import RunaWeb.Components.Spinner
 

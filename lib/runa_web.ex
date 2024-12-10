@@ -91,6 +91,18 @@ defmodule RunaWeb do
     end
   end
 
+  def component do
+    quote do
+      use Phoenix.Component
+
+      alias Phoenix.LiveView.JS
+
+      import RunaWeb.Components.Commands
+
+      unquote(html_helpers())
+    end
+  end
+
   def live_component do
     quote do
       alias Runa.PubSub
@@ -115,23 +127,6 @@ defmodule RunaWeb do
         ]
 
       unquote(html_helpers())
-    end
-  end
-
-  def components do
-    quote do
-      import RunaWeb.Components.Icon
-      import RunaWeb.Components.Avatar
-      import RunaWeb.Components.Button
-      import RunaWeb.Components.Flash
-      import RunaWeb.Components.Info
-      import RunaWeb.Components.Dropdown
-      import RunaWeb.Components.Modal
-      import RunaWeb.Components.Commands
-      import RunaWeb.Components.Tab
-      import RunaWeb.Components.Input
-      import RunaWeb.Components.Label
-      import RunaWeb.Components.Form
     end
   end
 

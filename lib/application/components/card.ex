@@ -3,11 +3,7 @@ defmodule RunaWeb.Components.Card do
   Renders a card component, which represents a block of content with a border and padding.
   """
 
-  use Phoenix.Component
-
-  alias Phoenix.LiveView.JS
-
-  import RunaWeb.Components.Commands
+  use RunaWeb, :component
 
   attr :class, :string, default: ""
   attr :rest, :global

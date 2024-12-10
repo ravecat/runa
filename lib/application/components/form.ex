@@ -12,7 +12,7 @@ defmodule RunaWeb.Components.Form do
         </:actions>
       </.simple_form>
   """
-  use Phoenix.Component
+  use RunaWeb, :component
 
   attr :for, :any, required: true, doc: "the datastructure for the form"
 

@@ -17,9 +17,7 @@ defmodule RunaWeb.Components.Dropdown do
       </:footer>
     </.dropdown>
   """
-  use Phoenix.Component
-
-  alias Phoenix.LiveView.JS
+  use RunaWeb, :component
 
   import RunaWeb.Components.Icon
 

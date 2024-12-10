@@ -1,6 +1,7 @@
 defmodule RunaWeb.Layouts do
   use RunaWeb, :html
-  use RunaWeb, :components
+
+  import RunaWeb.Components.Flash
 
   embed_templates "/*"
 end

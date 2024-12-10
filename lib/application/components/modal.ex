@@ -16,11 +16,7 @@ defmodule RunaWeb.Components.Modal do
       </.modal>
 
   """
-  use Phoenix.Component
-
-  alias Phoenix.LiveView.JS
-
-  import RunaWeb.Components.Commands
+  use RunaWeb, :component
 
   attr :id, :string, default: "modal"
   attr :show, :boolean, default: false
