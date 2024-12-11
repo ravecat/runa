@@ -18,6 +18,7 @@ defmodule RunaWeb.Live.Sidebar do
   def mount(_params, %{"user_id" => user_id}, socket) do
     if connected?(socket) do
       PubSub.subscribe("teams:#{user_id}")
+      PubSub.subscribe("accounts:#{user_id}")
     end
 
     {:ok, user} = Accounts.get(user_id)
@@ -39,6 +40,14 @@ defmodule RunaWeb.Live.Sidebar do
       socket
       |> stream_insert(:teams, data)
       |> assign(:is_visible_create_team_modal, false)
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:updated_account, data}, socket) do
+    socket =
+      assign(socket, :user, data)
 
     {:noreply, socket}
   end

@@ -49,7 +49,8 @@ defmodule Runa.AccountsTest do
 
       assert changeset.errors == [
                uid: {"can't be blank", [validation: :required]},
-               email: {"can't be blank", [validation: :required]}
+               email: {"can't be blank", [validation: :required]},
+               name: {"can't be blank", [validation: :required]}
              ]
     end
 
