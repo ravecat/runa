@@ -21,17 +21,9 @@ defmodule RunaWeb.Live.Profile do
 
     case Accounts.get(user_id) do
       {:ok, user} ->
-        formatted_user = %{
-          user
-          | inserted_at: format_datetime_to_view(user.inserted_at),
-            updated_at: format_datetime_to_view(user.updated_at)
-        }
-
         socket =
-          assign_new(socket, :user_form_data, fn ->
-            to_form(Accounts.change(formatted_user))
-          end)
-          |> assign(:user, formatted_user)
+          assign_new(socket, :user_form_data, fn -> prepare_user_form(user) end)
+          |> assign(:user, user)
 
         {:ok, socket}
 
@@ -54,7 +46,52 @@ defmodule RunaWeb.Live.Profile do
   end
 
   @impl true
+  def handle_event("validate", %{"user" => attrs}, socket) do
+    changeset =
+      Accounts.change(socket.assigns.user, attrs)
+
+    {:noreply,
+     assign(socket, user_form_data: to_form(changeset, action: :validate))}
+  end
+
+  @impl true
+  def handle_event("save", %{"value" => value, "field" => field}, socket) do
+    handle_event("save", %{"user" => %{field => value}}, socket)
+  end
+
+  @impl true
+  def handle_event("save", %{"user" => attrs}, socket) do
+    case Accounts.update(socket.assigns.user, attrs) do
+      {:ok, user} ->
+        PubSub.broadcast(
+          "accounts:#{socket.assigns.user.id}",
+          {:updated_account, user}
+        )
+
+        socket =
+          socket
+          |> assign(:user, user)
+          |> assign(:user_form_data, prepare_user_form(user))
+
+        {:noreply, socket}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, user_form_data: to_form(changeset))}
+    end
+  end
+
+  @impl true
   def handle_event(_, _, socket) do
     {:noreply, socket}
+  end
+
+  defp prepare_user_form(user) do
+    %{
+      user
+      | inserted_at: format_datetime_to_view(user.inserted_at),
+        updated_at: format_datetime_to_view(user.updated_at)
+    }
+    |> Accounts.change()
+    |> to_form()
   end
 end

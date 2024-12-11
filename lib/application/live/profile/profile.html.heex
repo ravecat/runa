@@ -5,8 +5,8 @@
   </div>
   <.custom_form
     for={@user_form_data}
+    as={:user}
     phx-change="validate"
-    phx-submit="save"
     class="grid grid-cols-[1fr,1fr] gap-4"
     aria-label="Profile form"
   >
@@ -17,7 +17,13 @@
         aria-label="Profile avatar"
       />
       <div class="flex-1">
-        <.input type="text" field={@user_form_data[:name]} aria-label="Profile name">
+        <.input
+          type="text"
+          field={@user_form_data[:name]}
+          aria-label="Profile name"
+          phx-blur="save"
+          phx-value-field={:name}
+        >
           <:label>
             <.icon icon="name" />Name
           </:label>

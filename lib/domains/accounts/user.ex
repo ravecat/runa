@@ -26,7 +26,8 @@ defmodule Runa.Accounts.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:name, :uid, :avatar, :nickname, :email])
-    |> validate_required([:uid, :email])
+    |> validate_required([:uid, :email, :name])
+    |> validate_length(:name, min: 2, max: 100)
     |> unique_constraint(:email)
     |> unique_constraint(:uid)
   end
