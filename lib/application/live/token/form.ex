@@ -39,14 +39,14 @@ defmodule RunaWeb.Live.Token.Form do
         phx-target={@myself}
         aria-label="Token form"
       >
-        <.input type="text" field={@form[:title]} label="Title" />
+        <.input type="text" field={@form[:title]}>
+          <:label>Title</:label>
+        </.input>
 
-        <.input
-          type="select"
-          field={@form[:access]}
-          label="Access"
-          options={@access}
-        />
+        <.input type="select" field={@form[:access]} options={@access}>
+          <:label>Access</:label>
+        </.input>
+
         {render_slot(@actions, @form)}
       </.custom_form>
     </div>
