@@ -5,8 +5,8 @@ defmodule RunaWeb.Components.Table do
   ## Examples
 
       <.table id="users" rows={@users}>
-        <:col :let={user} label="id"><%= user.id %></:col>
-        <:col :let={user} label="username"><%= user.username %></:col>
+        <:col :let={user}><%= user.id %></:col>
+        <:col :let={user}><%= user.username %></:col>
       </.table>
   """
   use RunaWeb, :component

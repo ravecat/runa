@@ -28,7 +28,9 @@ defmodule RunaWeb.Live.Team.Form do
         phx-submit="save"
         phx-target={@myself}
       >
-        <.input type="text" field={@form[:title]} label="Title" />
+        <.input type="text" field={@form[:title]}>
+          <:label>Title</:label>
+        </.input>
         <:actions>
           <.button type="submit">
             Create
