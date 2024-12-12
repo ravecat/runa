@@ -32,6 +32,7 @@ defmodule RunaWeb.Components.Table do
 
   slot :col, required: true do
     attr :label, :string
+    attr :class, :string
   end
 
   slot :action,
@@ -75,7 +76,7 @@ defmodule RunaWeb.Components.Table do
             <td
               :for={{col, _} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
-              class="whitespace-nowrap p-2"
+              class={merge("whitespace-nowrap p-2", col[:class]) |> to_string()}
             >
               {render_slot(col, @row_item.(row))}
             </td>

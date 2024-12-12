@@ -6,6 +6,7 @@ defmodule RunaWeb.Live.Token.Index do
   use RunaWeb, :live_view
 
   alias Runa.Accounts
+  alias Runa.Accounts.User
   alias Runa.Tokens
   alias Runa.Tokens.Token
 
@@ -21,6 +22,7 @@ defmodule RunaWeb.Live.Token.Index do
   def mount(_params, %{"user_id" => user_id}, socket) do
     if connected?(socket) do
       PubSub.subscribe("tokens:#{user_id}")
+      PubSub.subscribe("accounts:#{user_id}")
     end
 
     handle_user_data(user_id, socket)
@@ -35,15 +37,17 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   defp handle_actual_user_data(socket, user) do
+    user = Repo.preload(user, tokens: :user)
+
     socket =
       socket
       |> assign(:is_visible_delete_token_modal, false)
       |> assign(:is_visible_token_modal, false)
+      |> assign(:user, user)
       |> assign_new(:access, fn ->
         Enum.map(Token.access_levels(), fn {label, _} -> {label, label} end)
       end)
       |> assign(token: %Token{})
-      |> assign(user: user)
       |> stream(:tokens, user.tokens)
 
     {:ok, socket}
@@ -59,7 +63,9 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   @impl true
-  def handle_info({:created_token, data}, socket) do
+  def handle_info({:created_token, %Token{} = data}, socket) do
+    data = Repo.preload(data, :user)
+
     socket =
       socket
       |> stream_insert(:tokens, data)
@@ -70,13 +76,26 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   @impl true
-  def handle_info({:updated_token, data}, socket) do
+  def handle_info({:updated_token, %Token{} = data}, socket) do
+    data = Repo.preload(data, :user)
+
     socket =
       socket
       |> stream_delete(:tokens, data)
       |> stream_insert(:tokens, data)
       |> assign(:token, %Token{})
       |> assign(:is_visible_token_modal, false)
+
+    {:noreply, socket}
+  end
+
+
+  @impl true
+  def handle_info({:updated_account, %User{} = data}, socket) do
+    data = Repo.preload(data, [tokens: :user], force: true)
+
+    socket =
+      stream(socket, :tokens, data.tokens, reset: true)
 
     {:noreply, socket}
   end

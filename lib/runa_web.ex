@@ -83,6 +83,7 @@ defmodule RunaWeb do
   def live_view do
     quote do
       alias Runa.PubSub
+      alias Runa.Repo
 
       use Phoenix.LiveView,
         layout: {RunaWeb.Layouts, :app}

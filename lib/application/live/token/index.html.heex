@@ -13,10 +13,12 @@
     <:col :let={token} label="Key">
       {token.title}
     </:col>
-    <:col label="Owner">
-      {@user.name}
+    <:col :let={token} label="Owner" class="flex flex-col">
+      <span class="text-sm font-medium">
+        {token.user.name}
+      </span>
       <span class="text-xs">
-        {@user.email}
+        {token.user.email}
       </span>
     </:col>
     <:col :let={token} label="Created at">

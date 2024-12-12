@@ -11,11 +11,11 @@ defmodule Runa.Factory do
   alias Runa.Languages.Language
   alias Runa.Languages.Locale
   alias Runa.Projects.Project
+  alias Runa.Services.Avatar
   alias Runa.Teams.Team
   alias Runa.Tokens
   alias Runa.Tokens.Token
   alias Runa.Translations.Translation
-  alias Runa.Services.Avatar
 
   def team_factory(attrs) do
     %Team{
