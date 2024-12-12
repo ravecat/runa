@@ -76,46 +76,29 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
       Authentication.authenticate_by_auth_data(auth_data)
     end
 
-    test "fetches avatar from avatar_url" do
-      auth_data = %Ueberauth.Auth{
-        info: %{
-          urls: %{avatar_url: "https://example.com/avatar.jpg"}
-        }
-      }
+    test "uses side avatar service" do
+      auth_datas = [
+        %Ueberauth.Auth{
+          info: %{
+            urls: %{avatar_url: "https://example.com/avatar.jpg"}
+          }
+        },
+        %Ueberauth.Auth{
+          info: %{image: "https://example.com/avatar.jpg"}
+        },
+        %Ueberauth.Auth{}
+      ]
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
-        assert params.avatar == "https://example.com/avatar.jpg"
+        assert params.avatar =~
+                 "https://api.dicebear.com/9.x/thumbs/svg?seed="
 
         {:ok, %Accounts.User{}}
       end)
 
-      Authentication.authenticate_by_auth_data(auth_data)
-    end
-
-    test "fetches avatar from image" do
-      auth_data = %Ueberauth.Auth{
-        info: %{image: "https://example.com/avatar.jpg"}
-      }
-
-      Repatch.patch(Accounts, :create_or_find, fn params ->
-        assert params.avatar == "https://example.com/avatar.jpg"
-
-        {:ok, %Accounts.User{}}
-      end)
-
-      Authentication.authenticate_by_auth_data(auth_data)
-    end
-
-    test "returns nil when no avatar is available" do
-      auth_data = %Ueberauth.Auth{}
-
-      Repatch.patch(Accounts, :create_or_find, fn params ->
-        assert params.avatar == nil
-
-        {:ok, %Accounts.User{}}
-      end)
-
-      Authentication.authenticate_by_auth_data(auth_data)
+      for auth_data <- auth_datas do
+        Authentication.authenticate_by_auth_data(auth_data)
+      end
     end
 
     test "fetches email from auth info" do
@@ -221,7 +204,8 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
       }
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
-        assert params.name == nil
+        assert params.name == "Anonymous"
+
         {:ok, %Accounts.User{}}
       end)
 

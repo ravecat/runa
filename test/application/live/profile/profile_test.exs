@@ -77,7 +77,8 @@ defmodule RunaWeb.Live.ProfileTest do
     |> element("input[aria-label='Profile name']")
     |> render_blur(%{"value" => "John Doe"})
 
-    assert view |> element("[aria-label='Main navigation']") |> render() =~ "John Doe"
+    assert view |> element("[aria-label='Main navigation']") |> render() =~
+             "John Doe"
   end
 
   test "authenticated user can see email", ctx do
@@ -126,6 +127,65 @@ defmodule RunaWeb.Live.ProfileTest do
       |> put_session(:user_id, ctx.user.id)
       |> live(~p"/profile")
 
-    assert has_element?(view, "img[src='#{ctx.user.avatar}']")
+    assert has_element?(
+             view,
+             "[aria-label='Profile avatar'][src='#{ctx.user.avatar}']"
+           )
+  end
+
+  test "authenticated user can update avatar", ctx do
+    {:ok, view, _} =
+      ctx.conn
+      |> put_session(:user_id, ctx.user.id)
+      |> live(~p"/profile")
+
+    initial_src =
+      view
+      |> element("[aria-label='Profile avatar']")
+      |> render()
+      |> Floki.attribute("img", "src")
+      |> List.first()
+
+    view
+    |> element("button[aria-label='Update avatar']")
+    |> render_click()
+
+    updated_src =
+      view
+      |> element("[aria-label='Profile avatar']")
+      |> render()
+      |> Floki.attribute("img", "src")
+      |> List.first()
+
+    refute initial_src == updated_src
+    assert updated_src =~ "thumbs"
+  end
+
+  test "authenticated user can delete avatar", ctx do
+    {:ok, view, _} =
+      ctx.conn
+      |> put_session(:user_id, ctx.user.id)
+      |> live(~p"/profile")
+
+    initial_src =
+      view
+      |> element("[aria-label='Profile avatar']")
+      |> render()
+      |> Floki.attribute("img", "src")
+      |> List.first()
+
+    view
+    |> element("button[aria-label='Delete avatar']")
+    |> render_click()
+
+    updated_src =
+      view
+      |> element("[aria-label='Profile avatar']")
+      |> render()
+      |> Floki.attribute("img", "src")
+      |> List.first()
+
+    refute initial_src == updated_src
+    assert updated_src =~ "initials"
   end
 end

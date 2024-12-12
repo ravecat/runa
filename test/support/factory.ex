@@ -15,6 +15,7 @@ defmodule Runa.Factory do
   alias Runa.Tokens
   alias Runa.Tokens.Token
   alias Runa.Translations.Translation
+  alias Runa.Services.Avatar
 
   def team_factory(attrs) do
     %Team{
@@ -39,7 +40,7 @@ defmodule Runa.Factory do
       uid: Faker.UUID.v4(),
       name: Faker.Person.name(),
       nickname: Faker.Pokemon.name(),
-      avatar: Faker.Avatar.image_url(),
+      avatar: Avatar.generate_url(Faker.Pokemon.name(), style: :thumbs),
       contributors: fn ->
         build_list(1, :contributor, team: fn -> build(:team) end)
       end,

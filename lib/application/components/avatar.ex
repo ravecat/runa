@@ -11,8 +11,11 @@ defmodule RunaWeb.Components.Avatar do
   def avatar(assigns) do
     ~H"""
     <img
+      loading="lazy"
       src={@src}
-      class={merge("size-10 rounded-full object-cover shadow-sm", @class) |> to_string()}
+      class={
+        merge("size-10 rounded-full object-cover shadow-sm", @class) |> to_string()
+      }
       {@rest}
     />
     """
