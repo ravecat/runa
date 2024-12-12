@@ -10,6 +10,7 @@ defmodule RunaWeb.Plugs.Authentication do
   require Poison
 
   alias Runa.Accounts
+  alias Runa.Services.Avatar
 
   def call(conn, _opts) do
     user_id = get_session(conn, :user_id)
@@ -68,21 +69,10 @@ defmodule RunaWeb.Plugs.Authentication do
     end
   end
 
-  defp fetch_avatar(%Ueberauth.Auth{info: %{urls: %{avatar_url: image}}})
-       when image not in [nil, ""] do
-    image
-  end
-
-  defp fetch_avatar(%Ueberauth.Auth{info: %{image: image}})
-       when image not in [nil, ""] do
-    image
-  end
-
   defp fetch_avatar(auth) do
-    Logger.debug("No avatar found in auth info!")
-    Logger.debug(Poison.encode!(auth))
-
-    nil
+    auth
+    |> fetch_name()
+    |> Avatar.generate_url(style: :thumbs)
   end
 
   defp fetch_name(%Ueberauth.Auth{info: %{name: name}})
@@ -113,7 +103,7 @@ defmodule RunaWeb.Plugs.Authentication do
     Logger.debug("No name found in auth info!")
     Logger.debug(Poison.encode!(auth))
 
-    nil
+    "Anonymous"
   end
 
   defp fetch_nickname(%Ueberauth.Auth{info: %{nickname: nickname}})

@@ -5,23 +5,50 @@
   </div>
   <.custom_form
     for={@user_form_data}
-    as={:user}
     phx-change="validate"
+    phx-submit="save"
     class="grid grid-cols-[1fr,1fr] gap-4"
     aria-label="Profile form"
   >
     <div class="flex items-center gap-4">
-      <.avatar
-        class="w-16 h-16"
-        src={Phoenix.HTML.Form.input_value(@user_form_data, :avatar)}
-        aria-label="Profile avatar"
-      />
+      <div class="grid grid-cols-[auto,1fr] gap-2">
+        <div class="flex flex-col justify-between">
+          <button
+            type="button"
+            role="button"
+            class="flex rounded border p-0.5 bg-background hover:bg-accent cursor-pointer transition-colors duration-300"
+            phx-click="save"
+            aria-label="Update avatar"
+            phx-value-field={:avatar}
+          >
+            <.icon icon="reload" />
+          </button>
+
+          <button
+            type="button"
+            role="button"
+            class="flex rounded border p-0.5 bg-background hover:bg-warning cursor-pointer transition-colors duration-300"
+            phx-click="delete_avatar"
+            aria-label="Delete avatar"
+          >
+            <.icon icon="trash" />
+          </button>
+        </div>
+        <.avatar
+          class="w-16 h-16"
+          src={Phoenix.HTML.Form.input_value(@user_form_data, :avatar)}
+          aria-label="Profile avatar"
+        />
+      </div>
+
       <div class="flex-1">
         <.input
           type="text"
           field={@user_form_data[:name]}
           aria-label="Profile name"
           phx-blur="save"
+          phx-keydown="save"
+          phx-key="Enter"
           phx-value-field={:name}
         >
           <:label>

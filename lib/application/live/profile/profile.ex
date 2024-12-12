@@ -5,6 +5,7 @@ defmodule RunaWeb.Live.Profile do
   use RunaWeb, :live_view
 
   alias Runa.Accounts
+  alias Runa.Services.Avatar
 
   import RunaWeb.Components.Avatar
   import RunaWeb.Components.Card
@@ -52,6 +53,20 @@ defmodule RunaWeb.Live.Profile do
 
     {:noreply,
      assign(socket, user_form_data: to_form(changeset, action: :validate))}
+  end
+
+  @impl true
+  def handle_event("delete_avatar", _, socket) do
+    value = Avatar.generate_url(socket.assigns.user.name, style: :initials)
+
+    handle_event("save", %{"user" => %{avatar: value}}, socket)
+  end
+
+  @impl true
+  def handle_event("save", %{"field" => "avatar"}, socket) do
+    value = Avatar.generate_random_url()
+
+    handle_event("save", %{"user" => %{avatar: value}}, socket)
   end
 
   @impl true
