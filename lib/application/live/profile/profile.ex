@@ -78,6 +78,8 @@ defmodule RunaWeb.Live.Profile do
   def handle_event("save", %{"user" => attrs}, socket) do
     case Accounts.update(socket.assigns.user, attrs) do
       {:ok, user} ->
+        user = Repo.preload(user, tokens: :user)
+
         PubSub.broadcast(
           "accounts:#{socket.assigns.user.id}",
           {:updated_account, user}

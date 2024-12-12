@@ -14,7 +14,8 @@ defmodule Runa.Tokens do
   def get(id) do
     query =
       from t in Token,
-        where: t.id == ^id
+        where: t.id == ^id,
+        preload: [:user]
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -23,7 +24,12 @@ defmodule Runa.Tokens do
   end
 
   def get_by_token(token) do
-    case Repo.get_by(Token, hash: hash(token)) do
+    query =
+      from t in Token,
+        where: t.hash == ^hash(token),
+        preload: [:user]
+
+    case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
       data -> {:ok, data}
     end
@@ -41,6 +47,7 @@ defmodule Runa.Tokens do
   def index(%User{} = user) do
     Token
     |> where(user_id: ^user.id)
+    |> preload(:user)
     |> Repo.all()
   end
 
@@ -82,8 +89,6 @@ defmodule Runa.Tokens do
 
   """
   def update(%Token{} = token, attrs \\ %{}) do
-    :timer.sleep(1000)
-
     token
     |> Token.update_changeset(attrs)
     |> Repo.update()

@@ -231,7 +231,8 @@ defmodule RunaWeb.Live.Token.IndexTest do
       assert has_element?(child_view, "#modal")
     end
 
-    test "creates token by clicking create button", ctx do
+    @tag :only
+    test "creates token ", ctx do
       {:ok, parent_view, _} =
         ctx.conn
         |> put_session(:user_id, ctx.user.id)

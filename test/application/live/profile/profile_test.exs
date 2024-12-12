@@ -81,6 +81,31 @@ defmodule RunaWeb.Live.ProfileTest do
              "John Doe"
   end
 
+  test "name updates in profile propagates to token list", ctx do
+    {:ok, view, _} =
+      ctx.conn
+      |> put_session(:user_id, ctx.user.id)
+      |> live(~p"/profile")
+
+    child_view =
+      find_live_child(
+        view,
+        "api_keys"
+      )
+
+    view
+    |> element("input[aria-label='Profile name']")
+    |> render_blur(%{"value" => "John Doe"})
+
+    for _ <- ctx.user.tokens do
+      assert has_element?(
+               child_view,
+               "td",
+               "John Doe"
+             )
+    end
+  end
+
   test "authenticated user can see email", ctx do
     {:ok, view, _} =
       ctx.conn
@@ -161,6 +186,33 @@ defmodule RunaWeb.Live.ProfileTest do
     assert updated_src =~ "thumbs"
   end
 
+  test "avatar update in profile propagates to sidebar", ctx do
+    {:ok, view, _} =
+      ctx.conn
+      |> put_session(:user_id, ctx.user.id)
+      |> live(~p"/profile")
+
+    sidebar_avatar_url =
+      view
+      |> element("[aria-label='Main navigation']")
+      |> render()
+      |> Floki.attribute("img", "src")
+      |> List.first()
+
+    view
+    |> element("button[aria-label='Update avatar']")
+    |> render_click()
+
+    updated_sidebar_avatar_url =
+      view
+      |> element("[aria-label='Main navigation']")
+      |> render()
+      |> Floki.attribute("img", "src")
+      |> List.first()
+
+    refute sidebar_avatar_url == updated_sidebar_avatar_url
+  end
+
   test "authenticated user can delete avatar", ctx do
     {:ok, view, _} =
       ctx.conn
@@ -187,5 +239,35 @@ defmodule RunaWeb.Live.ProfileTest do
 
     refute initial_src == updated_src
     assert updated_src =~ "initials"
+  end
+
+  test "delete avatar in profile propagates to sidebar", ctx do
+    {:ok, view, _} =
+      ctx.conn
+      |> put_session(:user_id, ctx.user.id)
+      |> live(~p"/profile")
+
+    sidebar_avatar_url =
+      view
+      |> element("[aria-label='Main navigation']")
+      |> render()
+      |> Floki.attribute("img", "src")
+      |> List.first()
+
+    assert sidebar_avatar_url =~ "thumbs"
+
+    view
+    |> element("button[aria-label='Delete avatar']")
+    |> render_click()
+
+    updated_sidebar_avatar_url =
+      view
+      |> element("[aria-label='Main navigation']")
+      |> render()
+      |> Floki.attribute("img", "src")
+      |> List.first()
+
+    refute sidebar_avatar_url == updated_sidebar_avatar_url
+    assert updated_sidebar_avatar_url =~ "initials"
   end
 end
