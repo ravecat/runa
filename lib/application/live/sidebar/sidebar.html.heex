@@ -9,12 +9,16 @@
   <div class="px-[.5rem] flex flex-col gap-[.25rem]">
     <.dropdown entries={@streams.teams} id="teams">
       <:summary>
-        <.avatar alt="avatar" src={@user.avatar} />
-        <div class="flex flex-col w-full">
-          <strong class="font-medium">
-            {@active_team.title || "-"}
-          </strong>
-          <span class="text-sm ">{@user.name}</span>
+        <div class="flex items-center gap-2 w-full">
+          <.avatar alt="avatar" src={@user.avatar} class="flex-shrink-0" />
+          <div class="flex flex-col min-w-0 flex-1">
+            <strong class="font-medium overflow-hidden text-ellipsis whitespace-nowrap">
+              {@active_team.title || "-"}
+            </strong>
+            <span class="text-sm overflow-hidden text-ellipsis whitespace-nowrap">
+              {@user.name}
+            </span>
+          </div>
         </div>
       </:summary>
       <:row :let={team}>

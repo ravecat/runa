@@ -44,7 +44,10 @@ defmodule RunaWeb.Components.Dropdown do
     default: "bottom",
     values: ["top", "bottom", "left", "right"]
 
-  slot :summary
+  slot :summary do
+    attr :class, :string
+  end
+
   slot :row
   slot :footer
 
@@ -72,20 +75,19 @@ defmodule RunaWeb.Components.Dropdown do
       ]}
       {@rest}
     >
-      <summary class="list-none rounded flex items-center justify-between border border-accent cursor-pointer w-full p-[.5rem] gap-[.25rem] text-ellipsis overflow-hidden select-none whitespace-nowrap bg-background dark:bg-background">
-        <%= if @summary != [] do %>
-          {render_slot(@summary)}
-          <.icon
-            icon="shevron-right"
-            class="rotate-90 transition-transform duration-300 group-open:rotate-[270deg]"
-          />
-        <% else %>
-          Select an option
-          <.icon
-            icon="shevron-right"
-            class="rotate-90 transition-transform duration-200"
-          />
-        <% end %>
+      <summary class="list-none rounded flex items-center border cursor-pointer w-full p-[.5rem] select-none bg-background dark:bg-background overflow-hidden">
+        <div class="overflow-hidden text-ellipsis whitespace-nowrap flex-1">
+          <%= if @summary != [] do %>
+            {render_slot(@summary)}
+          <% else %>
+            Select an option
+          <% end %>
+        </div>
+        <.icon
+          :if={@summary != []}
+          icon="shevron-right"
+          class="rotate-90 transition-transform duration-300 group-open:rotate-[270deg] flex-shrink-0"
+        />
       </summary>
       <div
         class="absolute p-1 rounded border shadow-lg bg-background dark:bg-background z-10 min-w-[100%] max-h-[80vh]"

@@ -5,7 +5,7 @@ defmodule RunaWeb.Components.Avatar do
   use RunaWeb, :component
 
   attr :src, :string, required: true
-  attr :class, :string, default: nil
+  attr :class, :string
   attr :rest, :global
 
   def avatar(assigns) do
