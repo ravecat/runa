@@ -13,7 +13,7 @@
           <.avatar alt="avatar" src={@user.avatar} class="flex-shrink-0" />
           <div class="flex flex-col min-w-0 flex-1">
             <strong class="font-medium overflow-hidden text-ellipsis whitespace-nowrap">
-              {@active_team.title || "-"}
+              {if @team, do: @team.title, else: "-"}
             </strong>
             <span class="text-sm overflow-hidden text-ellipsis whitespace-nowrap">
               {@user.name}
@@ -31,6 +31,11 @@
       </:footer>
     </.dropdown>
     <div>
+      <.link href={~p"/projects"}>
+        <.pill class="text-base flex">
+          <.icon icon="folder" /> Projects
+        </.pill>
+      </.link>
       <.link href={~p"/profile"}>
         <.pill class="text-base flex">
           <.icon icon="user" /> Profile
@@ -54,7 +59,7 @@
     <:content>
       <.live_component
         module={RunaWeb.Live.Team.Form}
-        data={@team}
+        data={@team_form_data}
         user={@user}
         action={:new}
         id="create_team"

@@ -7,6 +7,7 @@ defmodule Mix.Tasks.Seed.Data do
 
   import Runa.Factory
 
+  alias Runa.Languages.Language
   alias Runa.Repo
 
   require Logger
@@ -17,13 +18,43 @@ defmodule Mix.Tasks.Seed.Data do
   def run(_args) do
     Logger.info("Starting to seed development data...")
 
+    case Repo.aggregate(Language, :count) do
+      0 ->
+        Logger.info("No languages found. Running languages seed...")
+        Mix.Task.run("seed.languages")
+
+      count ->
+        Logger.info("Found #{count} languages")
+    end
+
     Repo.query!(
       "TRUNCATE TABLE users, teams, contributors, projects, locales, keys, translations, tokens CASCADE"
     )
 
     user = insert(:user, email: @email)
 
-    insert_list(2, :contributor, user: user, team: fn -> insert(:team) end)
+    languages = Repo.all(Language)
+
+    teams =
+      1..5
+      |> Enum.map(fn _i ->
+        team = insert(:team)
+        insert(:contributor, user: user, team: team)
+
+        projects = insert_list(3, :project, team: team)
+
+        {team, projects}
+      end)
+
+    teams
+    |> Enum.flat_map(fn {_, projects} -> projects end)
+    |> Enum.each(fn project ->
+      languages
+      |> Enum.take_random(Enum.random(10..25))
+      |> Enum.each(fn language ->
+        insert(:locale, project: project, language: language)
+      end)
+    end)
 
     insert_list(3, :token, user: user)
 

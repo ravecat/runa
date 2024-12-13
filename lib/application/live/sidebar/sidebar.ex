@@ -16,22 +16,41 @@ defmodule RunaWeb.Live.Sidebar do
 
   @impl true
   def mount(_params, %{"user_id" => user_id}, socket) do
-    if connected?(socket) do
-      PubSub.subscribe("teams:#{user_id}")
-      PubSub.subscribe("accounts:#{user_id}")
-    end
+    handle_user_data(user_id, socket)
+  end
 
-    {:ok, user} = Accounts.get(user_id)
+  defp handle_user_data(user_id, socket) do
+    case Accounts.get(user_id) do
+      {:ok, user} -> handle_actual_user_data(socket, user)
+      {:error, %Ecto.NoResultsError{}} -> handle_missing_user_data(socket)
+      _ -> {:ok, redirect(socket, to: ~p"/")}
+    end
+  end
+
+  defp handle_actual_user_data(socket, user) do
+    if connected?(socket) do
+      PubSub.subscribe("teams:#{user.id}")
+      PubSub.subscribe("accounts:#{user.id}")
+    end
 
     socket =
       socket
       |> assign(:user, user)
       |> assign(:is_visible_create_team_modal, false)
-      |> assign(:active_team, List.first(user.teams) || %Team{title: nil})
-      |> assign(:team, %Team{})
+      |> assign(:team, List.first(user.teams))
+      |> assign(:team_form_data, %Team{})
       |> stream(:teams, user.teams)
 
     {:ok, socket, layout: false}
+  end
+
+  defp handle_missing_user_data(socket) do
+    socket =
+      socket
+      |> put_flash(:error, "User not found")
+      |> redirect(to: ~p"/")
+
+    {:ok, socket}
   end
 
   @impl true

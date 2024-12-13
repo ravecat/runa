@@ -1,0 +1,56 @@
+<div class="flex justify-start gap-2">
+  <.button class="w-40" aria-label="Create new project">
+    <.icon icon="plus" /> Create project
+  </.button>
+  <.pill class="border" role="button" aria-label="List view">
+    <.icon icon="bars-3" />
+  </.pill>
+  <.pill class="border" role="button" aria-label="Row view">
+    <.icon icon="rows-2" />
+  </.pill>
+  <.pill class="border" role="button" aria-label="Grid view">
+    <.icon icon="squares" />
+  </.pill>
+</div>
+
+<%= for project <- @projects do %>
+  <.card
+    class="grid grid-cols-[1fr,1fr,auto] gap-4 h-32"
+    role="listitem"
+    aria-label={"Project #{project.name} card"}
+  >
+    <div class="text-lg font-medium text-primary truncate min-w-40">
+      {project.name}
+    </div>
+    <div
+      class="flex flex-wrap content-start gap-1 min-w-40 overflow-hidden max-h-[80px]"
+      role="list"
+      aria-label={"Project #{project.name} languages"}
+    >
+      <%= for language <- project.languages do %>
+        <.pill class="h-6 border">
+          {language.wals_code || language.iso_code || language.glotto_code}
+        </.pill>
+      <% end %>
+    </div>
+    <div
+      class="grid grid-cols-4 gap-6 justify-end min-w-300px"
+      role="group"
+      aria-label={"Project #{project.name} statistics"}
+    >
+      <%= for {label, value} <- [{"Done", "100%"}, {"Languages", length(project.languages)}, {"Keys", 10}, {"Team", length(@team.users)}] do %>
+        <div class="flex-col">
+          <span class="text-sm uppercase block min-w-[60px] max-w-[100px] whitespace-normal">
+            {label}
+          </span>
+          <span
+            class="text-lg block text-accent"
+            aria-label={"Project #{project.name} #{label}"}
+          >
+            {value}
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </.card>
+<% end %>

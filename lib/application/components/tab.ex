@@ -12,7 +12,7 @@ defmodule RunaWeb.Components.Tab do
     ~H"""
     <div
       class={[
-        "rounded flex items-center p-[.5rem] gap-[.25rem] text-ellipsis overflow-hidden whitespace-nowrap",
+        "rounded flex items-center p-[.5rem] gap-[.25rem] truncate",
         @class
       ]}
       {@rest}

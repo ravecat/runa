@@ -9,7 +9,7 @@ defmodule RunaWeb.Live.ProfileTest do
   alias Runa.Accounts
 
   setup do
-    user = insert(:user)
+    user = insert(:user, tokens: fn -> build_list(3, :token) end)
 
     {:ok, user: user}
   end

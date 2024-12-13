@@ -65,7 +65,7 @@ defmodule RunaWeb.Components.Input do
                 multiple pattern placeholder readonly required rows size step)
 
   slot :inner_block
-  slot :label, required: true
+  slot :label
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns
@@ -170,7 +170,7 @@ defmodule RunaWeb.Components.Input do
         class={[
           "block w-full rounded text-secondary-900 focus:ring-0 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-secondary-300 phx-no-feedback:focus:border-secondary-400",
-          "text-ellipsis overflow-hidden whitespace-nowrap",
+          "truncate",
           @errors == [] && "border-secondary-300 focus:border-secondary-400",
           @errors != [] && "border-error-400 focus:border-error-400"
         ]}

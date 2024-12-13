@@ -27,8 +27,8 @@ defmodule Runa.Factory do
 
   def project_factory(attrs) do
     %Project{
-      name: sequence(:title, &"project title #{&1}"),
-      description: sequence(:description, &"project description #{&1}")
+      name: Faker.Pokemon.name(),
+      description: Faker.StarWars.quote()
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
@@ -40,13 +40,7 @@ defmodule Runa.Factory do
       uid: Faker.UUID.v4(),
       name: Faker.Person.name(),
       nickname: Faker.Pokemon.name(),
-      avatar: Avatar.generate_url(Faker.Pokemon.name(), style: :thumbs),
-      contributors: fn ->
-        build_list(1, :contributor, team: fn -> build(:team) end)
-      end,
-      tokens: fn ->
-        build_list(3, :token)
-      end
+      avatar: Avatar.generate_url(Faker.Pokemon.name(), style: :thumbs)
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
