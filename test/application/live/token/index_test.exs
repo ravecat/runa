@@ -8,7 +8,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
   @moduletag :tokens
 
   setup do
-    user = insert(:user)
+    user = insert(:user, tokens: fn -> build_list(3, :token) end)
 
     {:ok, user: user}
   end

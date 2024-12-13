@@ -20,11 +20,6 @@ defmodule RunaWeb.Live.Token.Index do
 
   @impl true
   def mount(_params, %{"user_id" => user_id}, socket) do
-    if connected?(socket) do
-      PubSub.subscribe("tokens:#{user_id}")
-      PubSub.subscribe("accounts:#{user_id}")
-    end
-
     handle_user_data(user_id, socket)
   end
 
@@ -37,6 +32,11 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   defp handle_actual_user_data(socket, user) do
+    if connected?(socket) do
+      PubSub.subscribe("tokens:#{user.id}")
+      PubSub.subscribe("accounts:#{user.id}")
+    end
+
     user = Repo.preload(user, tokens: :user)
 
     socket =
@@ -88,7 +88,6 @@ defmodule RunaWeb.Live.Token.Index do
 
     {:noreply, socket}
   end
-
 
   @impl true
   def handle_info({:updated_account, %User{} = data}, socket) do

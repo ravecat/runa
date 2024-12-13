@@ -96,6 +96,12 @@ defmodule RunaWeb.Router do
     live "/", Profile
   end
 
+  scope "/projects", RunaWeb.Live do
+    pipe_through [:browser, :authenticate]
+
+    live "/", Project.Index
+  end
+
   # Enable LiveDashboard in development
   if Application.compile_env(:runa, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
