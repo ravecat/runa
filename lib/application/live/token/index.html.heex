@@ -14,7 +14,7 @@
       {token.title}
     </:col>
     <:col :let={token} label="Owner" class="flex flex-col">
-      <span class="text-sm font-medium">
+      <span class="text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap">
         {token.user.name}
       </span>
       <span class="text-xs">

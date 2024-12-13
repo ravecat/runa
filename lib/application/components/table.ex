@@ -54,17 +54,17 @@ defmodule RunaWeb.Components.Table do
     <div class="overflow-y-auto sm:overflow-visible">
       <table
         class={[
-          "min-w-full divide-y divide-secondary dark:divide-secondary",
+          "min-w-full divide-y divide-secondary dark:divide-secondary table-fixed",
           @class
         ]}
         {@rest}
       >
         <thead class="text-left whitespace-nowrap uppercase text-sm">
           <tr>
-            <th :for={col <- @col} class="p-2 font-medium">
+            <th :for={col <- @col} class="p-2 font-medium max-w-64">
               {col[:label]}
             </th>
-            <th :if={@action != []} class="relative"></th>
+            <th :if={@action != []} class="relative w-20"></th>
           </tr>
         </thead>
         <tbody
@@ -76,14 +76,22 @@ defmodule RunaWeb.Components.Table do
             <td
               :for={{col, _} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
-              class={merge("whitespace-nowrap p-2", col[:class]) |> to_string()}
+              class={
+                merge(
+                  "p-2 max-w-64 truncate overflow-hidden overflow-ellipsis",
+                  col[:class]
+                )
+                |> to_string()
+              }
             >
               {render_slot(col, @row_item.(row))}
             </td>
-            <td :if={@action != []} class="flex whitespace-nowrap p-2">
-              <%= for action <- @action do %>
-                {render_slot(action, @row_item.(row))}
-              <% end %>
+            <td :if={@action != []} class="p-2 max-w-64">
+              <div class="flex items-center justify-center gap-1">
+                <%= for action <- @action do %>
+                  {render_slot(action, @row_item.(row))}
+                <% end %>
+              </div>
             </td>
           </tr>
         </tbody>
