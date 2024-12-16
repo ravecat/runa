@@ -38,7 +38,13 @@
       role="group"
       aria-label={"Project #{project.name} statistics"}
     >
-      <%= for {label, value} <- [{"Done", "100%"}, {"Languages", length(project.languages)}, {"Keys", 10}, {"Team", length(@team.users)}] do %>
+      <%= for {label, value} <- [
+        {"Languages", project.statistics.languages_count},
+        {"Keys", project.statistics.keys_count},
+        {"Files", project.statistics.files_count},
+        {"Done", "#{project.statistics.done}%"}
+      ]
+      do %>
         <div class="flex-col">
           <span class="text-sm uppercase block min-w-[60px] max-w-[100px] whitespace-normal">
             {label}
