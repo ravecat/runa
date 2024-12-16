@@ -109,6 +109,9 @@ defmodule RunaWeb do
     quote do
       alias Runa.PubSub
 
+      import Ecto
+      import Ecto.Changeset
+
       use Phoenix.LiveComponent
 
       unquote(html_helpers())

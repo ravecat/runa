@@ -12,16 +12,29 @@ defmodule RunaWeb.Live.Project.IndexTest do
     {:ok, user: user, projects: projects, team: team, contributor: contributor}
   end
 
-  describe "projects compact view" do
+  describe "projects view" do
     test "renders projects cards", ctx do
       {:ok, view, _} =
         ctx.conn
         |> put_session(:user_id, ctx.user.id)
         |> live(~p"/projects")
 
-      for project <- ctx.projects do
-        assert has_element?(view, "[aria-label='Project #{project.name} card']")
-      end
+      assert Enum.all?(
+               ctx.projects,
+               &has_element?(view, "[aria-label='Project #{&1.name} card']")
+             )
+    end
+
+    test "renders edit button", ctx do
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      assert Enum.all?(
+               ctx.projects,
+               &has_element?(view, "[aria-label='Edit #{&1.name} project']")
+             )
     end
 
     test "renders projects titles", ctx do
@@ -30,25 +43,26 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> put_session(:user_id, ctx.user.id)
         |> live(~p"/projects")
 
-      Enum.each(ctx.projects, fn project ->
-        assert view
+      assert Enum.all?(ctx.projects, fn project ->
+               view
                |> element("[aria-label='Project #{project.name} card']")
                |> render() =~ project.name
-      end)
+             end)
     end
 
-    test "renders projects statistics block", ctx do
+    test "renders projects statistics", ctx do
       {:ok, view, _} =
         ctx.conn
         |> put_session(:user_id, ctx.user.id)
         |> live(~p"/projects")
 
-      for project <- ctx.projects do
-        assert has_element?(
+      assert Enum.all?(
+               ctx.projects,
+               &has_element?(
                  view,
-                 "[aria-label='Project #{project.name} statistics']"
+                 "[aria-label='Project #{&1.name} statistics']"
                )
-      end
+             )
     end
 
     test "renders projects languages block", ctx do
@@ -57,31 +71,16 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> put_session(:user_id, ctx.user.id)
         |> live(~p"/projects")
 
-      for project <- ctx.projects do
-        assert has_element?(
+      assert Enum.all?(
+               ctx.projects,
+               &has_element?(
                  view,
-                 "[aria-label='Project #{project.name} languages']"
+                 "[aria-label='Project #{&1.name} languages']"
                )
-      end
+             )
     end
 
-    test "renders project languages list", ctx do
-      language = insert(:language)
-      project = insert(:project, team: ctx.team, languages: [language])
-
-      {:ok, view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/projects")
-
-      assert view
-             |> element("[aria-label='Project #{project.name} languages']")
-             |> render() =~ language.wals_code
-    end
-  end
-
-  describe "card statistic block" do
-    test "render files count", ctx do
+    test "renders files count", ctx do
       project = insert(:project, team: ctx.team)
       files = insert_list(2, :file, project: project)
 
@@ -137,7 +136,23 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
   end
 
-  describe "toolbar buttons" do
+  describe "projects compact view" do
+    test "renders project languages list", ctx do
+      language = insert(:language)
+      project = insert(:project, team: ctx.team, languages: [language])
+
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      assert view
+             |> element("[aria-label='Project #{project.name} languages']")
+             |> render() =~ language.wals_code
+    end
+  end
+
+  describe "toolbar block" do
     test "renders create project button", ctx do
       {:ok, view, _} =
         ctx.conn
@@ -153,7 +168,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> put_session(:user_id, ctx.user.id)
         |> live(~p"/projects")
 
-      assert has_element?(view, "[aria-label='List view']")
+      assert has_element?(view, "[aria-label='Compact view']")
     end
 
     test "renders row view button", ctx do
@@ -162,7 +177,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> put_session(:user_id, ctx.user.id)
         |> live(~p"/projects")
 
-      assert has_element?(view, "[aria-label='Row view']")
+      assert has_element?(view, "[aria-label='Expand view']")
     end
 
     test "renders grid view button", ctx do
@@ -172,6 +187,46 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert has_element?(view, "[aria-label='Grid view']")
+    end
+  end
+
+  describe "edit project modal" do
+    test "rendered by click edit button", ctx do
+      project = insert(:project, team: ctx.team)
+
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      element(view, "button[aria-label='Edit #{project.name} project']")
+      |> render_click()
+
+      assert has_element?(view, "[aria-modal='true'][role='dialog']")
+      assert has_element?(view, "[aria-label='Project form']")
+    end
+
+    test "edits project by clicking save button", ctx do
+      project = insert(:project, team: ctx.team)
+
+      title = Atom.to_string(ctx.test)
+
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      refute has_element?(view, "[aria-label='Project #{title} card']")
+
+      element(view, "button[aria-label='Edit #{project.name} project']")
+      |> render_click()
+
+      element(view, "[aria-label='Project form']")
+      |> render_submit(%{"project" => %{"name" => title}})
+
+      assert view
+             |> element("[aria-label='Project #{title} card']")
+             |> render() =~ title
     end
   end
 end

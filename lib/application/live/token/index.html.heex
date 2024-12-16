@@ -105,7 +105,6 @@
               else: "Confirm create token"
           }
           variant="warning"
-          phx-click={if @token.id, do: "update_token", else: "create_token"}
           phx-value-id={@token.id}
           type="submit"
         >

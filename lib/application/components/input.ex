@@ -140,7 +140,7 @@ defmodule RunaWeb.Components.Input do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name} class="flex flex-col gap-2">
-      <.label :if={@label != []} for={@id}>{@label}</.label>
+      <.label :if={@label != []} for={@id}>{render_slot(@label)}</.label>
       <textarea
         id={@id}
         name={@name}

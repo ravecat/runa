@@ -44,9 +44,11 @@ defmodule RunaWeb.ConnCase do
       import RunaWeb.Router
       import Phoenix.Controller, only: [fetch_flash: 2]
       import Phoenix.LiveViewTest
+      import LiveIsolatedComponent
 
       alias Phoenix.Flash
       alias Runa.Repo
+      alias Runa.PubSub
 
       require Pathex
     end
