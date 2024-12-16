@@ -10,6 +10,7 @@ defmodule RunaWeb.Live.Project.Index do
   import RunaWeb.Components.Pill
 
   alias Runa.Accounts
+  alias Runa.Teams
 
   def mount(_, %{"user_id" => user_id}, socket),
     do: handle_user_data(user_id, socket)
@@ -25,9 +26,9 @@ defmodule RunaWeb.Live.Project.Index do
   end
 
   defp handle_actual_user_data(socket, %{teams: [team | _]}) do
-    team = Repo.preload(team, projects: [:languages], users: [])
+    projects = Teams.get_projects_with_statistics(team.id)
 
-    {:ok, assign(socket, team: team, projects: team.projects)}
+    {:ok, assign(socket, team: team, projects: projects)}
   end
 
   defp handle_actual_user_data(socket, _user) do

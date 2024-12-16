@@ -8,6 +8,7 @@ defmodule Runa.Teams do
   alias Runa.Accounts.User
   alias Runa.Contributors
   alias Runa.Contributors.Contributor
+  alias Runa.Projects.Project
   alias Runa.Teams.Team
 
   @doc """
@@ -41,9 +42,10 @@ defmodule Runa.Teams do
   """
   def get(id) do
     query =
-      from p in Team,
+      from(p in Team,
         where: p.id == ^id,
         preload: [:projects]
+      )
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -132,5 +134,49 @@ defmodule Runa.Teams do
   """
   def change(%Team{} = data, attrs \\ %{}) do
     Team.changeset(data, attrs)
+  end
+
+  def get_projects_with_statistics(id) do
+    from(p in Project,
+      where: p.team_id == ^id,
+      preload: [:languages],
+      left_join: l in assoc(p, :languages),
+      left_join: k in assoc(p, :keys),
+      left_join: t in assoc(k, :translations),
+      left_join: f in assoc(p, :files),
+      group_by: p.id,
+      select: %{
+        project: p,
+        languages_count: count(l.id, :distinct),
+        keys_count: count(k.id, :distinct),
+        files_count: count(f.id, :distinct),
+        done:
+          fragment(
+            """
+            CASE
+              WHEN COUNT(DISTINCT ?) * COUNT(DISTINCT ?) = 0 THEN 0
+              ELSE ROUND((SUM(CASE WHEN ? IS NOT NULL THEN 1 ELSE 0 END)::float /
+              (COUNT(DISTINCT ?) * COUNT(DISTINCT ?)))::numeric * 100, 1)
+            END
+            """,
+            k.id,
+            l.id,
+            t.id,
+            k.id,
+            l.id
+          )
+      }
+    )
+    |> Repo.all()
+    |> Enum.map(fn %{project: project} = data ->
+      Map.merge(project, %{
+        statistics: %{
+          languages_count: data.languages_count,
+          keys_count: data.keys_count,
+          files_count: data.files_count,
+          done: data.done
+        }
+      })
+    end)
   end
 end

@@ -81,15 +81,9 @@ defmodule RunaWeb.Live.Project.IndexTest do
   end
 
   describe "card statistic block" do
-    test "render team count", ctx do
-      contributors =
-        [ctx.contributor] ++
-          insert_list(2, :contributor,
-            team: ctx.team,
-            user: fn -> build(:user) end
-          )
-
+    test "render files count", ctx do
       project = insert(:project, team: ctx.team)
+      files = insert_list(2, :file, project: project)
 
       {:ok, view, _} =
         ctx.conn
@@ -97,8 +91,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert view
-             |> element("[aria-label='Project #{project.name} Team']")
-             |> render() =~ "#{length(contributors)}"
+             |> element("[aria-label='Project #{project.name} Files']")
+             |> render() =~ "#{length(files)}"
     end
 
     test "renders languages count", ctx do
@@ -125,11 +119,12 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       assert view
              |> element("[aria-label='Project #{project.name} Done']")
-             |> render() =~ "100%"
+             |> render() =~ "0%"
     end
 
     test "renders keys count", ctx do
       project = insert(:project, team: ctx.team)
+      keys = insert_list(2, :key, project: project)
 
       {:ok, view, _} =
         ctx.conn
@@ -138,7 +133,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       assert view
              |> element("[aria-label='Project #{project.name} Keys']")
-             |> render() =~ "10"
+             |> render() =~ "#{Enum.count(keys)}"
     end
   end
 
