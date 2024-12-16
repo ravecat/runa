@@ -95,7 +95,8 @@ defmodule Runa.MixProject do
       {:dotenvy, "~> 0.8.0", only: [:dev, :test]},
       {:faker, "~> 0.18", only: [:dev, :test]},
       {:pbkdf2_elixir, "~> 2.0"},
-      {:tails, "~> 0.1.11"}
+      {:tails, "~> 0.1.11"},
+      {:live_isolated_component, "~> 0.9.0", only: [:dev, :test]}
     ]
   end
 

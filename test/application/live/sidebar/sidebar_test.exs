@@ -57,13 +57,13 @@ defmodule RunaWeb.Live.SidebarTest do
       {:ok, view, _} =
         live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
 
-      refute has_element?(view, "#modal")
+      refute has_element?(view, "[aria-modal='true'][role='dialog']")
 
       assert view
              |> element("button", "Create team")
              |> render_click()
 
-      assert has_element?(view, "#modal")
+      assert has_element?(view, "[aria-modal='true'][role='dialog']")
     end
   end
 

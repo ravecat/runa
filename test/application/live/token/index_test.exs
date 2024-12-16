@@ -166,7 +166,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
           "api_keys"
         )
 
-      refute has_element?(child_view, "#modal")
+      refute has_element?(child_view, "[aria-modal='true'][role='dialog']")
 
       for token <- ctx.user.tokens do
         child_view
@@ -175,7 +175,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
         )
         |> render_click()
 
-        assert has_element?(child_view, "#modal")
+        assert has_element?(child_view, "[aria-modal='true'][role='dialog']")
       end
     end
 
@@ -222,16 +222,15 @@ defmodule RunaWeb.Live.Token.IndexTest do
           "api_keys"
         )
 
-      refute has_element?(child_view, "#modal")
+      refute has_element?(child_view, "[aria-modal='true'][role='dialog']")
 
       child_view
       |> element("button[aria-label='Create token']")
       |> render_click()
 
-      assert has_element?(child_view, "#modal")
+      assert has_element?(child_view, "[aria-modal='true'][role='dialog']")
     end
 
-    @tag :only
     test "creates token ", ctx do
       {:ok, parent_view, _} =
         ctx.conn
@@ -324,7 +323,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
           "api_keys"
         )
 
-      refute has_element?(child_view, "#modal")
+      refute has_element?(child_view, "[aria-modal='true'][role='dialog']")
 
       for token <- ctx.user.tokens do
         child_view
@@ -333,7 +332,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
         )
         |> render_click()
 
-        assert has_element?(child_view, "#modal")
+        assert has_element?(child_view, "[aria-modal='true'][role='dialog']")
       end
     end
 
