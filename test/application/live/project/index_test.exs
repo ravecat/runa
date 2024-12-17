@@ -37,6 +37,20 @@ defmodule RunaWeb.Live.Project.IndexTest do
              )
     end
 
+    test "renders delete button", ctx do
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      for project <- ctx.projects do
+        assert has_element?(
+                 view,
+                 "[aria-label='Delete #{project.name} project']"
+               )
+      end
+    end
+
     test "renders projects titles", ctx do
       {:ok, view, _} =
         ctx.conn
@@ -56,13 +70,12 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> put_session(:user_id, ctx.user.id)
         |> live(~p"/projects")
 
-      assert Enum.all?(
-               ctx.projects,
-               &has_element?(
+      for project <- ctx.projects do
+        assert has_element?(
                  view,
-                 "[aria-label='Project #{&1.name} statistics']"
+                 "[aria-label='Project #{project.name} statistics']"
                )
-             )
+      end
     end
 
     test "renders projects languages block", ctx do
@@ -71,13 +84,12 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> put_session(:user_id, ctx.user.id)
         |> live(~p"/projects")
 
-      assert Enum.all?(
-               ctx.projects,
-               &has_element?(
+      for project <- ctx.projects do
+        assert has_element?(
                  view,
-                 "[aria-label='Project #{&1.name} languages']"
+                 "[aria-label='Project #{project.name} languages']"
                )
-             )
+      end
     end
 
     test "renders files count", ctx do
@@ -227,6 +239,42 @@ defmodule RunaWeb.Live.Project.IndexTest do
       assert view
              |> element("[aria-label='Project #{title} card']")
              |> render() =~ title
+    end
+  end
+
+  describe "delete project button" do
+    test "rendered by click delete button", ctx do
+      project = List.first(ctx.projects)
+
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      element(view, "button[aria-label='Delete #{project.name} project']")
+      |> render_click()
+
+      assert has_element?(view, "[aria-modal='true'][role='dialog']")
+    end
+
+    test "deletes project by clicking delete button", ctx do
+      project = List.first(ctx.projects)
+
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      element(view, "button[aria-label='Delete #{project.name} project']")
+      |> render_click()
+
+      element(
+        view,
+        "button[aria-label='Confirm delete #{project.name} project']"
+      )
+      |> render_click()
+
+      refute has_element?(view, "[aria-label='Project #{project.name} card']")
     end
   end
 end
