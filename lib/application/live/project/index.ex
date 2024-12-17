@@ -40,7 +40,8 @@ defmodule RunaWeb.Live.Project.Index do
       assign(socket,
         team: team,
         project: %Project{},
-        is_visible_project_modal: false
+        is_visible_project_modal: false,
+        is_visible_delete_project_modal: false
       )
       |> stream(:projects, projects)
 
@@ -84,10 +85,49 @@ defmodule RunaWeb.Live.Project.Index do
     end
   end
 
+  @impl true
+  def handle_event("open_delete_project_modal", %{"id" => id}, socket) do
+    case Projects.get(id) do
+      {:ok, data} ->
+        socket =
+          socket
+          |> assign(:project, data)
+          |> assign(:is_visible_delete_project_modal, true)
+
+        {:noreply, socket}
+
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
+  @impl true
   def handle_event("close_project_modal", _, socket) do
     socket =
       assign(socket, :is_visible_project_modal, false)
 
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("delete_project", _, socket) do
+    case Projects.delete(socket.assigns.project) do
+      {:ok, _} ->
+        socket =
+          socket
+          |> stream_delete(:projects, socket.assigns.project)
+          |> assign(:project, %Project{})
+          |> assign(:is_visible_delete_project_modal, false)
+
+        {:noreply, socket}
+
+      {:error, %Ecto.Changeset{}} ->
+        {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_event(_, _, socket) do
     {:noreply, socket}
   end
 

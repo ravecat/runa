@@ -1,4 +1,7 @@
 defmodule RunaWeb.Live.Project.Form do
+  @moduledoc """
+  Form responsible for creating and updating projects.
+  """
   use RunaWeb, :live_component
 
   alias Runa.Projects

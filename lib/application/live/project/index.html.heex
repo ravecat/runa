@@ -16,15 +16,26 @@
 <div id="projects" phx-update="stream" class="grid grid-cols-1 gap-4">
   <%= for {id, project} <- @streams.projects do %>
     <div id={id} class="flex justify-between items-start gap-2">
-      <.button
-        variant="ghost"
-        phx-click="open_project_modal"
-        phx-value-id={project.id}
-        aria-label={"Edit #{project.name} project"}
-        class="aspect-square px-0 min-w-0 w-[2-rem] h-[2rem]"
-      >
-        <.icon icon="pencil" />
-      </.button>
+      <div class="flex flex-col justify-between h-full">
+        <.button
+          variant="ghost"
+          phx-click="open_project_modal"
+          phx-value-id={project.id}
+          aria-label={"Edit #{project.name} project"}
+          class="aspect-square px-0 min-w-0 w-[2-rem] h-[2rem]"
+        >
+          <.icon icon="pencil" />
+        </.button>
+        <.button
+          variant="ghost"
+          phx-click="open_delete_project_modal"
+          phx-value-id={project.id}
+          aria-label={"Delete #{project.name} project"}
+          class="aspect-square px-0 min-w-0 w-[2-rem] h-[2rem]"
+        >
+          <.icon icon="trash" />
+        </.button>
+      </div>
       <.card
         class="grid grid-cols-[1fr,1fr,auto] gap-4 h-32"
         role="listitem"
@@ -101,4 +112,27 @@
       </:actions>
     </.live_component>
   </:content>
+</.modal>
+<.modal
+  :if={@is_visible_delete_project_modal}
+  show
+  on_cancel={JS.push("close_delete_project_modal")}
+>
+  <:title>
+    Delete project data?
+  </:title>
+  <:content>
+    Are you sure?
+  </:content>
+  <:actions :let={{on_cancel, _}}>
+    <.button variant="secondary" phx-click={on_cancel}>Cancel</.button>
+    <.button
+      variant="danger"
+      phx-click="delete_project"
+      type="submit"
+      aria-label={"Confirm delete #{@project.name} project"}
+    >
+      Delete
+    </.button>
+  </:actions>
 </.modal>
