@@ -86,6 +86,14 @@ defmodule RunaWeb.Live.Project.Index do
   end
 
   @impl true
+  def handle_event("open_project_modal", _, socket) do
+    socket =
+      assign(socket, :is_visible_project_modal, true)
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("open_delete_project_modal", %{"id" => id}, socket) do
     case Projects.get(id) do
       {:ok, data} ->
@@ -146,4 +154,21 @@ defmodule RunaWeb.Live.Project.Index do
 
     {:noreply, socket}
   end
+
+  @impl true
+  def handle_info({:created_project, %Project{} = data}, socket) do
+    updated_data =
+      Teams.get_projects_with_statistics(socket.assigns.team.id)
+      |> Enum.find(&(&1.id == data.id))
+
+    socket =
+      socket
+      |> stream_insert(:projects, updated_data)
+      |> assign(:project, %Project{})
+      |> assign(:is_visible_project_modal, false)
+
+    {:noreply, socket}
+  end
+
+  def handle_info(_, socket), do: {:noreply, socket}
 end
