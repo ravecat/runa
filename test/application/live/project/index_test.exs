@@ -51,6 +51,20 @@ defmodule RunaWeb.Live.Project.IndexTest do
       end
     end
 
+    test "renders duplicate button", ctx do
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      for project <- ctx.projects do
+        assert has_element?(
+                 view,
+                 "[aria-label='Duplicate #{project.name} project']"
+               )
+      end
+    end
+
     test "renders projects titles", ctx do
       {:ok, view, _} =
         ctx.conn
@@ -311,6 +325,26 @@ defmodule RunaWeb.Live.Project.IndexTest do
       assert view
              |> element("[aria-label='Project #{title} card']")
              |> render() =~ title
+    end
+  end
+
+  describe "duplicated project" do
+    test "created by clicking duplicate button", ctx do
+      project = List.first(ctx.projects)
+
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      element(view, "button[aria-label='Duplicate #{project.name} project']")
+      |> render_click()
+
+      assert element(
+               view,
+               "[aria-label='Project #{project.name} (copy) card']"
+             )
+             |> render() =~ "#{project.name} (copy)"
     end
   end
 end

@@ -50,7 +50,7 @@ defmodule Mix.Tasks.Seed.Data do
     |> Enum.flat_map(fn {_, projects} -> projects end)
     |> Enum.each(fn project ->
       languages
-      |> Enum.take_random(Enum.random(10..25))
+      |> Enum.take_random(Enum.random(2..3))
       |> Enum.each(fn language ->
         insert(:locale, project: project, language: language)
       end)
