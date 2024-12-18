@@ -277,4 +277,40 @@ defmodule RunaWeb.Live.Project.IndexTest do
       refute has_element?(view, "[aria-label='Project #{project.name} card']")
     end
   end
+
+  describe "create project modal" do
+    test "rendered by click create button", ctx do
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      element(view, "button[aria-label='Create new project']")
+      |> render_click()
+
+      assert has_element?(view, "[aria-modal='true'][role='dialog']")
+      assert has_element?(view, "[aria-label='Project form']")
+    end
+
+    test "creates project by clicking create button", ctx do
+      title = Atom.to_string(ctx.test)
+
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects")
+
+      refute has_element?(view, "[aria-label='Project #{title} card']")
+
+      element(view, "button[aria-label='Create new project']")
+      |> render_click()
+
+      element(view, "[aria-label='Project form']")
+      |> render_submit(%{"project" => %{"name" => title}})
+
+      assert view
+             |> element("[aria-label='Project #{title} card']")
+             |> render() =~ title
+    end
+  end
 end

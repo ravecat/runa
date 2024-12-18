@@ -1,5 +1,9 @@
 <div class="flex justify-start gap-2">
-  <.button class="w-40" aria-label="Create new project">
+  <.button
+    class="w-40"
+    phx-click="open_project_modal"
+    aria-label="Create new project"
+  >
     <.icon icon="plus" /> Create project
   </.button>
   <.pill class="border" role="button" aria-label="Compact view">
@@ -90,12 +94,12 @@
   on_cancel={JS.push("close_project_modal")}
 >
   <:title>
-    Edit team
+    {if @project.id, do: "Update project", else: "Create project"}
   </:title>
   <:content :let={{on_cancel, _}}>
     <.live_component
       module={RunaWeb.Live.Project.Form}
-      id="update_project"
+      id={if @project.id, do: "update_project", else: "create_project"}
       data={@project}
       team={@team}
     >
@@ -105,9 +109,13 @@
           variant="warning"
           phx-value-id={@project.id}
           type="submit"
-          aria-label="Confirm update project"
+          aria-label={
+            if @project.id,
+              do: "Confirm update project",
+              else: "Confirm create project"
+          }
         >
-          Update
+          {if @project.id, do: "Update", else: "Create"}
         </.button>
       </:actions>
     </.live_component>
