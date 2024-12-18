@@ -35,7 +35,7 @@ defmodule Runa.Projects do
     query =
       from p in Project,
         where: p.id == ^id,
-        preload: [:keys, :languages, :team]
+        preload: [:keys, :languages, :team, :files]
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -108,5 +108,17 @@ defmodule Runa.Projects do
   """
   def change(%Project{} = project, attrs \\ %{}) do
     Project.changeset(project, attrs)
+  end
+
+  @doc """
+  Returns a project duplicate.
+
+  ## Examples
+  iex> duplicate(project)
+  {:ok, %Project{}}
+  """
+
+  def duplicate(%Project{} = project, attrs \\ %{}) do
+    Repo.duplicate(project, attrs)
   end
 end

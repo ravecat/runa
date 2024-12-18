@@ -85,6 +85,8 @@ defmodule RunaWeb do
       alias Runa.PubSub
       alias Runa.Repo
 
+      import Ecto.Changeset
+
       use Phoenix.LiveView,
         layout: {RunaWeb.Layouts, :app}
 

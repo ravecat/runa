@@ -135,6 +135,30 @@ defmodule RunaWeb.Live.Project.Index do
   end
 
   @impl true
+  def handle_event("duplicate_project", %{"id" => id}, socket) do
+    with {:ok, data} <- Projects.get(id),
+         {:ok, new_data} <-
+           Projects.duplicate(data, %{
+             name: "#{data.name} (copy)",
+             languages: fn changeset, assoc_name, languages ->
+               put_assoc(changeset, assoc_name, languages)
+             end
+           }) do
+      updated_data =
+        Teams.get_projects_with_statistics(socket.assigns.team.id)
+        |> Enum.find(&(&1.id == new_data.id))
+
+      socket =
+        stream_insert(socket, :projects, updated_data)
+
+      {:noreply, socket}
+    else
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
+  @impl true
   def handle_event(_, _, socket) do
     {:noreply, socket}
   end
