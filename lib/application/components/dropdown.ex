@@ -7,11 +7,11 @@ defmodule RunaWeb.Components.Dropdown do
       <:summary>
         Hello! Choose an option
       </:summary>
-      <:menu>
+      <:row>
         <.link href="#">Profile</.link>
         <.link href="#">Settings</.link>
         <.link href="#">Logout</.link>
-      </:menu>
+      </:row>
       <:footer>
         <.button>Footer</.button>
       </:footer>
@@ -48,8 +48,13 @@ defmodule RunaWeb.Components.Dropdown do
     attr :class, :string
   end
 
-  slot :row
-  slot :footer
+  slot :row do
+    attr :class, :string
+  end
+
+  slot :footer do
+    attr :class, :string
+  end
 
   def dropdown(assigns) do
     assigns =
@@ -90,7 +95,7 @@ defmodule RunaWeb.Components.Dropdown do
         />
       </summary>
       <div
-        class="absolute p-1 rounded border shadow-lg bg-background dark:bg-background z-10 min-w-[100%] max-h-[80vh]"
+        class="absolute p-1 rounded border shadow-lg bg-background dark:bg-background z-10 w-full max-h-[80vh]"
         style={[
           %{
             "top" => [
@@ -119,7 +124,13 @@ defmodule RunaWeb.Components.Dropdown do
           <li
             :for={row <- @entries}
             phx-click={@row_click && @row_click.(row)}
-            class="rounded flex items-center p-2 gap-[.25rem] truncate cursor-pointer hover:bg-background-hover"
+            class={
+              merge(
+                "rounded flex items-center p-2 gap-[.25rem] truncate cursor-pointer hover:bg-background-hover",
+                get_in(@row, [Access.at(0), :class])
+              )
+              |> to_string()
+            }
             id={@row_id && @row_id.(row)}
           >
             <%= if @row != [] do %>
@@ -133,7 +144,13 @@ defmodule RunaWeb.Components.Dropdown do
         <div
           :if={@footer != []}
           id="footer"
-          class="rounded flex items-center p-2 gap-[.25rem] truncate cursor-pointer"
+          class={
+            merge(
+              "rounded flex items-center p-2 gap-[.25rem] truncate cursor-pointer",
+              get_in(@footer, [Access.at(0), :class])
+            )
+            |> to_string()
+          }
         >
           {render_slot(@footer)}
         </div>

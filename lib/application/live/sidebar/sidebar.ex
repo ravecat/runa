@@ -22,38 +22,45 @@ defmodule RunaWeb.Live.Sidebar do
 
   defp handle_user_data(user_id, socket) do
     case Accounts.get(user_id) do
-      {:ok, user} -> handle_actual_user_data(socket, user)
-      {:error, %Ecto.NoResultsError{}} -> handle_missing_user_data(socket)
-      _ -> {:ok, redirect(socket, to: ~p"/")}
+      {:ok, user} ->
+        if connected?(socket) do
+          PubSub.subscribe("teams:#{user.id}")
+          PubSub.subscribe("accounts:#{user.id}")
+        end
+
+        handle_actual_user_data(socket, user)
+
+      {:error, %Ecto.NoResultsError{}} ->
+        handle_missing_user_data(socket)
+
+      _ ->
+        {:ok, redirect(socket, to: ~p"/")}
     end
   end
 
   defp handle_actual_user_data(socket, %{teams: [team | _]} = user) do
-    if connected?(socket) do
-      PubSub.subscribe("teams:#{user.id}")
-      PubSub.subscribe("accounts:#{user.id}")
-    end
-
     role = Teams.get_role(user.id, team.id)
 
+    teams =
+      Enum.map(user.teams, fn team ->
+        Map.put(team, :role, Teams.get_role(user.id, team.id))
+      end)
+
     socket =
-      socket
-      |> assign(:user, user)
-      |> assign(:is_visible_create_team_modal, false)
-      |> assign(:team, team)
-      |> assign(:role, role)
-      |> assign(:team_form_data, %Team{})
-      |> stream(:teams, user.teams)
+      assign(socket,
+        user: user,
+        is_visible_create_team_modal: false,
+        team: team,
+        role: role,
+        team_form_data: %Team{},
+        teams: teams
+      )
+      |> stream(:teams, teams)
 
     {:ok, socket, layout: false}
   end
 
   defp handle_actual_user_data(socket, user) do
-    if connected?(socket) do
-      PubSub.subscribe("teams:#{user.id}")
-      PubSub.subscribe("accounts:#{user.id}")
-    end
-
     socket =
       assign(
         socket,
@@ -78,6 +85,9 @@ defmodule RunaWeb.Live.Sidebar do
 
   @impl true
   def handle_info({:created_team, data}, socket) do
+    data =
+      Map.put(data, :role, Teams.get_role(socket.assigns.user.id, data.id))
+
     socket =
       socket
       |> stream_insert(:teams, data)

@@ -22,7 +22,6 @@ defmodule Runa.Accounts do
   def index do
     User
     |> Repo.all()
-    |> Repo.preload([:contributors, :teams])
   end
 
   @doc """
@@ -55,7 +54,6 @@ defmodule Runa.Accounts do
 
   def get_by(attrs \\ []) do
     Repo.get_by(User, attrs)
-    |> Repo.preload([:teams])
   end
 
   @doc """
