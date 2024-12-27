@@ -5,6 +5,7 @@ defmodule RunaWeb.Live.Sidebar do
   use RunaWeb, :live_view
 
   alias Runa.Accounts
+  alias Runa.Teams
   alias Runa.Teams.Team
 
   import RunaWeb.Components.Dropdown
@@ -27,6 +28,26 @@ defmodule RunaWeb.Live.Sidebar do
     end
   end
 
+  defp handle_actual_user_data(socket, %{teams: [team | _]} = user) do
+    if connected?(socket) do
+      PubSub.subscribe("teams:#{user.id}")
+      PubSub.subscribe("accounts:#{user.id}")
+    end
+
+    role = Teams.get_role(user.id, team.id)
+
+    socket =
+      socket
+      |> assign(:user, user)
+      |> assign(:is_visible_create_team_modal, false)
+      |> assign(:team, team)
+      |> assign(:role, role)
+      |> assign(:team_form_data, %Team{})
+      |> stream(:teams, user.teams)
+
+    {:ok, socket, layout: false}
+  end
+
   defp handle_actual_user_data(socket, user) do
     if connected?(socket) do
       PubSub.subscribe("teams:#{user.id}")
@@ -34,12 +55,14 @@ defmodule RunaWeb.Live.Sidebar do
     end
 
     socket =
-      socket
-      |> assign(:user, user)
-      |> assign(:is_visible_create_team_modal, false)
-      |> assign(:team, List.first(user.teams))
-      |> assign(:team_form_data, %Team{})
-      |> stream(:teams, user.teams)
+      assign(
+        socket,
+        team: nil,
+        user: user,
+        team_form_data: %Team{},
+        is_visible_create_team_modal: false
+      )
+      |> stream(:teams, [])
 
     {:ok, socket, layout: false}
   end

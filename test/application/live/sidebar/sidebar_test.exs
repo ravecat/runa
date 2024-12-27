@@ -8,7 +8,7 @@ defmodule RunaWeb.Live.SidebarTest do
   @moduletag :sidebar
 
   setup do
-    user = insert(:user) |> Repo.preload([:teams])
+    user = insert(:user)
 
     {:ok, user: user}
   end
@@ -18,30 +18,90 @@ defmodule RunaWeb.Live.SidebarTest do
       {:ok, view, _} =
         live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
 
-      assert has_element?(view, "img[alt='avatar']")
+      assert has_element?(view, "[aria-label='User avatar']")
     end
 
     test "renders user name", ctx do
       {:ok, view, _} =
         live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
 
-      assert has_element?(view, "span", ctx.user.name)
+      assert has_element?(view, "[aria-label='Current user']", ctx.user.name)
     end
 
     test "renders logout link", ctx do
       {:ok, view, _} =
         live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
 
-      assert has_element?(view, "a", "Logout")
+      assert has_element?(view, "[aria-label='Logout']")
+    end
+
+    test "renders profile link", ctx do
+      {:ok, view, _} =
+        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+
+      assert has_element?(view, "[aria-label='Navigate to profile']")
+    end
+
+    test "renders projects link", ctx do
+      {:ok, view, _} =
+        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+
+      assert has_element?(view, "[aria-label='Navigate to projects']")
+    end
+
+    test "renders current team role", ctx do
+      team = insert(:team)
+
+      contributor = insert(:contributor, team: team, user: ctx.user)
+
+      {:ok, view, _} =
+        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+
+      assert has_element?(
+               view,
+               "[aria-label='Current team role']",
+               "#{contributor.role}"
+             )
+    end
+
+    test "renders current team name", ctx do
+      team = insert(:team)
+
+      insert(:contributor, team: team, user: ctx.user)
+
+      {:ok, view, _} =
+        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+
+      assert has_element?(
+               view,
+               "[aria-label='Current team']",
+               team.title
+             )
+    end
+
+    test "hides current team name if no team is existed", ctx do
+      {:ok, view, _} =
+        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+
+      refute has_element?(
+               view,
+               "[aria-label='Current team']"
+             )
     end
   end
 
   describe "sidebar (user dropdown)" do
     test "renders team list", ctx do
+      teams = insert_list(2, :team)
+
+      for team <- teams do
+        insert(:contributor, team: team, user: ctx.user)
+      end
+
       {:ok, _, html} =
         live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
 
-      for team <- ctx.user.teams do
+      for team <- teams do
         assert html =~ team.title
       end
     end

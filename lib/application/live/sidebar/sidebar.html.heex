@@ -10,14 +10,31 @@
     <.dropdown entries={@streams.teams} id="teams">
       <:summary>
         <div class="flex items-center gap-2 w-full">
-          <.avatar alt="avatar" src={@user.avatar} class="flex-shrink-0" />
+          <.avatar aria-label="User avatar" alt="avatar" src={@user.avatar} class="flex-shrink-0" />
           <div class="flex flex-col min-w-0 flex-1">
-            <strong class="font-medium overflow-hidden text-ellipsis whitespace-nowrap">
-              {if @team, do: @team.title, else: "-"}
-            </strong>
-            <span class="text-sm overflow-hidden text-ellipsis whitespace-nowrap">
+            <%= if @team do %>
+              <strong
+                :if={@team}
+                aria-label="Current team"
+                class="font-medium overflow-hidden text-ellipsis whitespace-nowrap"
+              >
+                {@team.title}
+              </strong>
+            <% end %>
+            <span
+              aria-label="Current user"
+              class="text-sm overflow-hidden text-ellipsis whitespace-nowrap"
+            >
               {@user.name}
             </span>
+            <%= if @team do %>
+              <span
+                aria-label="Current team role"
+                class="text-xs text-secondary overflow-hidden text-ellipsis whitespace-nowrap"
+              >
+                {@role}
+              </span>
+            <% end %>
           </div>
         </div>
       </:summary>
@@ -31,17 +48,17 @@
       </:footer>
     </.dropdown>
     <div>
-      <.link href={~p"/projects"}>
+      <.link href={~p"/projects"} aria-label="Navigate to projects">
         <.pill class="text-base flex justify-start">
           <.icon icon="folder" /> Projects
         </.pill>
       </.link>
-      <.link href={~p"/profile"}>
+      <.link href={~p"/profile"} aria-label="Navigate to profile">
         <.pill class="text-base flex justify-start">
           <.icon icon="user" /> Profile
         </.pill>
       </.link>
-      <.link href={~p"/session/logout"} method="delete">
+      <.link href={~p"/session/logout"} method="delete" aria-label="Logout">
         <.pill class="text-base flex justify-start">
           <.icon icon="logout" /> Logout
         </.pill>
