@@ -3,21 +3,6 @@ defmodule RunaWeb.Router do
 
   require Ueberauth
 
-  alias RunaWeb.APISpec
-  alias RunaWeb.FileController
-  alias RunaWeb.KeyController
-  alias RunaWeb.LanguageController
-  alias RunaWeb.Layouts
-  alias RunaWeb.PageController
-  alias RunaWeb.Plugs.APIKeyVerification
-  alias RunaWeb.Plugs.Authentication
-  alias RunaWeb.Plugs.DevAuthentication
-  alias RunaWeb.ProjectController
-  alias RunaWeb.SessionController
-  alias RunaWeb.TeamController
-  alias RunaWeb.Telemetry
-  alias RunaWeb.TranslationController
-
   import RunaWeb.Plugs.Authentication, only: [authenticate: 2]
 
   @auth_path Application.compile_env(:ueberauth, Ueberauth)[:base_path]
@@ -26,18 +11,21 @@ defmodule RunaWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, html: {Layouts, :root}
+    plug :put_root_layout, html: {RunaWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug DevAuthentication
-    plug Authentication
+    plug RunaWeb.Plugs.DevAuthentication
+    plug RunaWeb.Plugs.Authentication
+  end
+
+  pipeline :openapi do
+    plug OpenApiSpex.Plug.PutApiSpec, module: RunaWeb.APISpec
   end
 
   pipeline :api do
     plug :accepts, ["jsonapi"]
-    plug APIKeyVerification
-    plug OpenApiSpex.Plug.PutApiSpec, module: APISpec
-
+    plug OpenApiSpex.Plug.PutApiSpec, module: RunaWeb.APISpec
+    plug RunaWeb.Plugs.APIKeyVerification
     plug JSONAPI.ContentTypeNegotiation
     plug JSONAPI.FormatRequired
     plug JSONAPI.ResponseContentType
@@ -45,10 +33,30 @@ defmodule RunaWeb.Router do
     plug JSONAPI.UnderscoreParameters
   end
 
-  scope "/api" do
-    pipe_through :api
+  scope "/" do
+    pipe_through [:openapi]
 
-    get "/", OpenApiSpex.Plug.RenderSpec, []
+    get "/api", OpenApiSpex.Plug.RenderSpec, []
+    get "/openapi", OpenApiSpex.Plug.SwaggerUI, path: "/api"
+  end
+
+  scope "/" do
+    pipe_through [:browser]
+
+    get "/", RunaWeb.PageController, :home
+  end
+
+  scope @auth_path, RunaWeb do
+    pipe_through :browser
+
+    get "/:provider", SessionController, :request
+    get "/:provider/callback", SessionController, :callback
+    post "/:provider/callback", SessionController, :callback
+    delete "/logout", SessionController, :logout
+  end
+
+  scope "/api", RunaWeb do
+    pipe_through :api
 
     resources "/teams", TeamController,
       only: [:index, :show, :create, :update, :delete]
@@ -72,22 +80,6 @@ defmodule RunaWeb.Router do
 
     resources "/translations", TranslationController,
       only: [:create, :show, :update, :delete]
-  end
-
-  scope "/" do
-    pipe_through :browser
-
-    get "/openapi", OpenApiSpex.Plug.SwaggerUI, path: "/api"
-    get "/", PageController, :home
-  end
-
-  scope @auth_path do
-    pipe_through :browser
-
-    get "/:provider", SessionController, :request
-    get "/:provider/callback", SessionController, :callback
-    post "/:provider/callback", SessionController, :callback
-    delete "/logout", SessionController, :logout
   end
 
   scope "/profile", RunaWeb.Live do
@@ -115,7 +107,7 @@ defmodule RunaWeb.Router do
       pipe_through :browser
 
       live_dashboard "/dashboard",
-        metrics: Telemetry
+        metrics: RunaWeb.Telemetry
     end
   end
 end
