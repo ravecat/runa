@@ -179,4 +179,12 @@ defmodule Runa.Teams do
       })
     end)
   end
+
+  def get_role(user_id, team_id) do
+    from(c in Contributor,
+      where: c.user_id == ^user_id and c.team_id == ^team_id,
+      select: c.role
+    )
+    |> Repo.one()
+  end
 end
