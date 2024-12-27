@@ -10,7 +10,12 @@
     <.dropdown entries={@streams.teams} id="teams">
       <:summary>
         <div class="flex items-center gap-2 w-full">
-          <.avatar aria-label="User avatar" alt="avatar" src={@user.avatar} class="flex-shrink-0" />
+          <.avatar
+            aria-label="User avatar"
+            alt="avatar"
+            src={@user.avatar}
+            class="flex-shrink-0"
+          />
           <div class="flex flex-col min-w-0 flex-1">
             <%= if @team do %>
               <strong
@@ -38,10 +43,15 @@
           </div>
         </div>
       </:summary>
-      <:row :let={team}>
-        {team.title}
+      <:row :let={team} class="flex justify-between w-full min-w-0">
+        <span class="truncate flex-1 min-w-0">
+          {team.title}
+        </span>
+        <span aria-label={"#{team.title} role"} class="text-xs text-secondary">
+          {team.role}
+        </span>
       </:row>
-      <:footer>
+      <:footer class="cursor-default">
         <.button phx-click="open_create_team_modal" class="w-full">
           Create team
         </.button>

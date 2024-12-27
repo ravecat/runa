@@ -10,7 +10,11 @@ defmodule RunaWeb.Live.SidebarTest do
   setup do
     user = insert(:user)
 
-    {:ok, user: user}
+    team = insert(:team)
+
+    contributor = insert(:contributor, team: team, user: user)
+
+    {:ok, user: user, team: team, contributor: contributor}
   end
 
   describe "sidebar (essential information)" do
@@ -50,38 +54,32 @@ defmodule RunaWeb.Live.SidebarTest do
     end
 
     test "renders current team role", ctx do
-      team = insert(:team)
-
-      contributor = insert(:contributor, team: team, user: ctx.user)
-
       {:ok, view, _} =
         live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
 
       assert has_element?(
                view,
                "[aria-label='Current team role']",
-               "#{contributor.role}"
+               "#{ctx.contributor.role}"
              )
     end
 
     test "renders current team name", ctx do
-      team = insert(:team)
-
-      insert(:contributor, team: team, user: ctx.user)
-
       {:ok, view, _} =
         live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
 
       assert has_element?(
                view,
                "[aria-label='Current team']",
-               team.title
+               ctx.team.title
              )
     end
 
     test "hides current team name if no team is existed", ctx do
+      user = insert(:user)
+
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => user.id})
 
       refute has_element?(
                view,
@@ -103,6 +101,26 @@ defmodule RunaWeb.Live.SidebarTest do
 
       for team <- teams do
         assert html =~ team.title
+      end
+    end
+
+    test "renders role for every team", ctx do
+      teams = insert_list(2, :team)
+
+      contributors =
+        for team <- teams do
+          insert(:contributor, team: team, user: ctx.user)
+        end
+
+      {:ok, view, _} =
+        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+
+      for contributor <- contributors do
+        assert has_element?(
+                 view,
+                 "[aria-label='#{contributor.team.title} role']",
+                 "#{contributor.role}"
+               )
       end
     end
 
@@ -132,7 +150,7 @@ defmodule RunaWeb.Live.SidebarTest do
       {:ok, view, _} =
         live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
 
-      team = Atom.to_string(ctx.test)
+      title = Atom.to_string(ctx.test)
 
       assert view
              |> element("button", "Create team")
@@ -140,9 +158,9 @@ defmodule RunaWeb.Live.SidebarTest do
 
       view
       |> element("form")
-      |> render_submit(%{"team" => %{"title" => team}})
+      |> render_submit(%{"team" => %{"title" => title}})
 
-      assert render_async(view) =~ team
+      assert render_async(view) =~ title
     end
 
     test "renders error when form is invalid", ctx do
