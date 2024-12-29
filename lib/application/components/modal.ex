@@ -35,7 +35,7 @@ defmodule RunaWeb.Components.Modal do
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
-      class="flex hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-lvh max-h-full backdrop-blur-sm"
+      class="flex hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-10 justify-center items-center w-full md:inset-0 h-lvh max-h-full backdrop-blur-sm"
       aria-overlay="true"
       aria-modal="true"
       aria-hidden={!@show}
@@ -65,7 +65,7 @@ defmodule RunaWeb.Components.Modal do
               {render_slot(@title)}
             </h3>
           </div>
-          <div class="overflow-y-auto">
+          <div class="overflow-visible">
             {render_slot(@content, {@on_cancel, @on_confirm})}
           </div>
           <div :if={@actions != []} class="flex justify-end gap-2">

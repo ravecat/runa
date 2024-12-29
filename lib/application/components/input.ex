@@ -112,31 +112,6 @@ defmodule RunaWeb.Components.Input do
     """
   end
 
-  def input(%{type: "select"} = assigns) do
-    ~H"""
-    <div phx-feedback-for={@name} class="flex flex-col gap-2">
-      <.label :if={@label != []} for={@id}>{render_slot(@label)}</.label>
-
-      <select
-        id={@id}
-        name={@name}
-        class="block w-full rounded-md border bg-background shadow-sm focus:border-secondary-400 focus:ring-0 sm:text-sm"
-        multiple={@multiple}
-        {@rest}
-      >
-        <option :if={@prompt} hidden disabled selected value="">
-          {@prompt}
-        </option>
-        {Phoenix.HTML.Form.options_for_select(
-          @options,
-          @value
-        )}
-      </select>
-      <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
-    """
-  end
-
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name} class="flex flex-col gap-2">
@@ -145,7 +120,7 @@ defmodule RunaWeb.Components.Input do
         id={@id}
         name={@name}
         class={[
-          "block w-full rounded text-secondary-100 focus:ring-0 sm:text-sm sm:leading-6",
+          "block w-full rounded focus:ring-0 sm:text-sm sm:leading-6",
           "min-h-[6rem] phx-no-feedback:border-secondary-300 phx-no-feedback:focus:border-secondary-400",
           @errors == [] && "border-secondary-300 focus:border-secondary-400",
           @errors != [] && "border-error-400 focus:border-error-400"

@@ -26,7 +26,10 @@ defmodule Runa do
       use Ecto.Schema
       use TypedEctoSchema
 
+      alias Runa.Repo
+
       import Ecto.Changeset
+      import Ecto.Query
     end
   end
 
