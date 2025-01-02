@@ -14,7 +14,7 @@ defmodule RunaWeb.Components.Pill do
     <span
       class={
         merge(
-          "rounded inline-flex items-center justify-center p-[.25rem] gap-[.25rem] text-ellipsis text-sm overflow-hidden whitespace-nowrap select-none cursor-pointer hover:bg-background-hover",
+          "rounded inline-flex items-center justify-center p-[.25rem] gap-[.25rem] text-ellipsis text-sm overflow-hidden whitespace-nowrap select-none cursor-pointer",
           @class
         )
         |> to_string()
