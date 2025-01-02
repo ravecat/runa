@@ -29,5 +29,20 @@ defmodule Runa.Projects.Project do
     |> cast(attrs, [:name, :description, :team_id])
     |> validate_required([:name, :team_id])
     |> foreign_key_constraint(:team_id)
+    |> put_assoc(:languages, parse_languages(attrs))
   end
+
+  defp parse_languages(%{"languages" => languages}) when is_list(languages) do
+    Language
+    |> where([l], l.wals_code in ^languages)
+    |> Repo.all()
+  end
+
+  defp parse_languages(%{"languages" => languages}) when is_binary(languages) do
+    Language
+    |> where([l], l.wals_code in ^[languages])
+    |> Repo.all()
+  end
+
+  defp parse_languages(_), do: []
 end

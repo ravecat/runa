@@ -77,6 +77,7 @@ defmodule Runa.Projects do
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
   def update(%Project{} = project, attrs) do
     project
+    |> Repo.preload(:languages)
     |> Project.changeset(attrs)
     |> Repo.update()
   end
@@ -106,8 +107,11 @@ defmodule Runa.Projects do
       %Ecto.Changeset{}
 
   """
+  @spec change(Ecto.Schema.t(), map()) :: Ecto.Changeset.t()
   def change(%Project{} = project, attrs \\ %{}) do
-    Project.changeset(project, attrs)
+    project
+    |> Repo.preload(:languages)
+    |> Project.changeset(attrs)
   end
 
   @doc """

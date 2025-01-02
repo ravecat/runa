@@ -113,6 +113,7 @@ defmodule RunaWeb.Live.Project.Index do
   def handle_event("close_project_modal", _, socket) do
     socket =
       assign(socket, :is_visible_project_modal, false)
+      |> assign(:project, %Project{})
 
     {:noreply, socket}
   end

@@ -17,17 +17,20 @@ defmodule RunaWeb.Live.Project.FormTest do
 
   describe "project form" do
     test "renders fields", ctx do
-      {:ok, view, _} = live_isolated_component(Form, %{data: ctx.project})
+      {:ok, view, _} =
+        live_isolated_component(Form, %{data: ctx.project, team: ctx.team})
 
       assert has_element?(view, "[aria-label='Project name']")
       assert has_element?(view, "[aria-label='Project description']")
+      assert has_element?(view, "[aria-label='Project languages']")
     end
 
     test "requires name", ctx do
-      {:ok, view, _} = live_isolated_component(Form, %{data: ctx.project})
+      {:ok, view, _} =
+        live_isolated_component(Form, %{data: ctx.project, team: ctx.team})
 
       element(view, "[aria-label='Project form']")
-      |> render_change(%{"project" => %{"name" => ""}})
+      |> render_change(%{"project" => %{"name" => "", "languages" => []}})
 
       assert has_element?(view, "p", "can't be blank")
     end
@@ -79,7 +82,7 @@ defmodule RunaWeb.Live.Project.FormTest do
     test "broadcasts message on successful update", ctx do
       {:ok, view, _} =
         live_isolated_component(Form, %{
-          data: ctx.project,
+          data: Repo.preload(ctx.project, :languages),
           team: ctx.team
         })
 
@@ -89,7 +92,23 @@ defmodule RunaWeb.Live.Project.FormTest do
       |> element("[aria-label='Project form']")
       |> render_submit(%{"project" => %{"name" => "New Name"}})
 
-      assert_receive {:updated_project, %{name: "New Name"}}
+      assert_receive {:updated_project, %{name: "New Name", languages: []}}
+    end
+
+    test "displays selected language values", ctx do
+      insert(:language, wals_code: "eng", title: "English")
+
+      {:ok, view, _} =
+        live_isolated_component(Form, %{
+          data: ctx.project,
+          team: ctx.team
+        })
+
+      view
+      |> element("[aria-label='Project form']")
+      |> render_change(%{"project" => %{"languages" => ["eng"]}})
+
+      assert has_element?(view, "option[value='eng'][selected]")
     end
   end
 end
