@@ -14,7 +14,9 @@ defmodule RunaWeb.Components.Form do
   """
   use RunaWeb, :component
 
-  attr :for, :any, required: true, doc: "the datastructure for the form"
+  attr :for, Phoenix.HTML.Form,
+    required: true,
+    doc: "the datastructure for the form"
 
   attr :as, :any,
     default: nil,
