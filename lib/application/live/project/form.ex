@@ -97,6 +97,16 @@ defmodule RunaWeb.Live.Project.Form do
   defp format_language_codes(_), do: []
 
   @impl true
+  def handle_event("clear_selection", %{"option" => language}, socket) do
+    existing_codes =
+      format_language_codes(socket.assigns.form[:languages].value)
+
+    new_codes = existing_codes -- [language]
+
+    {:noreply, assign(socket, :selected_languages, new_codes)}
+  end
+
+  @impl true
   def handle_event("clear_selection", _, socket) do
     {:noreply, assign(socket, :selected_languages, [])}
   end
