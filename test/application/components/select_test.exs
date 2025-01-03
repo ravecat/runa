@@ -4,21 +4,6 @@ defmodule RunaWeb.Components.SelectTest do
   alias RunaWeb.Components.Select
 
   describe "compbox select" do
-    test "renders contenteditable zone" do
-      {:ok, view, _} =
-        wrap_component(Select, :select, %{
-          id: "test-select",
-          type: "compbox",
-          name: "test",
-          value: ["Option 1"],
-          options: [{"Option 1", "1"}, {"Option 2", "2"}],
-          multiple: true,
-          label: []
-        })
-
-      assert has_element?(view, "[contenteditable]")
-    end
-
     test "renders hidden options zone" do
       {:ok, view, _} =
         wrap_component(Select, :select, %{

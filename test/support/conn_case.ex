@@ -47,8 +47,8 @@ defmodule RunaWeb.ConnCase do
       import LiveIsolatedComponent
 
       alias Phoenix.Flash
-      alias Runa.Repo
       alias Runa.PubSub
+      alias Runa.Repo
 
       require Pathex
     end

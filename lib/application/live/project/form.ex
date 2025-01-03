@@ -69,6 +69,7 @@ defmodule RunaWeb.Live.Project.Form do
           aria-label="Project languages"
           field={@form[:languages]}
           options={@languages}
+          target={@myself}
           value={@selected_languages}
         >
           <:label>Languages</:label>
@@ -94,6 +95,11 @@ defmodule RunaWeb.Live.Project.Form do
   end
 
   defp format_language_codes(_), do: []
+
+  @impl true
+  def handle_event("clear_selection", _, socket) do
+    {:noreply, assign(socket, :selected_languages, [])}
+  end
 
   @impl true
   def handle_event("validate", %{"project" => attrs}, socket) do
