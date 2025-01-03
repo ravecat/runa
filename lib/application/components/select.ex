@@ -34,6 +34,11 @@ defmodule RunaWeb.Components.Select do
   attr :name, :any
   attr :rest, :global
 
+  attr :target, Phoenix.LiveComponent.CID,
+    doc:
+      "a target component required for handling events from the select component",
+    default: nil
+
   slot :label
   slot :selected
 
@@ -63,28 +68,34 @@ defmodule RunaWeb.Components.Select do
         role="combobox"
         aria-controls={@id}
         aria-orientation="vertical"
-        contenteditable="true"
-        class={
-          merge([
-            "border rounded focus:ring-0 sm:text-sm sm:leading-6",
-            "mt-2 min-h-10 px-3 py-2 flex justify-between items-center gap-1"
-          ])
-          |> to_string
-        }
+        class="border rounded focus:ring-0 sm:text-sm sm:leading-6 mt-2 min-h-10 px-3 py-2 flex justify-between items-center gap-1"
       >
-        <div class="flex flex-wrap gap-1 flex-grow">
+        <div
+          class="flex flex-wrap gap-1 flex-grow"
+          aria-live="polite"
+          aria-label="Selected options"
+        >
           <%= if @selected != [] do %>
             {render_slot(@selected, @value)}
           <% else %>
-            <.pill :for={label <- @value } class="border bg-accent cursor-default">
+            <.pill :for={label <- @value} class="border bg-accent cursor-default">
               {label}
             </.pill>
           <% end %>
         </div>
         <div class="flex items-center gap-1 flex-shrink-0">
-          <.icon icon="x-mark" class="cursor-pointer" />
+          <.icon
+            icon="x-mark"
+            class="cursor-pointer"
+            aria-label="Clear selection"
+            role="button"
+            phx-target={@target}
+            phx-click="clear_selection"
+          />
           <.icon
             icon="shevron-right"
+            aria-label="Toggle options"
+            role="button"
             class="cursor-pointer rotate-90 transition-transform duration-300 group-open:rotate-[270deg]"
           />
         </div>
