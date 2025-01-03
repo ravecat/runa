@@ -108,7 +108,40 @@ defmodule RunaWeb.Live.Project.FormTest do
       |> element("[aria-label='Project form']")
       |> render_change(%{"project" => %{"languages" => ["eng"]}})
 
-      assert has_element?(view, "option[value='eng'][selected]")
+      assert has_element?(
+               view,
+               "[aria-label='Project form'] option[value='eng'][selected]"
+             )
+
+      assert element(
+               view,
+               "[aria-label='Project form'] [aria-label='Selected options']"
+             )
+             |> render() =~ "eng"
+    end
+
+    test "clear all selected languages", ctx do
+      insert(:language, wals_code: "eng", title: "English")
+
+      {:ok, view, _} =
+        live_isolated_component(Form, %{
+          data: ctx.project,
+          team: ctx.team
+        })
+
+      view
+      |> element("[aria-label='Project form']")
+      |> render_change(%{"project" => %{"languages" => ["eng"]}})
+
+      view
+      |> element("[aria-label='Project form'] [aria-label='Clear selection']")
+      |> render_click()
+
+      assert has_element?(
+               view,
+               "label:fl-contains('Languages') + [role='combobox'] > [aria-label='Selected options']",
+               ""
+             )
     end
   end
 end
