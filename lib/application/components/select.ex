@@ -80,6 +80,15 @@ defmodule RunaWeb.Components.Select do
           <% else %>
             <.pill :for={label <- @value} class="border bg-accent cursor-default">
               {label}
+              <.icon
+                icon="x-mark"
+                class="cursor-pointer"
+                aria-label={"Clear #{label} selection"}
+                role="button"
+                phx-target={@target}
+                phx-click="clear_selection"
+                phx-value-option={label}
+              />
             </.pill>
           <% end %>
         </div>
