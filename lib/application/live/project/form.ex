@@ -12,6 +12,8 @@ defmodule RunaWeb.Live.Project.Form do
   import RunaWeb.Components.Form
   import RunaWeb.Components.Input
   import RunaWeb.Components.Select
+  import RunaWeb.Components.Pill
+  import RunaWeb.Components.Icon
 
   @impl true
   def update(%{data: %Project{} = data} = assigns, socket) do
@@ -73,6 +75,29 @@ defmodule RunaWeb.Live.Project.Form do
           value={@selected_languages}
         >
           <:label>Languages</:label>
+          <:selected :let={selected}>
+            <.pill :for={lang <- selected} class="border bg-accent cursor-default">
+              {lang}
+              <.icon
+                icon="x-mark"
+                class="cursor-pointer"
+                aria-label={"Clear #{lang} selection"}
+                role="button"
+                phx-target={@myself}
+                phx-click="clear_selection"
+                phx-value-option={lang}
+              />
+            </.pill>
+            <input
+              phx-change="search_languages"
+              phx-target={@myself}
+              phx-debounce
+              aria-label="Search languages"
+              name="query"
+              type="text"
+              class="flex-1 min-w-[2px] text-sm border-none p-0 m-0 bg-transparent focus:outline-none focus:ring-0"
+            />
+          </:selected>
         </.select>
 
         {render_slot(@actions, @form)}
@@ -109,6 +134,18 @@ defmodule RunaWeb.Live.Project.Form do
   @impl true
   def handle_event("clear_selection", _, socket) do
     {:noreply, assign(socket, :selected_languages, [])}
+  end
+
+  @impl true
+  def handle_event("search_languages", %{"query" => query}, socket) do
+    params = %{
+      filter: [%{field: :title, op: :ilike, value: query}],
+      page: %{"size" => 50}
+    }
+
+    {:ok, {languages, _meta}} = Languages.index(params)
+
+    {:noreply, assign(socket, :languages, format_language_codes(languages))}
   end
 
   @impl true

@@ -135,7 +135,7 @@ defmodule RunaWeb.Components.Input do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div phx-feedback-for={@name} class="flex flex-col gap-0.5 ">
+    <div phx-feedback-for={@name} class="flex flex-col gap-0.5">
       <.label :if={@label != []} for={@id}>{render_slot(@label)}</.label>
       <input
         type={@type}

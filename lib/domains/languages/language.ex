@@ -8,7 +8,17 @@ defmodule Runa.Languages.Language do
   alias Runa.Projects.Project
   alias Runa.Translations.Translation
 
-  schema "languages" do
+  @derive {
+    Flop.Schema,
+    sortable: [:title, :inserted_at, :updated_at, :id],
+    filterable: [:title],
+    default_order: %{
+      order_by: [:inserted_at, :id],
+      order_directions: [:desc, :asc]
+    }
+  }
+
+  typed_schema "languages" do
     field :wals_code, :string
     field :iso_code, :string
     field :glotto_code, :string

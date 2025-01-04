@@ -60,15 +60,18 @@ defmodule RunaWeb.Components.Select do
 
   def select(%{multiple: true} = assigns) do
     ~H"""
-    <div class="relative" phx-feedback-for={@name}>
-      <.label :if={@label != []} for={@id}>{render_slot(@label)}</.label>
+    <.label
+      class="relative gap-2"
+      phx-feedback-for={@name}
+      phx-click={toggle_options(@id)}
+      phx-click-away={hide_options(@id)}
+    >
+      Languages
       <div
-        phx-click={toggle_options(@id)}
-        phx-click-away={hide_options(@id)}
         role="combobox"
         aria-controls={@id}
         aria-orientation="vertical"
-        class="border rounded focus:ring-0 sm:text-sm sm:leading-6 mt-2 min-h-10 px-3 py-2 flex justify-between items-center gap-1"
+        class="w-full border rounded focus:ring-0 sm:text-sm sm:leading-6 min-h-10 px-3 py-2 flex justify-between items-center gap-1"
       >
         <div
           class="flex flex-wrap gap-1 flex-grow"
@@ -114,21 +117,25 @@ defmodule RunaWeb.Components.Select do
         name={@name}
         aria-hidden="true"
         role="listbox"
+        size={max(1, length(@options))}
         class={
-          merge([
-            "hidden absolute mt-1 p-0 rounded border bg-background w-full dark:bg-background h-[300px] z-50 shadow-sm focus:border-secondary focus:ring-0 sm:text-sm",
+          classes([
+            "hidden border top-full absolute mt-1 p-0 rounded bg-background w-full dark:bg-background h-fit max-h-[18.75rem] overflow-auto z-50 shadow-sm transition hover:shadow focus:ring-0 sm:text-sm",
             "[&>option]:flex [&>option]:items-center [&>option]:p-2 [&>option]:gap-[.25rem] [&>option]:truncate [&>option]:cursor-pointer [&>option:hover]:bg-background-hover",
             @class
           ])
-          |> to_string
         }
         multiple={@multiple}
         {@rest}
       >
-        {Phoenix.HTML.Form.options_for_select(@options, @value)}
+        <%= if Enum.empty?(@options) do %>
+          <option disabled>No options available</option>
+        <% else %>
+          {Phoenix.HTML.Form.options_for_select(@options, @value)}
+        <% end %>
       </select>
       <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
+    </.label>
     """
   end
 
