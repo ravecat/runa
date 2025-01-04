@@ -6,13 +6,23 @@ defmodule RunaWeb.Components.Label do
   use RunaWeb, :component
 
   attr :for, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global
+
   slot :inner_block, required: true
 
   def label(assigns) do
     ~H"""
     <label
       for={@for}
-      class="flex items-center gap-1 text-sm leading-6 cursor-pointer"
+      class={
+        merge(
+          "flex flex-col items-start gap-1 text-sm leading-6 cursor-pointer",
+          @class
+        )
+        |> to_string
+      }
+      {@rest}
     >
       {render_slot(@inner_block)}
     </label>

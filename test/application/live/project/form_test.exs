@@ -110,7 +110,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       assert has_element?(
                view,
-               "[aria-label='Project form'] option[value='eng'][selected]"
+               "[aria-label='Project form'] option:fl-contains('English')[selected]"
              )
 
       assert element(
@@ -139,7 +139,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       assert has_element?(
                view,
-               "label:fl-contains('Languages') + [role='combobox'] > [aria-label='Selected options']",
+               "label:fl-contains('Languages') [aria-label='Selected options']",
                ""
              )
     end
@@ -165,8 +165,35 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       assert has_element?(
                view,
-               "label:fl-contains('Languages') + [role='combobox'] > [aria-label='Selected options']",
+               "label:fl-contains('Languages') [aria-label='Selected options']",
                ""
+             )
+    end
+
+    test "searches languages", ctx do
+      insert(:language, wals_code: "eng", title: "English")
+      insert(:language, wals_code: "fra", title: "French")
+
+      {:ok, view, _} =
+        live_isolated_component(Form, %{
+          data: ctx.project,
+          team: ctx.team
+        })
+
+      element(
+        view,
+        "[aria-label='Project form'] [aria-label='Search languages']"
+      )
+      |> render_change(%{"query" => "English"})
+
+      assert has_element?(
+               view,
+               "[aria-label='Project form'] option:fl-contains('English')"
+             )
+
+      refute has_element?(
+               view,
+               "[aria-label='Project form'] option:fl-contains('French')"
              )
     end
   end
