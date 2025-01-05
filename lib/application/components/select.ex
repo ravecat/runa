@@ -78,9 +78,7 @@ defmodule RunaWeb.Components.Select do
           aria-live="polite"
           aria-label="Selected options"
         >
-          <%= if @selected != [] do %>
-            {render_slot(@selected, @value)}
-          <% else %>
+          <%= unless @selected != [] do %>
             <.pill :for={label <- @value} class="border bg-accent cursor-default">
               {label}
               <.icon
@@ -93,6 +91,8 @@ defmodule RunaWeb.Components.Select do
                 phx-value-option={label}
               />
             </.pill>
+          <% else %>
+            {render_slot(@selected, @value)}
           <% end %>
         </div>
         <div class="flex items-center gap-1 flex-shrink-0">
@@ -117,6 +117,8 @@ defmodule RunaWeb.Components.Select do
         name={@name}
         aria-hidden="true"
         role="listbox"
+        phx-hook="infiniteScroll"
+        phx-target={@target}
         size={max(1, length(@options))}
         class={
           classes([
