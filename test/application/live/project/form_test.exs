@@ -196,5 +196,37 @@ defmodule RunaWeb.Live.Project.FormTest do
                "[aria-label='Project form'] option:fl-contains('French')"
              )
     end
+
+    test "loads more languages on scroll", ctx do
+      insert_list(60, :language)
+
+      {:ok, view, _} =
+        live_isolated_component(Form, %{
+          data: ctx.project,
+          team: ctx.team
+        })
+
+      assert element(
+               view,
+               "[aria-label='Project form'] [aria-label='Project languages']"
+             )
+             |> render()
+             |> Floki.parse_fragment!()
+             |> Floki.find("option")
+             |> length() == 50
+
+      view
+      |> element("#languages")
+      |> render_hook("load_more", %{id: "languages"})
+
+      assert element(
+               view,
+               "[aria-label='Project form'] [aria-label='Project languages']"
+             )
+             |> render()
+             |> Floki.parse_fragment!()
+             |> Floki.find("option")
+             |> length() == 60
+    end
   end
 end

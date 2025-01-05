@@ -20,14 +20,18 @@ defmodule RunaWeb.Live.Project.Form do
     action = if data.id, do: :edit, else: :new
     data = Repo.preload(data, :languages)
 
+    {:ok, {languages, languages_meta}} =
+      Languages.index(%{
+        page: %{"size" => 50}
+      })
+
     socket =
       socket
       |> assign(assigns)
       |> assign(:action, action)
+      |> assign(:languages_meta, languages_meta)
       |> assign_new(:form, fn -> to_form(Projects.change(data)) end)
       |> assign_new(:languages, fn ->
-        {:ok, {languages, _meta}} = Languages.index()
-
         format_language_codes(languages)
       end)
       |> assign_new(
@@ -120,6 +124,34 @@ defmodule RunaWeb.Live.Project.Form do
   end
 
   defp format_language_codes(_), do: []
+
+  @impl true
+  def handle_event(
+        "load_more",
+        _,
+        %{assigns: %{languages_meta: %{has_next_page?: false}}} = socket
+      ),
+      do: {:noreply, socket}
+
+  @impl true
+  def handle_event("load_more", %{"id" => "languages"}, socket) do
+    %{end_cursor: end_cursor} = socket.assigns.languages_meta
+
+    {:ok, {languages, languages_meta}} =
+      Languages.index(%{
+        page: %{"size" => 50, "after" => end_cursor}
+      })
+
+    languages = socket.assigns.languages ++ format_language_codes(languages)
+
+    socket =
+      assign(socket,
+        languages: languages,
+        languages_meta: languages_meta
+      )
+
+    {:noreply, socket}
+  end
 
   @impl true
   def handle_event("clear_selection", %{"option" => language}, socket) do
