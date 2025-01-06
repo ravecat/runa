@@ -117,7 +117,7 @@ defmodule RunaWeb.Live.Project.FormTest do
                view,
                "[aria-label='Project form'] [aria-label='Selected options']"
              )
-             |> render() =~ "eng"
+             |> render() =~ "English (eng)"
     end
 
     test "clear all selected languages", ctx do
@@ -137,11 +137,12 @@ defmodule RunaWeb.Live.Project.FormTest do
       |> element("[aria-label='Project form'] [aria-label='Clear selection']")
       |> render_click()
 
-      assert has_element?(
+      refute element(
                view,
-               "label:fl-contains('Languages') [aria-label='Selected options']",
-               ""
+               "label:fl-contains('Languages') [aria-label='Selected options']"
              )
+             |> render() =~
+               "English (eng)"
     end
 
     test "clear selected language", ctx do
@@ -163,11 +164,12 @@ defmodule RunaWeb.Live.Project.FormTest do
       )
       |> render_click()
 
-      assert has_element?(
+      refute element(
                view,
-               "label:fl-contains('Languages') [aria-label='Selected options']",
-               ""
+               "label:fl-contains('Languages') [aria-label='Selected options']"
              )
+             |> render() =~
+               "English (eng)"
     end
 
     test "searches languages", ctx do

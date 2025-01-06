@@ -40,11 +40,14 @@ defmodule RunaWeb.Live.Project.Form do
           Enum.map(data.languages, fn %Language{wals_code: code} -> code end)
         end
       )
+      |> assign_new(:displayed_languages, fn ->
+        format_language_codes(data.languages)
+      end)
 
     {:ok, socket}
   end
 
-  slot(:actions, doc: "the slot for form actions, such as a submit button")
+  slot :actions, doc: "the slot for form actions, such as a submit button"
 
   @impl true
   def render(assigns) do
@@ -79,17 +82,20 @@ defmodule RunaWeb.Live.Project.Form do
           value={@selected_languages}
         >
           <:label>Languages</:label>
-          <:selected :let={selected}>
-            <.pill :for={lang <- selected} class="border bg-accent cursor-default">
-              {lang}
+          <:selected>
+            <.pill
+              :for={{label, code} <- @displayed_languages}
+              class="border bg-accent cursor-default"
+            >
+              {label}
               <.icon
                 icon="x-mark"
                 class="cursor-pointer"
-                aria-label={"Clear #{lang} selection"}
+                aria-label={"Clear #{code} selection"}
                 role="button"
                 phx-target={@myself}
                 phx-click="clear_selection"
-                phx-value-option={lang}
+                phx-value-option={code}
               />
             </.pill>
             <input
@@ -154,18 +160,34 @@ defmodule RunaWeb.Live.Project.Form do
   end
 
   @impl true
-  def handle_event("clear_selection", %{"option" => language}, socket) do
+  def handle_event("clear_selection", %{"option" => code}, socket) do
     existing_codes =
       format_language_codes(socket.assigns.form[:languages].value)
 
-    new_codes = existing_codes -- [language]
+    new_selected_languages = existing_codes -- [code]
 
-    {:noreply, assign(socket, :selected_languages, new_codes)}
+    new_displayed_languages =
+      Enum.reject(
+        socket.assigns.displayed_languages,
+        &(elem(&1, 1) == code)
+      )
+
+    socket =
+      socket
+      |> assign(:selected_languages, new_selected_languages)
+      |> assign(:displayed_languages, new_displayed_languages)
+
+    {:noreply, socket}
   end
 
   @impl true
   def handle_event("clear_selection", _, socket) do
-    {:noreply, assign(socket, :selected_languages, [])}
+    socket =
+      socket
+      |> assign(:selected_languages, [])
+      |> assign(:displayed_languages, [])
+
+    {:noreply, socket}
   end
 
   @impl true
@@ -186,14 +208,30 @@ defmodule RunaWeb.Live.Project.Form do
       format_language_codes(socket.assigns.form[:languages].value)
 
     new_codes = Map.get(attrs, "languages", [])
-    codes = existing_codes ++ new_codes
+
+    language_codes = existing_codes ++ new_codes
+
+    new_displayed_languages =
+      Enum.map(new_codes, fn code ->
+        {label, _} =
+          Enum.find(socket.assigns.languages, fn {_, c} -> c == code end)
+
+        {label, code}
+      end)
 
     changeset =
-      Projects.change(socket.assigns.data, Map.put(attrs, "languages", codes))
+      Projects.change(
+        socket.assigns.data,
+        Map.put(attrs, "languages", language_codes)
+      )
 
     socket =
       socket
-      |> assign(:selected_languages, codes)
+      |> assign(:selected_languages, language_codes)
+      |> assign(
+        :displayed_languages,
+        new_displayed_languages ++ socket.assigns.displayed_languages
+      )
       |> assign(:form, to_form(changeset, action: :validate))
 
     {:noreply, socket}
