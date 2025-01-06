@@ -234,6 +234,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
     test "edits project by clicking save button", ctx do
       project = insert(:project, team: ctx.team)
+      language = insert(:language, wals_code: "eng", title: "English")
 
       title = Atom.to_string(ctx.test)
 
@@ -248,7 +249,9 @@ defmodule RunaWeb.Live.Project.IndexTest do
       |> render_click()
 
       element(view, "[aria-label='Project form']")
-      |> render_submit(%{"project" => %{"name" => title}})
+      |> render_submit(%{
+        "project" => %{"name" => title, "base_language_id" => language.id}
+      })
 
       assert view
              |> element("[aria-label='Project #{title} card']")
@@ -308,6 +311,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
     test "creates project by clicking create button", ctx do
       title = Atom.to_string(ctx.test)
+      language = insert(:language, wals_code: "eng", title: "English")
 
       {:ok, view, _} =
         ctx.conn
@@ -320,7 +324,9 @@ defmodule RunaWeb.Live.Project.IndexTest do
       |> render_click()
 
       element(view, "[aria-label='Project form']")
-      |> render_submit(%{"project" => %{"name" => title}})
+      |> render_submit(%{
+        "project" => %{"name" => title, "base_language_id" => language.id}
+      })
 
       assert view
              |> element("[aria-label='Project #{title} card']")

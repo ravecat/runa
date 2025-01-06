@@ -16,6 +16,7 @@ defmodule Runa.Projects.Project do
     has_many :files, File
     has_many :keys, Key
     belongs_to :team, Team
+    belongs_to :base_language, Language
 
     many_to_many :languages, Language,
       join_through: Locale,
@@ -26,23 +27,9 @@ defmodule Runa.Projects.Project do
 
   def changeset(struct, attrs \\ %{}) do
     struct
-    |> cast(attrs, [:name, :description, :team_id])
-    |> validate_required([:name, :team_id])
+    |> cast(attrs, [:name, :description, :team_id, :base_language_id])
+    |> validate_required([:name, :team_id, :base_language_id])
     |> foreign_key_constraint(:team_id)
-    |> put_assoc(:languages, parse_languages(attrs))
+    |> foreign_key_constraint(:base_language_id)
   end
-
-  defp parse_languages(%{"languages" => languages}) when is_list(languages) do
-    Language
-    |> where([l], l.wals_code in ^languages)
-    |> Repo.all()
-  end
-
-  defp parse_languages(%{"languages" => languages}) when is_binary(languages) do
-    Language
-    |> where([l], l.wals_code in ^[languages])
-    |> Repo.all()
-  end
-
-  defp parse_languages(_), do: []
 end

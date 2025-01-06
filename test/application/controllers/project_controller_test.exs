@@ -95,6 +95,12 @@ defmodule RunaWeb.ProjectControllerTest do
                 id: "#{ctx.team.id}",
                 type: "teams"
               }
+            },
+            base_language: %{
+              data: %{
+                id: "#{ctx.language.id}",
+                type: "languages"
+              }
             }
           }
         }
@@ -136,7 +142,7 @@ defmodule RunaWeb.ProjectControllerTest do
 
   describe "update endpoint" do
     test "returns resource when data is valid", ctx do
-      project = insert(:project, team: ctx.team)
+      project = insert(:project, team: ctx.team, base_language: ctx.language)
 
       body = %{
         data: %{
@@ -373,7 +379,8 @@ defmodule RunaWeb.ProjectControllerTest do
     end
 
     test "clears associations", ctx do
-      project = insert(:project, team: ctx.team)
+      project = insert(:project, team: ctx.team, base_language: ctx.language)
+
       insert(:locale, project: project, language: ctx.language)
 
       body = %{

@@ -41,7 +41,7 @@ defmodule Mix.Tasks.Seed.Data do
         team = insert(:team)
         insert(:contributor, user: user, team: team)
 
-        projects = insert_list(3, :project, team: team)
+        projects = insert_list(3, :project, team: team, base_language: Enum.random(languages))
 
         {team, projects}
       end)
