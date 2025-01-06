@@ -117,6 +117,7 @@ defmodule RunaWeb do
       import Ecto.Changeset
       import RunaWeb.Components.Commands
       import Tails
+      import Phoenix.HTML.Form
 
       use Phoenix.LiveComponent
 

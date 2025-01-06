@@ -5,6 +5,7 @@ defmodule Runa.Projects do
 
   use Runa, :context
 
+  alias Runa.Languages.Language
   alias Runa.Projects.Project
 
   @doc """
@@ -22,7 +23,7 @@ defmodule Runa.Projects do
           {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
   def index(opts \\ %{}) do
     Project
-    |> preload([:keys, :languages, :team, :files])
+    |> preload([:keys, :languages, :team, :files, :base_language])
     |> paginate(opts, for: Project)
   end
 
@@ -33,9 +34,10 @@ defmodule Runa.Projects do
   """
   def get(id) do
     query =
-      from p in Project,
+      from(p in Project,
         where: p.id == ^id,
-        preload: [:keys, :languages, :team, :files]
+        preload: [:keys, :languages, :team, :files, :base_language]
+      )
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -57,8 +59,15 @@ defmodule Runa.Projects do
   """
   def create(attrs \\ %{}) do
     %Project{}
-    |> Project.changeset(attrs)
+    |> change(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, project} ->
+        {:ok, Repo.preload(project, [:team, :base_language, :languages])}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -77,8 +86,8 @@ defmodule Runa.Projects do
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
   def update(%Project{} = project, attrs) do
     project
-    |> Repo.preload(:languages)
-    |> Project.changeset(attrs)
+    |> Repo.preload([:languages, :base_language])
+    |> change(attrs)
     |> Repo.update()
   end
 
@@ -110,8 +119,32 @@ defmodule Runa.Projects do
   @spec change(Ecto.Schema.t(), map()) :: Ecto.Changeset.t()
   def change(%Project{} = project, attrs \\ %{}) do
     project
-    |> Repo.preload(:languages)
+    |> Repo.preload([:languages])
     |> Project.changeset(attrs)
+    |> put_languages(attrs)
+    |> put_base_language(attrs)
+  end
+
+  defp put_languages(changeset, attrs) do
+    if Map.has_key?(attrs, "languages") do
+      languages =
+        Repo.all(from(l in Language, where: l.id in ^attrs["languages"]))
+
+      Ecto.Changeset.put_assoc(changeset, :languages, languages)
+    else
+      changeset
+    end
+  end
+
+  defp put_base_language(changeset, attrs) do
+    if attrs["base_language_id"] && changed?(changeset, :base_language_id) do
+      base_language =
+        Repo.one(from(l in Language, where: l.id == ^attrs["base_language_id"]))
+
+      %{changeset | data: %{changeset.data | base_language: base_language}}
+    else
+      changeset
+    end
   end
 
   @doc """

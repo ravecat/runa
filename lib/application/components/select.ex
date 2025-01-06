@@ -102,10 +102,12 @@ defmodule RunaWeb.Components.Select do
           role="button"
           phx-target={@target}
           phx-click="clear_selection"
+          phx-value-id={@id}
         />
         <.icon
           icon="shevron-right"
           aria-label="Toggle options"
+          phx-value-id={@id}
           role="button"
           class="cursor-pointer rotate-90 transition-transform duration-300 group-open:rotate-[270deg]"
         />
@@ -168,10 +170,12 @@ defmodule RunaWeb.Components.Select do
           role="button"
           phx-target={@target}
           phx-click="clear_selection"
+          phx-value-id={@id}
         />
         <.icon
           icon="shevron-right"
           aria-label="Toggle options"
+          phx-value-id={@id}
           role="button"
           class="cursor-pointer rotate-90 transition-transform duration-300 group-open:rotate-[270deg]"
         />

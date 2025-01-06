@@ -47,6 +47,20 @@ defmodule Runa.Languages do
   end
 
   @doc """
+  Get a language by attributes.
+
+  Raises `Ecto.NoResultsError` if the Language does not exist.
+
+  ## Examples
+      iex> get_by([name: "English"])
+      %Language{}
+  """
+
+  def get_by(attrs \\ []) do
+    Repo.get_by(Language, attrs)
+  end
+
+  @doc """
   Creates a language.
 
   ## Examples
