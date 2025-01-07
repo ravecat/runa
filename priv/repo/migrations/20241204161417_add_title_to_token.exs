@@ -3,7 +3,7 @@ defmodule Runa.Repo.Migrations.AddTitleToToken do
 
   def up do
     alter table(:tokens) do
-      add :title, :string, null: false
+      add :title, :string, null: false, default: "Untitled"
     end
   end
 
