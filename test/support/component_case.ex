@@ -2,7 +2,6 @@ defmodule RunaWeb.ComponentCase do
   @moduledoc """
   A case template for testing stateless component.
   """
-
   use ExUnit.CaseTemplate
 
   using do
@@ -11,6 +10,8 @@ defmodule RunaWeb.ComponentCase do
 
       import Phoenix.LiveViewTest
       import LiveIsolatedComponent
+
+      use Repatch.ExUnit
 
       @spec wrap_component(module(), atom(), map()) ::
               {:ok, map()} | {:error, map()}
