@@ -30,6 +30,10 @@ defmodule RunaWeb.Components.Select do
 
   attr :show, :boolean, default: false
 
+  attr :searchable, :boolean,
+    default: false,
+    doc: "the options required for displaying a search input"
+
   attr :class, :string, default: ""
   attr :name, :any
   attr :rest, :global
@@ -95,8 +99,7 @@ defmodule RunaWeb.Components.Select do
                 aria-label={"Clear #{label} selection"}
                 role="button"
                 phx-target={@target}
-                phx-click="clear_selection"
-                phx-value-option={label}
+                phx-click={JS.push("clear_selection", value: %{label: label})}
               />
             </.pill>
             <span :if={!@multiple} class="truncate flex-grow">
@@ -105,6 +108,16 @@ defmodule RunaWeb.Components.Select do
           <% else %>
             {render_slot(@selected, @value)}
           <% end %>
+          <input
+            :if={@searchable}
+            class="flex-1 min-w-[2px] text-sm border-none p-0 m-0 bg-transparent focus:outline-none focus:ring-0"
+            phx-change={JS.push("search_options")}
+            phx-target={@target}
+            phx-debounce
+            aria-label="Search options"
+            name={@id}
+            type="text"
+          />
         </div>
         <.icon
           icon="x-mark"
@@ -112,8 +125,7 @@ defmodule RunaWeb.Components.Select do
           aria-label="Clear selection"
           role="button"
           phx-target={@target}
-          phx-click="clear_selection"
-          phx-value-id={@id}
+          phx-click={JS.push("clear_selection", value: %{id: @id})}
         />
         <.icon
           icon="shevron-bottom"

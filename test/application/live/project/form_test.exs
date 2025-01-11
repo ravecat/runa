@@ -315,9 +315,9 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       element(
         view,
-        "[aria-label='Project form'] [aria-label='Search languages']"
+        "[aria-label='Project form'] label:fl-contains('Languages') ~ [role='combobox'] input"
       )
-      |> render_change(%{"query" => "English"})
+      |> render_change(%{"_target" => ["languages"], "languages" => "English"})
 
       assert has_element?(
                view,

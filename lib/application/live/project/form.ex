@@ -86,6 +86,7 @@ defmodule RunaWeb.Live.Project.Form do
           field={@form[:base_language_id]}
           options={@languages}
           target={@myself}
+          searchable
         >
           <:label>Base language</:label>
           <:selected>
@@ -93,12 +94,13 @@ defmodule RunaWeb.Live.Project.Form do
           </:selected>
         </.select>
         <.select
-          multiple
           id="languages"
           field={@form[:languages]}
           options={@languages}
           target={@myself}
           value={@selected_languages}
+          searchable
+          multiple
         >
           <:label>Languages</:label>
           <:selected>
@@ -117,15 +119,6 @@ defmodule RunaWeb.Live.Project.Form do
                 phx-value-option={code}
               />
             </.pill>
-            <input
-              phx-change="search_languages"
-              phx-target={@myself}
-              phx-debounce
-              aria-label="Search languages"
-              name="query"
-              type="text"
-              class="flex-1 min-w-[2px] text-sm border-none p-0 m-0 bg-transparent focus:outline-none focus:ring-0"
-            />
           </:selected>
         </.select>
 
@@ -257,9 +250,9 @@ defmodule RunaWeb.Live.Project.Form do
   end
 
   @impl true
-  def handle_event("search_languages", %{"query" => query}, socket) do
+  def handle_event("search_options", %{"_target" => [field]} = attrs, socket) do
     params = %{
-      filter: [%{field: :title, op: :ilike, value: query}],
+      filter: [%{field: :title, op: :ilike, value: attrs[field]}],
       page: %{"size" => 50}
     }
 
