@@ -89,9 +89,7 @@ defmodule RunaWeb.Live.Project.Form do
         >
           <:label>Base language</:label>
           <:selected>
-            <span aria-label="Selected option" class="truncate flex-grow">
-              {@displayed_base_language || "Select option"}
-            </span>
+            {@displayed_base_language}
           </:selected>
         </.select>
         <.select
