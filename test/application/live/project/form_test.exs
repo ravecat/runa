@@ -22,8 +22,8 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       assert has_element?(view, "[aria-label='Project name']")
       assert has_element?(view, "[aria-label='Project description']")
-      assert has_element?(view, "label:fl-contains('Languages') select")
-      assert has_element?(view, "label:fl-contains('Base language') select")
+      assert has_element?(view, "label:fl-contains('Languages') ~ select")
+      assert has_element?(view, "label:fl-contains('Base language') ~ select")
     end
 
     test "requires name", ctx do
@@ -161,7 +161,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       assert element(
                view,
-               "[aria-label='Project form'] label:fl-contains('Base language') [aria-label='Selected option']"
+               "[aria-label='Project form'] [aria-label='Selected option']"
              )
              |> render() =~ "English (eng)"
     end
@@ -260,19 +260,18 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       view
       |> element(
-        "[aria-label='Project form'] label:fl-contains('Languages') [aria-label='Clear selection']"
+        "[aria-label='Project form'] label:fl-contains('Languages') + [role='combobox'] [aria-label='Clear selection']"
       )
       |> render_click()
 
       refute element(
                view,
-               "label:fl-contains('Languages') [aria-label='Selected options']"
+               "label:fl-contains('Languages') + [role='combobox'] [aria-label='Selected options']"
              )
              |> render() =~
                "English (eng)"
     end
 
-    @tag :only
     test "clear selected languages", ctx do
       language = insert(:language, wals_code: "eng", title: "English")
       insert(:locale, project: ctx.project, language: language)
@@ -285,7 +284,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       assert element(
                view,
-               "label:fl-contains('Languages') [aria-label='Selected options']"
+               "[aria-label='Selected options']"
              )
              |> render() =~
                "English (eng)"
@@ -298,7 +297,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       refute element(
                view,
-               "label:fl-contains('Languages') [aria-label='Selected options']"
+               "[aria-label='Selected options']"
              )
              |> render() =~
                "English (eng)"
@@ -342,7 +341,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       assert element(
                view,
-               "[aria-label='Project form'] label:fl-contains('Languages')"
+               "[aria-label='Project form'] label:fl-contains('Languages') ~ select"
              )
              |> render()
              |> Floki.parse_fragment!()
@@ -355,7 +354,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
       assert element(
                view,
-               "[aria-label='Project form'] label:fl-contains('Languages')"
+               "[aria-label='Project form'] label:fl-contains('Languages') ~ select"
              )
              |> render()
              |> Floki.parse_fragment!()
