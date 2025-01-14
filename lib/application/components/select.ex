@@ -58,24 +58,33 @@ defmodule RunaWeb.Components.Select do
         do: field.name <> "[]",
         else: field.name
     end)
-    |> assign_new(:value, fn -> field.value end)
+    |> assign_new(:value, fn ->
+      value =
+        if is_list(field.value),
+          do: field.value,
+          else: [field.value]
+
+      Enum.map(value, &to_string/1)
+    end)
     |> select()
   end
 
   def select(assigns) do
     ~H"""
     <div
+      id={"#{@id}-container"}
       class="relative gap-2"
       phx-feedback-for={@name}
-      phx-click-away={hide_options(@id)}
-      phx-click={toggle_options(@id)}
+      phx-click={JS.dispatch("toggle", to: "##{@id}")}
+      phx-click-away={JS.dispatch("close", to: "##{@id}")}
     >
-      <.label :if={@label != []} for={@id}>
+      <.label :if={@label != []}>
         {render_slot(@label)}
       </.label>
       <div
         role="combobox"
         aria-controls={@id}
+        id={"#{@id}-combobox"}
         aria-orientation="vertical"
         class="w-full border rounded focus:ring-0 sm:text-sm sm:leading-6 min-h-10 px-3 py-2 flex justify-between items-center gap-1"
       >
@@ -110,6 +119,7 @@ defmodule RunaWeb.Components.Select do
           <% end %>
           <input
             :if={@searchable}
+            id={"#{@id}-input"}
             class="flex-1 min-w-[2px] text-sm border-none p-0 m-0 bg-transparent focus:outline-none focus:ring-0"
             phx-change={JS.push("search_options")}
             phx-target={@target}
@@ -140,12 +150,12 @@ defmodule RunaWeb.Components.Select do
         name={@name}
         aria-hidden="true"
         role="listbox"
-        phx-hook="infiniteScroll"
         phx-target={@target}
+        phx-hook="selectObserver"
         size={max(1, length(@options))}
         class={
           classes([
-            "hidden border top-full absolute mt-1 p-0 rounded bg-background w-full dark:bg-background h-fit max-h-[18.75rem] overflow-auto z-50 shadow-sm transition hover:shadow focus:ring-0 sm:text-sm",
+            "hidden bg-none border top-full absolute mt-1 p-0 rounded bg-background w-full dark:bg-background h-fit max-h-[18.75rem] overflow-auto z-50 shadow-sm transition hover:shadow sm:text-sm",
             "[&>option]:flex [&>option]:items-center [&>option]:p-2 [&>option]:gap-[.25rem] [&>option]:truncate [&>option]:cursor-pointer [&>option:hover]:bg-background-hover",
             @class
           ])
@@ -153,8 +163,13 @@ defmodule RunaWeb.Components.Select do
         multiple={@multiple}
         {@rest}
       >
-        <%= if Enum.empty?(@options) do %>
-          <option disabled>No options available</option>
+        <%= if match?([], @options) do %>
+          <option
+            disabled
+            class="flex items-center p-2 gap-[.25rem] truncate cursor-pointer hover:bg-background-hover"
+          >
+            No options available
+          </option>
         <% else %>
           {Phoenix.HTML.Form.options_for_select(@options, @value)}
         <% end %>
@@ -162,31 +177,6 @@ defmodule RunaWeb.Components.Select do
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
-  end
-
-  defp toggle_options(js \\ %JS{}, id) when is_binary(id) do
-    JS.toggle_class(
-      js,
-      "hidden",
-      to: "##{id}"
-    )
-    |> JS.toggle_attribute({"aria-hidden", "true", "false"},
-      to: "##{id}"
-    )
-    |> JS.toggle_class("rotate-180",
-      to: "##{id}-shevron"
-    )
-  end
-
-  defp hide_options(js \\ %JS{}, id) do
-    JS.add_class(
-      js,
-      "hidden",
-      to: "##{id}"
-    )
-    |> JS.remove_class("rotate-180",
-      to: "##{id}-shevron"
-    )
   end
 
   @doc """

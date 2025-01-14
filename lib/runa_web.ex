@@ -109,15 +109,15 @@ defmodule RunaWeb do
 
   def live_component do
     quote do
+      alias Phoenix.HTML.Form
       alias Phoenix.LiveView.JS
       alias Runa.PubSub
       alias Runa.Repo
+      alias Ecto.Changeset
 
       import Ecto
-      import Ecto.Changeset
       import RunaWeb.Components.Commands
       import Tails
-      import Phoenix.HTML.Form
 
       use Phoenix.LiveComponent
 
