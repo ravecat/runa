@@ -152,29 +152,6 @@ defmodule RunaWeb.Components.SelectTest do
       )
     end
 
-    test "sends scroll event" do
-      {:ok, view, _} =
-        wrap_component(Select, :select, %{
-          id: "test-select",
-          name: "test",
-          value: [],
-          options: [{"Option 1", "1"}, {"Option 2", "2"}],
-          multiple: false,
-          label: [],
-          searchable: true
-        })
-
-      view
-      |> element("select")
-      |> render_hook("load_more", %{"id" => "test-select"})
-
-      assert_handle_event(
-        view,
-        "load_more",
-        %{"id" => "test-select"}
-      )
-    end
-
     @tag :skip
     test "sends clear selection event with Repatch" do
       {:ok, view, _} =

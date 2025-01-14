@@ -303,65 +303,6 @@ defmodule RunaWeb.Live.Project.FormTest do
                "English (eng)"
     end
 
-    test "searches languages", ctx do
-      insert(:language, wals_code: "eng", title: "English")
-      insert(:language, wals_code: "fra", title: "French")
-
-      {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: ctx.project,
-          team: ctx.team
-        })
-
-      element(
-        view,
-        "[aria-label='Project form'] label:fl-contains('Languages') ~ [role='combobox'] input"
-      )
-      |> render_change(%{"_target" => ["languages"], "languages" => "English"})
-
-      assert has_element?(
-               view,
-               "[aria-label='Project form'] option:fl-contains('English')"
-             )
-
-      refute has_element?(
-               view,
-               "[aria-label='Project form'] option:fl-contains('French')"
-             )
-    end
-
-    test "loads more languages on scroll", ctx do
-      insert_list(60, :language)
-
-      {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: ctx.project,
-          team: ctx.team
-        })
-
-      assert element(
-               view,
-               "[aria-label='Project form'] label:fl-contains('Languages') ~ select"
-             )
-             |> render()
-             |> Floki.parse_fragment!()
-             |> Floki.find("option")
-             |> length() == 50
-
-      view
-      |> element("#languages")
-      |> render_hook("load_more", %{id: "languages"})
-
-      assert element(
-               view,
-               "[aria-label='Project form'] label:fl-contains('Languages') ~ select"
-             )
-             |> render()
-             |> Floki.parse_fragment!()
-             |> Floki.find("option")
-             |> length() == 60
-    end
-
     test "creates project", ctx do
       language = insert(:language, wals_code: "eng", title: "English")
 

@@ -10,8 +10,6 @@ defmodule RunaWeb.Components.Input do
 
   This function accepts all HTML input types, considering that:
 
-    * You may also set `type="select"` to render a `<select>` tag
-
     * `type="checkbox"` is used exclusively to render boolean values
 
     * For live file uploads, see `Phoenix.Component.live_file_input/1`
