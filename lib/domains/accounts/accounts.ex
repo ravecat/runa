@@ -86,6 +86,7 @@ defmodule Runa.Accounts do
       {:error, _, reason, _} ->
         {:error, reason}
     end
+    |> broadcast(:account_created)
   end
 
   @doc """
@@ -104,10 +105,7 @@ defmodule Runa.Accounts do
     user
     |> User.changeset(attrs)
     |> Repo.update()
-    |> case do
-      {:ok, user} -> {:ok, user}
-      {:error, changeset} -> {:error, changeset}
-    end
+    |> broadcast(:account_updated)
   end
 
   @doc """
@@ -138,4 +136,23 @@ defmodule Runa.Accounts do
   def change(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
   end
+
+  def subscribe do
+    PubSub.subscribe(User.__schema__(:source))
+  end
+
+  def subscribe(user_id) when is_integer(user_id) do
+    PubSub.subscribe("#{User.__schema__(:source)}:#{user_id}")
+  end
+
+  defp broadcast({:ok, %User{} = data}, event) do
+    PubSub.broadcast(
+      "#{User.__schema__(:source)}:#{data.id}",
+      {event, data}
+    )
+
+    {:ok, data}
+  end
+
+  defp broadcast({:error, reason}, _event), do: {:error, reason}
 end

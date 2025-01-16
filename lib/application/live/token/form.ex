@@ -10,22 +10,25 @@ defmodule RunaWeb.Live.Token.Form do
 
   import RunaWeb.Components.Form
   import RunaWeb.Components.Input
+  import RunaWeb.Components.Select
 
   @impl true
   def update(%{data: %Token{} = data} = assigns, socket) do
     action = if data.id, do: :edit, else: :new
 
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign(:action, action)
-     |> assign_new(:access, fn ->
-       Enum.map(Token.access_levels(), fn {label, _} -> {label, label} end)
-     end)
-     |> assign_new(:form, fn -> to_form(Tokens.change(data)) end)}
+    socket =
+      socket
+      |> assign(assigns)
+      |> assign(:action, action)
+      |> assign_new(:access, fn ->
+        Enum.map(Token.access_levels(), fn {label, _} -> {label, label} end)
+      end)
+      |> assign_new(:form, fn -> to_form(Tokens.change(data)) end)
+
+    {:ok, socket}
   end
 
-  slot :actions, doc: "the slot for form actions, such as a submit button"
+  slot(:actions, doc: "the slot for form actions, such as a submit button")
 
   @impl true
   def render(assigns) do
@@ -39,14 +42,13 @@ defmodule RunaWeb.Live.Token.Form do
         phx-target={@myself}
         aria-label="Token form"
       >
+        <.input type="hidden" field={@form[:user_id]} value={to_string(@user.id)} />
         <.input type="text" field={@form[:title]}>
           <:label>Title</:label>
         </.input>
-
-        <.input type="select" field={@form[:access]} options={@access}>
+        <.select field={@form[:access]} options={@access}>
           <:label>Access</:label>
-        </.input>
-
+        </.select>
         {render_slot(@actions, @form)}
       </.custom_form>
     </div>
@@ -68,12 +70,7 @@ defmodule RunaWeb.Live.Token.Form do
 
   defp save(socket, :edit, attrs) do
     case Tokens.update(socket.assigns.data, attrs) do
-      {:ok, data} ->
-        PubSub.broadcast(
-          "tokens:#{socket.assigns.user.id}",
-          {:updated_token, data}
-        )
-
+      {:ok, _} ->
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -85,13 +82,8 @@ defmodule RunaWeb.Live.Token.Form do
   end
 
   defp save(socket, :new, attrs) do
-    case Tokens.create(attrs, socket.assigns.user) do
-      {:ok, data} ->
-        PubSub.broadcast(
-          "tokens:#{socket.assigns.user.id}",
-          {:created_token, data}
-        )
-
+    case Tokens.create(attrs) do
+      {:ok, _} ->
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->

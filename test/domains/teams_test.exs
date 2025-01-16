@@ -30,9 +30,21 @@ defmodule Runa.TeamsTest do
     end
 
     test "creates entity with valid data" do
-      valid_attrs = %{title: "some title"}
+      attrs = %{title: "some title"}
 
-      assert {:ok, %Team{}} = Teams.create(valid_attrs)
+      assert {:ok, %Team{}} = Teams.create(attrs)
+    end
+
+    test "sends broadcast after create" do
+      attrs = %{title: "some title"}
+
+      Teams.subscribe()
+
+      {:ok, data} = Teams.create(attrs)
+
+      assert_receive {:team_created, payload}
+
+      assert match?(^data, payload)
     end
 
     test "returns error changeset during creation with invalid data" do
@@ -56,11 +68,23 @@ defmodule Runa.TeamsTest do
     end
 
     test "updates entity with valid data", ctx do
-      update_attrs = %{title: "some updated title"}
+      attrs = %{title: "some updated title"}
 
-      assert {:ok, %Team{} = data} = Teams.update(ctx.team, update_attrs)
+      assert {:ok, %Team{} = data} = Teams.update(ctx.team, attrs)
 
       assert data.title == "some updated title"
+    end
+
+    test "sends broadcast after update", ctx do
+      attrs = %{title: "some title"}
+
+      Teams.subscribe()
+
+      {:ok, data} = Teams.update(ctx.team, attrs)
+
+      assert_receive {:team_updated, payload}
+
+      assert match?(^data, payload)
     end
 
     test "returns error changeset after update with invalid data", ctx do

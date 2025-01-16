@@ -7,6 +7,7 @@ defmodule Runa.Projects do
 
   alias Runa.Languages.Language
   alias Runa.Projects.Project
+  alias Runa.Teams.Team
 
   @doc """
   Returns the list of projects with pagination metadata.
@@ -68,6 +69,7 @@ defmodule Runa.Projects do
       error ->
         error
     end
+    |> broadcast(:project_created)
   end
 
   @doc """
@@ -86,9 +88,10 @@ defmodule Runa.Projects do
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
   def update(%Project{} = project, attrs) do
     project
-    |> Repo.preload([:languages, :base_language])
+    |> Repo.preload([:team, :languages, :base_language])
     |> change(attrs)
     |> Repo.update()
+    |> broadcast(:project_updated)
   end
 
   @doc """
@@ -158,4 +161,20 @@ defmodule Runa.Projects do
   def duplicate(%Project{} = project, attrs \\ %{}) do
     Repo.duplicate(project, attrs)
   end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(PubSub, "projects")
+  end
+
+  def subscribe(%Team{} = data) do
+    Phoenix.PubSub.subscribe(PubSub, "projects:#{data.id}")
+  end
+
+  defp broadcast({:ok, %Project{} = data}, event) do
+    Phoenix.PubSub.broadcast(PubSub, "projects:#{data.team.id}", {event, data})
+
+    {:ok, data}
+  end
+
+  defp broadcast({:error, reason}, _event), do: {:error, reason}
 end

@@ -24,8 +24,8 @@ defmodule RunaWeb.Live.Sidebar do
     case Accounts.get(user_id) do
       {:ok, user} ->
         if connected?(socket) do
-          PubSub.subscribe("teams:#{user.id}")
-          PubSub.subscribe("accounts:#{user.id}")
+          Teams.subscribe()
+          Accounts.subscribe(user.id)
         end
 
         handle_actual_user_data(socket, user)
@@ -84,7 +84,7 @@ defmodule RunaWeb.Live.Sidebar do
   end
 
   @impl true
-  def handle_info({:created_team, data}, socket) do
+  def handle_info({:team_created, data}, socket) do
     data =
       Map.put(data, :role, Teams.get_role(socket.assigns.user.id, data.id))
 
@@ -97,7 +97,7 @@ defmodule RunaWeb.Live.Sidebar do
   end
 
   @impl true
-  def handle_info({:updated_account, data}, socket) do
+  def handle_info({:account_updated, data}, socket) do
     socket =
       assign(socket, :user, data)
 

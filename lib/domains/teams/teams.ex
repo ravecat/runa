@@ -69,6 +69,7 @@ defmodule Runa.Teams do
     %Team{}
     |> Team.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:team_created)
   end
 
   def create(attrs, %User{} = user) do
@@ -87,6 +88,7 @@ defmodule Runa.Teams do
       {:ok, %{team: team}} -> {:ok, team}
       {:error, _, changeset, _} -> {:error, changeset}
     end
+    |> broadcast(:team_created)
   end
 
   @doc """
@@ -105,6 +107,7 @@ defmodule Runa.Teams do
     data
     |> Team.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:team_updated)
   end
 
   @doc """
@@ -187,4 +190,19 @@ defmodule Runa.Teams do
     )
     |> Repo.one()
   end
+
+  def subscribe do
+    PubSub.subscribe(Team.__schema__(:source))
+  end
+
+  defp broadcast({:ok, %Team{} = data}, event) do
+    PubSub.broadcast(
+      Team.__schema__(:source),
+      {event, data}
+    )
+
+    {:ok, data}
+  end
+
+  defp broadcast({:error, reason}, _event), do: {:error, reason}
 end

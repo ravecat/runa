@@ -6,6 +6,7 @@ defmodule RunaWeb.Live.Profile do
 
   alias Runa.Accounts
   alias Runa.Services.Avatar
+  alias Runa.Tokens
 
   import RunaWeb.Components.Avatar
   import RunaWeb.Components.Card
@@ -17,7 +18,7 @@ defmodule RunaWeb.Live.Profile do
   @impl true
   def mount(_params, %{"user_id" => user_id}, socket) do
     if connected?(socket) do
-      PubSub.subscribe("tokens:#{user_id}")
+      Tokens.subscribe(user_id)
     end
 
     case Accounts.get(user_id) do
@@ -79,11 +80,6 @@ defmodule RunaWeb.Live.Profile do
     case Accounts.update(socket.assigns.user, attrs) do
       {:ok, user} ->
         user = Repo.preload(user, tokens: :user)
-
-        PubSub.broadcast(
-          "accounts:#{socket.assigns.user.id}",
-          {:updated_account, user}
-        )
 
         socket =
           socket

@@ -31,7 +31,7 @@ defmodule RunaWeb.Live.Project.Index do
 
   defp handle_actual_user_data(socket, %{teams: [team | _]}) do
     if connected?(socket) do
-      PubSub.subscribe("projects:#{team.id}")
+      Projects.subscribe(team)
     end
 
     projects = Teams.get_projects_with_statistics(team.id)
@@ -165,7 +165,7 @@ defmodule RunaWeb.Live.Project.Index do
   end
 
   @impl true
-  def handle_info({:updated_project, %Project{} = data}, socket) do
+  def handle_info({:project_updated, %Project{} = data}, socket) do
     updated_data =
       Teams.get_projects_with_statistics(socket.assigns.team.id)
       |> Enum.find(&(&1.id == data.id))
@@ -181,7 +181,7 @@ defmodule RunaWeb.Live.Project.Index do
   end
 
   @impl true
-  def handle_info({:created_project, %Project{} = data}, socket) do
+  def handle_info({:project_created, %Project{} = data}, socket) do
     updated_data =
       Teams.get_projects_with_statistics(socket.assigns.team.id)
       |> Enum.find(&(&1.id == data.id))

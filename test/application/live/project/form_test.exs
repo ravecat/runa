@@ -81,26 +81,6 @@ defmodule RunaWeb.Live.Project.FormTest do
       assert %Project{} = Repo.get_by(Project, name: "New Project")
     end
 
-    test "broadcasts message on successful create", ctx do
-      language = insert(:language, wals_code: "eng", title: "English")
-
-      {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: %Project{},
-          team: ctx.team
-        })
-
-      PubSub.subscribe("projects:#{ctx.team.id}")
-
-      view
-      |> element("[aria-label='Project form']")
-      |> render_submit(%{
-        "project" => %{"name" => "New Name", "base_language_id" => language.id}
-      })
-
-      assert_receive {:created_project, %{name: "New Name"}}
-    end
-
     test "updates project", ctx do
       language = insert(:language, wals_code: "eng", title: "English")
 
@@ -117,26 +97,6 @@ defmodule RunaWeb.Live.Project.FormTest do
       })
 
       assert %Project{} = Repo.get_by(Project, name: "New Name")
-    end
-
-    test "broadcasts message on successful update", ctx do
-      language = insert(:language, wals_code: "eng", title: "English")
-
-      {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: Repo.preload(ctx.project, :languages),
-          team: ctx.team
-        })
-
-      PubSub.subscribe("projects:#{ctx.team.id}")
-
-      view
-      |> element("[aria-label='Project form']")
-      |> render_submit(%{
-        "project" => %{"name" => "New Name", "base_language_id" => language.id}
-      })
-
-      assert_receive {:updated_project, %{name: "New Name", languages: []}}
     end
   end
 
