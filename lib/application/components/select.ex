@@ -9,7 +9,8 @@ defmodule RunaWeb.Components.Select do
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Pill
 
-  attr :id, :string, required: true
+  attr :id, :string, default: nil,
+    doc: "the id of the select input"
 
   attr :field, Phoenix.HTML.FormField,
     doc:

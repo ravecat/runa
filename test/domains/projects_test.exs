@@ -41,6 +41,26 @@ defmodule Runa.ProjectsTest do
       assert {:ok, %Project{}} = Projects.create(attrs)
     end
 
+    test "send message on successful create" do
+      team = insert(:team)
+      language = insert(:language)
+
+      Projects.subscribe(team)
+
+      attrs = %{
+        name: "some name",
+        description: "some description",
+        team_id: team.id,
+        base_language_id: language.id
+      }
+
+      {:ok, data} = Projects.create(attrs)
+
+      assert_receive {:project_created, payload}
+
+      assert match?(^data, payload)
+    end
+
     test "returns error changeset during creation with invalid data" do
       invalid_attrs = %{name: nil, description: nil}
 
@@ -50,17 +70,35 @@ defmodule Runa.ProjectsTest do
     test "updates entity with valid data", ctx do
       language = insert(:language)
 
-      update_attrs = %{
+      attrs = %{
         name: "some updated name",
         description: "some updated description",
         base_language_id: language.id
       }
 
       assert {:ok, %Project{} = project} =
-               Projects.update(ctx.project, update_attrs)
+               Projects.update(ctx.project, attrs)
 
       assert project.name == "some updated name"
       assert project.description == "some updated description"
+    end
+
+    test "sends message on successful update", ctx do
+      language = insert(:language)
+
+      Projects.subscribe(ctx.team)
+
+      attrs = %{
+        name: "some updated name",
+        description: "some updated description",
+        base_language_id: language.id
+      }
+
+      {:ok, data} = Projects.update(ctx.project, attrs)
+
+      assert_receive {:project_updated, payload}
+
+      assert match?(^data, payload)
     end
 
     test "returns error changeset during update with invalid data", ctx do

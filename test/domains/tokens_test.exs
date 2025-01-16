@@ -34,6 +34,21 @@ defmodule Runa.TokensTest do
       assert token.hash != nil
     end
 
+    test "sends pubsub event after create", ctx do
+      Tokens.subscribe(ctx.user.id)
+
+      {:ok, data} =
+        Tokens.create(%{
+          access: :read,
+          user_id: ctx.user.id,
+          title: Atom.to_string(ctx.test)
+        })
+
+      assert_receive {:token_created, payload}
+
+      assert match?(^data, payload)
+    end
+
     test "returns error changeset during creation with invalid data", ctx do
       assert {:error, %Ecto.Changeset{}} =
                Tokens.create(%{access: nil, user_id: ctx.user.id})
@@ -46,6 +61,19 @@ defmodule Runa.TokensTest do
                Tokens.update(token, %{access: :write})
 
       assert token.access == :write
+    end
+
+    test "sends pubsub event after update", ctx do
+      token = insert(:token, access: :read, user: ctx.user)
+
+      Tokens.subscribe(ctx.user.id)
+
+      assert {:ok, data} =
+               Tokens.update(token, %{access: :write})
+
+      assert_receive {:token_updated, payload}
+
+      assert match?(^data, payload)
     end
 
     test "ignores fields other than access on update", ctx do

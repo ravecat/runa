@@ -67,13 +67,14 @@ defmodule Runa.Tokens do
     %Token{}
     |> change(attrs)
     |> Repo.insert()
-  end
+    |> case do
+      {:ok, data} ->
+        {:ok, Repo.preload(data, :user)}
 
-  def create(attrs, %User{} = user) do
-    user
-    |> Ecto.build_assoc(:tokens, attrs)
-    |> change(attrs)
-    |> Repo.insert()
+      error ->
+        error
+    end
+    |> broadcast(:token_created)
   end
 
   @doc """
@@ -92,6 +93,7 @@ defmodule Runa.Tokens do
     token
     |> Token.update_changeset(attrs)
     |> Repo.update()
+    |> broadcast(:token_updated)
   end
 
   @doc """
@@ -146,4 +148,23 @@ defmodule Runa.Tokens do
     |> change(attrs)
     |> Ecto.Changeset.apply_changes()
   end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(PubSub, Token.__schema__(:source))
+  end
+
+  def subscribe(user_id) do
+    Phoenix.PubSub.subscribe(PubSub, "#{Token.__schema__(:source)}:#{user_id}")
+  end
+
+  defp broadcast({:ok, %Token{} = data}, event) do
+    PubSub.broadcast(
+      "#{Token.__schema__(:source)}:#{data.user.id}",
+      {event, data}
+    )
+
+    {:ok, data}
+  end
+
+  defp broadcast({:error, reason}, _event), do: {:error, reason}
 end

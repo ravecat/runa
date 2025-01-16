@@ -10,12 +10,14 @@ defmodule RunaWeb.Live.Team.Form do
 
   @impl true
   def update(%{data: %Team{} = data} = assigns, socket) do
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign_new(:form, fn ->
-       to_form(Teams.change(data))
-     end)}
+    socket =
+      socket
+      |> assign(assigns)
+      |> assign_new(:form, fn ->
+        to_form(Teams.change(data))
+      end)
+
+    {:ok, socket}
   end
 
   @impl true
@@ -56,12 +58,7 @@ defmodule RunaWeb.Live.Team.Form do
 
   defp save(socket, :new, attrs) do
     case Teams.create(attrs, socket.assigns.user) do
-      {:ok, data} ->
-        PubSub.broadcast(
-          "teams:#{socket.assigns.user.id}",
-          {:created_team, data}
-        )
-
+      {:ok, _} ->
         {:noreply, put_flash(socket, :info, "Team created successfully")}
 
       {:error, %Ecto.Changeset{} = changeset} ->

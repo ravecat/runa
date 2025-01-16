@@ -262,12 +262,7 @@ defmodule RunaWeb.Live.Project.Form do
     socket.assigns.data
     |> Projects.update(attrs)
     |> case do
-      {:ok, data} ->
-        PubSub.broadcast(
-          "projects:#{socket.assigns.team.id}",
-          {:updated_project, data}
-        )
-
+      {:ok, _} ->
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -280,12 +275,7 @@ defmodule RunaWeb.Live.Project.Form do
     |> Map.put_new("languages", [])
     |> Projects.create()
     |> case do
-      {:ok, data} ->
-        PubSub.broadcast(
-          "projects:#{socket.assigns.team.id}",
-          {:created_project, data}
-        )
-
+      {:ok, _} ->
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->

@@ -33,8 +33,8 @@ defmodule RunaWeb.Live.Token.Index do
 
   defp handle_actual_user_data(socket, user) do
     if connected?(socket) do
-      PubSub.subscribe("tokens:#{user.id}")
-      PubSub.subscribe("accounts:#{user.id}")
+      Tokens.subscribe(user.id)
+      Accounts.subscribe(user.id)
     end
 
     user = Repo.preload(user, tokens: :user)
@@ -63,9 +63,7 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   @impl true
-  def handle_info({:created_token, %Token{} = data}, socket) do
-    data = Repo.preload(data, :user)
-
+  def handle_info({:token_created, %Token{} = data}, socket) do
     socket =
       socket
       |> stream_insert(:tokens, data)
@@ -76,9 +74,7 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   @impl true
-  def handle_info({:updated_token, %Token{} = data}, socket) do
-    data = Repo.preload(data, :user)
-
+  def handle_info({:token_updated, %Token{} = data}, socket) do
     socket =
       socket
       |> stream_delete(:tokens, data)
@@ -90,7 +86,7 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   @impl true
-  def handle_info({:updated_account, %User{} = data}, socket) do
+  def handle_info({:account_updated, %User{} = data}, socket) do
     data = Repo.preload(data, [tokens: :user], force: true)
 
     socket =

@@ -15,6 +15,7 @@ defmodule Runa do
       alias Ecto.Multi
       alias Runa.JSONAPI
       alias Runa.Paginator
+      alias Runa.PubSub
       alias Runa.Repo
 
       import Runa.Paginator
