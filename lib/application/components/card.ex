@@ -15,7 +15,7 @@ defmodule RunaWeb.Components.Card do
     <div
       class={
         merge(
-          "w-full p-4 rounded flex-col gap-4 flex border overflow-hidden shadow-sm transition hover:shadow",
+          "p-4 rounded flex-col gap-4 flex border overflow-hidden shadow-sm transition hover:shadow",
           @class
         )
         |> to_string()
