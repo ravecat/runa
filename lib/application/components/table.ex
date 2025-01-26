@@ -74,7 +74,7 @@ defmodule RunaWeb.Components.Table do
         >
           <tr :for={row <- @rows} id={@row_id && @row_id.(row)}>
             <td
-              :for={{col, _} <- Enum.with_index(@col)}
+              :for={col <- @col}
               phx-click={@row_click && @row_click.(row)}
               class={
                 merge(
