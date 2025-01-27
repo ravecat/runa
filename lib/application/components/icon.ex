@@ -11,10 +11,12 @@ defmodule RunaWeb.Components.Icon do
   def icon(assigns) do
     ~H"""
     <span
-      class={[
-        "icon inline-block min-w-[1rem] min-h-[1rem] align-text-top",
-        @class
-      ]}
+      class={
+        classes([
+          "icon inline-block min-w-[1rem] min-h-[1rem] align-text-top flex-shrink-0",
+          @class
+        ])
+      }
       style={"--icon-url: url(/images/#{@icon}.svg);"}
       {@rest}
     >

@@ -34,7 +34,7 @@ defmodule RunaWeb.Components.Form do
     ~H"""
     <.form
       :let={f}
-      class={merge("flex flex-col gap-2 bg-background", @class) |> to_string()}
+      class={classes(["flex flex-col gap-2", @class])}
       for={@for}
       as={@as}
       {@rest}

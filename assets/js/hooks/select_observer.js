@@ -11,6 +11,7 @@ export const selectObserver = {
     });
 
     this.el.addEventListener("toggle", this.handleToggle.bind(this));
+    this.el.addEventListener("scroll", this.handleScroll.bind(this));
     this.el.addEventListener("close", this.handleClickOutside.bind(this));
 
     this.searchInput = document.getElementById(`${this.el.id}-input`);
@@ -27,6 +28,21 @@ export const selectObserver = {
     if (this.searchInput) {
       this.searchInput.removeEventListener("input", this.handleSearch);
     }
+  },
+  handleScroll() {
+    clearTimeout(this.timeout);
+
+    this.timeout = setTimeout(() => {
+      const scrollPercent =
+        (this.el.scrollTop / (this.el.scrollHeight - this.el.clientHeight)) *
+        100;
+
+      if (scrollPercent > 80) {
+        this.pushEventTo(this.el, "load_options", {
+          id: this.el.id,
+        });
+      }
+    }, 200);
   },
   handleSearch(event) {
     let visibleOptionsCount = 0;

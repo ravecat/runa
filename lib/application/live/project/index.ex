@@ -24,7 +24,7 @@ defmodule RunaWeb.Live.Project.Index do
 
     socket =
       assign(socket,
-        team: team,
+        team_id: team.id,
         project: %Project{},
         is_visible_project_modal: false,
         is_visible_delete_project_modal: false
@@ -38,7 +38,7 @@ defmodule RunaWeb.Live.Project.Index do
     socket =
       assign(
         socket,
-        team: nil,
+        team_id: nil,
         project: %Project{},
         is_visible_project_modal: false,
         is_visible_delete_project_modal: false
@@ -46,6 +46,11 @@ defmodule RunaWeb.Live.Project.Index do
       |> stream(:projects, [])
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_params(_, _, socket) do
+    {:noreply, socket}
   end
 
   @impl true
@@ -125,7 +130,7 @@ defmodule RunaWeb.Live.Project.Index do
              end
            }) do
       updated_data =
-        Teams.get_projects_with_statistics(socket.assigns.team.id)
+        Teams.get_projects_with_statistics(socket.assigns.team_id)
         |> Enum.find(&(&1.id == new_data.id))
 
       socket =
@@ -146,7 +151,7 @@ defmodule RunaWeb.Live.Project.Index do
   @impl true
   def handle_info({:project_updated, %Project{} = data}, socket) do
     updated_data =
-      Teams.get_projects_with_statistics(socket.assigns.team.id)
+      Teams.get_projects_with_statistics(socket.assigns.team_id)
       |> Enum.find(&(&1.id == data.id))
 
     socket =
@@ -162,7 +167,7 @@ defmodule RunaWeb.Live.Project.Index do
   @impl true
   def handle_info({:project_created, %Project{} = data}, socket) do
     updated_data =
-      Teams.get_projects_with_statistics(socket.assigns.team.id)
+      Teams.get_projects_with_statistics(socket.assigns.team_id)
       |> Enum.find(&(&1.id == data.id))
 
     socket =

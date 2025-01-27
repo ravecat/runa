@@ -8,17 +8,17 @@ defmodule Runa.Languages.Locale do
   alias Runa.Projects.Project
 
   schema "locales" do
-    belongs_to(:project, Project)
-    belongs_to(:language, Language)
+    belongs_to :project, Project
+    belongs_to :language, Language
 
-    timestamps(type: :utc_datetime)
+    timestamps type: :utc_datetime
   end
 
   @doc false
   def changeset(locale, attrs) do
     locale
     |> cast(attrs, [:project_id, :language_id])
-    |> validate_required([:project_id, :language_id])
+    |> validate_required([:language_id])
     |> foreign_key_constraint(:project_id)
     |> unique_constraint([:project_id, :language_id])
   end
