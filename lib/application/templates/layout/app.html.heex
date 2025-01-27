@@ -1,9 +1,12 @@
 <div class="flex">
   <.flash_group flash={@flash} />
   <div class="w-[16rem] min-w-[16rem]">
-    {live_render(@socket, RunaWeb.Live.Sidebar, id: "sidebar")}
+    {live_render(@socket, RunaWeb.Live.Sidebar,
+      id: "sidebar",
+      container: {:div, class: "contents"}
+    )}
   </div>
-  <article class="p-[.5rem] flex flex-col gap-4 w-full">
+  <article class="p-[.5rem] grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-2 w-full bg-background-alt">
     {@inner_content}
   </article>
 </div>

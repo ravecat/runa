@@ -89,4 +89,7 @@
     </.input>
   </.custom_form>
 </.card>
-{live_render(@socket, RunaWeb.Live.Token.Index, id: "api_keys")}
+{live_render(@socket, RunaWeb.Live.Token.Index,
+  id: "api_keys",
+  container: {:div, class: "contents"}
+)}

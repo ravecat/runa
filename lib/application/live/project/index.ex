@@ -40,6 +40,7 @@ defmodule RunaWeb.Live.Project.Index do
       assign(socket,
         team: team,
         project: %Project{},
+        project_id: nil,
         is_visible_project_modal: false,
         is_visible_delete_project_modal: false
       )
@@ -67,6 +68,18 @@ defmodule RunaWeb.Live.Project.Index do
       |> redirect(to: ~p"/")
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_params(%{"project" => project_id}, _, socket) do
+    socket = assign(socket, :project_id, project_id)
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_params(_, _, socket) do
+    {:noreply, socket}
   end
 
   @impl true
