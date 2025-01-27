@@ -105,4 +105,20 @@ defmodule Runa.Repo do
     end)
     |> Enum.map(& &1.owner_key)
   end
+
+  @spec get_by_association(
+          Ecto.Schema.t(),
+          atom(),
+          Ecto.Query.dynamic_expr() | keyword()
+        ) ::
+          Ecto.Schema.t()
+  def get_by_association(schema, association, filters) do
+    query =
+      from parent in schema,
+        join: child in assoc(parent, ^association),
+        where: ^filters,
+        select: parent
+
+    __MODULE__.all(query)
+  end
 end

@@ -124,7 +124,7 @@ defmodule RunaWeb.Components.SelectTest do
 
       assert_handle_event(
         view,
-        "clear_selection",
+        "clear_select",
         %{"id" => "test-select"}
       )
     end
@@ -166,7 +166,7 @@ defmodule RunaWeb.Components.SelectTest do
         })
 
       Repatch.patch(Phoenix.LiveView.JS, :push, fn event, opts ->
-        assert event == "clear_selection"
+        assert event == "clear_select"
         assert opts == %{value: %{id: "test-select"}}
         Phoenix.LiveView.JS.push(event, opts)
       end)

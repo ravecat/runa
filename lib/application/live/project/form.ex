@@ -16,39 +16,50 @@ defmodule RunaWeb.Live.Project.Form do
   import RunaWeb.Components.Icon
 
   @impl true
-  def update(%{data: %Project{} = data} = assigns, socket) do
-    action = if data.id, do: :edit, else: :new
-    data = Repo.preload(data, [:languages, :base_language])
-
+  def mount(socket) do
     {:ok, {languages, _}} = Languages.index()
 
     socket =
+      assign(socket, :languages, Enum.map(languages, &format_language_label/1))
+
+    {:ok, socket}
+  end
+
+  @impl true
+  def update(%{data: %Project{id: nil} = data} = assigns, socket) do
+    socket =
       socket
       |> assign(assigns)
-      |> assign(:action, action)
-      |> assign_new(:form, fn -> to_form(Projects.change(data)) end)
-      |> assign(:languages, Enum.map(languages, &format_language_label/1))
       |> assign(
-        :selected_languages,
-        Enum.map(data.languages, &format_language_code/1)
-      )
-      |> assign_new(
-        :displayed_base_language,
-        fn ->
-          {label, _id} = format_language_label(data.base_language)
-
-          label
-        end
-      )
-      |> assign(
-        :displayed_languages,
-        Enum.map(data.languages, &format_language_label/1)
+        action: :new,
+        form: to_form(Projects.change(data)),
+        selected_languages: [],
+        displayed_base_language: nil,
+        displayed_languages: []
       )
 
     {:ok, socket}
   end
 
-  slot(:actions, doc: "the slot for form actions, such as a submit button")
+  @impl true
+  def update(%{data: %Project{} = data} = assigns, socket) do
+    {base_label, _id} = format_language_label(data.base_language)
+
+    socket =
+      socket
+      |> assign(assigns)
+      |> assign(
+        action: :edit,
+        form: to_form(Projects.change(data)),
+        selected_languages: Enum.map(data.languages, &format_language_code/1),
+        displayed_base_language: base_label,
+        displayed_languages: Enum.map(data.languages, &format_language_label/1)
+      )
+
+    {:ok, socket}
+  end
+
+  slot :actions, doc: "the slot for form actions, such as a submit button"
 
   @impl true
   def render(assigns) do
@@ -62,7 +73,7 @@ defmodule RunaWeb.Live.Project.Form do
         phx-target={@myself}
         aria-label="Project form"
       >
-        <.input type="hidden" field={@form[:team_id]} value={to_string(@team.id)} />
+        <.input type="hidden" field={@form[:team_id]} value={@team_id} />
         <.input type="text" aria-label="Project name" field={@form[:name]}>
           <:label>Name</:label>
         </.input>
@@ -107,8 +118,7 @@ defmodule RunaWeb.Live.Project.Form do
                 aria-label={"Clear #{code} selection"}
                 role="button"
                 phx-target={@myself}
-                phx-click="clear_selection"
-                phx-value-option={code}
+                phx-click={JS.push("clear_select", value: %{option: code})}
               />
             </.pill>
           </:selected>
@@ -138,7 +148,7 @@ defmodule RunaWeb.Live.Project.Form do
 
   @impl true
   def handle_event(
-        "clear_selection",
+        "clear_select",
         %{"option" => code},
         socket
       ) do
@@ -174,7 +184,7 @@ defmodule RunaWeb.Live.Project.Form do
   end
 
   @impl true
-  def handle_event("clear_selection", %{"id" => "languages"}, socket) do
+  def handle_event("clear_select", %{"id" => "languages"}, socket) do
     changeset =
       Projects.change(
         socket.assigns.data,
@@ -191,7 +201,7 @@ defmodule RunaWeb.Live.Project.Form do
   end
 
   @impl true
-  def handle_event("clear_selection", %{"id" => "base_language"}, socket) do
+  def handle_event("clear_select", %{"id" => "base_language"}, socket) do
     changeset =
       Projects.change(
         socket.assigns.data,

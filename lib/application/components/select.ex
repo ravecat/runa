@@ -109,7 +109,7 @@ defmodule RunaWeb.Components.Select do
                 aria-label={"Clear #{label} selection"}
                 role="button"
                 phx-target={@target}
-                phx-click={JS.push("clear_selection", value: %{label: label})}
+                phx-click={JS.push("clear_select", value: %{label: label})}
               />
             </.pill>
             <span :if={!@multiple} class="truncate flex-grow">
@@ -136,7 +136,7 @@ defmodule RunaWeb.Components.Select do
           aria-label="Clear selection"
           role="button"
           phx-target={@target}
-          phx-click={JS.push("clear_selection", value: %{id: @id})}
+          phx-click={JS.push("clear_select", value: %{id: @id})}
         />
         <.icon
           icon="shevron-bottom"

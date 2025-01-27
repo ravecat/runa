@@ -13,7 +13,6 @@ defmodule RunaWeb.Live.Token.Index do
   import RunaWeb.Components.Table
   import RunaWeb.Components.Button
   import RunaWeb.Components.Icon
-  import RunaWeb.Components.Table
   import RunaWeb.Components.Modal
   import RunaWeb.Formatters
   import RunaWeb.Components.Card

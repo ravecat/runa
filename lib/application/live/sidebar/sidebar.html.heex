@@ -1,12 +1,8 @@
-<aside
-  class="flex h-screen flex-col bg-background-alt"
-  role="navigation"
-  aria-label="Main navigation"
->
-  <div class="px-[1rem] py-[1rem]">
+<aside class="flex flex-col" role="navigation" aria-label="Main navigation">
+  <div class="py-4 px-2">
     <.icon icon="logo" class="w-[4rem]" />
   </div>
-  <div class="px-[.5rem] flex flex-col gap-[.25rem]">
+  <div class="flex flex-col gap-[.25rem]">
     <.dropdown entries={@streams.teams} id="teams">
       <:summary>
         <div class="flex items-center gap-2 w-full">

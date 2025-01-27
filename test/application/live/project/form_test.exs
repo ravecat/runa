@@ -18,7 +18,7 @@ defmodule RunaWeb.Live.Project.FormTest do
   describe "project form" do
     test "renders fields", ctx do
       {:ok, view, _} =
-        live_isolated_component(Form, %{data: ctx.project, team: ctx.team})
+        live_isolated_component(Form, %{data: ctx.project, team_id: ctx.team.id})
 
       assert has_element?(view, "[aria-label='Project name']")
       assert has_element?(view, "[aria-label='Project description']")
@@ -30,7 +30,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       language = insert(:language, wals_code: "eng", title: "English")
 
       {:ok, view, _} =
-        live_isolated_component(Form, %{data: ctx.project, team: ctx.team})
+        live_isolated_component(Form, %{data: ctx.project, team_id: ctx.team.id})
 
       element(view, "[aria-label='Project form']")
       |> render_submit(%{
@@ -46,7 +46,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
     test "requires base language", ctx do
       {:ok, view, _} =
-        live_isolated_component(Form, %{data: ctx.project, team: ctx.team})
+        live_isolated_component(Form, %{data: ctx.project, team_id: ctx.team.id})
 
       element(view, "[aria-label='Project form']")
       |> render_submit(%{
@@ -66,7 +66,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: %Project{},
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       view
@@ -87,7 +87,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: ctx.project,
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       view
@@ -107,7 +107,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: ctx.project,
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       view
@@ -132,7 +132,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: %Project{},
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       view
@@ -158,7 +158,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: ctx.project,
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       view
@@ -186,7 +186,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: ctx.project,
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       view
@@ -211,7 +211,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: ctx.project,
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       view
@@ -239,7 +239,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: ctx.project,
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       assert element(
@@ -269,7 +269,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: %Project{},
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       view
@@ -294,7 +294,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       {:ok, view, _} =
         live_isolated_component(Form, %{
           data: ctx.project,
-          team: ctx.team
+          team_id: ctx.team.id
         })
 
       view

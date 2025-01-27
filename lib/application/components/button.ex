@@ -11,12 +11,13 @@ defmodule RunaWeb.Components.Button do
   import RunaWeb.Components.Spinner
 
   attr :type, :string, default: "button"
+  attr :square, :boolean, default: false
 
   attr :variant, :string,
     default: "primary",
     values: ["primary", "secondary", "accent", "warning", "danger", "ghost"]
 
-  attr :class, :string, default: nil
+  attr :class, :string, default: ""
   attr :rest, :global
 
   slot :inner_block, required: true
@@ -26,50 +27,33 @@ defmodule RunaWeb.Components.Button do
     <button
       type={@type}
       class={
-        merge([
-          "group border rounded flex items-center justify-center px-3 h-[2rem] min-w-[5rem] text-sm font-medium",
-          "disabled:opacity-50 phx-submit-loading:opacity-75",
-          case @variant do
-            "primary" ->
-              "bg-primary hover:bg-primary-400"
-
-            "secondary" ->
-              "bg-secondary hover:bg-secondary-400"
-
-            "accent" ->
-              "bg-accent hover:bg-accent-400"
-
-            "warning" ->
-              "bg-warning hover:bg-warning-400"
-
-            "danger" ->
-              "bg-danger hover:bg-danger-400"
-
-            "ghost" ->
-              "bg-background hover:bg-background-hover"
-
-            _ ->
-              "bg-primary hover:bg-primary-400"
-          end,
-          @class
+        classes([
+          {:"group border rounded flex items-center justify-center px-3 h-[2rem] min-w-[5rem] text-sm font-medium disabled:opacity-50 phx-submit-loading:opacity-75",
+           true},
+          {:"bg-primary hover:bg-primary-400", match?("primary", @variant)},
+          {:"bg-secondary hover:bg-secondary-400", match?("secondary", @variant)},
+          {:"bg-accent hover:bg-accent-400", match?("accent", @variant)},
+          {:"bg-warning hover:bg-warning-400", match?("warning", @variant)},
+          {:"bg-danger hover:bg-danger-400", match?("danger", @variant)},
+          {:"bg-background hover:bg-background-hover", match?("ghost", @variant)},
+          {:"#{@class}", not match?("", @class)},
+          {:"aspect-square min-w-0 p-0", @square}
         ])
-        |> to_string()
       }
       {@rest}
     >
       <.spinner class={
-        merge([
-          "group-[.phx-submit-loading]:block hidden",
-          if(@variant == "ghost", do: "text-primary", else: "text-background")
-        ])
-        |> to_string()
+        classes(
+          "group-[.phx-submit-loading]:block hidden text-background": true,
+          "text-primary": match?("ghost", @variant)
+        )
       } />
       <span class={
-        merge([
-          "group-[.phx-submit-loading]:hidden flex items-center justify-center align-middle leading-none gap-2",
-          if(@variant == "ghost", do: "text-primary", else: "text-background")
-        ])
-        |> to_string()
+        classes(
+          "group-[.phx-submit-loading]:hidden flex items-center justify-center align-middle truncate leading-none gap-2 text-background":
+            true,
+          "text-primary": match?("ghost", @variant)
+        )
       }>
         {render_slot(@inner_block)}
       </span>

@@ -31,7 +31,13 @@ defmodule Runa.Projects do
   @doc """
   Gets a single project.
 
-  Raises `Ecto.NoResultsError` if the Project does not exist.
+  ## Examples
+     iex> get(1)
+      {:ok, %Project{}}
+
+
+      iex> get(99)
+      {:error, %Ecto.NoResultsError{}}
   """
   def get(id) do
     query =

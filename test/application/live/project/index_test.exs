@@ -101,7 +101,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
       for project <- ctx.projects do
         assert has_element?(
                  view,
-                 "[aria-label='Project #{project.name} languages']"
+                 "[aria-label='Project #{project.name} languages count']"
                )
       end
     end
@@ -116,7 +116,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert view
-             |> element("[aria-label='Project #{project.name} Files']")
+             |> element("[aria-label='Project #{project.name} files count']")
              |> render() =~ "#{length(files)}"
     end
 
@@ -130,7 +130,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert view
-             |> element("[aria-label='Project #{project.name} Languages']")
+             |> element("[aria-label='Project #{project.name} languages count']")
              |> render() =~ "2"
     end
 
@@ -143,7 +143,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert view
-             |> element("[aria-label='Project #{project.name} Done']")
+             |> element("[aria-label='Project #{project.name} translation progress']")
              |> render() =~ "0%"
     end
 
@@ -157,7 +157,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert view
-             |> element("[aria-label='Project #{project.name} Keys']")
+             |> element("[aria-label='Project #{project.name} keys count']")
              |> render() =~ "#{Enum.count(keys)}"
     end
   end

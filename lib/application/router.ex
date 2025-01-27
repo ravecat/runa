@@ -94,6 +94,7 @@ defmodule RunaWeb.Router do
       pipe_through [:browser, :authenticate]
 
       live "/", Project.Index
+      live "/:project_id", Project.Show
     end
   end
 
