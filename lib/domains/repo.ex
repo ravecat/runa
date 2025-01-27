@@ -105,4 +105,28 @@ defmodule Runa.Repo do
     end)
     |> Enum.map(& &1.owner_key)
   end
+
+  @spec get_by_association(
+          Ecto.Schema.t(),
+          atom(),
+          Ecto.Query.dynamic_expr() | keyword()
+        ) ::
+          Ecto.Schema.t()
+  def get_by_association(schema, association, filters) do
+    query =
+      from parent in schema,
+        join: child in assoc(parent, ^association),
+        where: ^filters,
+        select: parent
+
+    __MODULE__.all(query)
+  end
+
+  @spec maybe_preload(Ecto.Schema.t(), atom()) :: Ecto.Schema.t()
+  def maybe_preload(data, association) do
+    if(Ecto.assoc_loaded?(Map.get(data, association)),
+      do: data,
+      else: __MODULE__.preload(data, [association])
+    )
+  end
 end

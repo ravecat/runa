@@ -130,6 +130,25 @@ defmodule RunaWeb.Components.Input do
     """
   end
 
+  def input(%{type: "select"} = assigns) do
+    ~H"""
+    <div phx-feedback-for={@name}>
+      <.label :if={@label != []} for={@id}>{render_slot(@label)}</.label>
+      <select
+        id={@id}
+        name={@name}
+        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+        multiple={@multiple}
+        {@rest}
+      >
+        <option :if={@prompt} value="">{@prompt}</option>
+        {Phoenix.HTML.Form.options_for_select(@options, @value)}
+      </select>
+      <.error :for={msg <- @errors}>{msg}</.error>
+    </div>
+    """
+  end
+
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""

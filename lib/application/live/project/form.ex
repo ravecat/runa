@@ -5,44 +5,47 @@ defmodule RunaWeb.Live.Project.Form do
   use RunaWeb, :live_component
 
   alias Runa.Languages
-  alias Runa.Languages.Language
   alias Runa.Projects
   alias Runa.Projects.Project
 
   import RunaWeb.Components.Form
   import RunaWeb.Components.Input
   import RunaWeb.Components.Select
-  import RunaWeb.Components.Pill
-  import RunaWeb.Components.Icon
+
+  @impl true
+  def mount(socket) do
+    {:ok, {languages, _}} = Languages.index()
+
+    {:ok, assign(socket, languages: Enum.map(languages, &{&1.title, &1.title}))}
+  end
 
   @impl true
   def update(%{data: %Project{} = data} = assigns, socket) do
-    action = if data.id, do: :edit, else: :new
-    data = Repo.preload(data, [:languages, :base_language])
+    data =
+      data
+      |> maybe_preload(:base_language)
+      |> maybe_preload(:languages)
 
-    {:ok, {languages, _}} = Languages.index()
+    attrs = %{
+      "base_language_title" =>
+        if(is_nil(data.id),
+          do: "",
+          else: data.base_language.title
+        ),
+      "language_titles" =>
+        if(is_nil(data.id),
+          do: [],
+          else: Enum.map(data.languages, & &1.title)
+        )
+    }
 
     socket =
       socket
       |> assign(assigns)
-      |> assign(:action, action)
-      |> assign_new(:form, fn -> to_form(Projects.change(data)) end)
-      |> assign(:languages, Enum.map(languages, &format_language_label/1))
+      |> assign(data: data)
       |> assign(
-        :selected_languages,
-        Enum.map(data.languages, &format_language_code/1)
-      )
-      |> assign_new(
-        :displayed_base_language,
-        fn ->
-          {label, _id} = format_language_label(data.base_language)
-
-          label
-        end
-      )
-      |> assign(
-        :displayed_languages,
-        Enum.map(data.languages, &format_language_label/1)
+        action: if(is_nil(data.id), do: :new, else: :edit),
+        form: to_form(Project.form_changeset(data, attrs))
       )
 
     {:ok, socket}
@@ -58,11 +61,11 @@ defmodule RunaWeb.Live.Project.Form do
         id={@id}
         for={@form}
         phx-change="validate"
-        phx-submit="save"
+        phx-submit="submit"
         phx-target={@myself}
         aria-label="Project form"
       >
-        <.input type="hidden" field={@form[:team_id]} value={to_string(@team.id)} />
+        <.input type="hidden" field={@form[:team_id]} value={@team_id} />
         <.input type="text" aria-label="Project name" field={@form[:name]}>
           <:label>Name</:label>
         </.input>
@@ -74,44 +77,19 @@ defmodule RunaWeb.Live.Project.Form do
           <:label>Description</:label>
         </.input>
         <.select
-          id="base_language"
-          field={@form[:base_language_id]}
+          field={@form[:base_language_title]}
           options={@languages}
           target={@myself}
-          searchable
         >
           <:label>Base language</:label>
-          <:selected>
-            {@displayed_base_language}
-          </:selected>
         </.select>
         <.select
-          id="languages"
-          field={@form[:languages]}
+          field={@form[:language_titles]}
           options={@languages}
           target={@myself}
-          value={@selected_languages}
-          searchable
           multiple
         >
           <:label>Languages</:label>
-          <:selected>
-            <.pill
-              :for={{label, code} <- @displayed_languages}
-              class="border bg-accent cursor-default"
-            >
-              {label}
-              <.icon
-                icon="x-mark"
-                class="cursor-pointer"
-                aria-label={"Clear #{code} selection"}
-                role="button"
-                phx-target={@myself}
-                phx-click="clear_selection"
-                phx-value-option={code}
-              />
-            </.pill>
-          </:selected>
         </.select>
 
         {render_slot(@actions, @form)}
@@ -120,135 +98,22 @@ defmodule RunaWeb.Live.Project.Form do
     """
   end
 
-  defp format_language_code(%Language{id: id}), do: to_string(id)
-
-  defp format_language_code(%Ecto.Changeset{data: %Language{id: id}}),
-    do: to_string(id)
-
-  defp format_language_code(code), do: to_string(code)
-
-  defp format_language_label(%Language{wals_code: code, title: title, id: id}),
-    do: {"#{title} (#{code})", to_string(id)}
-
-  defp format_language_label(%Ecto.Changeset{data: %Language{} = language}),
-    do: format_language_label(language)
-
-  defp format_language_label(code),
-    do: {to_string(code), to_string(code)}
-
-  @impl true
-  def handle_event(
-        "clear_selection",
-        %{"option" => code},
-        socket
-      ) do
-    existing_codes =
-      Enum.map(
-        Form.input_value(socket.assigns.form, :languages),
-        &format_language_code/1
-      )
-
-    combined_ids = existing_codes -- [code]
-
-    changeset =
-      Projects.change(
-        socket.assigns.data,
-        %{"languages" => combined_ids}
-      )
-
-    languages = Changeset.get_field(changeset, :languages)
-
-    socket =
-      socket
-      |> assign(:form, to_form(changeset))
-      |> assign(
-        :selected_languages,
-        Enum.map(languages, &format_language_code/1)
-      )
-      |> assign(
-        :displayed_languages,
-        Enum.map(languages, &format_language_label/1)
-      )
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("clear_selection", %{"id" => "languages"}, socket) do
-    changeset =
-      Projects.change(
-        socket.assigns.data,
-        %{"languages" => []}
-      )
-
-    socket =
-      socket
-      |> assign(:form, to_form(changeset))
-      |> assign(:selected_languages, [])
-      |> assign(:displayed_languages, [])
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("clear_selection", %{"id" => "base_language"}, socket) do
-    changeset =
-      Projects.change(
-        socket.assigns.data,
-        %{"base_language_id" => ""}
-      )
-
-    socket =
-      socket
-      |> assign(:form, to_form(changeset))
-      |> assign(:displayed_base_language, "")
-
-    {:noreply, socket}
-  end
-
   @impl true
   def handle_event("validate", %{"project" => attrs}, socket) do
-    languages =
-      Enum.map(
-        Form.input_value(socket.assigns.form, :languages),
-        &format_language_code/1
-      ) ++ Map.get(attrs, "languages", [])
-
-    attrs = Map.put(attrs, "languages", languages)
-
-    changeset = Projects.change(socket.assigns.data, attrs)
-
-    selected_languages =
-      Enum.map(
-        Changeset.get_field(changeset, :languages),
-        &format_language_code/1
-      )
-
-    displayed_languages =
-      Enum.map(
-        Changeset.get_field(changeset, :languages),
-        &format_language_label/1
-      )
-
-    {base_language_label, _} =
-      Changeset.get_field(changeset, :base_language) |> format_language_label()
-
     socket =
-      socket
-      |> assign(:displayed_base_language, base_language_label)
-      |> assign(:selected_languages, selected_languages)
-      |> assign(
-        :displayed_languages,
-        displayed_languages
-      )
-      |> assign(:form, to_form(changeset, action: :validate))
+      update(socket, :form, fn _, %{data: data} ->
+        changeset =
+          Project.form_changeset(data, attrs)
+
+        to_form(changeset, action: :validate)
+      end)
 
     {:noreply, socket}
   end
 
   @impl true
-  def handle_event("save", %{"project" => attrs}, socket) do
-    save(socket, socket.assigns.action, attrs)
+  def handle_event("submit", %{"project" => attrs}, socket) do
+    submit(socket, socket.assigns.action, attrs)
   end
 
   @impl true
@@ -256,11 +121,9 @@ defmodule RunaWeb.Live.Project.Form do
     {:noreply, socket}
   end
 
-  defp save(socket, :edit, attrs) do
-    attrs = Map.put_new(attrs, "languages", [])
-
+  defp submit(socket, :edit, attrs) do
     socket.assigns.data
-    |> Projects.update(attrs)
+    |> Projects.update(attrs, with: &Project.form_changeset/2)
     |> case do
       {:ok, _} ->
         {:noreply, socket}
@@ -270,10 +133,9 @@ defmodule RunaWeb.Live.Project.Form do
     end
   end
 
-  defp save(socket, :new, attrs) do
+  defp submit(socket, :new, attrs) do
     attrs
-    |> Map.put_new("languages", [])
-    |> Projects.create()
+    |> Projects.create(with: &Project.form_changeset/2)
     |> case do
       {:ok, _} ->
         {:noreply, socket}

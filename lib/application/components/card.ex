@@ -14,11 +14,10 @@ defmodule RunaWeb.Components.Card do
     ~H"""
     <div
       class={
-        merge(
-          "p-4 rounded flex-col gap-4 flex border overflow-hidden shadow-sm transition hover:shadow",
+        classes([
+          "flex flex-col p-2 rounded gap-2 border overflow-hidden shadow-sm transition hover:shadow bg-background",
           @class
-        )
-        |> to_string()
+        ])
       }
       {@rest}
     >

@@ -8,8 +8,14 @@ defmodule RunaWeb.Live.Project.IndexTest do
     user = insert(:user)
     contributor = insert(:contributor, team: team, user: user)
     projects = insert_list(2, :project, team: team)
+    language = insert(:language, wals_code: "eng", title: "English")
 
-    {:ok, user: user, projects: projects, team: team, contributor: contributor}
+    {:ok,
+     user: user,
+     projects: projects,
+     team: team,
+     contributor: contributor,
+     language: language}
   end
 
   describe "projects view" do
@@ -101,7 +107,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
       for project <- ctx.projects do
         assert has_element?(
                  view,
-                 "[aria-label='Project #{project.name} languages']"
+                 "[aria-label='Project #{project.name} languages count']"
                )
       end
     end
@@ -116,7 +122,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert view
-             |> element("[aria-label='Project #{project.name} Files']")
+             |> element("[aria-label='Project #{project.name} files count']")
              |> render() =~ "#{length(files)}"
     end
 
@@ -130,7 +136,9 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert view
-             |> element("[aria-label='Project #{project.name} Languages']")
+             |> element(
+               "[aria-label='Project #{project.name} languages count']"
+             )
              |> render() =~ "2"
     end
 
@@ -143,7 +151,9 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert view
-             |> element("[aria-label='Project #{project.name} Done']")
+             |> element(
+               "[aria-label='Project #{project.name} translation progress']"
+             )
              |> render() =~ "0%"
     end
 
@@ -157,7 +167,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         |> live(~p"/projects")
 
       assert view
-             |> element("[aria-label='Project #{project.name} Keys']")
+             |> element("[aria-label='Project #{project.name} keys count']")
              |> render() =~ "#{Enum.count(keys)}"
     end
   end
@@ -218,7 +228,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
   describe "edit project modal" do
     test "rendered by click edit button", ctx do
-      project = insert(:project, team: ctx.team)
+      project = insert(:project, team: ctx.team, base_language: ctx.language)
 
       {:ok, view, _} =
         ctx.conn
@@ -233,8 +243,12 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     test "edits project by clicking save button", ctx do
-      project = insert(:project, team: ctx.team)
-      language = insert(:language, wals_code: "eng", title: "English")
+      project =
+        insert(:project,
+          team: ctx.team,
+          base_language: ctx.language,
+          languages: [ctx.language]
+        )
 
       title = Atom.to_string(ctx.test)
 
@@ -250,7 +264,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       element(view, "[aria-label='Project form']")
       |> render_submit(%{
-        "project" => %{"name" => title, "base_language_id" => language.id}
+        "project" => %{"name" => title, "base_language_id" => ctx.language.id}
       })
 
       assert view
@@ -311,7 +325,6 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
     test "creates project by clicking create button", ctx do
       title = Atom.to_string(ctx.test)
-      language = insert(:language, wals_code: "eng", title: "English")
 
       {:ok, view, _} =
         ctx.conn
@@ -325,7 +338,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       element(view, "[aria-label='Project form']")
       |> render_submit(%{
-        "project" => %{"name" => title, "base_language_id" => language.id}
+        "project" => %{"name" => title, "base_language_id" => ctx.language.id}
       })
 
       assert view
