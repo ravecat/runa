@@ -27,29 +27,29 @@ defmodule RunaWeb.Components.Button do
       type={@type}
       class={
         merge([
-          "group flex items-center justify-center px-3 h-[2rem] min-w-[5rem] text-sm font-medium",
-          "disabled:opacity-50 phx-submit-loading:opacity-75 border rounded",
+          "group border rounded flex items-center justify-center px-3 h-[2rem] min-w-[5rem] text-sm font-medium",
+          "disabled:opacity-50 phx-submit-loading:opacity-75",
           case @variant do
             "primary" ->
-              "bg-primary hover:bg-primary-400 text-background"
+              "bg-primary hover:bg-primary-400"
 
             "secondary" ->
-              "bg-secondary hover:bg-secondary-400 text-background"
+              "bg-secondary hover:bg-secondary-400"
 
             "accent" ->
-              "bg-accent hover:bg-accent-400 text-background"
+              "bg-accent hover:bg-accent-400"
 
             "warning" ->
-              "bg-warning hover:bg-warning-400 text-background"
+              "bg-warning hover:bg-warning-400"
 
             "danger" ->
-              "bg-danger hover:bg-danger-400 text-background"
+              "bg-danger hover:bg-danger-400"
 
             "ghost" ->
-              "bg-background hover:bg-background-hover text-primary"
+              "bg-background hover:bg-background-hover"
 
             _ ->
-              "bg-primary hover:bg-primary-400 text-background"
+              "bg-primary hover:bg-primary-400"
           end,
           @class
         ])
@@ -57,8 +57,20 @@ defmodule RunaWeb.Components.Button do
       }
       {@rest}
     >
-      <.spinner class="group-[.phx-submit-loading]:block hidden" />
-      <span class="group-[.phx-submit-loading]:hidden flex items-center justify-center align-middle leading-none gap-2">
+      <.spinner class={
+        merge([
+          "group-[.phx-submit-loading]:block hidden",
+          if(@variant == "ghost", do: "text-primary", else: "text-background")
+        ])
+        |> to_string()
+      } />
+      <span class={
+        merge([
+          "group-[.phx-submit-loading]:hidden flex items-center justify-center align-middle leading-none gap-2",
+          if(@variant == "ghost", do: "text-primary", else: "text-background")
+        ])
+        |> to_string()
+      }>
         {render_slot(@inner_block)}
       </span>
     </button>
