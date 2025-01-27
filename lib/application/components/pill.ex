@@ -13,11 +13,10 @@ defmodule RunaWeb.Components.Pill do
     ~H"""
     <span
       class={
-        merge(
-          "rounded inline-flex items-center justify-center p-[.25rem] gap-[.25rem] text-ellipsis text-sm overflow-hidden whitespace-nowrap select-none cursor-pointer",
+        classes([
+          "flex-shrink-0 inline-flex items-center justify-center px-1 gap-1 text-ellipsis text-sm overflow-hidden whitespace-nowrap select-none cursor-pointer rounded",
           @class
-        )
-        |> to_string()
+        ])
       }
       {@rest}
     >

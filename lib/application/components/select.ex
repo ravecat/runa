@@ -9,7 +9,8 @@ defmodule RunaWeb.Components.Select do
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Pill
 
-  attr :id, :string, default: nil,
+  attr :id, :string,
+    default: nil,
     doc: "the id of the select input"
 
   attr :field, Phoenix.HTML.FormField,
@@ -31,6 +32,14 @@ defmodule RunaWeb.Components.Select do
 
   attr :show, :boolean, default: false
 
+  attr :option_fn, :any,
+    default: &Function.identity/1,
+    doc: "the function for mapping each entry data to the option content"
+
+  attr :value_fn, :any,
+    default: &Function.identity/1,
+    doc: "the function for mapping each entry data to the value content"
+
   attr :searchable, :boolean,
     default: false,
     doc: "the options required for displaying a search input"
@@ -49,23 +58,20 @@ defmodule RunaWeb.Components.Select do
 
   def select(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns
-    |> assign(field: nil, id: assigns.id || field.id)
     |> assign(
-      :errors,
-      Enum.map(field.errors, &translate_error(&1))
+      field: nil,
+      id: assigns.id || field.field,
+      errors: Enum.map(field.errors, &translate_error(&1))
     )
+    |> update(:options, &Enum.map(&1, &2.option_fn))
     |> assign_new(:name, fn ->
       if assigns.multiple,
         do: field.name <> "[]",
         else: field.name
     end)
     |> assign_new(:value, fn ->
-      value =
-        if is_list(field.value),
-          do: field.value,
-          else: [field.value]
-
-      Enum.map(value, &to_string/1)
+      List.flatten([field.value || []])
+      |> Enum.map(&assigns.value_fn.(&1))
     end)
     |> select()
   end
@@ -96,7 +102,7 @@ defmodule RunaWeb.Components.Select do
             if(@multiple, do: "Selected options", else: "Selected option")
           }
         >
-          <%= unless @selected != [] do %>
+          <%= if match?([], @selected) do %>
             <.pill
               :for={label <- @value}
               :if={@multiple}
@@ -113,7 +119,7 @@ defmodule RunaWeb.Components.Select do
               />
             </.pill>
             <span :if={!@multiple} class="truncate flex-grow">
-              {@value}
+              {Enum.join(@value)}
             </span>
           <% else %>
             {render_slot(@selected, @value)}
@@ -157,7 +163,7 @@ defmodule RunaWeb.Components.Select do
         class={
           classes([
             "hidden bg-none border top-full absolute mt-1 p-0 rounded bg-background w-full dark:bg-background h-fit max-h-[18.75rem] overflow-auto z-50 shadow-sm transition hover:shadow sm:text-sm",
-            "[&>option]:flex [&>option]:items-center [&>option]:p-2 [&>option]:gap-[.25rem] [&>option]:truncate [&>option]:cursor-pointer [&>option:hover]:bg-background-hover",
+            "[&>option]:flex [&>option]:items-center [&>option]:p-2 [&>option]:gap-1 [&>option]:truncate [&>option]:cursor-pointer [&>option:hover]:bg-background-hover",
             @class
           ])
         }
@@ -167,7 +173,7 @@ defmodule RunaWeb.Components.Select do
         <%= if match?([], @options) do %>
           <option
             disabled
-            class="flex items-center p-2 gap-[.25rem] truncate cursor-pointer hover:bg-background-hover"
+            class="flex items-center p-2 gap-1 truncate cursor-pointer hover:bg-background-hover"
           >
             No options available
           </option>

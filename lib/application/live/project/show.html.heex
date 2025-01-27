@@ -1,0 +1,46 @@
+<.card>
+  <.navigation id="project_navigation">
+    <:item>
+      <.active_link
+        aria-label="Project key editor"
+        patch={~p"/projects/#{@project_id}?section=editor"}
+        current_uri={@current_uri}
+      >
+        Editor
+      </.active_link>
+    </:item>
+    <:item>
+      <.active_link
+        aria-label="Project settings"
+        patch={~p"/projects/#{@project_id}?section=settings"}
+        current_uri={@current_uri}
+      >
+        Settings
+      </.active_link>
+    </:item>
+  </.navigation>
+  <div class="p-4">
+    <.live_component
+      :if={match?("settings", @section)}
+      module={RunaWeb.Live.Project.Form}
+      id="update_project"
+      data={@project}
+      team_id={@team_id}
+    >
+      <:actions>
+        <.button
+          variant="warning"
+          phx-value-id={@project.id}
+          type="submit"
+          aria-label={
+            if @project.id,
+              do: "Confirm update project",
+              else: "Confirm create project"
+          }
+        >
+          {if @project.id, do: "Update", else: "Create"}
+        </.button>
+      </:actions>
+    </.live_component>
+  </div>
+</.card>

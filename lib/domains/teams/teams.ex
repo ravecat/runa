@@ -199,6 +199,7 @@ defmodule Runa.Teams do
     end)
   end
 
+  @spec get_user_teams_with_role(binary()) :: [{Ecto.Schema.t(), atom()}]
   def get_user_teams_with_role(user_id) do
     from(t in Team,
       join: c in Contributor,
@@ -207,6 +208,20 @@ defmodule Runa.Teams do
       select: {t, c.role}
     )
     |> Repo.all()
+  end
+
+  @spec get_team_by_project_id(binary()) :: [Ecto.Schema.t()]
+  def get_team_by_project_id(project_id) do
+    query =
+      from t in Team,
+        join: p in assoc(t, :projects),
+        where: p.id == ^project_id,
+        select: t
+
+    case Repo.one(query) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
   end
 
   def subscribe do
