@@ -57,7 +57,15 @@ defmodule RunaWeb.Components.Navigation do
               "[&>a]:font-medium",
               "[&>a]:bg-background",
               "[&>a]:hover:bg-background-hover",
-              "[&>a]:text-primary"
+              "[&>a[aria-current='page']]:relative",
+              "[&>a[aria-current='page']]:after:content-['']",
+              "[&>a[aria-current='page']]:after:block",
+              "[&>a[aria-current='page']]:after:h-[3px]",
+              "[&>a[aria-current='page']]:after:w-full",
+              "[&>a[aria-current='page']]:after:bg-accent",
+              "[&>a[aria-current='page']]:after:absolute",
+              "[&>a[aria-current='page']]:after:bottom-0",
+              "[&>a[aria-current='page']]:after:left-0"
             ]}
           >
             {render_slot(item)}
