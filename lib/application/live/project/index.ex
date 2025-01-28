@@ -10,26 +10,12 @@ defmodule RunaWeb.Live.Project.Index do
   import RunaWeb.Components.Pill
   import RunaWeb.Components.Modal
 
-  alias Runa.Accounts
   alias Runa.Projects
   alias Runa.Projects.Project
   alias Runa.Teams
 
   @impl true
-  def mount(_, %{"user_id" => user_id}, socket),
-    do: handle_user_data(user_id, socket)
-
-  def mount(_, _, socket), do: {:ok, redirect(socket, to: ~p"/")}
-
-  defp handle_user_data(user_id, socket) do
-    case Accounts.get(user_id) do
-      {:ok, user} -> handle_actual_user_data(socket, user)
-      {:error, %Ecto.NoResultsError{}} -> handle_missing_user_data(socket)
-      _ -> {:ok, redirect(socket, to: ~p"/")}
-    end
-  end
-
-  defp handle_actual_user_data(socket, %{teams: [team | _]}) do
+  def mount(_, _, %{assigns: %{user: %{teams: [team | _]}}} = socket) do
     if connected?(socket) do
       Projects.subscribe(team)
     end
@@ -48,23 +34,16 @@ defmodule RunaWeb.Live.Project.Index do
     {:ok, socket}
   end
 
-  defp handle_actual_user_data(socket, _user) do
+  def mount(_, _, socket) do
     socket =
       assign(
         socket,
         team: nil,
-        is_visible_project_modal: false
+        project: %Project{},
+        is_visible_project_modal: false,
+        is_visible_delete_project_modal: false
       )
       |> stream(:projects, [])
-
-    {:ok, socket}
-  end
-
-  defp handle_missing_user_data(socket) do
-    socket =
-      socket
-      |> put_flash(:error, "User not found")
-      |> redirect(to: ~p"/")
 
     {:ok, socket}
   end

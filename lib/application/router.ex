@@ -82,16 +82,19 @@ defmodule RunaWeb.Router do
       only: [:create, :show, :update, :delete]
   end
 
-  scope "/profile", RunaWeb.Live do
-    pipe_through [:browser, :authenticate]
+  live_session :default,
+    on_mount: [RunaWeb.HandleUserData] do
+    scope "/profile", RunaWeb.Live do
+      pipe_through [:browser, :authenticate]
 
-    live "/", Profile
-  end
+      live "/", Profile
+    end
 
-  scope "/projects", RunaWeb.Live do
-    pipe_through [:browser, :authenticate]
+    scope "/projects", RunaWeb.Live do
+      pipe_through [:browser, :authenticate]
 
-    live "/", Project.Index
+      live "/", Project.Index
+    end
   end
 
   # Enable LiveDashboard in development

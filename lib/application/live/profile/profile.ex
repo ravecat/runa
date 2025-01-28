@@ -16,30 +16,15 @@ defmodule RunaWeb.Live.Profile do
   import RunaWeb.Formatters
 
   @impl true
-  def mount(_params, %{"user_id" => user_id}, socket) do
+  def mount(_, _, %{assigns: %{user: user}} = socket) do
     if connected?(socket) do
-      Tokens.subscribe(user_id)
+      Tokens.subscribe(user.id)
     end
 
-    case Accounts.get(user_id) do
-      {:ok, user} ->
-        socket =
-          assign_new(socket, :user_form_data, fn -> prepare_user_form(user) end)
-          |> assign(:user, user)
+    socket =
+      assign_new(socket, :user_form_data, fn -> prepare_user_form(user) end)
 
-        {:ok, socket}
-
-      {:error, %Ecto.NoResultsError{}} ->
-        socket =
-          socket
-          |> put_flash(:error, "User not found")
-          |> redirect(to: ~p"/")
-
-        {:ok, socket}
-
-      _ ->
-        {:ok, redirect(socket, to: ~p"/")}
-    end
+    {:ok, socket}
   end
 
   @impl true
