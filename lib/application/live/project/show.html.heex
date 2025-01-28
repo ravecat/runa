@@ -1,3 +1,22 @@
 <.card class="bg-background">
-  Project
+  <.navigation id="project_navigation">
+    <:item>
+      <.active_link
+        aria-label="Project key editor"
+        patch={~p"/projects/2?tab=editor"}
+        current_uri={@current_uri}
+      >
+        Editor
+      </.active_link>
+    </:item>
+    <:item>
+      <.active_link
+        aria-label="Project settings"
+        patch={~p"/projects/2?tab=settings"}
+        current_uri={@current_uri}
+      >
+        Settings
+      </.active_link>
+    </:item>
+  </.navigation>
 </.card>

@@ -48,7 +48,7 @@
             <.icon icon="trash" />
           </.button>
         </div>
-        <.link patch={~p"/projects?project=#{project.id}"}>
+        <.link patch={~p"/projects/#{project.id}"}>
           <.card
             class="grid grid-cols-[1fr,1fr,auto] gap-4 h-32"
             role="listitem"
@@ -100,12 +100,6 @@
     <% end %>
   </div>
 </.card>
-<%= if @project_id do %>
-  {live_render(@socket, RunaWeb.Live.Project.Show,
-    id: "project_show",
-    container: {:div, class: "contents"}
-  )}
-<% end %>
 <.modal
   :if={@is_visible_project_modal}
   show

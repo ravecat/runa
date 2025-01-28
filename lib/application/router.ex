@@ -82,7 +82,7 @@ defmodule RunaWeb.Router do
       only: [:create, :show, :update, :delete]
   end
 
-  live_session :default do
+  live_session :default, on_mount: [RunaWeb.SaveRequestUri] do
     scope "/profile", RunaWeb.Live do
       pipe_through [:browser, :authenticate]
 
@@ -93,6 +93,7 @@ defmodule RunaWeb.Router do
       pipe_through [:browser, :authenticate]
 
       live "/", Project.Index
+      live "/:project_id", Project.Show
     end
   end
 

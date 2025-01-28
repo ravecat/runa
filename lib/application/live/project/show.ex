@@ -5,6 +5,8 @@ defmodule RunaWeb.Live.Project.Show do
   use RunaWeb, :live_view
 
   import RunaWeb.Components.Card
+  import RunaWeb.Components.Navigation
+  import RunaWeb.Components.Link
 
   alias Runa.Accounts
   alias Runa.Projects
