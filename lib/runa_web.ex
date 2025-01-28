@@ -98,26 +98,18 @@ defmodule RunaWeb do
     quote do
       use Phoenix.Component
 
-      alias Phoenix.LiveView.JS
-
-      import RunaWeb.Components.Commands
-      import Tails
-
       unquote(html_helpers())
     end
   end
 
   def live_component do
     quote do
+      alias Ecto.Changeset
       alias Phoenix.HTML.Form
-      alias Phoenix.LiveView.JS
       alias Runa.PubSub
       alias Runa.Repo
-      alias Ecto.Changeset
 
       import Ecto
-      import RunaWeb.Components.Commands
-      import Tails
 
       use Phoenix.LiveComponent
 
@@ -163,12 +155,15 @@ defmodule RunaWeb do
     quote do
       # HTML escaping functionality
       import Phoenix.HTML
-      # Translation
 
+      # Translation
       import RunaWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
+      import RunaWeb.Components.Commands
+
+      import Tails
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
