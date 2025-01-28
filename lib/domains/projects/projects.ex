@@ -163,15 +163,18 @@ defmodule Runa.Projects do
   end
 
   def subscribe do
-    Phoenix.PubSub.subscribe(PubSub, "projects")
+    PubSub.subscribe(Project.__schema__(:source))
   end
 
   def subscribe(%Team{} = data) do
-    Phoenix.PubSub.subscribe(PubSub, "projects:#{data.id}")
+    PubSub.subscribe("#{Project.__schema__(:source)}:#{data.id}")
   end
 
   defp broadcast({:ok, %Project{} = data}, event) do
-    Phoenix.PubSub.broadcast(PubSub, "projects:#{data.team.id}", {event, data})
+    PubSub.broadcast(
+      "#{Project.__schema__(:source)}:#{data.team.id}",
+      {event, data}
+    )
 
     {:ok, data}
   end

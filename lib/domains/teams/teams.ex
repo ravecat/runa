@@ -54,6 +54,22 @@ defmodule Runa.Teams do
   end
 
   @doc """
+  Returns a team by attributes.
+
+  ## Examples
+
+      iex> get_by(user_id: 1)
+      {:ok, %Team{}}
+
+      iex> get_by(user_id: 1)
+      {:error, %Ecto.NoResultsError{}}
+
+  """
+  def get_by(attrs \\ []) do
+    Repo.get_by(Team, attrs)
+  end
+
+  @doc """
   Creates a team.
 
   ## Examples
@@ -139,9 +155,9 @@ defmodule Runa.Teams do
     Team.changeset(data, attrs)
   end
 
-  def get_projects_with_statistics(id) do
+  def get_projects_with_statistics(team_id) do
     from(p in Project,
-      where: p.team_id == ^id,
+      where: p.team_id == ^team_id,
       preload: [:languages],
       left_join: l in assoc(p, :languages),
       left_join: k in assoc(p, :keys),
@@ -183,12 +199,14 @@ defmodule Runa.Teams do
     end)
   end
 
-  def get_role(user_id, team_id) do
-    from(c in Contributor,
-      where: c.user_id == ^user_id and c.team_id == ^team_id,
-      select: c.role
+  def get_user_teams_with_role(user_id) do
+    from(t in Team,
+      join: c in Contributor,
+      on: c.team_id == t.id,
+      where: c.user_id == ^user_id,
+      select: {t, c.role}
     )
-    |> Repo.one()
+    |> Repo.all()
   end
 
   def subscribe do

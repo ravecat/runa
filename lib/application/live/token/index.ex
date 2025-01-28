@@ -18,20 +18,10 @@ defmodule RunaWeb.Live.Token.Index do
   import RunaWeb.Formatters
   import RunaWeb.Components.Card
 
+  on_mount RunaWeb.HandleUserData
+
   @impl true
-  def mount(_params, %{"user_id" => user_id}, socket) do
-    handle_user_data(user_id, socket)
-  end
-
-  defp handle_user_data(user_id, socket) do
-    case Accounts.get(user_id) do
-      {:ok, user} -> handle_actual_user_data(socket, user)
-      {:error, %Ecto.NoResultsError{}} -> handle_missing_user_data(socket)
-      _ -> {:ok, redirect(socket, to: ~p"/")}
-    end
-  end
-
-  defp handle_actual_user_data(socket, user) do
+  def mount(_, _, %{assigns: %{user: user}} = socket) do
     if connected?(socket) do
       Tokens.subscribe(user.id)
       Accounts.subscribe(user.id)
@@ -49,15 +39,6 @@ defmodule RunaWeb.Live.Token.Index do
       end)
       |> assign(token: %Token{})
       |> stream(:tokens, user.tokens)
-
-    {:ok, socket}
-  end
-
-  defp handle_missing_user_data(socket) do
-    socket =
-      socket
-      |> put_flash(:error, "User not found")
-      |> redirect(to: ~p"/")
 
     {:ok, socket}
   end

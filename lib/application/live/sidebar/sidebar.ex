@@ -5,6 +5,7 @@ defmodule RunaWeb.Live.Sidebar do
   use RunaWeb, :live_view
 
   alias Runa.Accounts
+  alias Runa.Contributors
   alias Runa.Teams
   alias Runa.Teams.Team
 
@@ -15,36 +16,15 @@ defmodule RunaWeb.Live.Sidebar do
   import RunaWeb.Components.Button
   import RunaWeb.Components.Icon
 
+  on_mount RunaWeb.HandleUserData
+
   @impl true
-  def mount(_params, %{"user_id" => user_id}, socket) do
-    handle_user_data(user_id, socket)
-  end
+  def mount(_, _, %{assigns: %{user: %{teams: [team | _]} = user}} = socket) do
+    subscribe(socket)
 
-  defp handle_user_data(user_id, socket) do
-    case Accounts.get(user_id) do
-      {:ok, user} ->
-        if connected?(socket) do
-          Teams.subscribe()
-          Accounts.subscribe(user.id)
-        end
+    role = get_role(user.id, team.id)
 
-        handle_actual_user_data(socket, user)
-
-      {:error, %Ecto.NoResultsError{}} ->
-        handle_missing_user_data(socket)
-
-      _ ->
-        {:ok, redirect(socket, to: ~p"/")}
-    end
-  end
-
-  defp handle_actual_user_data(socket, %{teams: [team | _]} = user) do
-    role = Teams.get_role(user.id, team.id)
-
-    teams =
-      Enum.map(user.teams, fn team ->
-        Map.put(team, :role, Teams.get_role(user.id, team.id))
-      end)
+    teams = Teams.get_user_teams_with_role(user.id)
 
     socket =
       assign(socket,
@@ -52,15 +32,18 @@ defmodule RunaWeb.Live.Sidebar do
         is_visible_create_team_modal: false,
         team: team,
         role: role,
-        team_form_data: %Team{},
-        teams: teams
+        team_form_data: %Team{}
       )
+      |> stream_configure(:teams, dom_id: &"#{elem(&1, 0).id}")
       |> stream(:teams, teams)
 
     {:ok, socket, layout: false}
   end
 
-  defp handle_actual_user_data(socket, user) do
+  @impl true
+  def mount(_, _, %{assigns: %{user: user}} = socket) do
+    subscribe(socket)
+
     socket =
       assign(
         socket,
@@ -74,23 +57,14 @@ defmodule RunaWeb.Live.Sidebar do
     {:ok, socket, layout: false}
   end
 
-  defp handle_missing_user_data(socket) do
-    socket =
-      socket
-      |> put_flash(:error, "User not found")
-      |> redirect(to: ~p"/")
-
-    {:ok, socket}
-  end
-
   @impl true
   def handle_info({:team_created, data}, socket) do
-    data =
-      Map.put(data, :role, Teams.get_role(socket.assigns.user.id, data.id))
-
     socket =
       socket
-      |> stream_insert(:teams, data)
+      |> stream_insert(
+        :teams,
+        {data, get_role(socket.assigns.user.id, data.id)}
+      )
       |> assign(:is_visible_create_team_modal, false)
 
     {:noreply, socket}
@@ -115,5 +89,16 @@ defmodule RunaWeb.Live.Sidebar do
   @impl true
   def handle_event("close_create_team_modal", _, socket) do
     {:noreply, assign(socket, :is_visible_create_team_modal, false)}
+  end
+
+  defp get_role(user_id, team_id) do
+    Contributors.get_by(user_id: user_id, team_id: team_id).role
+  end
+
+  defp subscribe(%{assigns: %{user: user}} = socket) do
+    if connected?(socket) do
+      Teams.subscribe()
+      Accounts.subscribe(user.id)
+    end
   end
 end

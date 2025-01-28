@@ -43,12 +43,12 @@
           </div>
         </div>
       </:summary>
-      <:row :let={team} class="flex justify-between w-full min-w-0">
+      <:row :let={{team, role}} class="flex justify-between w-full min-w-0">
         <span class="truncate flex-1 min-w-0">
           {team.title}
         </span>
         <span aria-label={"#{team.title} role"} class="text-xs text-secondary">
-          {team.role}
+          {role}
         </span>
       </:row>
       <:footer class="cursor-default">
