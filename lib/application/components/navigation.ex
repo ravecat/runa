@@ -40,37 +40,15 @@ defmodule RunaWeb.Components.Navigation do
       <ul
         aria-orientation="horizontal"
         role="menubar"
-        class={["flex gap-2", @class]}
+        class={classes(["grid grid-flow-col auto-cols-fr gap-2", @class])}
       >
-        <%= for item <- @item do %>
-          <li
-            role="none"
-            class={[
-              "[&>a]:flex",
-              "[&>a]:rounded",
-              "[&>a]:items-center",
-              "[&>a]:justify-center",
-              "[&>a]:px-3",
-              "[&>a]:h-[2rem]",
-              "[&>a]:min-w-[5rem]",
-              "[&>a]:text-sm",
-              "[&>a]:font-medium",
-              "[&>a]:bg-background",
-              "[&>a]:hover:bg-background-hover",
-              "[&>a[aria-current='page']]:relative",
-              "[&>a[aria-current='page']]:after:content-['']",
-              "[&>a[aria-current='page']]:after:block",
-              "[&>a[aria-current='page']]:after:h-[3px]",
-              "[&>a[aria-current='page']]:after:w-full",
-              "[&>a[aria-current='page']]:after:bg-accent",
-              "[&>a[aria-current='page']]:after:absolute",
-              "[&>a[aria-current='page']]:after:bottom-0",
-              "[&>a[aria-current='page']]:after:left-0"
-            ]}
-          >
-            {render_slot(item)}
-          </li>
-        <% end %>
+        <li
+          :for={item <- @item}
+          role="none"
+          class="[&>a[aria-current='page']]:underlined"
+        >
+          {render_slot(item)}
+        </li>
       </ul>
     </nav>
     """

@@ -77,17 +77,16 @@ defmodule RunaWeb.Components.Table do
               :for={col <- @col}
               phx-click={@row_click && @row_click.(row)}
               class={
-                merge(
+                classes([
                   "p-2 max-w-64 truncate overflow-hidden overflow-ellipsis",
                   col[:class]
-                )
-                |> to_string()
+                ])
               }
             >
               {render_slot(col, @row_item.(row))}
             </td>
             <td :if={@action != []} class="p-2 max-w-64">
-              <div class="flex items-center justify-center gap-1">
+              <div class="centered">
                 <%= for action <- @action do %>
                   {render_slot(action, @row_item.(row))}
                 <% end %>

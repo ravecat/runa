@@ -1,92 +1,130 @@
-<aside class="flex flex-col" role="navigation" aria-label="Main navigation">
-  <div class="py-4 px-2">
-    <.icon icon="logo" class="w-[4rem]" />
+<aside
+  class="grid grid-rows-[auto_auto_1fr] gap-2 py-2"
+  role="navigation"
+  aria-label="Main navigation"
+>
+  <div class="px-2">
+    <.icon icon="logo" class="w-[4rem] h-[2rem]" />
   </div>
-  <div class="flex flex-col gap-[.25rem]">
-    <.dropdown entries={@streams.teams} id="teams">
-      <:summary>
-        <div class="flex items-center gap-2 w-full">
-          <.avatar
-            aria-label="User avatar"
-            alt="avatar"
-            src={@user.avatar}
-            class="flex-shrink-0"
-          />
-          <div class="flex flex-col min-w-0 flex-1">
-            <%= if @team do %>
-              <strong
-                :if={@team}
-                aria-label="Current team"
-                class="font-medium overflow-hidden text-ellipsis whitespace-nowrap"
-              >
-                {@team.title}
-              </strong>
-            <% end %>
-            <span
-              aria-label="Current user"
-              class="text-sm overflow-hidden text-ellipsis whitespace-nowrap"
+  <.dropdown entries={@streams.teams} id="teams">
+    <:summary>
+      <div class="grid grid-cols-[auto_1fr] gap-2 items-center">
+        <.avatar
+          aria-label="User avatar"
+          alt="avatar"
+          class={
+            classes([
+              "size-12 border-primary",
+              [
+                "border-secondary": match?(:admin, @role),
+                "border-accent": match?(:editor, @role),
+                "border-info": match?(:viewer, @role)
+              ]
+            ])
+          }
+          src={@user.avatar}
+        />
+        <div class="grid">
+          <%= if @team do %>
+            <strong
+              :if={@team}
+              aria-label="Current team"
+              class="font-medium truncate"
             >
-              {@user.name}
+              {@team.title}
+            </strong>
+          <% end %>
+          <span aria-label="Current user" class="text-sm truncate">
+            {@user.name}
+          </span>
+          <%= if @team do %>
+            <span
+              aria-label="Current team role"
+              class={[
+                classes([
+                  "text-primary truncate",
+                  [
+                    "text-secondary": match?(:admin, @role),
+                    "text-accent": match?(:editor, @role),
+                    "text-info": match?(:viewer, @role)
+                  ]
+                ]),
+                "text-xs"
+              ]}
+            >
+              {@role}
             </span>
-            <%= if @team do %>
-              <span
-                aria-label="Current team role"
-                class="text-xs text-secondary overflow-hidden text-ellipsis whitespace-nowrap"
-              >
-                {@role}
-              </span>
-            <% end %>
-          </div>
+          <% end %>
         </div>
-      </:summary>
-      <:row :let={{team, role}} class="flex justify-between w-full min-w-0">
-        <span class="truncate flex-1 min-w-0">
-          {team.title}
-        </span>
-        <span aria-label={"#{team.title} role"} class="text-xs text-secondary">
-          {role}
-        </span>
-      </:row>
-      <:footer class="cursor-default">
-        <.button phx-click="open_create_team_modal" class="w-full">
-          Create team
-        </.button>
-      </:footer>
-    </.dropdown>
-    <div>
-      <.link href={~p"/projects"} aria-label="Navigate to projects">
-        <.pill class="text-base flex justify-start">
-          <.icon icon="folder" /> Projects
-        </.pill>
-      </.link>
-      <.link href={~p"/profile"} aria-label="Navigate to profile">
-        <.pill class="text-base flex justify-start">
-          <.icon icon="user" /> Profile
-        </.pill>
-      </.link>
-      <.link href={~p"/session/logout"} method="delete" aria-label="Logout">
-        <.pill class="text-base flex justify-start">
-          <.icon icon="logout" /> Logout
-        </.pill>
-      </.link>
-    </div>
+      </div>
+    </:summary>
+    <:row :let={{team, role}} class="grid grid-cols-[1fr_auto]">
+      <span class="truncate text-sm">
+        {team.title}
+      </span>
+      <span
+        aria-label={"#{team.title} role"}
+        class={[
+          classes([
+            "text-primary truncate",
+            [
+              "text-secondary": match?(:admin, role),
+              "text-accent": match?(:editor, role),
+              "text-info": match?(:viewer, role)
+            ]
+          ]),
+          "text-xs"
+        ]}
+      >
+        {role}
+      </span>
+    </:row>
+    <:footer class="cursor-default">
+      <.button phx-click="open_create_team_modal" class="w-full">
+        Create team
+      </.button>
+    </:footer>
+  </.dropdown>
+  <div class="grid grid-rows-[auto_auto_1fr_auto]">
+    <.link
+      href={~p"/projects"}
+      class="ghost optionable"
+      aria-label="Navigate to projects"
+    >
+      <.icon icon="folder" /> Projects
+    </.link>
+    <.link
+      href={~p"/profile"}
+      class="ghost optionable"
+      aria-label="Navigate to profile"
+    >
+      <.icon icon="user" /> Profile
+    </.link>
+    <.link
+      href={~p"/session/logout"}
+      method="delete"
+      aria-label="Logout"
+      class="self-end ghost optionable"
+    >
+      <.icon icon="logout" /> Logout
+    </.link>
   </div>
-  <.modal
-    :if={@is_visible_create_team_modal}
-    show
-    on_cancel={JS.push("close_create_team_modal")}
-  >
-    <:title>
-      Create team
-    </:title>
-    <:content>
-      <.live_component
-        module={RunaWeb.Live.Team.Form}
-        data={@team_form_data}
-        user={@user}
-        action={:new}
-        id="create_team"
-      />
-    </:content>
-  </.modal>
 </aside>
+<.modal
+  :if={@is_visible_create_team_modal}
+  show
+  on_cancel={JS.push("close_create_team_modal")}
+>
+  <:title>
+    Create team
+  </:title>
+  <:content>
+    <.live_component
+      module={RunaWeb.Live.Team.Form}
+      data={@team_form_data}
+      user={@user}
+      action={:new}
+      id="create_team"
+    />
+  </:content>
+</.modal>

@@ -80,8 +80,8 @@ defmodule RunaWeb.Components.Dropdown do
       ]}
       {@rest}
     >
-      <summary class="list-none rounded flex items-center border cursor-pointer w-full p-[.5rem] select-none bg-background dark:bg-background overflow-hidden">
-        <div class="overflow-hidden text-ellipsis whitespace-nowrap flex-1">
+      <summary class="list-none rounded flex items-center border cursor-pointer w-full p-2 select-none neutral overflow-hidden">
+        <div class="truncate flex-1">
           <%= if @summary != [] do %>
             {render_slot(@summary)}
           <% else %>
@@ -91,45 +91,37 @@ defmodule RunaWeb.Components.Dropdown do
         <.icon
           :if={@summary != []}
           icon="shevron-right"
-          class="rotate-90 transition-transform duration-300 group-open:rotate-[270deg] flex-shrink-0"
+          class="rotate-90 transition group-open:rotate-[270deg] flex-shrink-0"
         />
       </summary>
-      <div
-        class="absolute p-1 rounded border shadow-lg bg-background dark:bg-background z-10 w-full max-h-[80vh]"
-        style={[
-          %{
-            "top" => [
-              "transform: translate(0, calc(-100% - 0.25rem));",
-              "top: 0;"
-            ],
-            "bottom" => [
-              "transform: translate(0, calc(0% + 0.25rem));"
-            ],
-            "left" => [
-              "transform: translate(calc(-100% - 0.25rem), 0);",
-              "top: 0;"
-            ],
-            "right" => [
-              "transform: translate(calc(100% + 0.25rem), 0);",
-              "top: 0;",
-              "right: 0"
-            ]
-          }[@position]
-        ]}
-      >
+      <div class={
+        classes([
+          "absolute p-1 rounded border shadowable neutral z-10 w-full max-h-[80vh] flex gap flex gap-1 flex-col",
+          [
+            "translate-x-[0] translate-y-[calc(-100%-0.25rem)] top-[0]":
+              match?("top", @position),
+            "translate-x-[0] translate-y-[calc(0%+0.25rem)]":
+              match?("bottom", @position),
+            "translate-x-[calc(-100%-0.25rem)] translate-y-[0] top-[0]":
+              match?("left", @position),
+            "translate-x-[calc(100%+0.25rem)] translate-y-[0] top-[0] right-[0]":
+              match?("right", @position)
+          ]
+        ])
+      }>
         <ul
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @entries) && "stream"}
+          class="flex flex-col gap-1"
           id={@id}
         >
           <li
             :for={row <- @entries}
             phx-click={@row_click && @row_click.(row)}
             class={
-              merge(
-                "rounded flex items-center p-2 gap-[.25rem] truncate cursor-pointer hover:bg-background-hover",
+              classes([
+                "optionable truncate cursor-pointer ghost",
                 get_in(@row, [Access.at(0), :class])
-              )
-              |> to_string()
+              ])
             }
             id={@row_id && @row_id.(row)}
           >
@@ -140,16 +132,14 @@ defmodule RunaWeb.Components.Dropdown do
             <% end %>
           </li>
         </ul>
-
         <div
           :if={@footer != []}
           id="footer"
           class={
-            merge(
-              "rounded flex items-center p-2 gap-[.25rem] truncate cursor-pointer",
+            classes([
+              "rounded flex items-center h-8 truncate cursor-pointer",
               get_in(@footer, [Access.at(0), :class])
-            )
-            |> to_string()
+            ])
           }
         >
           {render_slot(@footer)}

@@ -11,6 +11,15 @@ module.exports = {
   theme: {
     borderColor: {
       DEFAULT: "var(--secondary-200)",
+      primary: "var(--primary)",
+      secondary: "var(--secondary)",
+      accent: "var(--accent)",
+      info: "var(--info)",
+      success: "var(--success)",
+      warning: "var(--warning)",
+      danger: "var(--danger)",
+      text: "var(--text)",
+      background: "var(--background)",
     },
     colors: {
       transparent: "transparent",

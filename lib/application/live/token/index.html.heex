@@ -14,7 +14,7 @@
       {token.title}
     </:col>
     <:col :let={token} label="Owner" class="flex flex-col">
-      <span class="text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap">
+      <span class="text-sm font-medium truncate">
         {token.user.name}
       </span>
       <span class="text-xs">
@@ -34,7 +34,7 @@
       <button
         type="button"
         role="button"
-        class="flex rounded p-1 hover:bg-accent cursor-pointer transition-colors duration-300"
+        class="flex rounded p-1 accent cursor-pointer transition"
         phx-click="open_token_modal"
         phx-value-id={token.id}
         aria-label="Update token"
@@ -47,7 +47,7 @@
       <button
         type="button"
         role="button"
-        class="flex rounded p-1 hover:bg-warning cursor-pointer transition-colors duration-300"
+        class="flex rounded p-1 warning cursor-pointer transition"
         phx-click="open_delete_token_modal"
         phx-value-id={token.id}
         aria-label="Delete token"

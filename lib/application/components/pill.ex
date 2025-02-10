@@ -14,7 +14,7 @@ defmodule RunaWeb.Components.Pill do
     <span
       class={
         classes([
-          "flex-shrink-0 inline-flex items-center justify-center px-1 gap-1 text-ellipsis text-sm overflow-hidden whitespace-nowrap select-none cursor-pointer rounded",
+          "flex-shrink-0 inline-flex items-center justify-start px-1 gap-1 text-ellipsis text-sm overflow-hidden whitespace-nowrap select-none cursor-pointer rounded",
           @class
         ])
       }

@@ -1,4 +1,12 @@
 defmodule RunaWeb.SaveRequestUri do
+  @moduledoc """
+  Handles the storage of the current request URI in the LiveView socket.
+
+  This module implements the `on_mount/4` callback to attach a hook that
+  captures and stores the current request path and query parameters in the
+  socket's assigns. It ensures the request URI is accessible throughout the
+  LiveView lifecycle.
+  """
   import Phoenix.Component, only: [assign: 3]
   import Phoenix.LiveView, only: [attach_hook: 4]
 

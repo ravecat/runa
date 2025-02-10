@@ -149,7 +149,7 @@ defmodule RunaWeb.Components.Select do
           id={"#{@id}-shevron"}
           aria-label="Toggle options"
           role="button"
-          class="cursor-pointer transition-transform duration-300"
+          class="cursor-pointer transition"
         />
       </div>
       <select
@@ -162,8 +162,8 @@ defmodule RunaWeb.Components.Select do
         size={max(1, length(@options))}
         class={
           classes([
-            "hidden bg-none border top-full absolute mt-1 p-0 rounded bg-background w-full dark:bg-background h-fit max-h-[18.75rem] overflow-auto z-50 shadow-sm transition hover:shadow sm:text-sm",
-            "[&>option]:flex [&>option]:items-center [&>option]:p-2 [&>option]:gap-1 [&>option]:truncate [&>option]:cursor-pointer [&>option:hover]:bg-background-hover",
+            "hidden border top-full absolute mt-1 p-0 rounded neutral w-full h-fit max-h-[18.75rem] overflow-auto z-50 shadowable transition sm:text-sm",
+            "[&>option]:option",
             @class
           ])
         }
@@ -171,10 +171,7 @@ defmodule RunaWeb.Components.Select do
         {@rest}
       >
         <%= if match?([], @options) do %>
-          <option
-            disabled
-            class="flex items-center p-2 gap-1 truncate cursor-pointer hover:bg-background-hover"
-          >
+          <option disabled>
             No options available
           </option>
         <% else %>
