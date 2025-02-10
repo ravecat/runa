@@ -10,7 +10,6 @@ defmodule RunaWeb.Live.Sidebar do
   alias Runa.Teams.Team
 
   import RunaWeb.Components.Dropdown
-  import RunaWeb.Components.Pill
   import RunaWeb.Components.Modal
   import RunaWeb.Components.Avatar
   import RunaWeb.Components.Button
@@ -49,6 +48,7 @@ defmodule RunaWeb.Live.Sidebar do
         socket,
         team: nil,
         user: user,
+        role: nil,
         team_form_data: %Team{},
         is_visible_create_team_modal: false
       )

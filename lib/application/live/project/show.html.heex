@@ -2,6 +2,7 @@
   <.navigation id="project_navigation">
     <:item>
       <.active_link
+        class="ghost buttonable"
         aria-label="Project key editor"
         patch={~p"/projects/#{@project_id}?section=editor"}
         current_uri={@current_uri}
@@ -11,6 +12,7 @@
     </:item>
     <:item>
       <.active_link
+        class="ghost buttonable"
         aria-label="Project settings"
         patch={~p"/projects/#{@project_id}?section=settings"}
         current_uri={@current_uri}

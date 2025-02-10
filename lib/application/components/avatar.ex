@@ -5,7 +5,7 @@ defmodule RunaWeb.Components.Avatar do
   use RunaWeb, :component
 
   attr :src, :string, required: true
-  attr :class, :string
+  attr :class, :string, default: ""
   attr :rest, :global
 
   def avatar(assigns) do
@@ -14,7 +14,7 @@ defmodule RunaWeb.Components.Avatar do
       loading="lazy"
       src={@src}
       class={
-        merge("size-10 rounded-full object-cover shadow-sm", @class) |> to_string()
+        classes(["size-10 rounded-full object-cover border-2 shadowable", @class])
       }
       {@rest}
     />

@@ -11,27 +11,127 @@ body {
   font-variation-settings: "wdth" 100;
 }
 
-.loader {
-  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
-  -webkit-mask: var(--_m);
-  mask: var(--_m);
-  -webkit-mask-composite: source-out;
-  mask-composite: subtract;
-  animation: spinner 1s infinite linear;
-}
-
 @keyframes spinner {
   to {
     transform: rotate(1turn);
   }
 }
 
-.icon {
-  -webkit-mask: var(--icon-url) no-repeat;
-  mask: var(--icon-url) no-repeat;
-  background-color: currentColor;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+@layer components {
+  h1 {
+    @apply text-2xl font-semibold;
+  }
+
+  .spinner {
+    --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
+    -webkit-mask: var(--_m);
+    mask: var(--_m);
+    -webkit-mask-composite: source-out;
+    mask-composite: subtract;
+    animation: spinner 1s infinite linear;
+  }
+
+  .icon {
+    -webkit-mask: var(--icon-url) no-repeat;
+    mask: var(--icon-url) no-repeat;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  .primary {
+    @apply bg-primary hover:bg-primary-400;
+    @apply text-background dark:text-background;
+  }
+
+  .secondary {
+    @apply bg-secondary hover:bg-secondary-400;
+    @apply text-background dark:text-background;
+  }
+
+  .accent {
+    @apply bg-accent hover:bg-accent-400;
+    @apply text-background dark:text-background;
+  }
+
+  .warning {
+    @apply bg-warning hover:bg-warning-400;
+    @apply text-background dark:text-background;
+  }
+
+  .error {
+    @apply bg-error hover:bg-error-400;
+    @apply text-background dark:text-background;
+  }
+
+  .success {
+    @apply bg-success hover:bg-success-400;
+    @apply text-background dark:text-background;
+  }
+
+  .info {
+    @apply bg-info hover:bg-info-400;
+    @apply text-background dark:text-background;
+  }
+
+  .ghost {
+    @apply bg-transparent hover:bg-background-hover;
+    @apply text-text dark:text-text;
+  }
+
+  .neutral {
+    @apply bg-background dark:bg-background;
+  }
+
+  .transition {
+    @apply transition-all transform ease-out duration-300;
+  }
+
+  .transition-100 {
+    @apply opacity-100 translate-y-0 sm:scale-100;
+  }
+
+  .transition-0 {
+    @apply opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95;
+  }
+
+  .centered {
+    @apply flex items-center justify-center gap-1;
+  }
+
+  .option {
+    @apply flex items-center p-2 gap-1 truncate cursor-pointer;
+    @apply neutral;
+    @apply hover:bg-background-hover;
+  }
+
+  .underlined {
+    @apply relative;
+    @apply after:content-[''];
+    @apply after:block;
+    @apply after:h-0.5;
+    @apply after:w-full;
+    @apply after:bg-accent;
+    @apply after:absolute;
+    @apply after:bottom-0;
+    @apply after:left-0;
+  }
+
+  .buttonable {
+    @apply rounded px-2 h-8 min-w-24 text-sm font-medium flex items-center justify-center gap-1 align-middle;
+  }
+
+  .optionable {
+    @apply rounded px-2 h-8 min-w-24 flex items-center gap-1 align-middle;
+  }
+
+  .shadowable {
+    @apply shadow-sm hover:shadow;
+  }
 }
 
 @layer base {

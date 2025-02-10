@@ -50,7 +50,7 @@ defmodule RunaWeb.Components.Flash do
       }
       role="alert"
       class={[
-        "fixed z-1 top-[1rem] right-[1rem] rounded border-s-4 p-[1rem] shadow-md cursor-pointer",
+        "fixed z-1 top-[1rem] right-[1rem] rounded border-s-4 p-[1rem] shadowable cursor-pointer",
         @kind == :info && "bg-success-100 text-success-600",
         @kind == :error && "bg-error-50 text-error"
       ]}

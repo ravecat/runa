@@ -16,11 +16,10 @@ defmodule RunaWeb.Components.Label do
     <label
       for={@for}
       class={
-        merge(
+        classes([
           "flex flex-col items-start gap-1 text-sm leading-6 cursor-pointer",
           @class
-        )
-        |> to_string
+        ])
       }
       {@rest}
     >

@@ -46,18 +46,18 @@ defmodule RunaWeb.Components.Modal do
     >
       <div
         id={"#{@id}-bg"}
-        class="fixed inset-0 bg-secondary opacity-30 transition-opacity"
+        class="fixed inset-0 secondary transition opacity-30"
         aria-hidden="true"
       />
       <div
         id={"#{@id}-container"}
-        phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
-        phx-key="escape"
-        phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
         class="relative p-[4rem] w-full max-w-2xl max-h-full"
       >
         <div
-          class="relative flex flex-col min-h-full gap-2 bg-background rounded shadow-lg p-4 min-h-[10rem] gap-4"
+          phx-key="escape"
+          phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
+          phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
+          class="relative flex flex-col min-h-full gap-2 neutral rounded shadowable p-2 min-h-[10rem]"
           id={"#{@id}-content"}
         >
           <div class="flex justify-between items-center">
@@ -82,9 +82,7 @@ defmodule RunaWeb.Components.Modal do
     |> JS.show(to: "##{id}", display: "flex")
     |> JS.show(
       to: "##{id}-bg",
-      transition:
-        {"transition-all transform ease-out duration-300", "opacity-0",
-         "opacity-100"}
+      transition: {"transition", "opacity-0", "opacity-100"}
     )
     |> show("##{id}-container")
     |> JS.add_class("overflow-hidden", to: "body")
