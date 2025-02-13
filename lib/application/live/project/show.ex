@@ -27,7 +27,7 @@ defmodule RunaWeb.Live.Project.Show do
 
   @impl true
   def handle_params(%{"section" => section}, _, socket)
-      when section in ["settings", "editor"] do
+      when section in ["settings", "files", "translations"] do
     socket = assign(socket, section: section)
 
     {:noreply, socket}
@@ -36,7 +36,7 @@ defmodule RunaWeb.Live.Project.Show do
   @impl true
   def handle_params(%{"project_id" => project_id}, _, socket) do
     {:noreply,
-     push_patch(socket, to: ~p"/projects/#{project_id}?section=settings")}
+     push_patch(socket, to: ~p"/projects/#{project_id}?section=files")}
   end
 
   @impl true

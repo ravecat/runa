@@ -1,13 +1,23 @@
 <.card>
-  <.navigation id="project_navigation">
+  <.navigation class="max-w-xl" id="project_navigation">
     <:item>
       <.active_link
         class="ghost buttonable"
         aria-label="Project key editor"
-        patch={~p"/projects/#{@project_id}?section=editor"}
+        patch={~p"/projects/#{@project_id}?section=translations"}
         current_uri={@current_uri}
       >
-        Editor
+        Translations
+      </.active_link>
+    </:item>
+    <:item>
+      <.active_link
+        class="ghost buttonable"
+        aria-label="Project files"
+        patch={~p"/projects/#{@project_id}?section=files"}
+        current_uri={@current_uri}
+      >
+        Files
       </.active_link>
     </:item>
     <:item>
@@ -22,27 +32,35 @@
     </:item>
   </.navigation>
   <div class="p-4">
-    <.live_component
-      :if={match?("settings", @section)}
-      module={RunaWeb.Live.Project.Form}
-      id="update_project"
-      data={@project}
-      team_id={@team_id}
-    >
-      <:actions>
-        <.button
-          variant="warning"
-          phx-value-id={@project.id}
-          type="submit"
-          aria-label={
-            if @project.id,
-              do: "Confirm update project",
-              else: "Confirm create project"
-          }
-        >
-          {if @project.id, do: "Update", else: "Create"}
-        </.button>
-      </:actions>
-    </.live_component>
+    <%= if match?("settings", @section) do %>
+      <.live_component
+        module={RunaWeb.Live.Project.Form}
+        id="update_project"
+        data={@project}
+        team_id={@team_id}
+      >
+        <:actions>
+          <.button
+            variant="warning"
+            phx-value-id={@project.id}
+            type="submit"
+            aria-label={
+              if @project.id,
+                do: "Confirm update project",
+                else: "Confirm create project"
+            }
+          >
+            {if @project.id, do: "Update", else: "Create"}
+          </.button>
+        </:actions>
+      </.live_component>
+    <% end %>
+
+    <%= if match?("files", @section) do %>
+      {live_render(@socket, RunaWeb.Live.File.Index,
+        id: "files",
+        container: {:div, class: "contents"}
+      )}
+    <% end %>
   </div>
 </.card>

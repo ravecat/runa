@@ -22,6 +22,26 @@ body {
     @apply text-2xl font-semibold;
   }
 
+  h2 {
+    @apply text-xl font-semibold;
+  }
+
+  h3 {
+    @apply text-lg font-semibold;
+  }
+
+  h4 {
+    @apply text-base font-semibold;
+  }
+
+  h5 {
+    @apply text-sm font-semibold;
+  }
+
+  h6 {
+    @apply text-xs font-semibold;
+  }
+
   .spinner {
     --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
     -webkit-mask: var(--_m);

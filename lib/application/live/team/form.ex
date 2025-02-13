@@ -1,4 +1,11 @@
 defmodule RunaWeb.Live.Team.Form do
+  @moduledoc """
+  Provides a LiveView form component for managing team data.
+
+  This module implements a form for creating and updating team records. It
+  handles form validation, submission, and user interactions, ensuring a
+  seamless experience for managing team information.
+  """
   use RunaWeb, :live_component
 
   alias Runa.Teams

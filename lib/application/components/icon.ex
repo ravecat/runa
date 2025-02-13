@@ -13,7 +13,7 @@ defmodule RunaWeb.Components.Icon do
     <span
       class={
         classes([
-          "icon inline-block min-w-4 min-h-4 align-text-top align-middle",
+          "icon inline-block size-4 align-text-top align-middle aspect-square object-contain",
           @class
         ])
       }
