@@ -1,17 +1,54 @@
 <div class="gap-4 centered flex-col">
   <h1 class="text-center">Upload localization files</h1>
-  <.card class="max-w-3xl centered flex-col border-dashed !shadow-none border-accent border-2 w-full p-8">
-    <.button>Select file</.button>
-    <span class="leading-none text-secondary">
-      or drag it here
-    </span>
-    <div>
-      <div class="flex flex-col centered border-2 p-1 border-secondary rounded aspect-square h-12 -space-y-1">
-        <.icon icon="json" class="size-6 text-secondary" />
-        <span class="leading-none text-xs text-secondary">
-          json
-        </span>
+  <form
+    phx-submit="save"
+    phx-change="validate"
+    phx-drop-target={@uploads.files.ref}
+    class="cardable max-w-3xl border-dashed shadow hover:shadow-md border-accent border-2 p-0 w-full"
+  >
+    <label
+      for={@uploads.files.ref}
+      class="flex-col cursor-pointer gap-2 w-full centered p-8 text-accent"
+    >
+      <.live_file_input upload={@uploads.files} id="hidden-file-input" hidden />
+      Select file or drag files here
+      <div>
+        <div
+          :for={ext <- @extensions}
+          class="flex flex-col centered border-2 p-1 border-accent rounded aspect-square h-12 -space-y-1"
+        >
+          <.icon icon={ext} class="size-6" />
+          <span class="leading-none text-xs font-bold">
+            {ext}
+          </span>
+        </div>
       </div>
-    </div>
-  </.card>
+    </label>
+  </form>
+
+  <section>
+    <article :for={entry <- @files}>
+      <figure>
+        <.live_img_preview entry={entry} />
+        <figcaption>{entry.client_name}</figcaption>
+      </figure>
+      <progress value={entry.progress} max="100">
+        {entry.progress}%
+      </progress>
+      <button
+        type="button"
+        phx-click="cancel_upload"
+        phx-value-ref={entry.ref}
+        aria-label="Cancel upload"
+      >
+        &times;
+      </button>
+      <p :for={err <- upload_errors(@uploads.files, entry)}>
+        {error_to_string(err)}
+      </p>
+    </article>
+    <p :for={err <- upload_errors(@uploads.files)}>
+      {error_to_string(err)}
+    </p>
+  </section>
 </div>

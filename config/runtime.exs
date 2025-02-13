@@ -115,3 +115,8 @@ config :ueberauth, Ueberauth.Strategy.Auth0.OAuth,
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: env!("GOOGLE_CLIENT_ID", :string),
   client_secret: env!("GOOGLE_CLIENT_SECRET", :string)
+
+config :ex_aws,
+  access_key_id: [{:system, "RUNA_AWS_ACCESS_KEY_ID"}, :instance_role],
+  secret_access_key: [{:system, "RUNA_AWS_SECRET_ACCESS_KEY"}, :instance_role],
+  region: {:system, "RUNA_AWS_REGION"}

@@ -6,8 +6,11 @@ defmodule Runa.Files.File do
 
   alias Runa.Projects.Project
 
+  @extensions [:json]
+
   schema "files" do
     field :filename, :string
+    field :status, Ecto.Enum, values: @extensions, virtual: true
     belongs_to :project, Project
 
     timestamps(type: :utc_datetime)
@@ -20,4 +23,6 @@ defmodule Runa.Files.File do
     |> validate_required([:filename, :project_id])
     |> foreign_key_constraint(:project_id)
   end
+
+  def extensions, do: @extensions
 end
