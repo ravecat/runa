@@ -115,3 +115,9 @@ config :ueberauth, Ueberauth.Strategy.Auth0.OAuth,
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: env!("GOOGLE_CLIENT_ID", :string),
   client_secret: env!("GOOGLE_CLIENT_SECRET", :string)
+
+config :runa,
+  region: env!("AWS_REGION"),
+  bucket: env!("AWS_S3_BUCKET"),
+  access_key_id: env!("AWS_ACCESS_KEY_ID"),
+  secret_access_key: env!("AWS_SECRET_ACCESS_KEY")

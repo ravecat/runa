@@ -152,6 +152,10 @@ body {
   .shadowable {
     @apply shadow-sm hover:shadow;
   }
+
+  .cardable {
+    @apply p-2 rounded space-y-2 border overflow-hidden shadowable transition neutral;
+  }
 }
 
 @layer base {
