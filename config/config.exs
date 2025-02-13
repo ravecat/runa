@@ -71,7 +71,8 @@ config :jsonapi,
   json_library: Jason
 
 config :mime, :types, %{
-  "application/vnd.api+json" => ["jsonapi"]
+  "application/vnd.api+json" => ["jsonapi"],
+  "image/svg+xml" => ["svg"]
 }
 
 config :flop, repo: Runa.Repo

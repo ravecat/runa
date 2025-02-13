@@ -96,7 +96,11 @@ defmodule Runa.MixProject do
       {:faker, "~> 0.18", only: [:dev, :test]},
       {:pbkdf2_elixir, "~> 2.0"},
       {:tails, "~> 0.1.11"},
-      {:live_isolated_component, "~> 0.9.0", only: [:dev, :test]}
+      {:live_isolated_component, "~> 0.9.0", only: [:dev, :test]},
+      {:ex_aws, "~> 2.0"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:hackney, "~> 1.9"},
+      {:sweet_xml, "~> 0.6.6"}
     ]
   end
 

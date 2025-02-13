@@ -18,7 +18,7 @@ defmodule RunaWeb do
   """
 
   def static_paths,
-    do: ~w(assets fonts images favicon.ico robots.txt)
+    do: ~w(assets fonts images favicon.ico robots.txt uploads)
 
   def router do
     quote do
@@ -86,7 +86,6 @@ defmodule RunaWeb do
       alias Runa.Repo
 
       import Ecto.Changeset
-      import Ecto.Query
       import Runa.Repo
 
       use Phoenix.LiveView,
