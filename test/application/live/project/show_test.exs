@@ -20,7 +20,7 @@ defmodule RunaWeb.Live.Project.ShowTest do
 
   describe "project dashboard" do
     test "redirects to default section", ctx do
-      expected_redirect = "/projects/#{ctx.project.id}?section=settings"
+      expected_redirect = "/projects/#{ctx.project.id}?section=files"
 
       assert {:error, {:live_redirect, %{to: ^expected_redirect}}} =
                ctx.conn

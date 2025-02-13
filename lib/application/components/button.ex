@@ -28,7 +28,7 @@ defmodule RunaWeb.Components.Button do
       type={@type}
       class={
         classes([
-          "group border buttonable disabled:opacity-50 phx-submit-loading:opacity-75",
+          "group border buttonable disabled:opacity-50 phx-submit-loading:opacity-75 w-fit",
           [
             primary: match?("primary", @variant),
             secondary: match?("secondary", @variant),
