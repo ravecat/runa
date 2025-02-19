@@ -11,7 +11,8 @@ defmodule RunaWeb.TranslationControllerTest do
   setup do
     team = insert(:team)
     project = insert(:project, team: team)
-    key = insert(:key, project: project)
+    file = insert(:file, project: project)
+    key = insert(:key, file: file)
     language = insert(:language)
 
     {:ok, key: key, language: language}

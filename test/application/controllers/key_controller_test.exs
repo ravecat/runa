@@ -11,8 +11,9 @@ defmodule RunaWeb.KeyControllerTest do
   setup do
     team = insert(:team)
     project = insert(:project, team: team)
+    file = insert(:file, project: project)
 
-    {:ok, project: project}
+    {:ok, localization_file: file}
   end
 
   describe "create endpoint" do
@@ -25,10 +26,10 @@ defmodule RunaWeb.KeyControllerTest do
             description: "description"
           },
           relationships: %{
-            project: %{
+            file: %{
               data: %{
-                id: "#{ctx.project.id}",
-                type: "projects"
+                id: "#{ctx.localization_file.id}",
+                type: "files"
               }
             }
           }
@@ -71,10 +72,10 @@ defmodule RunaWeb.KeyControllerTest do
             description: nil
           },
           relationships: %{
-            project: %{
+            file: %{
               data: %{
-                id: "#{ctx.project.id}",
-                type: "projects"
+                id: "#{ctx.localization_file.id}",
+                type: "files"
               }
             }
           }
@@ -92,7 +93,7 @@ defmodule RunaWeb.KeyControllerTest do
 
   describe "show endpoint" do
     test "returns resource", ctx do
-      key = insert(:key, project: ctx.project)
+      key = insert(:key, file: ctx.localization_file)
 
       get(ctx.conn, ~p"/api/keys/#{key.id}")
       |> json_response(200)
@@ -112,7 +113,7 @@ defmodule RunaWeb.KeyControllerTest do
     end
 
     test "returns resource with relationships", ctx do
-      key = insert(:key, project: ctx.project)
+      key = insert(:key, file: ctx.localization_file)
 
       get(ctx.conn, ~p"/api/keys/#{key.id}")
       |> json_response(200)
@@ -125,7 +126,7 @@ defmodule RunaWeb.KeyControllerTest do
 
   describe "index endpoint" do
     test "returns list of resources", ctx do
-      insert(:key, project: ctx.project)
+      insert(:key, file: ctx.localization_file)
 
       get(ctx.conn, ~p"/api/keys")
       |> json_response(200)
@@ -145,9 +146,9 @@ defmodule RunaWeb.KeyControllerTest do
     end
 
     test "returns list of resources with relationships", ctx do
-      insert(:key, project: ctx.project)
+      insert(:key, file: ctx.localization_file)
 
-      get(ctx.conn, ~p"/api/keys")
+    get(ctx.conn, ~p"/api/keys")
       |> json_response(200)
       |> get_in(["data", Access.all(), "relationships"])
       |> Enum.flat_map(&Map.values/1)
@@ -157,7 +158,7 @@ defmodule RunaWeb.KeyControllerTest do
 
   describe "update endpoint" do
     test "updates resource", ctx do
-      key = insert(:key, project: ctx.project)
+      key = insert(:key, file: ctx.localization_file)
 
       body = %{
         data: %{
@@ -168,10 +169,10 @@ defmodule RunaWeb.KeyControllerTest do
             description: "description"
           },
           relationships: %{
-            project: %{
+            file: %{
               data: %{
-                id: "#{ctx.project.id}",
-                type: "projects"
+                id: "#{ctx.localization_file.id}",
+                type: "files"
               }
             }
           }
@@ -196,10 +197,10 @@ defmodule RunaWeb.KeyControllerTest do
             description: "description"
           },
           relationships: %{
-            project: %{
+            file: %{
               data: %{
-                id: "#{ctx.project.id}",
-                type: "projects"
+                id: "#{ctx.localization_file.id}",
+                type: "files"
               }
             }
           }
@@ -215,7 +216,7 @@ defmodule RunaWeb.KeyControllerTest do
     end
 
     test "returns errors when attributes are invalid", ctx do
-      key = insert(:key, project: ctx.project)
+      key = insert(:key, file: ctx.localization_file)
 
       body = %{
         data: %{
@@ -226,10 +227,10 @@ defmodule RunaWeb.KeyControllerTest do
             description: nil
           },
           relationships: %{
-            project: %{
+            file: %{
               data: %{
-                id: "#{ctx.project.id}",
-                type: "projects"
+                id: "#{ctx.localization_file.id}",
+                type: "files"
               }
             }
           }
@@ -247,7 +248,7 @@ defmodule RunaWeb.KeyControllerTest do
 
   describe "delete endpoint" do
     test "deletes resource", ctx do
-      key = insert(:key, project: ctx.project)
+      key = insert(:key, file: ctx.localization_file)
 
       delete(ctx.conn, ~p"/api/keys/#{key.id}")
       |> json_response(204)

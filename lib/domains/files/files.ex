@@ -6,6 +6,7 @@ defmodule Runa.Files do
   use Runa, :context
 
   alias Runa.Files.File
+  alias Runa.Keys.Key
 
   @doc """
   Returns the list of files.
@@ -60,6 +61,45 @@ defmodule Runa.Files do
   end
 
   @doc """
+  Creates a file from a LiveView upload entry.
+  """
+
+  @type file_meta() :: %{project_id: String.t(), path: String.t()}
+  @spec create(Phoenix.LiveView.UploadEntry.t(), file_meta(), [
+          {String.t(), String.t()}
+        ]) ::
+          {:ok, any()} | {:error, any()} | Ecto.Multi.failure()
+  def create(entry, meta, data) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(
+      :file,
+      File.changeset(%File{}, %{
+        filename: entry.client_name,
+        project_id: meta.project_id
+      })
+    )
+    |> Ecto.Multi.insert_all(
+      :keys,
+      Key,
+      fn %{file: file} ->
+        now = DateTime.truncate(DateTime.utc_now(), :second)
+
+        Enum.map(
+          data,
+          &%{
+            file_id: file.id,
+            name: elem(&1, 0),
+            inserted_at: now,
+            updated_at: now
+          }
+        )
+      end,
+      returning: true
+    )
+    |> Repo.transaction()
+  end
+
+  @doc """
   Updates a file.
 
   ## Examples
@@ -98,11 +138,11 @@ defmodule Runa.Files do
 
   ## Examples
 
-      iex> change_file(file)
-      %Ecto.Changeset{data: %File{}}
+      iex> change(file)
+      %Ecto.Changeset{ %File{}}
 
   """
-  def change_file(%File{} = file, attrs \\ %{}) do
+  def change(%File{} = file, attrs \\ %{}) do
     File.changeset(file, attrs)
   end
 end

@@ -10,11 +10,19 @@ defmodule Runa.Storage.S3 do
   alias ExAws.S3
 
   @impl true
-  def upload(file, bucket, opts \\ []) do
+  def upload(path, opts \\ []) do
+    bucket =
+      Keyword.get(
+        opts,
+        :bucket,
+        Application.get_env(:runa, Runa.Storage.S3, :bucket)
+      )
+
     with {:ok, bucket} <- find_or_create_bucket(bucket),
-         stream <- S3.Upload.stream_file(file),
-         op <- S3.upload(stream, bucket, "/", opts),
-         {:ok, response} <- ExAws.request(op) do
+         {:ok, response} <-
+           S3.Upload.stream_file(path)
+           |> S3.upload(bucket, "/", opts)
+           |> ExAws.request() do
       {:ok, response}
     else
       {:error, reason} ->
@@ -23,17 +31,17 @@ defmodule Runa.Storage.S3 do
   end
 
   @impl true
-  def index(_bucket, _opts \\ []) do
+  def index(_path, _opts \\ []) do
     :not_implemented
   end
 
   @impl true
-  def download(_bucket, _path, _opts \\ []) do
+  def download(_path, _opts \\ []) do
     :not_implemented
   end
 
   @impl true
-  def delete(_bucket, _path, _opts \\ []) do
+  def delete(_path, _opts \\ []) do
     :not_implemented
   end
 
@@ -50,7 +58,7 @@ defmodule Runa.Storage.S3 do
   end
 
   defp bucket_exists?(bucket) do
-    ExAws.S3.head_bucket(bucket)
+    S3.head_bucket(bucket)
     |> ExAws.request()
     |> case do
       {:ok, response} ->
@@ -62,7 +70,7 @@ defmodule Runa.Storage.S3 do
   end
 
   defp create_bucket(bucket, region) do
-    ExAws.S3.put_bucket(bucket, region)
+    S3.put_bucket(bucket, region)
     |> ExAws.request()
     |> case do
       {:ok, response} ->

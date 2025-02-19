@@ -23,7 +23,7 @@ defmodule Runa.Projects do
           {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
   def index(opts \\ %{}) do
     Project
-    |> preload([:keys, :languages, :team, :files, :base_language])
+    |> preload([:languages, :team, :files, :base_language])
     |> paginate(opts, for: Project)
   end
 
@@ -42,7 +42,7 @@ defmodule Runa.Projects do
     query =
       from(p in Project,
         where: p.id == ^id,
-        preload: [:keys, :languages, :team, :files, :base_language]
+        preload: [:languages, :team, :files, :base_language]
       )
 
     case Repo.one(query) do

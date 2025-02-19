@@ -7,6 +7,7 @@ defmodule Runa.FilesTest do
 
   alias Runa.Files
   alias Runa.Files.File
+  alias Runa.Keys.Key
 
   setup do
     team = insert(:team)
@@ -39,6 +40,30 @@ defmodule Runa.FilesTest do
       assert file.filename == Atom.to_string(ctx.test)
     end
 
+    test "creates a file with keys from upload entry", ctx do
+      project = insert(:project, team: ctx.team)
+      meta = %{project_id: project.id}
+      upload_entry = %{client_name: "test_file.csv"}
+
+      data = [
+        {"key1", "value1"},
+        {"key2", "value2"}
+      ]
+
+      {:ok, %{file: file, keys: keys}} = Files.create(upload_entry, meta, data)
+
+      project_id = project.id
+
+      assert %{
+               filename: "test_file.csv",
+               project_id: ^project_id
+             } = file
+
+      assert {2, _} = keys
+
+      Enum.each(elem(keys, 1), fn key -> assert(is_struct(key, Key)) end)
+    end
+
     test "returns error changeset during creation with invalid data" do
       invalid_attrs = %{filename: nil}
       assert {:error, %Ecto.Changeset{}} = Files.create(invalid_attrs)
@@ -69,7 +94,7 @@ defmodule Runa.FilesTest do
     end
 
     test "returns a file changeset", ctx do
-      assert %Ecto.Changeset{} = Files.change_file(ctx.uploaded_file)
+      assert %Ecto.Changeset{} = Files.change(ctx.uploaded_file)
     end
   end
 end

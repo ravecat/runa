@@ -59,6 +59,7 @@
     <%= if match?("files", @section) do %>
       {live_render(@socket, RunaWeb.Live.File.Index,
         id: "files",
+        session: %{"project_id" => @project.id},
         container: {:div, class: "contents"}
       )}
     <% end %>

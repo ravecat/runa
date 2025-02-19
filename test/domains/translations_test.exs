@@ -11,7 +11,8 @@ defmodule Runa.TranslationsTest do
   setup do
     team = insert(:team)
     project = insert(:project, team: team)
-    key = insert(:key, project: project)
+    file = insert(:file, project: project)
+    key = insert(:key, file: file)
     translation = insert(:translation, key: key)
     language = insert(:language)
 

@@ -160,9 +160,9 @@ defmodule Runa.Teams do
       where: p.team_id == ^team_id,
       preload: [:languages],
       left_join: l in assoc(p, :languages),
-      left_join: k in assoc(p, :keys),
-      left_join: t in assoc(k, :translations),
       left_join: f in assoc(p, :files),
+      left_join: k in assoc(f, :keys),
+      left_join: t in assoc(k, :translations),
       group_by: p.id,
       select: %{
         project: p,

@@ -22,7 +22,6 @@ defmodule Runa.Keys do
           {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
   def index(opts \\ %{}) do
     Key
-    |> preload([:project])
     |> paginate(opts, for: Key)
   end
 
@@ -43,8 +42,7 @@ defmodule Runa.Keys do
   def get(id) do
     query =
       from p in Key,
-        where: p.id == ^id,
-        preload: [:project]
+        where: p.id == ^id
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -70,7 +68,7 @@ defmodule Runa.Keys do
     |> Key.changeset(attrs)
     |> Repo.insert()
     |> case do
-      {:ok, data} -> {:ok, Repo.preload(data, :project)}
+      {:ok, data} -> {:ok, Repo.preload(data, :file)}
       {:error, changeset} -> {:error, changeset}
     end
   end
