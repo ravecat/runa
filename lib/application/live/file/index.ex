@@ -8,15 +8,20 @@ defmodule RunaWeb.Live.File.Index do
   import RunaWeb.Components.Icon
 
   alias Runa.Files
+  alias Runa.Parser
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, %{"project_id" => project_id}, socket) do
     extensions = Enum.map(Files.File.extensions(), &"#{to_string(&1)}")
     accept = Enum.map(extensions, &".#{&1}")
 
     socket =
       socket
-      |> assign(files: [], extensions: extensions)
+      |> assign(
+        uploaded_entries: [],
+        extensions: extensions,
+        project_id: project_id
+      )
       |> allow_upload(:files,
         accept: accept,
         max_entries: 10,
@@ -42,20 +47,31 @@ defmodule RunaWeb.Live.File.Index do
     {:noreply, cancel_upload(socket, :files, ref)}
   end
 
+  @impl true
+  def handle_info({:file_parsing_complete, entry, {:ok, data}}, socket) do
+    project_id = socket.assigns.project_id
+
+    case Files.create(entry, %{project_id: project_id}, data) do
+      {:ok, _} ->
+        {:noreply, socket}
+
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
   defp handle_upload_progress(_, %{done?: true} = entry, socket) do
     uploaded_file =
       consume_uploaded_entry(socket, entry, fn %{path: path} ->
-        dest = Path.join("priv/static/uploads", Path.basename(path))
+        Parser.process(path, entry)
 
-        File.cp!(path, dest)
-
-        {:ok, entry}
+        {:postpone, entry}
       end)
 
     socket =
       update(
         socket,
-        :files,
+        :uploaded_entries,
         &(&1 ++ [uploaded_file])
       )
 

@@ -5,7 +5,6 @@ defmodule Runa.Projects.Project do
   use Runa, :schema
 
   alias Runa.Files.File
-  alias Runa.Keys.Key
   alias Runa.Languages
   alias Runa.Languages.Language
   alias Runa.Languages.Locale
@@ -17,7 +16,6 @@ defmodule Runa.Projects.Project do
     field :base_language_title, :string, virtual: true
     field :language_titles, {:array, :string}, virtual: true
     has_many :files, File
-    has_many :keys, Key
     has_many :locales, Locale, on_replace: :delete
     belongs_to :team, Team
     belongs_to :base_language, Language

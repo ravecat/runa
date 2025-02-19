@@ -11,7 +11,8 @@ defmodule Runa.MixProject do
       aliases: aliases(),
       deps: deps(),
       preferred_cli_env: [
-        "test.watch": :test
+        "test.watch": :test,
+        "test.only": :test
       ],
       elixirc_options: [
         debug_info: true,
@@ -100,7 +101,9 @@ defmodule Runa.MixProject do
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.9"},
-      {:sweet_xml, "~> 0.6.6"}
+      {:sweet_xml, "~> 0.6.6"},
+      {:jaxon, "~> 2.0"},
+      {:flow, "~> 1.0"}
     ]
   end
 
@@ -134,6 +137,7 @@ defmodule Runa.MixProject do
         "ecto.migrate --quiet",
         "test"
       ],
+      "test.only": ["test --only only"],
       "test.watch.only": ["test.watch --only only"],
       "test.format": ["credo", "format --check-formatted"],
       "assets.setup": ["esbuild.install --if-missing"],

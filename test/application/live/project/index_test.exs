@@ -8,6 +8,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     user = insert(:user)
     contributor = insert(:contributor, team: team, user: user)
     projects = insert_list(2, :project, team: team)
+    file = insert(:file, project: Enum.at(projects, 0))
     language = insert(:language, wals_code: "eng", title: "English")
 
     {:ok,
@@ -15,6 +16,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
      projects: projects,
      team: team,
      contributor: contributor,
+     localization_file: file,
      language: language}
   end
 
@@ -159,7 +161,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
     test "renders keys count", ctx do
       project = insert(:project, team: ctx.team)
-      keys = insert_list(2, :key, project: project)
+      file = insert(:file, project: project)
+      keys = insert_list(2, :key, file: file)
 
       {:ok, view, _} =
         ctx.conn

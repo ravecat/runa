@@ -4,14 +4,16 @@ defmodule Runa.Files.File do
   """
   use Runa, :schema
 
+  alias Runa.Keys.Key
   alias Runa.Projects.Project
 
   @extensions [:json]
 
   schema "files" do
     field :filename, :string
-    field :status, Ecto.Enum, values: @extensions, virtual: true
+    field :extension, Ecto.Enum, values: @extensions, virtual: true
     belongs_to :project, Project
+    has_many :keys, Key
 
     timestamps(type: :utc_datetime)
   end

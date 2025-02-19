@@ -11,9 +11,10 @@ defmodule Runa.KeysTest do
   setup do
     team = insert(:team)
     project = insert(:project, team: team)
-    key = insert(:key, project: project)
+    file = insert(:file, project: project)
+    key = insert(:key, file: file)
 
-    {:ok, key: key, team: team}
+    {:ok, key: key, team: team, localization_file: file}
   end
 
   describe "keys context" do
@@ -28,12 +29,10 @@ defmodule Runa.KeysTest do
     end
 
     test "creates a key with valid data", ctx do
-      project = insert(:project, team: ctx.team)
-
       valid_attrs = %{
         name: "some name",
         description: "some description",
-        project_id: project.id
+        file_id: ctx.localization_file.id
       }
 
       assert {:ok, %Key{} = key} = Keys.create(valid_attrs)

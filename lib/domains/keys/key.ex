@@ -4,13 +4,13 @@ defmodule Runa.Keys.Key do
   """
   use Runa, :schema
 
-  alias Runa.Projects.Project
+  alias Runa.Files.File
   alias Runa.Translations.Translation
 
   schema "keys" do
     field :name, :string
     field :description, :string
-    belongs_to :project, Project
+    belongs_to :file, File
     has_many :translations, Translation
 
     timestamps(type: :utc_datetime)
@@ -19,7 +19,7 @@ defmodule Runa.Keys.Key do
   @doc false
   def changeset(key, attrs) do
     key
-    |> cast(attrs, [:name, :description, :project_id])
-    |> validate_required([:name, :description, :project_id])
+    |> cast(attrs, [:name, :description, :file_id])
+    |> validate_required([:name, :file_id])
   end
 end

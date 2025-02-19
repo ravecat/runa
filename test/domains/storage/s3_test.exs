@@ -17,30 +17,30 @@ defmodule Runa.Storage.S3Test do
       {:ok, operation}
     end)
 
-    %{source: "test file", bucket: "test_bucket", path: "test/path"}
+    %{bucket: "test_bucket", path: "test/path/file"}
   end
 
   describe "S3 upload functionality" do
     test "opens a file stream", ctx do
-      S3.upload(ctx.source, ctx.bucket, ctx.path)
+      S3.upload(ctx.path, bucket: ctx.bucket)
 
       assert Repatch.called?(ExAws.S3.Upload, :stream_file, 1)
     end
 
     test "prepares upload operation", ctx do
-      S3.upload(ctx.source, ctx.bucket, ctx.path)
+      S3.upload(ctx.path, bucket: ctx.bucket)
 
       assert Repatch.called?(ExAws.S3, :upload, 4)
     end
 
     test "performs request to AWS", ctx do
-      S3.upload(ctx.source, ctx.bucket, ctx.path)
+      S3.upload(ctx.path, bucket: ctx.bucket)
 
       assert Repatch.called?(ExAws, :request, 1)
     end
 
     test "returns operation response", ctx do
-      assert S3.upload(ctx.source, ctx.bucket, ctx.path) ==
+      assert S3.upload(ctx.path, bucket: ctx.bucket) ==
                {:ok, :uploaded}
     end
 
@@ -54,7 +54,7 @@ defmodule Runa.Storage.S3Test do
         end
       )
 
-      assert S3.upload(ctx.source, ctx.bucket, ctx.path) ==
+      assert S3.upload(ctx.path, bucket: ctx.bucket) ==
                {:error, :upload_failed}
     end
   end
