@@ -69,7 +69,7 @@ defmodule Runa.KeysTest do
     end
 
     test "returns a key changeset", ctx do
-      assert %Ecto.Changeset{} = Keys.change_key(ctx.key)
+      assert %Ecto.Changeset{} = Keys.change(ctx.key)
     end
   end
 end

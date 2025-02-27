@@ -87,7 +87,7 @@ defmodule Runa.Factory do
 
   def translation_factory(attrs) do
     %Translation{
-      translation: sequence(:translation, &"translation #{&1}")
+      translation: Faker.Lorem.sentence()
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
@@ -95,8 +95,8 @@ defmodule Runa.Factory do
 
   def key_factory(attrs) do
     %Key{
-      name: sequence(:name, &"key name #{&1}"),
-      description: sequence(:description, &"key description #{&1}")
+      name: Faker.Lorem.sentence(),
+      description: Faker.Lorem.sentence()
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
@@ -104,7 +104,7 @@ defmodule Runa.Factory do
 
   def file_factory(attrs) do
     %File{
-      filename: sequence(:filename, &"filename #{&1}")
+      filename: "#{Faker.File.file_name(:text)}}"
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()

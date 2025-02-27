@@ -35,28 +35,58 @@ defmodule Mix.Tasks.Seed.Data do
 
     languages = Repo.all(Language)
 
+    insert_list(3, :token, user: user)
+
     teams =
       1..5
       |> Enum.map(fn _i ->
         team = insert(:team)
         insert(:contributor, user: user, team: team)
 
-        projects = insert_list(3, :project, team: team, base_language: Enum.random(languages))
+        projects =
+          insert_list(3, :project,
+            team: team,
+            base_language: Enum.random(languages)
+          )
 
         {team, projects}
       end)
 
-    teams
-    |> Enum.flat_map(fn {_, projects} -> projects end)
-    |> Enum.each(fn project ->
-      languages
-      |> Enum.take_random(Enum.random(2..3))
-      |> Enum.each(fn language ->
-        insert(:locale, project: project, language: language)
+    projects =
+      teams
+      |> Enum.flat_map(fn {_, projects} -> projects end)
+      |> Enum.map(fn project ->
+        languages = Enum.take_random(languages, Enum.random(3..5))
+
+        locales =
+          Enum.map(languages, fn language ->
+            insert(:locale,
+              project: project,
+              language: language
+            )
+          end)
+
+        files =
+          insert_list(Enum.random(1..2), :file, project: project)
+
+        {project, locales, files}
+      end)
+
+    keys =
+      Enum.map(projects, fn {project, _, files} ->
+        keys =
+          Enum.flat_map(files, fn file ->
+            insert_list(Enum.random(2..4), :key, file: file)
+          end)
+
+        {project, keys}
+      end)
+
+    Enum.each(keys, fn {project, keys} ->
+      Enum.each(keys, fn key ->
+        insert_list(3, :translation, key: key, language: project.base_language)
       end)
     end)
-
-    insert_list(3, :token, user: user)
 
     Logger.info("Finished seeding development data")
   end

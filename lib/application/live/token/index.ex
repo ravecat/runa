@@ -14,7 +14,6 @@ defmodule RunaWeb.Live.Token.Index do
   import RunaWeb.Components.Button
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Modal
-  import RunaWeb.Formatters
   import RunaWeb.Components.Card
 
   on_mount RunaWeb.HandleUserData
