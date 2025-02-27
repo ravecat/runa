@@ -63,5 +63,13 @@
         container: {:div, class: "contents"}
       )}
     <% end %>
+
+    <%= if match?("translations", @section) do %>
+      {live_render(@socket, RunaWeb.Live.Translation.Index,
+        id: "translations",
+        session: %{"project_id" => @project.id},
+        container: {:div, class: "contents"}
+      )}
+    <% end %>
   </div>
 </.card>

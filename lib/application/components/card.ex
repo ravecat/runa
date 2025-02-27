@@ -15,7 +15,7 @@ defmodule RunaWeb.Components.Card do
     <div
       class={
         classes([
-          "p-2 rounded space-y-2 border overflow-hidden shadowable transition neutral",
+          "cardable",
           @class
         ])
       }

@@ -154,7 +154,7 @@ body {
   }
 
   .cardable {
-    @apply p-2 rounded space-y-2 border overflow-hidden shadowable transition neutral;
+    @apply p-2 rounded border overflow-hidden shadowable transition neutral;
   }
 }
 
