@@ -1,0 +1,19 @@
+<div class="p-2">{@keys_count} keys</div>
+<.table id="keys" rows={@entities} aria-label="Translations editor">
+  <:col :let={{key, translations}} class="p-0">
+    <div class="grid">
+      <div class="p-2 bg-background-alt dark:bg-background-alt flex items-center">
+        {key.name}
+      </div>
+      <div class="grid divide-y divide-background-alt dark:divide-background-alt">
+        <div
+          :for={{lang, translation} <- translations}
+          class="grid grid-cols-[auto,1fr] divide-x divide-background-alt dark:divide-background-alt"
+        >
+          <div class="p-2 min-w-32 max-w-64 truncate text-right">{lang}</div>
+          <div class="p-2">{translation}</div>
+        </div>
+      </div>
+    </div>
+  </:col>
+</.table>
