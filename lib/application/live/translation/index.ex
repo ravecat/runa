@@ -15,23 +15,15 @@ defmodule RunaWeb.Live.Translation.Index do
 
     entities =
       Enum.map(keys, fn key ->
-        {
-          key,
-          Enum.map(
-            0..3,
-            fn _ ->
-              {
-                "Language",
-                "Translation"
-              }
-            end
-          )
-        }
+        {key, key.translations}
       end)
 
-    socket =
-      assign(socket, entities: entities, keys_count: length(keys))
+    socket = assign(socket, entities: entities, keys_count: length(keys))
 
     {:ok, socket}
+  end
+
+  def hello() do
+    "Hello!"
   end
 end

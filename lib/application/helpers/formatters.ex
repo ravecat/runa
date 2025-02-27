@@ -10,8 +10,8 @@ defmodule RunaWeb.Formatters do
     |> Integer.to_string()
   end
 
-  @spec format_datetime_to_view(DateTime.t()) :: binary()
-  def format_datetime_to_view(dt) do
-    Calendar.strftime(dt, "%b %d, %Y %I:%M %p")
+  @spec format_datetime_to_view(DateTime.t(), binary()) :: binary()
+  def format_datetime_to_view(dt, pattern \\ "%b %d, %Y %I:%M %p") do
+    Calendar.strftime(dt, pattern)
   end
 end

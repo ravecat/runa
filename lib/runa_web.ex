@@ -87,6 +87,7 @@ defmodule RunaWeb do
 
       import Ecto.Changeset
       import Runa.Repo
+      import RunaWeb.Formatters
 
       use Phoenix.LiveView,
         layout: {RunaWeb.Layouts, :app}
@@ -112,6 +113,7 @@ defmodule RunaWeb do
 
       import Ecto
       import Runa.Repo
+      import RunaWeb.Formatters
 
       use Phoenix.LiveComponent
 

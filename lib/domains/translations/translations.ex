@@ -8,16 +8,20 @@ defmodule Runa.Translations do
   alias Runa.Translations.Translation
 
   @doc """
-  Returns the list of translations.
+  Returns the list of translations with pagination.
 
   ## Examples
 
-      iex> list_translations()
-      [%Translation{}, ...]
+      iex> index()
+      {:ok, {[ %Translation{}, ...], %Flop.Meta{...}}}
 
+      iex> index(page: 1, page_size: 2)
+      {:ok, {[ %Translation{}, ...], %Flop.Meta{...}}}
   """
-  def list_translations do
-    Repo.all(Translation)
+  @spec index(Ecto.Queryable.t(), Paginator.params()) ::
+          {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
+  def index(query \\ Translation, opts \\ %{}) do
+    paginate(query, opts, for: Translation)
   end
 
   @doc """
@@ -36,9 +40,10 @@ defmodule Runa.Translations do
   """
   def get(id) do
     query =
-      from t in Translation,
+      from(t in Translation,
         where: t.id == ^id,
         preload: [:key, :language]
+      )
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}

@@ -21,7 +21,12 @@ defmodule Runa.Keys do
   @spec index(Paginator.params()) ::
           {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
   def index(opts \\ %{}) do
-    paginate(Key, opts, for: Key)
+    query =
+      from(p in Key,
+        preload: [:file, :translations]
+      )
+
+    paginate(query, opts, for: Key)
   end
 
   @doc """
@@ -40,8 +45,9 @@ defmodule Runa.Keys do
   """
   def get(id) do
     query =
-      from p in Key,
+      from(p in Key,
         where: p.id == ^id
+      )
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -113,11 +119,42 @@ defmodule Runa.Keys do
 
   ## Examples
 
-      iex> change_key(key)
+      iex> change(key)
       %Ecto.Changeset{data: %Key{}}
 
   """
-  def change_key(%Key{} = key, attrs \\ %{}) do
-    Key.changeset(key, attrs)
+  def change(%Key{} = data, attrs \\ %{}) do
+    Key.changeset(data, attrs)
+  end
+
+  @doc """
+  Gets the latest update timestamp from all translations associated with a key.
+
+  Returns the latest updated_at timestamp or nil if the key has no translations.
+
+  ## Examples
+
+      iex> get_latest_translation_update(key_id)
+      ~U[2025-02-28 17:19:36Z]
+
+      iex> get_latest_translation_update(key_without_translations)
+      nil
+
+  """
+  @spec get_latest_translation_update(binary()) :: DateTime.t() | nil
+  def get_latest_translation_update(key_id) when is_binary(key_id) do
+    query =
+      from(t in Runa.Translations.Translation,
+        where: t.key_id == ^key_id,
+        order_by: [desc: t.updated_at],
+        limit: 1,
+        select: t.updated_at
+      )
+
+    Repo.one(query)
+  end
+
+  def get_latest_translation_update(%Key{id: key_id}) do
+    get_latest_translation_update(key_id)
   end
 end

@@ -3,6 +3,8 @@ defmodule RunaWeb.Live.Translation.IndexTest do
 
   @moduletag :translations
 
+  import RunaWeb.Formatters
+
   setup do
     user = insert(:user)
     team = insert(:team)
@@ -25,13 +27,26 @@ defmodule RunaWeb.Live.Translation.IndexTest do
       end
     end
 
-    test "displays the number of keys", ctx do
+    test "renders the number of keys", ctx do
       {:ok, view, _} =
         ctx.conn
         |> put_session(:user_id, ctx.user.id)
         |> live(~p"/projects/#{ctx.project.id}?section=translations")
 
       assert render(view) =~ "#{length(ctx.keys)} keys"
+    end
+
+    test "renders the latest translations activity", ctx do
+      {:ok, view, _} =
+        ctx.conn
+        |> put_session(:user_id, ctx.user.id)
+        |> live(~p"/projects/#{ctx.project.id}?section=translations")
+
+      for key <- ctx.keys do
+        assert view
+               |> element("[aria-label='Latest #{key.name} activity']")
+               |> render() =~ format_datetime_to_view(key.updated_at)
+      end
     end
   end
 end
