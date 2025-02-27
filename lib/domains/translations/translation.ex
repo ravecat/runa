@@ -15,11 +15,10 @@ defmodule Runa.Translations.Translation do
     timestamps(type: :utc_datetime)
   end
 
-  @doc false
   def changeset(translation, attrs) do
     translation
     |> cast(attrs, [:translation, :key_id, :language_id])
-    |> validate_required([:translation, :key_id, :language_id])
+    |> validate_required([:translation, :language_id])
     |> foreign_key_constraint(:key_id)
     |> foreign_key_constraint(:language_id)
   end

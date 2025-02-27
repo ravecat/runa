@@ -20,6 +20,8 @@ defmodule Runa.Keys.Key do
   def changeset(key, attrs) do
     key
     |> cast(attrs, [:name, :description, :file_id])
-    |> validate_required([:name, :file_id])
+    |> validate_required([:name])
+    |> foreign_key_constraint(:file_id)
+    |> cast_assoc(:translations)
   end
 end

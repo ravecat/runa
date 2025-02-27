@@ -1,7 +1,7 @@
 defmodule Runa.TranslationsTest do
   @moduledoc false
 
-  use Runa.DataCase
+  use Runa.DataCase, async: true
 
   @moduletag :translations
 
@@ -13,8 +13,8 @@ defmodule Runa.TranslationsTest do
     project = insert(:project, team: team)
     file = insert(:file, project: project)
     key = insert(:key, file: file)
-    translation = insert(:translation, key: key)
     language = insert(:language)
+    translation = insert(:translation, key: key, language: language)
 
     {:ok,
      translation: translation, key: key, project: project, language: language}
@@ -22,7 +22,7 @@ defmodule Runa.TranslationsTest do
 
   describe "translations" do
     test "returns all translations", ctx do
-      assert [translation] = Translations.list_translations()
+      assert [translation] = Translations.index()
       assert ctx.translation.id == translation.id
     end
 

@@ -2,8 +2,9 @@
 <.table id="keys" rows={@entities} aria-label="Translations editor">
   <:col :let={{key, translations}} class="p-0">
     <div class="grid">
-      <div class="p-2 bg-background-alt dark:bg-background-alt flex items-center">
-        {key.name}
+      <div class="flex flex-col justify-start p-2 bg-background-alt dark:bg-background-alt">
+        <span>{key.name}</span>
+        <span class="text-text-300 text-xs">{key.file.filename}</span>
       </div>
       <div class="grid divide-y divide-background-alt dark:divide-background-alt">
         <div

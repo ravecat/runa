@@ -22,8 +22,9 @@ defmodule Runa.Files.File do
   def changeset(file, attrs) do
     file
     |> cast(attrs, [:filename, :project_id])
-    |> validate_required([:filename, :project_id])
+    |> validate_required([:filename])
     |> foreign_key_constraint(:project_id)
+    |> cast_assoc(:keys)
   end
 
   def extensions, do: @extensions

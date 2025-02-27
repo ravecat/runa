@@ -21,7 +21,11 @@ defmodule Runa.Keys do
   @spec index(Paginator.params()) ::
           {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
   def index(opts \\ %{}) do
-    paginate(Key, opts, for: Key)
+    query =
+      from p in Key,
+        preload: [:file]
+
+    paginate(query, opts, for: Key)
   end
 
   @doc """

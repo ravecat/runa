@@ -49,7 +49,6 @@ defmodule RunaWeb.KeyControllerTest do
         data: %{
           type: "keys",
           attributes: %{
-            name: "name",
             description: "description"
           }
         }
@@ -148,7 +147,7 @@ defmodule RunaWeb.KeyControllerTest do
     test "returns list of resources with relationships", ctx do
       insert(:key, file: ctx.localization_file)
 
-    get(ctx.conn, ~p"/api/keys")
+      get(ctx.conn, ~p"/api/keys")
       |> json_response(200)
       |> get_in(["data", Access.all(), "relationships"])
       |> Enum.flat_map(&Map.values/1)

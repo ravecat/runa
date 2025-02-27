@@ -12,11 +12,11 @@ defmodule Runa.Translations do
 
   ## Examples
 
-      iex> list_translations()
+      iex> index()
       [%Translation{}, ...]
 
   """
-  def list_translations do
+  def index do
     Repo.all(Translation)
   end
 

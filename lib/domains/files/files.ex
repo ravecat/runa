@@ -6,18 +6,17 @@ defmodule Runa.Files do
   use Runa, :context
 
   alias Runa.Files.File
-  alias Runa.Keys.Key
 
   @doc """
   Returns the list of files.
 
   ## Examples
 
-      iex> get_files()
+      iex> index()
       [%File{}, ...]
 
   """
-  def get_files do
+  def index do
     Repo.all(File)
   end
 
@@ -64,39 +63,36 @@ defmodule Runa.Files do
   Creates a file from a LiveView upload entry.
   """
 
-  @type file_meta() :: %{project_id: String.t(), path: String.t()}
-  @spec create(Phoenix.LiveView.UploadEntry.t(), file_meta(), [
+  @type meta() :: %{
+          path: String.t(),
+          project_id: String.t(),
+          language_id: String.t()
+        }
+  @spec create(Phoenix.LiveView.UploadEntry.t(), meta(), [
           {String.t(), String.t()}
         ]) ::
-          {:ok, any()} | {:error, any()} | Ecto.Multi.failure()
+          {:ok, any()} | {:error, any()}
   def create(entry, meta, data) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.insert(
-      :file,
-      File.changeset(%File{}, %{
-        filename: entry.client_name,
-        project_id: meta.project_id
-      })
-    )
-    |> Ecto.Multi.insert_all(
-      :keys,
-      Key,
-      fn %{file: file} ->
-        now = DateTime.truncate(DateTime.utc_now(), :second)
+    keys =
+      Enum.map(data, fn {name, translation} ->
+        %{
+          name: name,
+          translations: [
+            %{
+              translation: translation,
+              language_id: meta.language_id
+            }
+          ]
+        }
+      end)
 
-        Enum.map(
-          data,
-          &%{
-            file_id: file.id,
-            name: elem(&1, 0),
-            inserted_at: now,
-            updated_at: now
-          }
-        )
-      end,
-      returning: true
-    )
-    |> Repo.transaction()
+    %File{}
+    |> File.changeset(%{
+      filename: entry.client_name,
+      project_id: meta.project_id,
+      keys: keys
+    })
+    |> Repo.insert()
   end
 
   @doc """
@@ -104,14 +100,14 @@ defmodule Runa.Files do
 
   ## Examples
 
-      iex> update_file(file, %{field: new_value})
+      iex> update(file, %{field: new_value})
       {:ok, %File{}}
 
-      iex> update_file(file, %{field: bad_value})
+      iex> update(file, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_file(%File{} = file, attrs) do
+  def update(%File{} = file, attrs) do
     file
     |> File.changeset(attrs)
     |> Repo.update()
@@ -122,14 +118,14 @@ defmodule Runa.Files do
 
   ## Examples
 
-      iex> delete_file(file)
+      iex> delete(file)
       {:ok, %File{}}
 
-      iex> delete_file(file)
+      iex> delete(file)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_file(%File{} = file) do
+  def delete(%File{} = file) do
     Repo.delete(file)
   end
 
