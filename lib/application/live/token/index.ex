@@ -14,9 +14,8 @@ defmodule RunaWeb.Live.Token.Index do
   import RunaWeb.Components.Button
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Modal
-  import RunaWeb.Components.Card
 
-  on_mount RunaWeb.HandleUserData
+  on_mount(RunaWeb.HandleUserData)
 
   @impl true
   def mount(_, _, %{assigns: %{user: user}} = socket) do

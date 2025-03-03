@@ -1,4 +1,4 @@
-<.card>
+<div class="cardable">
   <div class="flex flex-row justify-between items-center">
     <span class="text-lg font-medium">API keys</span>
     <.button phx-click="open_token_modal" aria-label="Create token">
@@ -57,7 +57,7 @@
       </button>
     </:action>
   </.table>
-</.card>
+</div>
 <.modal
   :if={@is_visible_delete_token_modal}
   show

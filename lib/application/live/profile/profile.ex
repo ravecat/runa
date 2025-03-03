@@ -9,7 +9,6 @@ defmodule RunaWeb.Live.Profile do
   alias Runa.Tokens
 
   import RunaWeb.Components.Avatar
-  import RunaWeb.Components.Card
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Input
   import RunaWeb.Components.Form

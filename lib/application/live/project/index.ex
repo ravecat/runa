@@ -6,7 +6,6 @@ defmodule RunaWeb.Live.Project.Index do
 
   import RunaWeb.Components.Button
   import RunaWeb.Components.Icon
-  import RunaWeb.Components.Card
   import RunaWeb.Components.Pill
   import RunaWeb.Components.Modal
 

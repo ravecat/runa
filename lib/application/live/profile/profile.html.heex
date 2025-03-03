@@ -1,4 +1,4 @@
-<.card>
+<div class="cardable">
   <span class="text-lg font-medium">Profile</span>
   <div class="text-sm leading-normal">
     These settings are personal to you, these wont't be affected the rest of the workspace
@@ -88,7 +88,7 @@
       </:label>
     </.input>
   </.custom_form>
-</.card>
+</div>
 {live_render(@socket, RunaWeb.Live.Token.Index,
   id: "api_keys",
   container: {:div, class: "contents"}
