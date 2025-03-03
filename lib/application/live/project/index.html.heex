@@ -1,4 +1,4 @@
-<.card>
+<div class="cardable space-y-2">
   <div class="flex justify-start gap-2">
     <.button phx-click="open_project_modal" aria-label="Create new project">
       <.icon icon="plus" /> Create project
@@ -51,8 +51,8 @@
         </.button>
       </div>
       <.link navigate={~p"/projects/#{project.id}?section=settings"}>
-        <.card
-          class="grid grid-cols-[1fr,1fr,auto] h-full"
+        <div
+          class="cardable grid grid-cols-[1fr,1fr,auto] h-full"
           role="listitem"
           aria-label={"Project #{project.name} card"}
         >
@@ -101,11 +101,11 @@
               </span>
             </div>
           </div>
-        </.card>
+        </div>
       </.link>
     </div>
   </div>
-</.card>
+</div>
 <.modal
   :if={@is_visible_project_modal}
   show
