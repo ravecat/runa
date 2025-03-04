@@ -1,18 +1,23 @@
-<div class="cardable space-y-2">
-  <div class="flex justify-start gap-2">
-    <.button phx-click="open_project_modal" aria-label="Create new project">
-      <.icon icon="plus" /> Create project
-    </.button>
-    <.button variant="ghost" square aria-label="Compact view">
-      <.icon icon="bars-3" />
-    </.button>
-    <.button variant="ghost" square aria-label="Expand view">
-      <.icon icon="rows-2" />
-    </.button>
-    <.button variant="ghost" square aria-label="Grid view">
-      <.icon icon="squares" />
-    </.button>
-  </div>
+<.panel>
+  <:header class="flex flex-col gap-2">
+    <div class="text-sm centered justify-start">
+      <.icon icon="folder" /> Projects
+    </div>
+    <div class="flex justify-start gap-2">
+      <.button variant="ghost" square aria-label="Compact view">
+        <.icon icon="bars-3" />
+      </.button>
+      <.button variant="ghost" square aria-label="Expand view">
+        <.icon icon="rows-2" />
+      </.button>
+      <.button variant="ghost" square aria-label="Grid view">
+        <.icon icon="squares" />
+      </.button>
+      <.button phx-click="open_project_modal" aria-label="Create new project">
+        <.icon icon="plus" /> New
+      </.button>
+    </div>
+  </:header>
   <div id="projects" phx-update="stream" class="grid grid-cols-1 gap-2">
     <div
       :for={{id, project} <- @streams.projects}
@@ -105,7 +110,7 @@
       </.link>
     </div>
   </div>
-</div>
+</.panel>
 <.modal
   :if={@is_visible_project_modal}
   show

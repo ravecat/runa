@@ -23,6 +23,8 @@ defmodule RunaWeb.Components.Dropdown do
 
   attr :id, :string, required: true
   attr :entries, :list, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global
 
   attr :row_item, :any,
     default: &Function.identity/1,
@@ -32,13 +34,9 @@ defmodule RunaWeb.Components.Dropdown do
     default: nil,
     doc: "the function for handling phx-click on each row"
 
-  attr :class, :string, default: nil
-
   attr :row_id, :any,
     default: nil,
     doc: "the function for generating the row id"
-
-  attr :rest, :global
 
   attr :position, :string,
     default: "bottom",

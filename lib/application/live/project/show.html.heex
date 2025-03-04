@@ -1,4 +1,4 @@
-<div class="cardable">
+<.panel>
   <.navigation class="max-w-xl" id="project_navigation">
     <:item>
       <.active_link
@@ -31,7 +31,7 @@
       </.active_link>
     </:item>
   </.navigation>
-  <div class="p-4">
+  <div>
     <%= if match?("settings", @section) do %>
       <.live_component
         module={RunaWeb.Live.Project.Form}
@@ -72,4 +72,4 @@
       )}
     <% end %>
   </div>
-</div>
+</.panel>

@@ -51,7 +51,7 @@ defmodule RunaWeb.Components.Button do
       } />
       <span class={
         classes([
-          "group-[.phx-submit-loading]:hidden align-middle truncate leading-none gap-1",
+          "group-[.phx-submit-loading]:hidden align-middle truncate leading-none",
           ["text-primary": match?("ghost", @variant)]
         ])
       }>

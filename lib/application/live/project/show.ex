@@ -7,6 +7,7 @@ defmodule RunaWeb.Live.Project.Show do
   import RunaWeb.Components.Navigation
   import RunaWeb.Components.Link
   import RunaWeb.Components.Button
+  import RunaWeb.Components.Panel
 
   alias Runa.Projects
   alias Runa.Teams
