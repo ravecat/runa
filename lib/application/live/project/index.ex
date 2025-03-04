@@ -8,6 +8,7 @@ defmodule RunaWeb.Live.Project.Index do
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Pill
   import RunaWeb.Components.Modal
+  import RunaWeb.Components.Panel
 
   alias Runa.Projects
   alias Runa.Projects.Project

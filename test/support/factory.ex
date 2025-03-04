@@ -104,7 +104,7 @@ defmodule Runa.Factory do
 
   def file_factory(attrs) do
     %File{
-      filename: "#{Faker.File.file_name(:text)}}"
+      filename: "#{Faker.File.file_name(:text)}"
     }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
