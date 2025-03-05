@@ -25,7 +25,6 @@ defmodule Runa.TranslationsTest do
       {:ok, {data, %{}}} = Translations.index()
 
       Enum.each(data, &assert(is_struct(&1, Translation)))
-
     end
 
     test "returns the translation with given id", ctx do

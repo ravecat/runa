@@ -24,16 +24,15 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     test "assigns user from db when user_id present in session", ctx do
       Repatch.patch(Accounts, :get, fn _ -> {:ok, ctx.user} end)
 
-      conn =
-        put_session(ctx.conn, :user_id, ctx.user.id)
-        |> Authentication.call([])
+      conn = Authentication.call(ctx.conn, [])
 
       assert conn.assigns.current_user == ctx.user
     end
 
     test "assigns nil to current_user when user_id not present in session",
          ctx do
-      conn = Authentication.call(ctx.conn, [])
+      conn =
+        ctx.conn |> put_session(:user_id, nil) |> Authentication.call([])
 
       assert conn.assigns.current_user == nil
       refute Map.has_key?(conn.assigns, :user_token)
