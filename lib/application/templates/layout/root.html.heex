@@ -21,6 +21,13 @@
       src={~p"/assets/app.js"}
     >
     </script>
+    <%= if Application.get_env(:live_debugger, :browser_features?) do %>
+      <script
+        id="live-debugger-scripts"
+        src={Application.get_env(:live_debugger, :assets_url)}
+      >
+      </script>
+    <% end %>
   </head>
   <body class="antialiased text-text">
     {@inner_content}
