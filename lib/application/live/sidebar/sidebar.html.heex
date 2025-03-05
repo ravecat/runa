@@ -86,20 +86,33 @@
     </:footer>
   </.dropdown>
   <div class="grid grid-rows-[auto_auto_1fr_auto]">
-    <.link
-      href={~p"/projects"}
+    <.active_link
+      navigate={~p"/projects"}
       class="ghost optionable"
       aria-label="Navigate to projects"
+      active_class="bg-accent"
+      current_uri={@current_uri}
     >
       <.icon icon="folder" /> Projects
-    </.link>
-    <.link
-      href={~p"/profile"}
+    </.active_link>
+    <.active_link
+      navigate={~p"/profile"}
       class="ghost optionable"
       aria-label="Navigate to profile"
+      active_class="bg-accent"
+      current_uri={@current_uri}
     >
       <.icon icon="user" /> Profile
-    </.link>
+    </.active_link>
+    <.active_link
+      navigate={~p"/team"}
+      aria-label="Navigate to team settings"
+      class="self-end ghost optionable"
+      active_class="bg-accent"
+      current_uri={@current_uri}
+    >
+      <.icon icon="gear" /> Team settings
+    </.active_link>
     <.link
       href={~p"/session/logout"}
       method="delete"

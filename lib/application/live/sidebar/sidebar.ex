@@ -18,7 +18,11 @@ defmodule RunaWeb.Live.Sidebar do
   on_mount RunaWeb.HandleUserData
 
   @impl true
-  def mount(_, _, %{assigns: %{user: %{teams: [team | _]} = user}} = socket) do
+  def mount(
+        _,
+        %{"current_uri" => current_uri},
+        %{assigns: %{user: %{teams: [team | _]} = user}} = socket
+      ) do
     subscribe(socket)
 
     role = get_role(user.id, team.id)
@@ -28,10 +32,11 @@ defmodule RunaWeb.Live.Sidebar do
     socket =
       assign(socket,
         user: user,
-        is_visible_create_team_modal: false,
         team: team,
         role: role,
-        team_form_data: %Team{}
+        current_uri: current_uri,
+        team_form_data: %Team{},
+        is_visible_create_team_modal: false
       )
       |> stream_configure(:teams, dom_id: &"#{elem(&1, 0).id}")
       |> stream(:teams, teams)
@@ -40,7 +45,11 @@ defmodule RunaWeb.Live.Sidebar do
   end
 
   @impl true
-  def mount(_, _, %{assigns: %{user: user}} = socket) do
+  def mount(
+        _,
+        %{"current_uri" => current_uri},
+        %{assigns: %{user: user}} = socket
+      ) do
     subscribe(socket)
 
     socket =
@@ -50,6 +59,7 @@ defmodule RunaWeb.Live.Sidebar do
         user: user,
         role: nil,
         team_form_data: %Team{},
+        current_uri: current_uri,
         is_visible_create_team_modal: false
       )
       |> stream(:teams, [])

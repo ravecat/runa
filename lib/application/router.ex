@@ -83,7 +83,7 @@ defmodule RunaWeb.Router do
   end
 
   live_session :default,
-    on_mount: [RunaWeb.HandleUserData] do
+    on_mount: [RunaWeb.HandleUserData, RunaWeb.SaveRequestUri] do
     scope "/profile", RunaWeb.Live do
       pipe_through [:browser, :authenticate]
 
@@ -95,6 +95,12 @@ defmodule RunaWeb.Router do
 
       live "/", Project.Index
       live "/:project_id", Project.Show
+    end
+
+    scope "/team", RunaWeb.Live do
+      pipe_through [:browser, :authenticate]
+
+      live "/", Team.Show
     end
   end
 

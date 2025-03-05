@@ -2,6 +2,7 @@
 <div class="grid grid-cols-[16rem_1fr] grid-rows-[1fr] min-h-screen max-h-screen p-2 gap-2 bg-background-alt">
   {live_render(@socket, RunaWeb.Live.Sidebar,
     id: "sidebar",
+    session: %{"current_uri" => @current_uri},
     container: {:div, class: "contents"}
   )}
   <div class="min-h-0 grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-2">
