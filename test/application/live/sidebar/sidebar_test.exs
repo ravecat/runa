@@ -20,42 +20,54 @@ defmodule RunaWeb.Live.SidebarTest do
   describe "sidebar (essential information)" do
     test "renders user avatar", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       assert has_element?(view, "[aria-label='User avatar']")
     end
 
     test "renders user name", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       assert has_element?(view, "[aria-label='Current user']", ctx.user.name)
     end
 
     test "renders logout link", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       assert has_element?(view, "[aria-label='Logout']")
     end
 
     test "renders profile link", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       assert has_element?(view, "[aria-label='Navigate to profile']")
     end
 
     test "renders projects link", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       assert has_element?(view, "[aria-label='Navigate to projects']")
     end
 
     test "renders current team role", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       assert has_element?(
                view,
@@ -66,7 +78,9 @@ defmodule RunaWeb.Live.SidebarTest do
 
     test "renders current team name", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       assert has_element?(
                view,
@@ -79,7 +93,13 @@ defmodule RunaWeb.Live.SidebarTest do
       user = insert(:user)
 
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{
+            "user_id" => user.id,
+            "current_uri" => "/",
+            "TREYTREUR" => "TREYTREUR"
+          }
+        )
 
       refute has_element?(
                view,
@@ -97,7 +117,9 @@ defmodule RunaWeb.Live.SidebarTest do
       end
 
       {:ok, _, html} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       for team <- teams do
         assert html =~ team.title
@@ -113,7 +135,9 @@ defmodule RunaWeb.Live.SidebarTest do
         end
 
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       for contributor <- contributors do
         assert has_element?(
@@ -126,14 +150,18 @@ defmodule RunaWeb.Live.SidebarTest do
 
     test "renders create team button", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       assert has_element?(view, "button", "Create team")
     end
 
     test "shows modal when clicking create team button", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       refute has_element?(view, "[aria-modal='true'][role='dialog']")
 
@@ -148,7 +176,9 @@ defmodule RunaWeb.Live.SidebarTest do
   describe "sidebar (create team modal)" do
     test "creates team when form is valid", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       title = Atom.to_string(ctx.test)
 
@@ -165,7 +195,9 @@ defmodule RunaWeb.Live.SidebarTest do
 
     test "renders error when form is invalid", ctx do
       {:ok, view, _} =
-        live_isolated(ctx.conn, Sidebar, session: %{"user_id" => ctx.user.id})
+        live_isolated(ctx.conn, Sidebar,
+          session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
+        )
 
       assert view
              |> element("button", "Create team")

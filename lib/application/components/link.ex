@@ -24,9 +24,9 @@ defmodule RunaWeb.Components.Link do
 
       <.active_link
         patch={~p"/projects/20"}
-        current_uri={@current_uri}
         class="nav-link"
         match={:prefix}
+        current_uri={@current_uri}
         active_class="bg-blue-500"
       >
         Project Details

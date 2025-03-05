@@ -5,14 +5,11 @@ defmodule RunaWeb.Live.Project.Show do
   use RunaWeb, :live_view
 
   import RunaWeb.Components.Navigation
-  import RunaWeb.Components.Link
   import RunaWeb.Components.Button
   import RunaWeb.Components.Panel
 
   alias Runa.Projects
   alias Runa.Teams
-
-  on_mount RunaWeb.SaveRequestUri
 
   @impl true
   def mount(%{"project_id" => project_id}, _session, socket) do
