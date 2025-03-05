@@ -7,25 +7,26 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
   @moduletag :tokens
 
-  setup do
-    user = insert(:user, tokens: fn -> build_list(3, :token) end)
+  setup ctx do
+    tokens = insert_list(3, :token, user: ctx.user)
 
-    {:ok, user: user}
+    {:ok, tokens: tokens}
   end
 
   describe "Tokens view" do
     test "renders tokens titles", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       html =
         parent_view
         |> find_live_child("api_keys")
         |> render()
 
-      for {token, index} <- Enum.with_index(ctx.user.tokens) do
+      for {token, index} <- Enum.with_index(ctx.tokens) do
         title =
           html
           |> Floki.find("table[aria-label='API keys'] tbody tr")
@@ -41,9 +42,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "renders token owner", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       html =
         parent_view
@@ -64,16 +66,17 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "renders token created at", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       html =
         parent_view
         |> find_live_child("api_keys")
         |> render()
 
-      for {token, index} <- Enum.with_index(ctx.user.tokens) do
+      for {token, index} <- Enum.with_index(ctx.tokens) do
         created_at =
           html
           |> Floki.find("table[aria-label='API keys'] tbody tr")
@@ -89,16 +92,17 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "renders token status", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       html =
         parent_view
         |> find_live_child("api_keys")
         |> render()
 
-      for {token, index} <- Enum.with_index(ctx.user.tokens) do
+      for {token, index} <- Enum.with_index(ctx.tokens) do
         access =
           html
           |> Floki.find("table[aria-label='API keys'] tbody tr")
@@ -114,9 +118,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "renders token delete button", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -124,7 +129,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
           "api_keys"
         )
 
-      for token <- ctx.user.tokens do
+      for token <- ctx.tokens do
         assert has_element?(
                  child_view,
                  "button[aria-label='Delete token'][data-token-id='#{token.id}']"
@@ -134,9 +139,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "renders token update button", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -144,7 +150,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
           "api_keys"
         )
 
-      for token <- ctx.user.tokens do
+      for token <- ctx.tokens do
         assert has_element?(
                  child_view,
                  "button[aria-label='Update token'][data-token-id='#{token.id}']"
@@ -156,9 +162,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
   describe "delete token modal" do
     test "renders by clicking delete token button", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -168,7 +175,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
       refute has_element?(child_view, "[aria-modal='true'][role='dialog']")
 
-      for token <- ctx.user.tokens do
+      for token <- ctx.tokens do
         child_view
         |> element(
           "button[aria-label='Delete token'][data-token-id='#{token.id}']"
@@ -181,9 +188,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "deletes token by clicking delete button", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -191,7 +199,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
           "api_keys"
         )
 
-      for token <- ctx.user.tokens do
+      for token <- ctx.tokens do
         assert has_element?(child_view, "td", token.title)
 
         child_view
@@ -212,9 +220,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
   describe "create token modal" do
     test "rendered by clicking create token button", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -233,9 +242,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "creates token ", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -263,9 +273,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "renders error when title is blank", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -286,9 +297,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "renders error when access is invalid", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -313,9 +325,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
   describe "update token modal" do
     test "renders by clicking update token button", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -325,7 +338,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
       refute has_element?(child_view, "[aria-modal='true'][role='dialog']")
 
-      for token <- ctx.user.tokens do
+      for token <- ctx.tokens do
         child_view
         |> element(
           "button[aria-label='Update token'][data-token-id='#{token.id}']"
@@ -338,9 +351,10 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
     test "updates token by clicking update button", ctx do
       {:ok, parent_view, _} =
-        ctx.conn
-        |> put_session(:user_id, ctx.user.id)
-        |> live(~p"/profile")
+        live(
+          ctx.conn,
+          ~p"/profile"
+        )
 
       child_view =
         find_live_child(
@@ -350,7 +364,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
       title = Atom.to_string(ctx.test)
 
-      for token <- ctx.user.tokens do
+      for token <- ctx.tokens do
         assert has_element?(child_view, "td", token.title)
 
         child_view

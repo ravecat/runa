@@ -17,6 +17,8 @@ defmodule RunaWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
+  import Runa.Factory
+
   @session_opts Plug.Session.init(
                   store: :cookie,
                   key: "_session",
@@ -57,13 +59,16 @@ defmodule RunaWeb.ConnCase do
   setup tags do
     Runa.DataCase.setup_sandbox(tags)
 
+    user = insert(:user)
+
     conn =
       Phoenix.ConnTest.build_conn()
       |> Plug.Session.call(@session_opts)
       |> Plug.Conn.fetch_session()
       |> Phoenix.Controller.fetch_flash()
       |> Plug.Conn.put_private(:phoenix_endpoint, RunaWeb.Endpoint)
+      |> Plug.Conn.put_session(:user_id, user.id)
 
-    {:ok, conn: conn}
+    {:ok, conn: conn, user: user}
   end
 end

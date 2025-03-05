@@ -19,7 +19,12 @@ defmodule RunaWeb.Live.Project.FormTest do
         languages: [language]
       )
 
-    {:ok, user: user, project: project, team: team, contributor: contributor, language: language}
+    {:ok,
+     user: user,
+     project: project,
+     team: team,
+     contributor: contributor,
+     language: language}
   end
 
   describe "project form" do
@@ -204,7 +209,9 @@ defmodule RunaWeb.Live.Project.FormTest do
                "Russian"
 
       view
-      |> element("[aria-label='Project form'] [aria-label='Clear #{language.id} selection']")
+      |> element(
+        "[aria-label='Project form'] [aria-label='Clear #{language.id} selection']"
+      )
       |> render_click()
 
       refute element(
