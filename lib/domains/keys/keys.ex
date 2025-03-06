@@ -21,10 +21,7 @@ defmodule Runa.Keys do
   @spec index(Paginator.params()) ::
           {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
   def index(opts \\ %{}) do
-    query =
-      from(p in Key,
-        preload: [:file, :translations]
-      )
+    query = from(p in Key, preload: [:file, :translations])
 
     paginate(query, opts, for: Key)
   end
@@ -44,10 +41,7 @@ defmodule Runa.Keys do
 
   """
   def get(id) do
-    query =
-      from(p in Key,
-        where: p.id == ^id
-      )
+    query = from(p in Key, where: p.id == ^id)
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}

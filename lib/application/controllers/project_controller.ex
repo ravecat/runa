@@ -36,9 +36,8 @@ defmodule RunaWeb.ProjectController do
   end
 
   def index(
-        %{
-          assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}
-        } = conn,
+        %{assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}} =
+          conn,
         _params
       ) do
     with {:ok, {data, meta}} <-
@@ -122,11 +121,8 @@ defmodule RunaWeb.ProjectController do
   end
 
   def create(
-        %{
-          body_params: %{
-            "data" => %{"relationships" => _, "attributes" => _}
-          }
-        } = conn,
+        %{body_params: %{"data" => %{"relationships" => _, "attributes" => _}}} =
+          conn,
         params
       ) do
     with {:ok, data} <- Projects.create(params) do
@@ -224,12 +220,7 @@ defmodule RunaWeb.ProjectController do
     end
   end
 
-  def delete(
-        %{
-          path_params: %{"id" => id}
-        } = conn,
-        _
-      ) do
+  def delete(%{path_params: %{"id" => id}} = conn, _) do
     with {:ok, data} <- Projects.get(id),
          {:ok, _} <- Projects.delete(data) do
       conn |> put_status(204) |> render(:show)

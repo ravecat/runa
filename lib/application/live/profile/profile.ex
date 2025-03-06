@@ -33,8 +33,7 @@ defmodule RunaWeb.Live.Profile do
 
   @impl true
   def handle_event("validate", %{"user" => attrs}, socket) do
-    changeset =
-      Accounts.change(socket.assigns.user, attrs)
+    changeset = Accounts.change(socket.assigns.user, attrs)
 
     {:noreply,
      assign(socket, user_form_data: to_form(changeset, action: :validate))}

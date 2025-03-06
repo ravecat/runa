@@ -7,15 +7,13 @@ defmodule Runa.Translations.Translation do
   alias Runa.Keys.Key
   alias Runa.Languages.Language
 
-  @derive {
-    Flop.Schema,
-    sortable: [:translation, :inserted_at, :updated_at, :id],
-    filterable: [:translation],
-    default_order: %{
-      order_by: [:inserted_at, :id],
-      order_directions: [:desc, :asc]
-    }
-  }
+  @derive {Flop.Schema,
+           sortable: [:translation, :inserted_at, :updated_at, :id],
+           filterable: [:translation],
+           default_order: %{
+             order_by: [:inserted_at, :id],
+             order_directions: [:desc, :asc]
+           }}
 
   schema "translations" do
     field :translation, :string

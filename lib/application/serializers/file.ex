@@ -16,7 +16,5 @@ defmodule RunaWeb.Serializers.File do
     ]
 
   def relationships,
-    do: [
-      project: RunaWeb.Serializers.Project
-    ]
+    do: [project: RunaWeb.Serializers.Project]
 end

@@ -41,10 +41,7 @@ defmodule Runa.Accounts do
   def get(nil), do: {:error, %Ecto.NoResultsError{}}
 
   def get(id) do
-    query =
-      from u in User,
-        where: u.id == ^id,
-        preload: [:teams]
+    query = from u in User, where: u.id == ^id, preload: [:teams]
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -77,14 +74,9 @@ defmodule Runa.Accounts do
            |> Repo.transaction() do
       {:ok, user}
     else
-      %User{} = user ->
-        {:ok, user}
-
-      %Ecto.Changeset{} = changeset ->
-        {:error, changeset}
-
-      {:error, _, reason, _} ->
-        {:error, reason}
+      %User{} = user -> {:ok, user}
+      %Ecto.Changeset{} = changeset -> {:error, changeset}
+      {:error, _, reason, _} -> {:error, reason}
     end
     |> broadcast(:account_created)
   end
@@ -146,10 +138,7 @@ defmodule Runa.Accounts do
   end
 
   defp broadcast({:ok, %User{} = data}, event) do
-    PubSub.broadcast(
-      "#{User.__schema__(:source)}:#{data.id}",
-      {event, data}
-    )
+    PubSub.broadcast("#{User.__schema__(:source)}:#{data.id}", {event, data})
 
     {:ok, data}
   end

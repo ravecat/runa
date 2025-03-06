@@ -22,10 +22,7 @@ defmodule RunaWeb.JSONAPI.Schemas.Link do
             format: :uri,
             description: "A URI-reference pointing to the link's target"
           },
-          rel: %Schema{
-            type: :string,
-            description: "The link's relation type"
-          },
+          rel: %Schema{type: :string, description: "The link's relation type"},
           describedby: %Schema{
             type: :string,
             format: :uri,
@@ -42,10 +39,7 @@ defmodule RunaWeb.JSONAPI.Schemas.Link do
           hreflang: %Schema{
             oneOf: [
               %Schema{type: :string},
-              %Schema{
-                type: :array,
-                items: %Schema{type: :string}
-              }
+              %Schema{type: :array, items: %Schema{type: :string}}
             ],
             description: "The language(s) of the link's target"
           },

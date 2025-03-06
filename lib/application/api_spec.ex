@@ -20,12 +20,8 @@ defmodule RunaWeb.APISpec do
 
   def spec() do
     %OpenApi{
-      security: [
-        %{"ApiKeyAuth" => []}
-      ],
-      servers: [
-        Server.from_endpoint(Endpoint)
-      ],
+      security: [%{"ApiKeyAuth" => []}],
+      servers: [Server.from_endpoint(Endpoint)],
       info: %Info{
         title: to_string(Application.spec(:runa, :description)),
         version: to_string(Application.spec(:runa, :vsn))
@@ -140,9 +136,7 @@ defmodule RunaWeb.APISpec do
   end
 
   @type operation_type :: :index | :show | :create | :update | :delete
-  @type responses :: %{
-          (integer | :default) => Response.t() | Reference.t()
-        }
+  @type responses :: %{(integer | :default) => Response.t() | Reference.t()}
   @spec generate_response_schemas(operation_type(), responses()) :: responses()
   def generate_response_schemas(operation_type, responses \\ %{}) do
     base_responses = %{

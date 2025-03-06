@@ -122,11 +122,7 @@ defmodule RunaWeb.Components.SelectTest do
       |> element("[aria-label='Clear selection']")
       |> render_click()
 
-      assert_handle_event(
-        view,
-        "clear_selection",
-        %{"id" => "test-select"}
-      )
+      assert_handle_event(view, "clear_selection", %{"id" => "test-select"})
     end
 
     test "sends input change text event" do
@@ -145,11 +141,7 @@ defmodule RunaWeb.Components.SelectTest do
       |> element("[aria-label='Search options']")
       |> render_change(%{"test-select" => "example"})
 
-      assert_handle_event(
-        view,
-        "search_options",
-        %{"test-select" => "example"}
-      )
+      assert_handle_event(view, "search_options", %{"test-select" => "example"})
     end
 
     @tag :skip

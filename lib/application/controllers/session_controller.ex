@@ -23,10 +23,7 @@ defmodule RunaWeb.SessionController do
     conn
   end
 
-  def callback(
-        %{assigns: %{ueberauth_failure: _fails}} = conn,
-        _params
-      ) do
+  def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
     conn
     |> put_flash(:error, "Failed to authenticate.")
     |> redirect(to: ~p"/")
@@ -38,14 +35,10 @@ defmodule RunaWeb.SessionController do
       ) do
     case Authentication.authenticate_by_auth_data(auth) do
       {:ok, user} ->
-        conn
-        |> login(user)
-        |> redirect(to: ~p"/profile")
+        conn |> login(user) |> redirect(to: ~p"/profile")
 
       {:error, reason} ->
-        conn
-        |> put_flash(:error, reason)
-        |> redirect(to: ~p"/")
+        conn |> put_flash(:error, reason) |> redirect(to: ~p"/")
     end
   end
 

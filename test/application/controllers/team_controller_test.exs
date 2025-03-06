@@ -14,19 +14,13 @@ defmodule RunaWeb.TeamControllerTest do
 
       get(ctx.conn, ~p"/api/teams")
       |> json_response(200)
-      |> assert_schema(
-        "Team.IndexResponse",
-        ctx.spec
-      )
+      |> assert_schema("Team.IndexResponse", ctx.spec)
     end
 
     test "returns empty list of resources", ctx do
       get(ctx.conn, ~p"/api/teams")
       |> json_response(200)
-      |> assert_schema(
-        "Team.IndexResponse",
-        ctx.spec
-      )
+      |> assert_schema("Team.IndexResponse", ctx.spec)
     end
 
     test "returns resources with relationships", ctx do
@@ -48,19 +42,13 @@ defmodule RunaWeb.TeamControllerTest do
 
       get(ctx.conn, ~p"/api/teams/#{team.id}")
       |> json_response(200)
-      |> assert_schema(
-        "Team.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Team.ShowResponse", ctx.spec)
     end
 
     test "returns errors when resource is not found", ctx do
       get(ctx.conn, ~p"/api/teams/1")
       |> json_response(404)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
 
     test "returns resource with relationships", ctx do
@@ -78,36 +66,19 @@ defmodule RunaWeb.TeamControllerTest do
 
   describe "create endpoint" do
     test "returns resource when data is valid", ctx do
-      body = %{
-        data: %{
-          type: "teams",
-          attributes: %{
-            title: "title"
-          }
-        }
-      }
+      body = %{data: %{type: "teams", attributes: %{title: "title"}}}
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(201)
-      |> assert_schema(
-        "Team.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Team.ShowResponse", ctx.spec)
     end
 
     test "renders errors when data is invalid", ctx do
-      body = %{
-        data: %{
-          type: "teams"
-        }
-      }
+      body = %{data: %{type: "teams"}}
 
       post(ctx.conn, ~p"/api/teams", body)
       |> json_response(409)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
   end
 
@@ -119,37 +90,23 @@ defmodule RunaWeb.TeamControllerTest do
         data: %{
           type: "teams",
           id: "#{team.id}",
-          attributes: %{
-            title: "updated title"
-          }
+          attributes: %{title: "updated title"}
         }
       }
 
       patch(ctx.conn, ~p"/api/teams/#{team.id}", body)
       |> json_response(200)
-      |> assert_schema(
-        "Team.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Team.ShowResponse", ctx.spec)
     end
 
     test "returns 404 error when resource doesn't exists", ctx do
       body = %{
-        data: %{
-          type: "teams",
-          id: "1",
-          attributes: %{
-            title: "updated title"
-          }
-        }
+        data: %{type: "teams", id: "1", attributes: %{title: "updated title"}}
       }
 
       patch(ctx.conn, ~p"/api/teams/1", body)
       |> json_response(404)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
   end
 
@@ -159,10 +116,7 @@ defmodule RunaWeb.TeamControllerTest do
 
       delete(ctx.conn, ~p"/api/teams/#{team.id}")
       |> json_response(204)
-      |> assert_schema(
-        "Document",
-        ctx.spec
-      )
+      |> assert_schema("Document", ctx.spec)
     end
   end
 
@@ -175,11 +129,7 @@ defmodule RunaWeb.TeamControllerTest do
         get(ctx.conn, ~p"/api/teams/#{team.id}?include=projects")
         |> json_response(200)
 
-      assert_schema(
-        response,
-        "Team.ShowResponse",
-        ctx.spec
-      )
+      assert_schema(response, "Team.ShowResponse", ctx.spec)
 
       get_in(response, ["included"])
       |> Enum.each(&assert_schema(&1, "ResourceObject", ctx.spec))
@@ -192,11 +142,7 @@ defmodule RunaWeb.TeamControllerTest do
         get(ctx.conn, ~p"/api/teams/#{team.id}?include=projects")
         |> json_response(200)
 
-      assert_schema(
-        response,
-        "Team.ShowResponse",
-        ctx.spec
-      )
+      assert_schema(response, "Team.ShowResponse", ctx.spec)
 
       assert response["included"] == []
     end
@@ -210,10 +156,7 @@ defmodule RunaWeb.TeamControllerTest do
         ~p"/api/teams/#{team.id}?include=projects&fields[projects]=name"
       )
       |> json_response(200)
-      |> assert_schema(
-        "Team.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Team.ShowResponse", ctx.spec)
     end
   end
 
@@ -223,10 +166,7 @@ defmodule RunaWeb.TeamControllerTest do
 
       get(ctx.conn, ~p"/api/teams?sort=title")
       |> json_response(200)
-      |> assert_schema(
-        "Team.IndexResponse",
-        ctx.spec
-      )
+      |> assert_schema("Team.IndexResponse", ctx.spec)
     end
 
     test "returns sorted resources according direction", ctx do
@@ -243,10 +183,7 @@ defmodule RunaWeb.TeamControllerTest do
     test "returns error when sorting by unknown field", ctx do
       get(ctx.conn, ~p"/api/teams?sort=unknown")
       |> json_response(400)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
   end
 
@@ -259,11 +196,7 @@ defmodule RunaWeb.TeamControllerTest do
         get(ctx.conn, ~p"/api/teams?filter[title]=#{title}")
         |> json_response(200)
 
-      assert_schema(
-        response,
-        "Team.IndexResponse",
-        ctx.spec
-      )
+      assert_schema(response, "Team.IndexResponse", ctx.spec)
 
       assert match?(
                %{"data" => [%{"attributes" => %{"title" => ^title}}]},
@@ -284,11 +217,7 @@ defmodule RunaWeb.TeamControllerTest do
         get(ctx.conn, ~p"/api/teams?page[number]=1&page[size]=#{size}")
         |> json_response(200)
 
-      assert_schema(
-        response,
-        "Team.IndexResponse",
-        ctx.spec
-      )
+      assert_schema(response, "Team.IndexResponse", ctx.spec)
     end
 
     test "returns paginated resources with required links", ctx do
@@ -300,11 +229,7 @@ defmodule RunaWeb.TeamControllerTest do
         get(ctx.conn, ~p"/api/teams?page[number]=1&page[size]=#{size}")
         |> json_response(200)
 
-      assert_schema(
-        get_in(response, ["links"]),
-        "LinksObject",
-        ctx.spec
-      )
+      assert_schema(get_in(response, ["links"]), "LinksObject", ctx.spec)
     end
 
     test "returns paginated resources with required length", ctx do
@@ -437,10 +362,7 @@ defmodule RunaWeb.TeamControllerTest do
 
       get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
       |> json_response(200)
-      |> assert_schema(
-        "Team.IndexResponse",
-        ctx.spec
-      )
+      |> assert_schema("Team.IndexResponse", ctx.spec)
     end
 
     test "returns paginated resources with required length", ctx do
@@ -464,11 +386,7 @@ defmodule RunaWeb.TeamControllerTest do
         get(ctx.conn, ~p"/api/teams?page[offset]=0&page[limit]=#{limit}")
         |> json_response(200)
 
-      assert_schema(
-        get_in(response, ["links"]),
-        "LinksObject",
-        ctx.spec
-      )
+      assert_schema(get_in(response, ["links"]), "LinksObject", ctx.spec)
     end
 
     test "returns paginated resources with first link", ctx do
@@ -589,14 +507,9 @@ defmodule RunaWeb.TeamControllerTest do
 
       %{"links" => %{"next" => next}} =
         response =
-        get(ctx.conn, ~p"/api/teams?page[size]=#{size}")
-        |> json_response(200)
+        get(ctx.conn, ~p"/api/teams?page[size]=#{size}") |> json_response(200)
 
-      assert_schema(
-        response,
-        "Team.IndexResponse",
-        ctx.spec
-      )
+      assert_schema(response, "Team.IndexResponse", ctx.spec)
 
       %{query: query} = URI.parse(next)
       query_params = Plug.Conn.Query.decode(query)
@@ -612,15 +525,13 @@ defmodule RunaWeb.TeamControllerTest do
       size = 2
 
       %{"links" => %{"next" => next}} =
-        get(ctx.conn, ~p"/api/teams?page[size]=#{size}")
-        |> json_response(200)
+        get(ctx.conn, ~p"/api/teams?page[size]=#{size}") |> json_response(200)
 
       %{query: query} = URI.parse(next)
       query_params = Plug.Conn.Query.decode(query)
 
       %{"links" => %{"prev" => prev}} =
-        get(ctx.conn, ~p"/api/teams", query_params)
-        |> json_response(200)
+        get(ctx.conn, ~p"/api/teams", query_params) |> json_response(200)
 
       %{query: query} = URI.parse(prev)
       query_params = Plug.Conn.Query.decode(query)
@@ -640,11 +551,7 @@ defmodule RunaWeb.TeamControllerTest do
         get(ctx.conn, ~p"/api/teams/#{team.id}/relationships/projects")
         |> json_response(200)
 
-      assert_schema(
-        response,
-        "Document",
-        ctx.spec
-      )
+      assert_schema(response, "Document", ctx.spec)
 
       get_in(response, ["data"])
       |> Enum.each(&assert_schema(&1, "ResourceIdentifierObject", ctx.spec))

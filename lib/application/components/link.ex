@@ -102,9 +102,7 @@ defmodule RunaWeb.Components.Link do
     target_uri = get_target_uri(assigns)
 
     active? =
-      check_activity(
-        uri,
-        target_uri,
+      check_activity(uri, target_uri,
         match: assigns.match,
         match_params: assigns.match_params
       )
@@ -148,9 +146,7 @@ defmodule RunaWeb.Components.Link do
 
   defp build_assigns(assigns, true) do
     rest =
-      assigns.rest
-      |> add_class(assigns[:active_class])
-      |> add_aria_current()
+      assigns.rest |> add_class(assigns[:active_class]) |> add_aria_current()
 
     assign(assigns, :rest, rest)
   end

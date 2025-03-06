@@ -82,11 +82,7 @@ defmodule RunaWeb.Live.SidebarTest do
           session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
         )
 
-      assert has_element?(
-               view,
-               "[aria-label='Current team']",
-               ctx.team.title
-             )
+      assert has_element?(view, "[aria-label='Current team']", ctx.team.title)
     end
 
     test "hides current team name if no team is existed", ctx do
@@ -101,10 +97,7 @@ defmodule RunaWeb.Live.SidebarTest do
           }
         )
 
-      refute has_element?(
-               view,
-               "[aria-label='Current team']"
-             )
+      refute has_element?(view, "[aria-label='Current team']")
     end
   end
 

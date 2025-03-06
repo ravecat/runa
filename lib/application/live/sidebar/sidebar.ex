@@ -53,8 +53,7 @@ defmodule RunaWeb.Live.Sidebar do
     subscribe(socket)
 
     socket =
-      assign(
-        socket,
+      assign(socket,
         team: nil,
         user: user,
         role: nil,
@@ -82,8 +81,7 @@ defmodule RunaWeb.Live.Sidebar do
 
   @impl true
   def handle_info({:account_updated, data}, socket) do
-    socket =
-      assign(socket, :user, data)
+    socket = assign(socket, :user, data)
 
     {:noreply, socket}
   end

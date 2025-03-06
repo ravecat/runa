@@ -7,11 +7,7 @@ defmodule RunaWeb.ErrorJSONTest do
   alias RunaWeb.ErrorJSON
 
   setup do
-    conn =
-      put_status(
-        build_conn(),
-        409
-      )
+    conn = put_status(build_conn(), 409)
 
     {:ok, conn: conn}
   end
@@ -23,16 +19,15 @@ defmodule RunaWeb.ErrorJSONTest do
   end
 
   test "renders 500" do
-    assert ErrorJSON.render("500.json", %{}) ==
-             %{
-               errors: [
-                 %{
-                   detail: "Internal Server Error",
-                   status: "500",
-                   title: "Internal Server Error"
-                 }
-               ]
-             }
+    assert ErrorJSON.render("500.json", %{}) == %{
+             errors: [
+               %{
+                 detail: "Internal Server Error",
+                 status: "500",
+                 title: "Internal Server Error"
+               }
+             ]
+           }
   end
 
   test "renders changeset errors", ctx do

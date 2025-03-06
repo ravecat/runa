@@ -67,9 +67,7 @@ defmodule RunaWeb.Schema do
   defp generate_main_schema(module, schema) do
     quote do
       defmodule unquote(module) do
-        OpenApiSpex.schema(%{
-          allOf: [ResourceObject, unquote(schema)]
-        })
+        OpenApiSpex.schema(%{allOf: [ResourceObject, unquote(schema)]})
       end
     end
   end
@@ -113,9 +111,7 @@ defmodule RunaWeb.Schema do
             Document,
             %Schema{
               type: :object,
-              properties: %{
-                data: %Schema{type: :array, items: unquote(module)}
-              }
+              properties: %{data: %Schema{type: :array, items: unquote(module)}}
             }
           ]
         })

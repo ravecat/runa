@@ -57,8 +57,7 @@ defmodule RunaWeb.Live.Token.Form do
 
   @impl true
   def handle_event("validate", %{"token" => attrs}, socket) do
-    changeset =
-      Tokens.change(socket.assigns.data, attrs)
+    changeset = Tokens.change(socket.assigns.data, attrs)
 
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end

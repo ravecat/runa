@@ -41,11 +41,7 @@ defmodule Runa.Teams do
 
   """
   def get(id) do
-    query =
-      from(p in Team,
-        where: p.id == ^id,
-        preload: [:projects]
-      )
+    query = from(p in Team, where: p.id == ^id, preload: [:projects])
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -229,10 +225,7 @@ defmodule Runa.Teams do
   end
 
   defp broadcast({:ok, %Team{} = data}, event) do
-    PubSub.broadcast(
-      Team.__schema__(:source),
-      {event, data}
-    )
+    PubSub.broadcast(Team.__schema__(:source), {event, data})
 
     {:ok, data}
   end

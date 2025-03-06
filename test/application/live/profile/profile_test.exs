@@ -15,21 +15,13 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "authenticated user can see profile page", ctx do
-    {:ok, _, html} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, _, html} = live(ctx.conn, ~p"/profile")
 
     assert html =~ ctx.user.name
   end
 
   test "authenticated user can see name", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     assert has_element?(
              view,
@@ -38,11 +30,7 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "authenticated user can update name", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     assert has_element?(
              view,
@@ -68,11 +56,7 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "name update in profile propagates to sidebar", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     sidebar = view |> element("[aria-label='Main navigation']") |> render()
     refute sidebar =~ "John Doe"
@@ -86,37 +70,21 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "name updates in profile propagates to token list", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
-    child_view =
-      find_live_child(
-        view,
-        "api_keys"
-      )
+    child_view = find_live_child(view, "api_keys")
 
     view
     |> element("input[aria-label='Profile name']")
     |> render_blur(%{"value" => "John Doe"})
 
     for _ <- ctx.tokens do
-      assert has_element?(
-               child_view,
-               "td",
-               "John Doe"
-             )
+      assert has_element?(child_view, "td", "John Doe")
     end
   end
 
   test "authenticated user can see email", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     assert has_element?(
              view,
@@ -125,11 +93,7 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "authenticated user can see creation date", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     formatted_date = format_datetime_to_view(ctx.user.inserted_at)
 
@@ -140,11 +104,7 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "authenticated user can see last update date", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     formatted_date = format_datetime_to_view(ctx.user.updated_at)
 
@@ -155,11 +115,7 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "authenticated user can see avatar", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     assert has_element?(
              view,
@@ -168,11 +124,7 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "authenticated user can update avatar", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     initial_src =
       view
@@ -197,11 +149,7 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "avatar update in profile propagates to sidebar", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     sidebar_avatar_url =
       view
@@ -225,11 +173,7 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "authenticated user can delete avatar", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     initial_src =
       view
@@ -254,11 +198,7 @@ defmodule RunaWeb.Live.ProfileTest do
   end
 
   test "delete avatar in profile propagates to sidebar", ctx do
-    {:ok, view, _} =
-      live(
-        ctx.conn,
-        ~p"/profile"
-      )
+    {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
     sidebar_avatar_url =
       view

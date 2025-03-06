@@ -32,14 +32,7 @@ defmodule Mix.Tasks.Seed.Languages do
 
     languages =
       [data]
-      |> CSV.decode(
-        headers: [
-          :wals_code,
-          :iso_code,
-          :glottocode,
-          :Name
-        ]
-      )
+      |> CSV.decode(headers: [:wals_code, :iso_code, :glottocode, :Name])
       |> Stream.drop(1)
       |> Stream.map(fn {:ok,
                         %{
@@ -60,9 +53,7 @@ defmodule Mix.Tasks.Seed.Languages do
       |> Enum.to_list()
 
     {count, _} =
-      Repo.insert_all(
-        Language,
-        languages,
+      Repo.insert_all(Language, languages,
         on_conflict: {:replace_all_except, [:id, :wals_code]},
         conflict_target: [:wals_code]
       )

@@ -13,10 +13,7 @@ defmodule RunaWeb.SessionControllerTest do
        uid: "1234567890",
        credentials: %{token: "fdsnoafhnoofh08h38h"},
        provider: :google,
-       info: %Ueberauth.Auth.Info{
-         name: "John Doe",
-         email: "john@mail.com"
-       }
+       info: %Ueberauth.Auth.Info{name: "John Doe", email: "john@mail.com"}
      },
      user: insert(:user)}
   end
@@ -30,9 +27,7 @@ defmodule RunaWeb.SessionControllerTest do
 
     test "puts user id to session on authentication success", ctx do
       with_mock RunaWeb.Plugs.Authentication, [:passthrough],
-        authenticate_by_auth_data: fn _ ->
-          {:ok, ctx.user}
-        end do
+        authenticate_by_auth_data: fn _ -> {:ok, ctx.user} end do
         conn =
           ctx.conn
           |> assign(:ueberauth_auth, ctx.auth_data)

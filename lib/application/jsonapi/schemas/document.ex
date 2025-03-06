@@ -26,29 +26,17 @@ defmodule RunaWeb.JSONAPI.Schemas.Document do
           links: LinksObject,
           data: %Schema{
             oneOf: [
-              %Schema{
-                type: :object,
-                allOf: [
-                  ResourceObject,
-                  Timestamp
-                ]
-              },
+              %Schema{type: :object, allOf: [ResourceObject, Timestamp]},
               %Schema{
                 type: :array,
                 items: %Schema{
                   type: :object,
-                  allOf: [
-                    ResourceObject,
-                    Timestamp
-                  ]
+                  allOf: [ResourceObject, Timestamp]
                 }
               }
             ]
           },
-          included: %Schema{
-            type: :array,
-            items: ResourceObject
-          }
+          included: %Schema{type: :array, items: ResourceObject}
         },
         required: [:data],
         additionalProperties: false

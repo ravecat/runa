@@ -36,8 +36,7 @@ defmodule RunaWeb.Live.Project.Index do
 
   def mount(_, _, socket) do
     socket =
-      assign(
-        socket,
+      assign(socket,
         team_id: nil,
         project: %Project{},
         is_visible_project_modal: false,
@@ -71,8 +70,7 @@ defmodule RunaWeb.Live.Project.Index do
 
   @impl true
   def handle_event("open_project_modal", _, socket) do
-    socket =
-      assign(socket, :is_visible_project_modal, true)
+    socket = assign(socket, :is_visible_project_modal, true)
 
     {:noreply, socket}
   end
@@ -133,13 +131,11 @@ defmodule RunaWeb.Live.Project.Index do
         Teams.get_projects_with_statistics(socket.assigns.team_id)
         |> Enum.find(&(&1.id == new_data.id))
 
-      socket =
-        stream_insert(socket, :projects, updated_data)
+      socket = stream_insert(socket, :projects, updated_data)
 
       {:noreply, socket}
     else
-      _ ->
-        {:noreply, socket}
+      _ -> {:noreply, socket}
     end
   end
 

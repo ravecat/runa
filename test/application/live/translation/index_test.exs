@@ -17,10 +17,7 @@ defmodule RunaWeb.Live.Translation.IndexTest do
   describe "translations view" do
     test "renders localization keys", ctx do
       {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects/#{ctx.project.id}?section=translations"
-        )
+        live(ctx.conn, ~p"/projects/#{ctx.project.id}?section=translations")
 
       for key <- ctx.keys do
         assert render(view) =~ key.name
@@ -29,20 +26,14 @@ defmodule RunaWeb.Live.Translation.IndexTest do
 
     test "renders the number of keys", ctx do
       {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects/#{ctx.project.id}?section=translations"
-        )
+        live(ctx.conn, ~p"/projects/#{ctx.project.id}?section=translations")
 
       assert render(view) =~ "#{length(ctx.keys)} keys"
     end
 
     test "renders the latest translations activity", ctx do
       {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects/#{ctx.project.id}?section=translations"
-        )
+        live(ctx.conn, ~p"/projects/#{ctx.project.id}?section=translations")
 
       for key <- ctx.keys do
         assert view

@@ -51,10 +51,7 @@ defmodule Runa.Contributors do
 
   """
   def get(id) do
-    query =
-      from p in Contributor,
-        where: p.id == ^id,
-        preload: [:team, :user]
+    query = from p in Contributor, where: p.id == ^id, preload: [:team, :user]
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}

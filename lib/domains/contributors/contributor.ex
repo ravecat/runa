@@ -21,11 +21,7 @@ defmodule Runa.Contributors.Contributor do
   @doc false
   def changeset(contributor, attrs) do
     contributor
-    |> cast(attrs, [
-      :user_id,
-      :team_id,
-      :role
-    ])
+    |> cast(attrs, [:user_id, :team_id, :role])
     |> validate_required([:user_id, :team_id, :role])
     |> assoc_constraint(:user)
     |> assoc_constraint(:team)

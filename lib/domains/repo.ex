@@ -36,10 +36,7 @@ defmodule Runa.Repo do
 
     struct = __MODULE__.preload(struct, associations)
 
-    params =
-      struct
-      |> Map.from_struct()
-      |> Map.merge(attrs)
+    params = struct |> Map.from_struct() |> Map.merge(attrs)
 
     changeset =
       Ecto.Changeset.cast(
@@ -48,8 +45,7 @@ defmodule Runa.Repo do
         struct.__struct__.__schema__(:fields) -- [:id]
       )
 
-    changeset =
-      process_associations(associations, struct, changeset, attrs)
+    changeset = process_associations(associations, struct, changeset, attrs)
 
     __MODULE__.insert(changeset)
   end

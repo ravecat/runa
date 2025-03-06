@@ -40,10 +40,7 @@ defmodule Runa.Translations do
   """
   def get(id) do
     query =
-      from(t in Translation,
-        where: t.id == ^id,
-        preload: [:key, :language]
-      )
+      from(t in Translation, where: t.id == ^id, preload: [:key, :language])
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}

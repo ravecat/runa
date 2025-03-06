@@ -25,8 +25,7 @@ defmodule Runa.Storage.S3 do
            |> ExAws.request() do
       {:ok, response}
     else
-      {:error, reason} ->
-        {:error, reason}
+      {:error, reason} -> {:error, reason}
     end
   end
 
@@ -52,8 +51,7 @@ defmodule Runa.Storage.S3 do
          {:ok, _} <- create_bucket(bucket, region) do
       {:ok, bucket}
     else
-      {:error, error} ->
-        {:error, error}
+      {:error, error} -> {:error, error}
     end
   end
 
@@ -61,11 +59,8 @@ defmodule Runa.Storage.S3 do
     S3.head_bucket(bucket)
     |> ExAws.request()
     |> case do
-      {:ok, response} ->
-        {:ok, response}
-
-      {:error, error} ->
-        {:error, error}
+      {:ok, response} -> {:ok, response}
+      {:error, error} -> {:error, error}
     end
   end
 
@@ -73,11 +68,8 @@ defmodule Runa.Storage.S3 do
     S3.put_bucket(bucket, region)
     |> ExAws.request()
     |> case do
-      {:ok, response} ->
-        {:ok, response}
-
-      {:error, error} ->
-        {:error, error}
+      {:ok, response} -> {:ok, response}
+      {:error, error} -> {:error, error}
     end
   end
 end

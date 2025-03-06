@@ -16,8 +16,5 @@ defmodule RunaWeb.Serializers.Translation do
     ]
 
   def relationships,
-    do: [
-      key: RunaWeb.Serializers.Key,
-      language: RunaWeb.Serializers.Language
-    ]
+    do: [key: RunaWeb.Serializers.Key, language: RunaWeb.Serializers.Language]
 end

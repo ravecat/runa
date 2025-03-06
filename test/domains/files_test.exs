@@ -45,10 +45,7 @@ defmodule Runa.FilesTest do
       meta = %{project_id: project.id, language_id: language.id}
       upload_entry = %{client_name: "test_file.csv"}
 
-      data = [
-        {"key1", "value1"},
-        {"key2", "value2"}
-      ]
+      data = [{"key1", "value1"}, {"key2", "value2"}]
 
       assert {:ok, data} = Files.create(upload_entry, meta, data)
 
@@ -56,28 +53,11 @@ defmodule Runa.FilesTest do
 
       project_id = project.id
 
-      assert %{
-               filename: "test_file.csv",
-               project_id: ^project_id
-             } = data
+      assert %{filename: "test_file.csv", project_id: ^project_id} = data
 
       assert [
-               %{
-                 name: "key1",
-                 translations: [
-                   %{
-                     translation: "value1"
-                   }
-                 ]
-               },
-               %{
-                 name: "key2",
-                 translations: [
-                   %{
-                     translation: "value2"
-                   }
-                 ]
-               }
+               %{name: "key1", translations: [%{translation: "value1"}]},
+               %{name: "key2", translations: [%{translation: "value2"}]}
              ] = data.keys
     end
 

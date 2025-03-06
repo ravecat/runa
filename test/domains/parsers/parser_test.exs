@@ -8,9 +8,7 @@ defmodule Runa.ParserTest do
     test "successfully parses a JSON file" do
       file_path = "test/fixtures/json/v1.json"
 
-      entry = %Phoenix.LiveView.UploadEntry{
-        client_name: "v1.json"
-      }
+      entry = %Phoenix.LiveView.UploadEntry{client_name: "v1.json"}
 
       Repatch.patch(Runa.Parsers.JSON, :parse, [mode: :shared], fn path ->
         {:ok, path}
@@ -28,9 +26,7 @@ defmodule Runa.ParserTest do
   test "return an error for unknown extension" do
     file_path = "test/fixtures/json/v1.unknown"
 
-    entry = %Phoenix.LiveView.UploadEntry{
-      client_name: "v1.unknown"
-    }
+    entry = %Phoenix.LiveView.UploadEntry{client_name: "v1.unknown"}
 
     Parser.process(self(), file_path, entry)
 

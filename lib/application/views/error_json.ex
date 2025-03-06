@@ -60,17 +60,14 @@ defmodule RunaWeb.ErrorJSON do
     }
   end
 
-  def error(%{errors: errors, conn: %{status: status}})
-      when is_list(errors) do
+  def error(%{errors: errors, conn: %{status: status}}) when is_list(errors) do
     %{
       errors:
         Enum.map(errors, fn error ->
           if match?(%OpenApiSpex.Cast.Error{}, error) do
             %{
               status: to_string(status),
-              source: %{
-                pointer: OpenApiSpex.path_to_string(error)
-              },
+              source: %{pointer: OpenApiSpex.path_to_string(error)},
               title: to_string(error)
             }
           else

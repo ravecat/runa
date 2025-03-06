@@ -31,10 +31,7 @@ defmodule RunaWeb.Components.Flash do
     doc: "the optional inner block that renders the flash message"
 
   def flash(assigns) do
-    assigns =
-      assign_new(assigns, :id, fn ->
-        "flash-#{assigns.kind}"
-      end)
+    assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
 
     ~H"""
     <div

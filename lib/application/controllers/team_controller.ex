@@ -34,9 +34,8 @@ defmodule RunaWeb.TeamController do
   end
 
   def index(
-        %{
-          assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}
-        } = conn,
+        %{assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}} =
+          conn,
         _params
       ) do
     with {:ok, {data, meta}} <-
@@ -102,14 +101,7 @@ defmodule RunaWeb.TeamController do
     }
   end
 
-  def create(
-        %{
-          body_params: %{
-            "data" => %{"attributes" => attrs}
-          }
-        } = conn,
-        _
-      ) do
+  def create(%{body_params: %{"data" => %{"attributes" => attrs}}} = conn, _) do
     with {:ok, data} <- Teams.create(attrs) do
       conn |> put_status(201) |> render(data: data)
     end
@@ -147,9 +139,7 @@ defmodule RunaWeb.TeamController do
 
   def update(
         %{
-          body_params: %{
-            "data" => %{"attributes" => attrs}
-          },
+          body_params: %{"data" => %{"attributes" => attrs}},
           path_params: %{"id" => id}
         } = conn,
         _

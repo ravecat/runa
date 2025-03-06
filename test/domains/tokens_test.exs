@@ -57,8 +57,7 @@ defmodule Runa.TokensTest do
     test "updates access", ctx do
       token = insert(:token, access: :read, user: ctx.user)
 
-      assert {:ok, %Token{} = token} =
-               Tokens.update(token, %{access: :write})
+      assert {:ok, %Token{} = token} = Tokens.update(token, %{access: :write})
 
       assert token.access == :write
     end
@@ -68,8 +67,7 @@ defmodule Runa.TokensTest do
 
       Tokens.subscribe(ctx.user.id)
 
-      assert {:ok, data} =
-               Tokens.update(token, %{access: :write})
+      assert {:ok, data} = Tokens.update(token, %{access: :write})
 
       assert_receive {:token_updated, payload}
 

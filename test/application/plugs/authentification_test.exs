@@ -13,9 +13,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
   describe "authentication plug" do
     test "re-assigns user when already existing in connection", ctx do
       conn =
-        ctx.conn
-        |> assign(:current_user, ctx.user)
-        |> Authentication.call([])
+        ctx.conn |> assign(:current_user, ctx.user) |> Authentication.call([])
 
       assert conn.assigns.current_user == ctx.user
       assert is_binary(conn.assigns.user_token)
@@ -31,8 +29,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
 
     test "assigns nil to current_user when user_id not present in session",
          ctx do
-      conn =
-        ctx.conn |> put_session(:user_id, nil) |> Authentication.call([])
+      conn = ctx.conn |> put_session(:user_id, nil) |> Authentication.call([])
 
       assert conn.assigns.current_user == nil
       refute Map.has_key?(conn.assigns, :user_token)
@@ -78,13 +75,9 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     test "uses side avatar service" do
       auth_datas = [
         %Ueberauth.Auth{
-          info: %{
-            urls: %{avatar_url: "https://example.com/avatar.jpg"}
-          }
+          info: %{urls: %{avatar_url: "https://example.com/avatar.jpg"}}
         },
-        %Ueberauth.Auth{
-          info: %{image: "https://example.com/avatar.jpg"}
-        },
+        %Ueberauth.Auth{info: %{image: "https://example.com/avatar.jpg"}},
         %Ueberauth.Auth{}
       ]
 
@@ -101,9 +94,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "fetches email from auth info" do
-      auth_data = %Ueberauth.Auth{
-        info: %{email: "user@example.com"}
-      }
+      auth_data = %Ueberauth.Auth{info: %{email: "user@example.com"}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.email == "user@example.com"
@@ -114,9 +105,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "returns nil when no email is available" do
-      auth_data = %Ueberauth.Auth{
-        info: %{}
-      }
+      auth_data = %Ueberauth.Auth{info: %{}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.email == nil
@@ -127,9 +116,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "fetches name directly when available" do
-      auth_data = %Ueberauth.Auth{
-        info: %{name: "John Doe"}
-      }
+      auth_data = %Ueberauth.Auth{info: %{name: "John Doe"}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "John Doe"
@@ -140,12 +127,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "constructs name from first_name and last_name" do
-      auth_data = %Ueberauth.Auth{
-        info: %{
-          first_name: "John",
-          last_name: "Doe"
-        }
-      }
+      auth_data = %Ueberauth.Auth{info: %{first_name: "John", last_name: "Doe"}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "John Doe"
@@ -156,12 +138,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "uses only first_name when last_name is missing" do
-      auth_data = %Ueberauth.Auth{
-        info: %{
-          first_name: "John",
-          last_name: nil
-        }
-      }
+      auth_data = %Ueberauth.Auth{info: %{first_name: "John", last_name: nil}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "John"
@@ -172,9 +149,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "uses nickname as name when no other name info available" do
-      auth_data = %Ueberauth.Auth{
-        info: %{nickname: "johndoe"}
-      }
+      auth_data = %Ueberauth.Auth{info: %{nickname: "johndoe"}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "johndoe"
@@ -185,9 +160,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "uses email as name when no other name info available" do
-      auth_data = %Ueberauth.Auth{
-        info: %{email: "john@example.com"}
-      }
+      auth_data = %Ueberauth.Auth{info: %{email: "john@example.com"}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "john@example.com"
@@ -198,9 +171,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "returns nil when no name info is available" do
-      auth_data = %Ueberauth.Auth{
-        info: %{}
-      }
+      auth_data = %Ueberauth.Auth{info: %{}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.name == "Anonymous"
@@ -212,9 +183,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "fetches nickname when available" do
-      auth_data = %Ueberauth.Auth{
-        info: %{nickname: "johndoe"}
-      }
+      auth_data = %Ueberauth.Auth{info: %{nickname: "johndoe"}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.nickname == "johndoe"
@@ -225,9 +194,7 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
 
     test "returns nil when no nickname is available" do
-      auth_data = %Ueberauth.Auth{
-        info: %{}
-      }
+      auth_data = %Ueberauth.Auth{info: %{}}
 
       Repatch.patch(Accounts, :create_or_find, fn params ->
         assert params.nickname == nil

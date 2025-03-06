@@ -77,8 +77,7 @@ defmodule Runa.RepoTest do
     test "copies direct field values" do
       original = Repo.insert!(%Parent{value: "test value"})
 
-      {:ok, duplicated} =
-        Repo.duplicate(original)
+      {:ok, duplicated} = Repo.duplicate(original)
 
       assert duplicated.id != original.id
 

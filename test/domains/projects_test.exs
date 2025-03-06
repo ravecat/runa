@@ -76,8 +76,7 @@ defmodule Runa.ProjectsTest do
         base_language_id: language.id
       }
 
-      assert {:ok, %Project{} = project} =
-               Projects.update(ctx.project, attrs)
+      assert {:ok, %Project{} = project} = Projects.update(ctx.project, attrs)
 
       assert project.name == "some updated name"
       assert project.description == "some updated description"

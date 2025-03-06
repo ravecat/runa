@@ -39,8 +39,7 @@ defmodule Runa.TranslationsTest do
         language_id: ctx.language.id
       }
 
-      assert {:ok, %Translation{} = translation} =
-               Translations.create(attrs)
+      assert {:ok, %Translation{} = translation} = Translations.create(attrs)
 
       assert translation.translation == Atom.to_string(ctx.test)
     end
@@ -48,8 +47,7 @@ defmodule Runa.TranslationsTest do
     test "returns error changeset during creation with invalid data" do
       attrs = %{key_id: nil}
 
-      assert {:error, %Ecto.Changeset{}} =
-               Translations.create(attrs)
+      assert {:error, %Ecto.Changeset{}} = Translations.create(attrs)
     end
 
     test "updates the translation with valid data", ctx do
@@ -73,16 +71,14 @@ defmodule Runa.TranslationsTest do
     end
 
     test "deletes the translation", ctx do
-      assert {:ok, %Translation{}} =
-               Translations.delete(ctx.translation)
+      assert {:ok, %Translation{}} = Translations.delete(ctx.translation)
 
       assert {:error, %Ecto.NoResultsError{}} =
                Translations.get(ctx.translation.id)
     end
 
     test "returns a translation changeset", ctx do
-      assert %Ecto.Changeset{} =
-               Translations.change(ctx.translation)
+      assert %Ecto.Changeset{} = Translations.change(ctx.translation)
     end
   end
 end

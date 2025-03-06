@@ -26,9 +26,7 @@ defmodule RunaWeb.HandleUserData do
 
   defp handle_missing_user_data(socket) do
     socket =
-      socket
-      |> put_flash(:error, "User not found")
-      |> redirect(to: ~p"/")
+      socket |> put_flash(:error, "User not found") |> redirect(to: ~p"/")
 
     {:halt, socket}
   end

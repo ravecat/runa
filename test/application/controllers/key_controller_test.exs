@@ -21,72 +21,40 @@ defmodule RunaWeb.KeyControllerTest do
       body = %{
         data: %{
           type: "keys",
-          attributes: %{
-            name: "name",
-            description: "description"
-          },
+          attributes: %{name: "name", description: "description"},
           relationships: %{
-            file: %{
-              data: %{
-                id: "#{ctx.localization_file.id}",
-                type: "files"
-              }
-            }
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
           }
         }
       }
 
       post(ctx.conn, ~p"/api/keys", body)
       |> json_response(201)
-      |> assert_schema(
-        "Keys.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Keys.ShowResponse", ctx.spec)
     end
 
     test "returns errors when required relationships are missing", ctx do
-      body = %{
-        data: %{
-          type: "keys",
-          attributes: %{
-            description: "description"
-          }
-        }
-      }
+      body = %{data: %{type: "keys", attributes: %{description: "description"}}}
 
       post(ctx.conn, ~p"/api/keys", body)
       |> json_response(409)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
 
     test "returns errors when attributes are invalid", ctx do
       body = %{
         data: %{
           type: "keys",
-          attributes: %{
-            name: nil,
-            description: nil
-          },
+          attributes: %{name: nil, description: nil},
           relationships: %{
-            file: %{
-              data: %{
-                id: "#{ctx.localization_file.id}",
-                type: "files"
-              }
-            }
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
           }
         }
       }
 
       post(ctx.conn, ~p"/api/keys", body)
       |> json_response(409)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
   end
 
@@ -96,19 +64,13 @@ defmodule RunaWeb.KeyControllerTest do
 
       get(ctx.conn, ~p"/api/keys/#{key.id}")
       |> json_response(200)
-      |> assert_schema(
-        "Keys.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Keys.ShowResponse", ctx.spec)
     end
 
     test "returns errors when resource is not found", ctx do
       get(ctx.conn, ~p"/api/keys/1")
       |> json_response(404)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
 
     test "returns resource with relationships", ctx do
@@ -129,19 +91,13 @@ defmodule RunaWeb.KeyControllerTest do
 
       get(ctx.conn, ~p"/api/keys")
       |> json_response(200)
-      |> assert_schema(
-        "Keys.IndexResponse",
-        ctx.spec
-      )
+      |> assert_schema("Keys.IndexResponse", ctx.spec)
     end
 
     test "returns empty list of resources", ctx do
       get(ctx.conn, ~p"/api/keys")
       |> json_response(200)
-      |> assert_schema(
-        "Keys.IndexResponse",
-        ctx.spec
-      )
+      |> assert_schema("Keys.IndexResponse", ctx.spec)
     end
 
     test "returns list of resources with relationships", ctx do
@@ -163,27 +119,16 @@ defmodule RunaWeb.KeyControllerTest do
         data: %{
           id: "#{key.id}",
           type: "keys",
-          attributes: %{
-            name: "name",
-            description: "description"
-          },
+          attributes: %{name: "name", description: "description"},
           relationships: %{
-            file: %{
-              data: %{
-                id: "#{ctx.localization_file.id}",
-                type: "files"
-              }
-            }
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
           }
         }
       }
 
       patch(ctx.conn, ~p"/api/keys/#{key.id}", body)
       |> json_response(200)
-      |> assert_schema(
-        "Keys.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Keys.ShowResponse", ctx.spec)
     end
 
     test "returns 404 error when resource doesn't exists", ctx do
@@ -191,27 +136,16 @@ defmodule RunaWeb.KeyControllerTest do
         data: %{
           type: "keys",
           id: "1",
-          attributes: %{
-            name: "name",
-            description: "description"
-          },
+          attributes: %{name: "name", description: "description"},
           relationships: %{
-            file: %{
-              data: %{
-                id: "#{ctx.localization_file.id}",
-                type: "files"
-              }
-            }
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
           }
         }
       }
 
       patch(ctx.conn, ~p"/api/keys/1", body)
       |> json_response(404)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
 
     test "returns errors when attributes are invalid", ctx do
@@ -221,27 +155,16 @@ defmodule RunaWeb.KeyControllerTest do
         data: %{
           id: "#{key.id}",
           type: "keys",
-          attributes: %{
-            name: nil,
-            description: nil
-          },
+          attributes: %{name: nil, description: nil},
           relationships: %{
-            file: %{
-              data: %{
-                id: "#{ctx.localization_file.id}",
-                type: "files"
-              }
-            }
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
           }
         }
       }
 
       patch(ctx.conn, ~p"/api/keys/#{key.id}", body)
       |> json_response(409)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
   end
 
@@ -256,10 +179,7 @@ defmodule RunaWeb.KeyControllerTest do
     test "returns error when resource doesn't exists", ctx do
       delete(ctx.conn, ~p"/api/keys/1")
       |> json_response(404)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
   end
 end

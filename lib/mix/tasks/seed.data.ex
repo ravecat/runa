@@ -60,14 +60,10 @@ defmodule Mix.Tasks.Seed.Data do
 
         locales =
           Enum.map(languages, fn language ->
-            insert(:locale,
-              project: project,
-              language: language
-            )
+            insert(:locale, project: project, language: language)
           end)
 
-        files =
-          insert_list(Enum.random(1..2), :file, project: project)
+        files = insert_list(Enum.random(1..2), :file, project: project)
 
         {project, locales, files}
       end)

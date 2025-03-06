@@ -18,16 +18,10 @@ defmodule RunaWeb.Live.Project.ShowTest do
       expected_redirect = "/projects/#{ctx.project.id}?section=files"
 
       assert {:error, {:live_redirect, %{to: ^expected_redirect}}} =
-               live(
-                 ctx.conn,
-                 ~p"/projects/#{ctx.project.id}"
-               )
+               live(ctx.conn, ~p"/projects/#{ctx.project.id}")
 
       assert {:error, {:live_redirect, %{to: ^expected_redirect}}} =
-               live(
-                 ctx.conn,
-                 ~p"/projects/#{ctx.project.id}?section=unknown"
-               )
+               live(ctx.conn, ~p"/projects/#{ctx.project.id}?section=unknown")
     end
   end
 end

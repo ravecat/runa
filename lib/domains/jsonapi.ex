@@ -18,14 +18,12 @@ defmodule Runa.JSONAPI do
           list(ResourceIdentifierObject.t()) | ResourceIdentifierObject.t()
         ) ::
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
-  def create_relationships(parent_schema, key, attrs)
-      when is_list(attrs) do
+  def create_relationships(parent_schema, key, attrs) when is_list(attrs) do
     ids = Enum.map(attrs, & &1["id"])
 
     child_schema = get_child_schema(parent_schema, key)
 
-    current_relationships =
-      Ecto.assoc(parent_schema, key) |> Repo.all()
+    current_relationships = Ecto.assoc(parent_schema, key) |> Repo.all()
 
     new_relationships = child_schema |> where([c], c.id in ^ids) |> Repo.all()
 
@@ -96,9 +94,6 @@ defmodule Runa.JSONAPI do
 
   @spec get_child_schema(Ecto.Schema.t(), atom()) :: Ecto.Schema.t()
   defp get_child_schema(parent_schema, key) do
-    parent_schema.__struct__.__schema__(
-      :association,
-      key
-    ).related
+    parent_schema.__struct__.__schema__(:association, key).related
   end
 end

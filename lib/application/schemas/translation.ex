@@ -11,9 +11,7 @@ defmodule RunaWeb.Schemas.Translations do
       properties: %{
         attributes: %Schema{
           type: :object,
-          properties: %{
-            translation: %Schema{type: :string}
-          }
+          properties: %{translation: %Schema{type: :string}}
         }
       }
     }

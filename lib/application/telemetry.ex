@@ -25,9 +25,7 @@ defmodule RunaWeb.Telemetry do
       summary("phoenix.endpoint.start.system_time",
         unit: {:native, :millisecond}
       ),
-      summary("phoenix.endpoint.stop.duration",
-        unit: {:native, :millisecond}
-      ),
+      summary("phoenix.endpoint.stop.duration", unit: {:native, :millisecond}),
       summary("phoenix.router_dispatch.start.system_time",
         tags: [:route],
         unit: {:native, :millisecond}
@@ -43,9 +41,7 @@ defmodule RunaWeb.Telemetry do
       summary("phoenix.socket_connected.duration",
         unit: {:native, :millisecond}
       ),
-      summary("phoenix.channel_joined.duration",
-        unit: {:native, :millisecond}
-      ),
+      summary("phoenix.channel_joined.duration", unit: {:native, :millisecond}),
       summary("phoenix.channel_handled_in.duration",
         tags: [:event],
         unit: {:native, :millisecond}
@@ -84,10 +80,9 @@ defmodule RunaWeb.Telemetry do
   end
 
   defp periodic_measurements do
-    [
-      # A module, function and arguments to be invoked periodically.
-      # This function must call :telemetry.execute/3 and a metric must be added above.
-      # {RunaWeb, :count_users, []}
-    ]
+    # A module, function and arguments to be invoked periodically.
+    # This function must call :telemetry.execute/3 and a metric must be added above.
+    # {RunaWeb, :count_users, []}
+    []
   end
 end

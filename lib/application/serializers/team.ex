@@ -16,7 +16,5 @@ defmodule RunaWeb.Serializers.Team do
     ]
 
   def relationships,
-    do: [
-      projects: Serializers.Project
-    ]
+    do: [projects: Serializers.Project]
 end
