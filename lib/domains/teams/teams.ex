@@ -44,7 +44,7 @@ defmodule Runa.Teams do
     query = from(p in Team, where: p.id == ^id, preload: [:projects])
 
     case Repo.one(query) do
-      nil -> {:error, %Ecto.NoResultsError{}}
+      nil -> {:error, %{__struct__: Ecto.NoResultsError}}
       data -> {:ok, data}
     end
   end
@@ -206,7 +206,8 @@ defmodule Runa.Teams do
     |> Repo.all()
   end
 
-  @spec get_team_by_project_id(binary()) :: [Ecto.Schema.t()]
+  @spec get_team_by_project_id(binary()) ::
+          {:ok, Ecto.Schema.t()} | {:error, %{__struct__: Ecto.NoResultsError}}
   def get_team_by_project_id(project_id) do
     query =
       from t in Team,
@@ -215,9 +216,35 @@ defmodule Runa.Teams do
         select: t
 
     case Repo.one(query) do
-      nil -> {:error, %Ecto.NoResultsError{}}
+      nil -> {:error, %{__struct__: Ecto.NoResultsError}}
       data -> {:ok, data}
     end
+  end
+
+  @spec get_owner(Ecto.Schema.t() | integer()) :: Ecto.Schema.t() | nil
+  def get_owner(%Team{id: id}), do: get_owner(id)
+
+  def get_owner(team_id) when is_integer(team_id) do
+    query =
+      from c in Contributor,
+        where: c.team_id == ^team_id and c.role == :owner,
+        join: u in assoc(c, :user),
+        select: u
+
+    Repo.one(query)
+  end
+
+  @spec get_members(Ecto.Schema.t() | integer()) :: [%{id: integer(), name: String.t(), role: atom(), joined_at: DateTime.t()}]
+  def get_members(%Team{id: id}), do: get_members(id)
+
+  def get_members(team_id) when is_integer(team_id) do
+    query =
+      from c in Contributor,
+        where: c.team_id == ^team_id,
+        join: u in assoc(c, :user),
+        select: %{id: u.id, name: u.name, role: c.role, joined_at: c.inserted_at}
+
+    Repo.all(query)
   end
 
   def subscribe do

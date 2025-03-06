@@ -4,5 +4,36 @@
       <.icon icon="users" /> Teams
     </div>
   </:header>
-  Current team settings
+  <.custom_form for={@form} phx-change="validate" phx-submit="save">
+    <.input type="textarea" aria-label="Team name" field={@form[:title]} />
+    <div class="grid grid-cols-[16rem_1fr] gap-2">
+      <span class="centered justify-start">
+        <.icon icon="calendar" />Creation date
+      </span>
+      <span aria-label="Team creation date">
+        {format_datetime_to_view(@form[:inserted_at].value)}
+      </span>
+      <span class="centered justify-start">
+        <.icon icon="calendar" />Modificiation date
+      </span>
+      <span aria-label="Team update date">
+        {format_datetime_to_view(@form[:updated_at].value)}
+      </span>
+      <span class="centered justify-start">
+        <.icon icon="user" />Created by
+      </span>
+      <span aria-label="Team owner">{@owner.name}</span>
+    </div>
+  </.custom_form>
+  <.table id="tokens" rows={@streams.members} aria-label="Team members">
+    <:col :let={member} label="Team member">
+      {member.name}
+    </:col>
+    <:col :let={member} label="Role">
+      {member.role}
+    </:col>
+    <:col :let={member} label="Joined">
+      {format_datetime_to_view(member.joined_at)}
+    </:col>
+  </.table>
 </.panel>

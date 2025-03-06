@@ -87,6 +87,15 @@ defmodule RunaWeb.Live.Sidebar do
   end
 
   @impl true
+  def handle_info({:team_selected, team}, socket) do
+    role = get_role(socket.assigns.user.id, team.id)
+    
+    socket = assign(socket, team: team, role: role)
+    
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info(_, socket), do: {:noreply, socket}
 
   @impl true
@@ -107,6 +116,7 @@ defmodule RunaWeb.Live.Sidebar do
     if connected?(socket) do
       Teams.subscribe()
       Accounts.subscribe(user.id)
+      Phoenix.PubSub.subscribe(Runa.PubSub, "sidebar:#{user.id}")
     end
   end
 end
