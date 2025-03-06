@@ -12,10 +12,7 @@ defmodule Runa.Tokens do
   Return token
   """
   def get(id) do
-    query =
-      from t in Token,
-        where: t.id == ^id,
-        preload: [:user]
+    query = from t in Token, where: t.id == ^id, preload: [:user]
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -24,10 +21,7 @@ defmodule Runa.Tokens do
   end
 
   def get_by_token(token) do
-    query =
-      from t in Token,
-        where: t.hash == ^hash(token),
-        preload: [:user]
+    query = from t in Token, where: t.hash == ^hash(token), preload: [:user]
 
     case Repo.one(query) do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -68,11 +62,8 @@ defmodule Runa.Tokens do
     |> change(attrs)
     |> Repo.insert()
     |> case do
-      {:ok, data} ->
-        {:ok, Repo.preload(data, :user)}
-
-      error ->
-        error
+      {:ok, data} -> {:ok, Repo.preload(data, :user)}
+      error -> error
     end
     |> broadcast(:token_created)
   end

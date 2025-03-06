@@ -18,18 +18,13 @@ defmodule Runa.Factory do
   alias Runa.Translations.Translation
 
   def team_factory(attrs) do
-    %Team{
-      title: Faker.Company.buzzword_prefix()
-    }
+    %Team{title: Faker.Company.buzzword_prefix()}
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end
 
   def project_factory(attrs) do
-    %Project{
-      name: Faker.Pokemon.name(),
-      description: Faker.StarWars.quote()
-    }
+    %Project{name: Faker.Pokemon.name(), description: Faker.StarWars.quote()}
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end
@@ -47,9 +42,7 @@ defmodule Runa.Factory do
   end
 
   def contributor_factory(attrs) do
-    %Contributor{
-      role: sequence(:role, [:owner, :admin, :editor, :viewer])
-    }
+    %Contributor{role: sequence(:role, [:owner, :admin, :editor, :viewer])}
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end
@@ -86,26 +79,19 @@ defmodule Runa.Factory do
   end
 
   def translation_factory(attrs) do
-    %Translation{
-      translation: Faker.Lorem.sentence()
-    }
+    %Translation{translation: Faker.Lorem.sentence()}
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end
 
   def key_factory(attrs) do
-    %Key{
-      name: Faker.Lorem.sentence(),
-      description: Faker.Lorem.sentence()
-    }
+    %Key{name: Faker.Lorem.sentence(), description: Faker.Lorem.sentence()}
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end
 
   def file_factory(attrs) do
-    %File{
-      filename: "#{Faker.File.file_name(:text)}"
-    }
+    %File{filename: "#{Faker.File.file_name(:text)}"}
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end

@@ -32,9 +32,8 @@ defmodule RunaWeb.LanguageController do
   end
 
   def index(
-        %{
-          assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}
-        } = conn,
+        %{assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}} =
+          conn,
         _params
       ) do
     with {:ok, {data, meta}} <-

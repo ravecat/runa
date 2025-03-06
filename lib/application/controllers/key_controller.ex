@@ -97,9 +97,8 @@ defmodule RunaWeb.KeyController do
   end
 
   def index(
-        %{
-          assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}
-        } = conn,
+        %{assigns: %{jsonapi_query: %{sort: sort, filter: filter, page: page}}} =
+          conn,
         _params
       ) do
     with {:ok, {data, meta}} <-
@@ -151,12 +150,7 @@ defmodule RunaWeb.KeyController do
     }
   end
 
-  def delete(
-        %{
-          path_params: %{"id" => id}
-        } = conn,
-        _
-      ) do
+  def delete(%{path_params: %{"id" => id}} = conn, _) do
     with {:ok, data} <- Keys.get(id),
          {:ok, _} <- Keys.delete(data) do
       conn |> put_status(204) |> render(data: data)

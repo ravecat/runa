@@ -57,8 +57,7 @@ defmodule Runa.AccountsTest do
     test "updates the entity with valid data", ctx do
       update_attrs = %{name: "some updated name"}
 
-      assert {:ok, %User{} = entity} =
-               Accounts.update(ctx.user, update_attrs)
+      assert {:ok, %User{} = entity} = Accounts.update(ctx.user, update_attrs)
 
       assert entity.name == "some updated name"
     end

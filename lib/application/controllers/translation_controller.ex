@@ -119,12 +119,7 @@ defmodule RunaWeb.TranslationController do
     }
   end
 
-  def delete(
-        %{
-          path_params: %{"id" => id}
-        } = conn,
-        _
-      ) do
+  def delete(%{path_params: %{"id" => id}} = conn, _) do
     with {:ok, data} <- Translations.get(id),
          {:ok, _} <- Translations.delete(data) do
       conn |> put_status(204) |> render(data: data)

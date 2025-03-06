@@ -20,26 +20,16 @@ defmodule RunaWeb.FileControllerTest do
       body = %{
         data: %{
           type: "files",
-          attributes: %{
-            filename: "name"
-          },
+          attributes: %{filename: "name"},
           relationships: %{
-            project: %{
-              data: %{
-                id: "#{ctx.project.id}",
-                type: "projects"
-              }
-            }
+            project: %{data: %{id: "#{ctx.project.id}", type: "projects"}}
           }
         }
       }
 
       post(ctx.conn, ~p"/api/files", body)
       |> json_response(201)
-      |> assert_schema(
-        "Files.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Files.ShowResponse", ctx.spec)
     end
   end
 end

@@ -75,10 +75,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
     test "creates project", ctx do
       {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: %Project{},
-          team_id: ctx.team.id
-        })
+        live_isolated_component(Form, %{data: %Project{}, team_id: ctx.team.id})
 
       view
       |> element("[aria-label='Project form']")
@@ -95,16 +92,11 @@ defmodule RunaWeb.Live.Project.FormTest do
 
     test "updates project", ctx do
       {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: ctx.project,
-          team_id: ctx.team.id
-        })
+        live_isolated_component(Form, %{data: ctx.project, team_id: ctx.team.id})
 
       view
       |> element("[aria-label='Project form']")
-      |> render_submit(%{
-        "project" => %{"name" => "New Name"}
-      })
+      |> render_submit(%{"project" => %{"name" => "New Name"}})
 
       assert %Project{} = Repo.get_by(Project, name: "New Name")
     end
@@ -113,10 +105,7 @@ defmodule RunaWeb.Live.Project.FormTest do
   describe "project form (base language field)" do
     test "displays selected base language", ctx do
       {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: ctx.project,
-          team_id: ctx.team.id
-        })
+        live_isolated_component(Form, %{data: ctx.project, team_id: ctx.team.id})
 
       view
       |> element("[aria-label='Project form']")
@@ -141,10 +130,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       language = insert(:language, wals_code: "rus", title: "Russian")
 
       {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: ctx.project,
-          team_id: ctx.team.id
-        })
+        live_isolated_component(Form, %{data: ctx.project, team_id: ctx.team.id})
 
       view
       |> element("[aria-label='Project form']")
@@ -166,10 +152,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       language = insert(:language, wals_code: "rus", title: "Russian")
 
       {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: ctx.project,
-          team_id: ctx.team.id
-        })
+        live_isolated_component(Form, %{data: ctx.project, team_id: ctx.team.id})
 
       view
       |> element("[aria-label='Project form']")
@@ -196,15 +179,9 @@ defmodule RunaWeb.Live.Project.FormTest do
       insert(:locale, project: ctx.project, language: language)
 
       {:ok, view, _} =
-        live_isolated_component(Form, %{
-          data: ctx.project,
-          team_id: ctx.team.id
-        })
+        live_isolated_component(Form, %{data: ctx.project, team_id: ctx.team.id})
 
-      assert element(
-               view,
-               "[aria-label='Selected options']"
-             )
+      assert element(view, "[aria-label='Selected options']")
              |> render() =~
                "Russian"
 
@@ -214,10 +191,7 @@ defmodule RunaWeb.Live.Project.FormTest do
       )
       |> render_click()
 
-      refute element(
-               view,
-               "[aria-label='Selected options']"
-             )
+      refute element(view, "[aria-label='Selected options']")
              |> render() =~
                "Russian"
     end

@@ -23,31 +23,15 @@ defmodule RunaWeb.JSONAPI.LinksConstructor do
     total = meta.total_pages
 
     %{
-      first:
-        prepare_url(data, view, conn, %{
-          number: number,
-          size: size
-        }),
-      last:
-        prepare_url(data, view, conn, %{
-          number: total,
-          size: size
-        }),
+      first: prepare_url(data, view, conn, %{number: number, size: size}),
+      last: prepare_url(data, view, conn, %{number: total, size: size}),
       next:
         if(number < total,
-          do:
-            prepare_url(data, view, conn, %{
-              number: number + 1,
-              size: size
-            })
+          do: prepare_url(data, view, conn, %{number: number + 1, size: size})
         ),
       prev:
         if(number > 1,
-          do:
-            prepare_url(data, view, conn, %{
-              number: number - 1,
-              size: size
-            })
+          do: prepare_url(data, view, conn, %{number: number - 1, size: size})
         )
     }
   end
@@ -71,11 +55,7 @@ defmodule RunaWeb.JSONAPI.LinksConstructor do
 
     %{
       first: prepare_url(data, view, conn, %{offset: 0, limit: limit}),
-      last:
-        prepare_url(data, view, conn, %{
-          offset: total,
-          limit: limit
-        }),
+      last: prepare_url(data, view, conn, %{offset: total, limit: limit}),
       next:
         if(offset + limit < total,
           do:
@@ -116,32 +96,16 @@ defmodule RunaWeb.JSONAPI.LinksConstructor do
     %{
       next:
         if(meta.has_next_page?,
-          do:
-            prepare_url(data, view, conn, %{
-              after: end_cursor,
-              size: size
-            })
+          do: prepare_url(data, view, conn, %{after: end_cursor, size: size})
         ),
       prev:
         if(meta.has_previous_page?,
-          do:
-            prepare_url(data, view, conn, %{
-              before: start_cursor,
-              size: size
-            })
+          do: prepare_url(data, view, conn, %{before: start_cursor, size: size})
         ),
-      first:
-        prepare_url(data, view, conn, %{
-          size: size
-        }),
+      first: prepare_url(data, view, conn, %{size: size}),
       last:
-        unless(
-          meta.has_next_page?,
-          do:
-            prepare_url(data, view, conn, %{
-              before: end_cursor,
-              size: size
-            })
+        unless(meta.has_next_page?,
+          do: prepare_url(data, view, conn, %{before: end_cursor, size: size})
         )
     }
   end

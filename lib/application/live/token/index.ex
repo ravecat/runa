@@ -67,8 +67,7 @@ defmodule RunaWeb.Live.Token.Index do
   def handle_info({:account_updated, %User{} = data}, socket) do
     data = Repo.preload(data, [tokens: :user], force: true)
 
-    socket =
-      stream(socket, :tokens, data.tokens, reset: true)
+    socket = stream(socket, :tokens, data.tokens, reset: true)
 
     {:noreply, socket}
   end

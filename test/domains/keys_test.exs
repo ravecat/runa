@@ -59,8 +59,7 @@ defmodule Runa.KeysTest do
     test "returns error changeset during update with invalid data", ctx do
       invalid_attrs = %{name: nil, description: nil}
 
-      assert {:error, %Ecto.Changeset{}} =
-               Keys.update(ctx.key, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Keys.update(ctx.key, invalid_attrs)
     end
 
     test "deletes the key", ctx do

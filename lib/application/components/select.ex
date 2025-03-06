@@ -65,13 +65,10 @@ defmodule RunaWeb.Components.Select do
     )
     |> update(:options, &Enum.map(&1, &2.option_fn))
     |> assign_new(:name, fn ->
-      if assigns.multiple,
-        do: field.name <> "[]",
-        else: field.name
+      if assigns.multiple, do: field.name <> "[]", else: field.name
     end)
     |> assign_new(:value, fn ->
-      List.flatten([field.value || []])
-      |> Enum.map(&assigns.value_fn.(&1))
+      List.flatten([field.value || []]) |> Enum.map(&assigns.value_fn.(&1))
     end)
     |> select()
   end
@@ -198,21 +195,13 @@ defmodule RunaWeb.Components.Select do
     # with our gettext backend as first argument. Translations are
     # available in the errors.po file (as we use the "errors" domain).
     if count = opts[:count] do
-      Gettext.dngettext(
-        RunaWeb.Gettext,
-        "errors",
-        msg,
-        msg,
-        count,
-        opts
-      )
+      Gettext.dngettext(RunaWeb.Gettext, "errors", msg, msg, count, opts)
     else
       Gettext.dgettext(RunaWeb.Gettext, "errors", msg, opts)
     end
   end
 
-  def translate_errors(errors, field)
-      when is_list(errors) do
+  def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors,
         do: translate_error({msg, opts})
   end

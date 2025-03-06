@@ -5,22 +5,10 @@ defmodule JSONAPI.QueryParams do
 
   @type sort :: [{:desc | :asc, atom()}] | []
   @type page ::
-          %{
-            required(:limit) => String.t(),
-            required(:offset) => String.t()
-          }
-          | %{
-              required(:size) => String.t(),
-              optional(:number) => String.t()
-            }
-          | %{
-              required(:size) => String.t(),
-              optional(:after) => String.t()
-            }
-          | %{
-              required(:size) => String.t(),
-              optional(:before) => String.t()
-            }
+          %{required(:limit) => String.t(), required(:offset) => String.t()}
+          | %{required(:size) => String.t(), optional(:number) => String.t()}
+          | %{required(:size) => String.t(), optional(:after) => String.t()}
+          | %{required(:size) => String.t(), optional(:before) => String.t()}
           | %{}
   @type filter :: [{atom(), String.t()}] | []
 end

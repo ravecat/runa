@@ -12,8 +12,7 @@ defmodule Runa.ContributorsTest do
     team = insert(:team)
     user = insert(:user)
 
-    contributor =
-      insert(:contributor, team: team, user: user)
+    contributor = insert(:contributor, team: team, user: user)
 
     {:ok, contributor: contributor, team: team, user: user}
   end
@@ -35,11 +34,7 @@ defmodule Runa.ContributorsTest do
     end
 
     test "creates an entity with valid data", ctx do
-      attrs = %{
-        team_id: ctx.team.id,
-        user_id: ctx.user.id,
-        role: :owner
-      }
+      attrs = %{team_id: ctx.team.id, user_id: ctx.user.id, role: :owner}
 
       assert {:ok, %Contributor{}} = Contributors.create(attrs)
     end
@@ -51,25 +46,16 @@ defmodule Runa.ContributorsTest do
     test "updates the entity with valid data ", ctx do
       insert(:contributor, team: ctx.team, user: ctx.user, role: :viewer)
 
-      attrs = %{
-        team_id: ctx.team.id,
-        user_id: ctx.user.id,
-        role: :owner
-      }
+      attrs = %{team_id: ctx.team.id, user_id: ctx.user.id, role: :owner}
 
       assert {:ok, %Contributors.Contributor{} = contributor} =
-               Contributors.update(
-                 ctx.contributor,
-                 attrs
-               )
+               Contributors.update(ctx.contributor, attrs)
 
       assert contributor.role == :owner
     end
 
     test "returns error changeset on update with invalid data", ctx do
-      attrs = %{
-        team_id: nil
-      }
+      attrs = %{team_id: nil}
 
       assert {:error, %Ecto.Changeset{}} =
                Contributors.update(ctx.contributor, attrs)
@@ -84,8 +70,7 @@ defmodule Runa.ContributorsTest do
     end
 
     test "returns an entity changeset", ctx do
-      assert %Ecto.Changeset{} =
-               Contributors.change(ctx.contributor)
+      assert %Ecto.Changeset{} = Contributors.change(ctx.contributor)
     end
   end
 end

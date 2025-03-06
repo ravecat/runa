@@ -3,11 +3,8 @@ defmodule RunaWeb.PageController do
 
   def home(conn, _params) do
     case conn.assigns[:current_user] do
-      nil ->
-        render(conn, :home, layout: false)
-
-      _ ->
-        redirect(conn, to: ~p"/profile")
+      nil -> render(conn, :home, layout: false)
+      _ -> redirect(conn, to: ~p"/profile")
     end
   end
 end

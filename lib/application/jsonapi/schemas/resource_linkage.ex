@@ -12,10 +12,7 @@ defmodule RunaWeb.JSONAPI.Schemas.ResourceLinkage do
       "A resource linkage allows a client to link together all of the included resource objects",
     oneOf: [
       ResourceIdentifierObject,
-      %Schema{
-        type: :array,
-        items: ResourceIdentifierObject
-      }
+      %Schema{type: :array, items: ResourceIdentifierObject}
     ]
   })
 end

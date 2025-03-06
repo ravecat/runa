@@ -13,11 +13,7 @@ defmodule RunaWeb.JSONAPI.Schemas.RelationshipObject do
     description:
       "A resource linkage allows a client to link together all of the included resource objects",
     required: [:data],
-    properties: %{
-      data: ResourceLinkage,
-      links: LinksObject,
-      meta: Meta
-    },
+    properties: %{data: ResourceLinkage, links: LinksObject, meta: Meta},
     additionalProperties: false
   })
 end

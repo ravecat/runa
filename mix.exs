@@ -10,15 +10,8 @@ defmodule Runa.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      preferred_cli_env: [
-        "test.watch": :test,
-        "test.only": :test
-      ],
-      elixirc_options: [
-        debug_info: true,
-        verbose: true,
-        all_warnings: true
-      ],
+      preferred_cli_env: ["test.watch": :test, "test.only": :test],
+      elixirc_options: [debug_info: true, verbose: true, all_warnings: true],
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -118,26 +111,11 @@ defmodule Runa.MixProject do
     [
       start: ["deps", "phx.server"],
       deps: ["deps.get", "deps.compile"],
-      setup: [
-        "deps.get",
-        "ecto.setup",
-        "assets.setup",
-        "assets.build"
-      ],
-      "ecto.seed": [
-        "seed.languages",
-        "seed.data"
-      ],
-      "ecto.setup": [
-        "ecto.create",
-        "ecto.migrate"
-      ],
+      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      "ecto.seed": ["seed.languages", "seed.data"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: [
-        "ecto.create --quiet",
-        "ecto.migrate --quiet",
-        "test"
-      ],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "test.only": ["test --only only"],
       "test.watch.only": ["test.watch --only only"],
       "test.format": ["credo", "format --check-formatted"],

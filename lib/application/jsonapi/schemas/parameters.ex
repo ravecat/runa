@@ -26,10 +26,7 @@ defmodule RunaWeb.JSONAPI.Schemas.Parameters do
       %Parameter{
         name: :include,
         in: :query,
-        schema: %Schema{
-          type: :string,
-          pattern: "^[a-zA-Z,.]+(,[a-zA-Z.]+)*$"
-        },
+        schema: %Schema{type: :string, pattern: "^[a-zA-Z,.]+(,[a-zA-Z.]+)*$"},
         description:
           "Inclusion of related resources using `include=type`. Multiple relationships can be specified by comma-separating them `include=type1,type2`. A server may choose to expose a deeply nested relationship such as `include=type1.type2.type3`.",
         required: false
@@ -52,10 +49,7 @@ defmodule RunaWeb.JSONAPI.Schemas.Parameters do
       %Parameter{
         name: :sort,
         in: :query,
-        schema: %Schema{
-          type: :string,
-          pattern: "^[-a-zA-Z]+(,-[a-zA-Z]+)*$"
-        },
+        schema: %Schema{type: :string, pattern: "^[-a-zA-Z]+(,-[a-zA-Z]+)*$"},
         description:
           "Sorting of resources using `sort=field1,-field2`. A leading `-` indicates descending order.",
         required: false

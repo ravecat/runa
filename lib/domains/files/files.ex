@@ -78,10 +78,7 @@ defmodule Runa.Files do
         %{
           name: name,
           translations: [
-            %{
-              translation: translation,
-              language_id: meta.language_id
-            }
+            %{translation: translation, language_id: meta.language_id}
           ]
         }
       end)

@@ -13,10 +13,7 @@ defmodule RunaWeb.Live.Translation.Index do
   def mount(_params, _session, socket) do
     {:ok, {keys, _}} = Keys.index()
 
-    entities =
-      Enum.map(keys, fn key ->
-        {key, key.translations}
-      end)
+    entities = Enum.map(keys, fn key -> {key, key.translations} end)
 
     socket = assign(socket, entities: entities, keys_count: length(keys))
 

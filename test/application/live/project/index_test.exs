@@ -29,11 +29,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     test "renders edit button", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert Enum.all?(
                ctx.projects,
@@ -42,11 +38,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     test "renders delete button", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       for project <- ctx.projects do
         assert has_element?(
@@ -57,11 +49,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     test "renders duplicate button", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       for project <- ctx.projects do
         assert has_element?(
@@ -72,11 +60,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     test "renders projects titles", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert Enum.all?(ctx.projects, fn project ->
                view
@@ -86,11 +70,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     test "renders projects statistics", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       for project <- ctx.projects do
         assert has_element?(
@@ -104,11 +84,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
       project = insert(:project, team: ctx.team)
       files = insert_list(2, :file, project: project)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert view
              |> element("[aria-label='Project #{project.name} files count']")
@@ -119,11 +95,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
       languages = insert_list(2, :language)
       project = insert(:project, team: ctx.team, languages: languages)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert view
              |> element(
@@ -135,11 +107,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     test "renders done percentage", ctx do
       project = insert(:project, team: ctx.team)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert view
              |> element(
@@ -153,11 +121,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
       file = insert(:file, project: project)
       keys = insert_list(2, :key, file: file)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert view
              |> element("[aria-label='Project #{project.name} keys count']")
@@ -170,11 +134,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
       language = insert(:language)
       project = insert(:project, team: ctx.team, languages: [language])
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert view
              |> element("[aria-label='Project #{project.name} languages']")
@@ -184,41 +144,25 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
   describe "toolbar block" do
     test "renders create project button", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert has_element?(view, "[aria-label='Create new project']")
     end
 
     test "renders list view button", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert has_element?(view, "[aria-label='Compact view']")
     end
 
     test "renders row view button", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert has_element?(view, "[aria-label='Expand view']")
     end
 
     test "renders grid view button", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       assert has_element?(view, "[aria-label='Grid view']")
     end
@@ -228,11 +172,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     test "rendered by click edit button", ctx do
       project = insert(:project, team: ctx.team, base_language: ctx.language)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       element(view, "button[aria-label='Edit #{project.name} project']")
       |> render_click()
@@ -251,11 +191,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       title = Atom.to_string(ctx.test)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       refute has_element?(view, "[aria-label='Project #{title} card']")
 
@@ -277,11 +213,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     test "rendered by click delete button", ctx do
       project = List.first(ctx.projects)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       element(view, "button[aria-label='Delete #{project.name} project']")
       |> render_click()
@@ -292,11 +224,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     test "deletes project by clicking delete button", ctx do
       project = List.first(ctx.projects)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       element(view, "button[aria-label='Delete #{project.name} project']")
       |> render_click()
@@ -313,11 +241,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
   describe "create project modal" do
     test "rendered by click create button", ctx do
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       element(view, "button[aria-label='Create new project']")
       |> render_click()
@@ -329,11 +253,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
     test "creates project by clicking create button", ctx do
       title = Atom.to_string(ctx.test)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       refute has_element?(view, "[aria-label='Project #{title} card']")
 
@@ -355,19 +275,12 @@ defmodule RunaWeb.Live.Project.IndexTest do
     test "created by clicking duplicate button", ctx do
       project = List.first(ctx.projects)
 
-      {:ok, view, _} =
-        live(
-          ctx.conn,
-          ~p"/projects"
-        )
+      {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
       element(view, "button[aria-label='Duplicate #{project.name} project']")
       |> render_click()
 
-      assert element(
-               view,
-               "[aria-label='Project #{project.name} (copy) card']"
-             )
+      assert element(view, "[aria-label='Project #{project.name} (copy) card']")
              |> render() =~ "#{project.name} (copy)"
     end
   end

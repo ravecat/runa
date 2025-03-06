@@ -98,10 +98,7 @@ defmodule RunaWeb.Components.Modal do
          "opacity-0"}
     )
     |> hide("##{id}-container")
-    |> JS.hide(
-      to: "##{id}",
-      transition: {"block", "block", "hidden"}
-    )
+    |> JS.hide(to: "##{id}", transition: {"block", "block", "hidden"})
     |> JS.remove_class("overflow-hidden", to: "body")
     |> JS.pop_focus()
   end

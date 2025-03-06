@@ -23,68 +23,38 @@ defmodule RunaWeb.TranslationControllerTest do
       body = %{
         data: %{
           type: "translations",
-          attributes: %{
-            translation: "translation content"
-          },
+          attributes: %{translation: "translation content"},
           relationships: %{
-            key: %{
-              data: %{
-                id: "#{ctx.key.id}",
-                type: "keys"
-              }
-            },
-            language: %{
-              data: %{
-                id: "#{ctx.language.id}",
-                type: "languages"
-              }
-            }
+            key: %{data: %{id: "#{ctx.key.id}", type: "keys"}},
+            language: %{data: %{id: "#{ctx.language.id}", type: "languages"}}
           }
         }
       }
 
       post(ctx.conn, ~p"/api/translations", body)
       |> json_response(201)
-      |> assert_schema(
-        "Translations.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Translations.ShowResponse", ctx.spec)
     end
 
     test "returns errors when required attributes are missing", ctx do
-      body = %{
-        data: %{
-          type: "translations",
-          attributes: %{
-            translation: nil
-          }
-        }
-      }
+      body = %{data: %{type: "translations", attributes: %{translation: nil}}}
 
       post(ctx.conn, ~p"/api/translations", body)
       |> json_response(409)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
 
     test "returns errors when required relationships are missing", ctx do
       body = %{
         data: %{
           type: "translations",
-          attributes: %{
-            content: "translation content"
-          }
+          attributes: %{content: "translation content"}
         }
       }
 
       post(ctx.conn, ~p"/api/translations", body)
       |> json_response(409)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
   end
 
@@ -94,19 +64,13 @@ defmodule RunaWeb.TranslationControllerTest do
 
       get(ctx.conn, ~p"/api/translations/#{translation.id}")
       |> json_response(200)
-      |> assert_schema(
-        "Translations.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Translations.ShowResponse", ctx.spec)
     end
 
     test "returns errors when resource is not found", ctx do
       get(ctx.conn, ~p"/api/translations/1")
       |> json_response(404)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
 
     test "returns resource with relationships", ctx do
@@ -129,32 +93,17 @@ defmodule RunaWeb.TranslationControllerTest do
         data: %{
           id: "#{translation.id}",
           type: "translations",
-          attributes: %{
-            translation: "updated translation content"
-          },
+          attributes: %{translation: "updated translation content"},
           relationships: %{
-            key: %{
-              data: %{
-                id: "#{ctx.key.id}",
-                type: "keys"
-              }
-            },
-            language: %{
-              data: %{
-                id: "#{ctx.language.id}",
-                type: "languages"
-              }
-            }
+            key: %{data: %{id: "#{ctx.key.id}", type: "keys"}},
+            language: %{data: %{id: "#{ctx.language.id}", type: "languages"}}
           }
         }
       }
 
       patch(ctx.conn, ~p"/api/translations/#{translation.id}", body)
       |> json_response(200)
-      |> assert_schema(
-        "Translations.ShowResponse",
-        ctx.spec
-      )
+      |> assert_schema("Translations.ShowResponse", ctx.spec)
 
       get(ctx.conn, ~p"/api/translations/#{translation.id}")
       |> json_response(200)
@@ -167,32 +116,17 @@ defmodule RunaWeb.TranslationControllerTest do
         data: %{
           type: "translations",
           id: "1",
-          attributes: %{
-            translation: "updated translation content"
-          },
+          attributes: %{translation: "updated translation content"},
           relationships: %{
-            key: %{
-              data: %{
-                id: "#{ctx.key.id}",
-                type: "keys"
-              }
-            },
-            language: %{
-              data: %{
-                id: "#{ctx.language.id}",
-                type: "languages"
-              }
-            }
+            key: %{data: %{id: "#{ctx.key.id}", type: "keys"}},
+            language: %{data: %{id: "#{ctx.language.id}", type: "languages"}}
           }
         }
       }
 
       patch(ctx.conn, ~p"/api/translations/1", body)
       |> json_response(404)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
 
     test "returns errors when attributes are invalid", ctx do
@@ -202,32 +136,17 @@ defmodule RunaWeb.TranslationControllerTest do
         data: %{
           id: "#{translation.id}",
           type: "translations",
-          attributes: %{
-            translation: nil
-          },
+          attributes: %{translation: nil},
           relationships: %{
-            key: %{
-              data: %{
-                id: "#{ctx.key.id}",
-                type: "keys"
-              }
-            },
-            language: %{
-              data: %{
-                id: "#{ctx.language.id}",
-                type: "languages"
-              }
-            }
+            key: %{data: %{id: "#{ctx.key.id}", type: "keys"}},
+            language: %{data: %{id: "#{ctx.language.id}", type: "languages"}}
           }
         }
       }
 
       patch(ctx.conn, ~p"/api/translations/#{translation.id}", body)
       |> json_response(409)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
   end
 
@@ -245,10 +164,7 @@ defmodule RunaWeb.TranslationControllerTest do
     test "returns error when resource doesn't exists", ctx do
       delete(ctx.conn, ~p"/api/translations/1")
       |> json_response(404)
-      |> assert_schema(
-        "Error",
-        ctx.spec
-      )
+      |> assert_schema("Error", ctx.spec)
     end
   end
 end

@@ -68,14 +68,9 @@ defmodule RunaWeb.Components.Input do
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(
-      :errors,
-      Enum.map(field.errors, &translate_error(&1))
-    )
+    |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
     |> assign_new(:name, fn ->
-      if assigns.multiple,
-        do: field.name <> "[]",
-        else: field.name
+      if assigns.multiple, do: field.name <> "[]", else: field.name
     end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
@@ -84,10 +79,7 @@ defmodule RunaWeb.Components.Input do
   def input(%{type: "checkbox"} = assigns) do
     assigns =
       assign_new(assigns, :checked, fn ->
-        Phoenix.HTML.Form.normalize_value(
-          "checkbox",
-          assigns[:value]
-        )
+        Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
       end)
 
     ~H"""
@@ -188,14 +180,7 @@ defmodule RunaWeb.Components.Input do
     # with our gettext backend as first argument. Translations are
     # available in the errors.po file (as we use the "errors" domain).
     if count = opts[:count] do
-      Gettext.dngettext(
-        RunaWeb.Gettext,
-        "errors",
-        msg,
-        msg,
-        count,
-        opts
-      )
+      Gettext.dngettext(RunaWeb.Gettext, "errors", msg, msg, count, opts)
     else
       Gettext.dgettext(RunaWeb.Gettext, "errors", msg, opts)
     end
@@ -204,8 +189,7 @@ defmodule RunaWeb.Components.Input do
   @doc """
   Translates the errors for a field from a keyword list of errors.
   """
-  def translate_errors(errors, field)
-      when is_list(errors) do
+  def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors,
         do: translate_error({msg, opts})
   end

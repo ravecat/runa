@@ -31,8 +31,7 @@ defmodule Runa.LanguagesTest do
         glotto_code: Atom.to_string(ctx.test)
       }
 
-      assert {:ok, %Language{} = language} =
-               Languages.create(valid_attrs)
+      assert {:ok, %Language{} = language} = Languages.create(valid_attrs)
 
       assert language.title == Atom.to_string(ctx.test)
       assert language.wals_code == Atom.to_string(ctx.test)
@@ -48,8 +47,7 @@ defmodule Runa.LanguagesTest do
         glotto_code: nil
       }
 
-      assert {:error, %Ecto.Changeset{}} =
-               Languages.create(invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Languages.create(invalid_attrs)
     end
 
     test "updates the language with valid data", ctx do

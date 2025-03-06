@@ -21,22 +21,13 @@ defmodule RunaWeb.Live.Project.Form do
 
   @impl true
   def update(%{data: %Project{} = data} = assigns, socket) do
-    data =
-      data
-      |> maybe_preload(:base_language)
-      |> maybe_preload(:languages)
+    data = data |> maybe_preload(:base_language) |> maybe_preload(:languages)
 
     attrs = %{
       "base_language_title" =>
-        if(is_nil(data.id),
-          do: "",
-          else: data.base_language.title
-        ),
+        if(is_nil(data.id), do: "", else: data.base_language.title),
       "language_titles" =>
-        if(is_nil(data.id),
-          do: [],
-          else: Enum.map(data.languages, & &1.title)
-        )
+        if(is_nil(data.id), do: [], else: Enum.map(data.languages, & &1.title))
     }
 
     socket =
@@ -102,8 +93,7 @@ defmodule RunaWeb.Live.Project.Form do
   def handle_event("validate", %{"project" => attrs}, socket) do
     socket =
       update(socket, :form, fn _, %{data: data} ->
-        changeset =
-          Project.form_changeset(data, attrs)
+        changeset = Project.form_changeset(data, attrs)
 
         to_form(changeset, action: :validate)
       end)

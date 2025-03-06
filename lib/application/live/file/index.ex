@@ -52,11 +52,8 @@ defmodule RunaWeb.Live.File.Index do
     project_id = socket.assigns.project_id
 
     case Files.create(entry, %{project_id: project_id}, data) do
-      {:ok, _} ->
-        {:noreply, socket}
-
-      _ ->
-        {:noreply, socket}
+      {:ok, _} -> {:noreply, socket}
+      _ -> {:noreply, socket}
     end
   end
 
@@ -68,12 +65,7 @@ defmodule RunaWeb.Live.File.Index do
         {:postpone, entry}
       end)
 
-    socket =
-      update(
-        socket,
-        :uploaded_entries,
-        &(&1 ++ [uploaded_file])
-      )
+    socket = update(socket, :uploaded_entries, &(&1 ++ [uploaded_file]))
 
     {:noreply, socket}
   end

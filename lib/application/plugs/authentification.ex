@@ -80,9 +80,7 @@ defmodule RunaWeb.Plugs.Authentication do
     name
   end
 
-  defp fetch_name(%Ueberauth.Auth{
-         info: %{first_name: first, last_name: last}
-       })
+  defp fetch_name(%Ueberauth.Auth{info: %{first_name: first, last_name: last}})
        when first not in ["", nil] or last not in ["", nil] do
     [first, last]
     |> Enum.filter(&(&1 != nil and &1 != ""))

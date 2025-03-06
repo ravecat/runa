@@ -9,15 +9,13 @@ defmodule Runa.Teams.Team do
   alias Runa.Contributors.Contributor
   alias Runa.Projects.Project
 
-  @derive {
-    Flop.Schema,
-    sortable: [:title, :inserted_at, :updated_at, :id],
-    filterable: [:title],
-    default_order: %{
-      order_by: [:inserted_at, :id],
-      order_directions: [:desc, :asc]
-    }
-  }
+  @derive {Flop.Schema,
+           sortable: [:title, :inserted_at, :updated_at, :id],
+           filterable: [:title],
+           default_order: %{
+             order_by: [:inserted_at, :id],
+             order_directions: [:desc, :asc]
+           }}
 
   typed_schema "teams" do
     field :title, :string

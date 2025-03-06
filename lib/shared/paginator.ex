@@ -6,15 +6,9 @@ defmodule Runa.Paginator do
   import Ecto.Query
   alias Runa.Repo
 
-  @type page_number_params :: %{
-          :number => integer(),
-          :size => integer()
-        }
+  @type page_number_params :: %{:number => integer(), :size => integer()}
 
-  @type offset_params :: %{
-          :offset => integer(),
-          :limit => integer()
-        }
+  @type offset_params :: %{:offset => integer(), :limit => integer()}
 
   @type cursor_params :: %{
           :size => integer(),
@@ -44,58 +38,36 @@ defmodule Runa.Paginator do
 
     page_flop = map_to_flop(page)
 
-    Flop.validate_and_run(
-      query,
-      Map.merge(flop, page_flop),
-      opts
-    )
+    Flop.validate_and_run(query, Map.merge(flop, page_flop), opts)
   end
 
   def paginate(query, params, _opts) do
     sort = Map.get(params, :sort, [])
     filter = Map.get(params, :filter, [])
 
-    data =
-      query
-      |> where(^filter)
-      |> order_by(^sort)
-      |> Repo.all()
+    data = query |> where(^filter) |> order_by(^sort) |> Repo.all()
 
     {:ok, {data, %{}}}
   end
 
   defp map_to_flop(%{"number" => number, "size" => size}) do
-    %{
-      page: number,
-      page_size: size
-    }
+    %{page: number, page_size: size}
   end
 
   defp map_to_flop(%{"offset" => offset, "limit" => limit}) do
-    %{
-      offset: offset,
-      limit: limit
-    }
+    %{offset: offset, limit: limit}
   end
 
   defp map_to_flop(%{"after" => after_cursor, "size" => size}) do
-    %{
-      after: after_cursor,
-      first: size
-    }
+    %{after: after_cursor, first: size}
   end
 
   defp map_to_flop(%{"before" => before_cursor, "size" => size}) do
-    %{
-      before: before_cursor,
-      last: size
-    }
+    %{before: before_cursor, last: size}
   end
 
   defp map_to_flop(%{"size" => size}) do
-    %{
-      first: size
-    }
+    %{first: size}
   end
 
   defp map_to_flop(page) do
