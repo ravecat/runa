@@ -102,5 +102,41 @@ defmodule Runa.TeamsTest do
     test "returns changeset", ctx do
       assert %Ecto.Changeset{} = Teams.change(ctx.team)
     end
+
+    test "returns team owner", ctx do
+      user = insert(:user)
+
+      insert(:contributor, user: user, team: ctx.team, role: :owner)
+
+      assert owner = Teams.get_owner(ctx.team)
+
+      assert owner.id == user.id
+    end
+
+    test "returns nil when team has no owner", ctx do
+      Repo.delete_all(
+        from(c in Contributor,
+          where: c.team_id == ^ctx.team.id and c.role == :owner
+        )
+      )
+
+      assert nil == Teams.get_owner(ctx.team)
+    end
+
+    test "returns list of team members", ctx do
+      user1 = insert(:user)
+      user2 = insert(:user)
+
+      insert(:contributor, user: user1, team: ctx.team)
+      insert(:contributor, user: user2, team: ctx.team)
+
+      members = Teams.get_members(ctx.team)
+
+      assert length(members) == 2
+
+      for member <- members do
+        assert %{id: _, name: _, role: _, joined_at: _} = member
+      end
+    end
   end
 end
