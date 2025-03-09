@@ -25,15 +25,34 @@
       <span aria-label="Team owner">{@owner.name}</span>
     </div>
   </.custom_form>
-  <.table id="tokens" rows={@streams.members} aria-label="Team members">
-    <:col :let={member} label="Team member">
-      {member.name}
-    </:col>
-    <:col :let={member} label="Role">
-      {member.role}
-    </:col>
-    <:col :let={member} label="Joined">
-      {format_datetime_to_view(member.joined_at)}
-    </:col>
-  </.table>
+  <div
+    phx-update="stream"
+    id="members"
+    aria-label="Team members"
+    class="divide-y divide-background-alt dark:divide-background-alt text-sm"
+  >
+    <.custom_form
+      :for={{id, member} <- @streams.members}
+      class="grid grid-cols-[1fr_minmax(auto,8rem)_1fr] gap-2 items-center"
+      for={member}
+      id={id}
+      aria-label={"Member #{member.data.user.name} form"}
+      phx-change={"update_contributor:#{member.data.id}"}
+    >
+      {member.data.user.name}
+      <%= if member.data.user.id == @owner.id do %>
+        <span aria-label={"Role for #{member.data.user.name}"}>
+          {member.data.role}
+        </span>
+      <% else %>
+        <.input
+          type="select"
+          field={member[:role]}
+          aria-label={"Role for #{member.data.user.name}"}
+          options={@roles}
+        />
+      <% end %>
+      {format_datetime_to_view(@form[:inserted_at].value)}
+    </.custom_form>
+  </div>
 </.panel>

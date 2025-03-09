@@ -235,17 +235,32 @@ defmodule Runa.Teams do
     Repo.one(query)
   end
 
-  @spec get_members(Ecto.Schema.t() | integer()) :: [%{id: integer(), name: String.t(), role: atom(), joined_at: DateTime.t()}]
+  @spec get_roles() :: keyword()
+  def get_roles, do: Contributor.roles()
+
+  @spec get_members(Ecto.Schema.t() | integer()) :: [Ecto.Schema.t()]
   def get_members(%Team{id: id}), do: get_members(id)
 
-  def get_members(team_id) when is_integer(team_id) do
+  def get_members(team_id) do
     query =
-      from c in Contributor,
-        where: c.team_id == ^team_id,
-        join: u in assoc(c, :user),
-        select: %{id: u.id, name: u.name, role: c.role, joined_at: c.inserted_at}
+      from c in Contributor, where: c.team_id == ^team_id, preload: [:user]
 
     Repo.all(query)
+  end
+
+  @spec get_member(Ecto.Schema.t() | integer()) :: Ecto.Schema.t() | nil
+  def get_member(%Contributor{id: id} = contributor) do
+    case assoc_loaded?(contributor.user) do
+      true -> contributor
+      false -> get_member(id)
+    end
+  end
+
+  def get_member(contributor_id) do
+    query =
+      from(c in Contributor, where: c.id == ^contributor_id, preload: [:user])
+
+    Repo.one(query)
   end
 
   def subscribe do

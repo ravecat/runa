@@ -4,13 +4,13 @@ defmodule RunaWeb.Components.Form do
 
   ## Examples
 
-      <.simple_form for={@form} phx-change="validate" phx-submit="save">
+      <.custom_form for={@form} phx-change="validate" phx-submit="save">
         <.input field={@form[:email]}/>
         <.input field={@form[:username]} />
         <:actions>
           <.button>Save</.button>
         </:actions>
-      </.simple_form>
+      </.custom_form>
   """
   use RunaWeb, :component
 

@@ -13,7 +13,6 @@ defmodule Mix.Tasks.Seed.Data do
   require Logger
 
   @requirements ["app.start"]
-  @email Application.compile_env(:runa, :authentication)[:email]
 
   def run(_args) do
     Logger.info("Starting to seed development data...")
@@ -31,17 +30,22 @@ defmodule Mix.Tasks.Seed.Data do
       "TRUNCATE TABLE users, teams, contributors, projects, locales, keys, translations, tokens CASCADE"
     )
 
-    user = insert(:user, email: @email)
-
     languages = Repo.all(Language)
 
-    insert_list(3, :token, user: user)
+    email = Application.get_env(:runa, :authentication)[:email]
+
+    users = [insert(:user, email: email)] ++ insert_list(3, :user)
 
     teams =
-      1..5
-      |> Enum.map(fn _i ->
+      Enum.map(users, fn user ->
         team = insert(:team)
-        insert(:contributor, user: user, team: team)
+
+        insert(:contributor, user: user, team: team, role: :owner)
+        insert_list(3, :token, user: user)
+
+        users
+        |> Enum.reject(fn u -> u.id == user.id end)
+        |> Enum.each(&insert(:contributor, user: &1, team: team))
 
         projects =
           insert_list(3, :project,
