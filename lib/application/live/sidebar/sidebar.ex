@@ -16,6 +16,7 @@ defmodule RunaWeb.Live.Sidebar do
   import RunaWeb.Components.Icon
 
   on_mount RunaWeb.HandleUserData
+  on_mount __MODULE__
 
   @impl true
   def mount(
@@ -23,8 +24,6 @@ defmodule RunaWeb.Live.Sidebar do
         %{"current_uri" => current_uri},
         %{assigns: %{user: %{teams: [team | _]} = user}} = socket
       ) do
-    subscribe(socket)
-
     role = get_role(user.id, team.id)
 
     teams = Teams.get_user_teams_with_role(user.id)
@@ -50,8 +49,6 @@ defmodule RunaWeb.Live.Sidebar do
         %{"current_uri" => current_uri},
         %{assigns: %{user: user}} = socket
       ) do
-    subscribe(socket)
-
     socket =
       assign(socket,
         team: nil,
@@ -89,9 +86,9 @@ defmodule RunaWeb.Live.Sidebar do
   @impl true
   def handle_info({:team_selected, team}, socket) do
     role = get_role(socket.assigns.user.id, team.id)
-    
+
     socket = assign(socket, team: team, role: role)
-    
+
     {:noreply, socket}
   end
 
@@ -112,11 +109,13 @@ defmodule RunaWeb.Live.Sidebar do
     Contributors.get_by(user_id: user_id, team_id: team_id).role
   end
 
-  defp subscribe(%{assigns: %{user: user}} = socket) do
+  def on_mount(_, _, _, %{assigns: %{user: user}} = socket) do
     if connected?(socket) do
       Teams.subscribe()
       Accounts.subscribe(user.id)
       Phoenix.PubSub.subscribe(Runa.PubSub, "sidebar:#{user.id}")
     end
+
+    {:cont, socket}
   end
 end

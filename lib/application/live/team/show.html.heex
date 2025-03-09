@@ -24,16 +24,22 @@
       </span>
       <span aria-label="Team owner">{@owner.name}</span>
     </div>
+    <.table id="tokens" rows={@streams.members} aria-label="Team members">
+      <:col :let={member} label="Team member">
+        {member.name}
+      </:col>
+      <:col :let={member} label="Role">
+        <.input
+          type="select"
+          phx-change={"update_role:#{member.id}"}
+          name="role"
+          value={member.role}
+          options={@roles}
+        />
+      </:col>
+      <:col :let={member} label="Joined">
+        {format_datetime_to_view(member.joined_at)}
+      </:col>
+    </.table>
   </.custom_form>
-  <.table id="tokens" rows={@streams.members} aria-label="Team members">
-    <:col :let={member} label="Team member">
-      {member.name}
-    </:col>
-    <:col :let={member} label="Role">
-      {member.role}
-    </:col>
-    <:col :let={member} label="Joined">
-      {format_datetime_to_view(member.joined_at)}
-    </:col>
-  </.table>
 </.panel>

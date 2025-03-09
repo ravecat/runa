@@ -54,8 +54,19 @@ defmodule Runa.ContributorsTest do
       assert contributor.role == :owner
     end
 
+    test "updates the entity with valid data and entity id", ctx do
+      insert(:contributor, team: ctx.team, user: ctx.user, role: :viewer)
+
+      attrs = %{team_id: ctx.team.id, user_id: ctx.user.id, role: :owner}
+
+      assert {:ok, %Contributors.Contributor{} = contributor} =
+               Contributors.update(ctx.contributor.id, attrs)
+
+      assert contributor.role == :owner
+    end
+
     test "returns error changeset on update with invalid data", ctx do
-      attrs = %{team_id: nil}
+      attrs = %{role: nil}
 
       assert {:error, %Ecto.Changeset{}} =
                Contributors.update(ctx.contributor, attrs)

@@ -11,15 +11,21 @@ defmodule RunaWeb.Live.Team.Show do
   import RunaWeb.Formatters
   import RunaWeb.Components.Table
 
+  alias Runa.Contributors
   alias Runa.Teams
+
+  on_mount __MODULE__
 
   @impl true
   def mount(_, _, %{assigns: %{user: %{teams: [team | _]}}} = socket) do
+    dbg("mount")
+
     socket =
       assign(socket,
         team: team,
         form: to_form(Teams.change(team)),
-        owner: Teams.get_owner(team)
+        owner: Teams.get_owner(team),
+        roles: Enum.map(Teams.get_roles(), fn {role, _} -> {role, role} end)
       )
       |> stream(:members, Teams.get_members(team))
 
@@ -45,5 +51,22 @@ defmodule RunaWeb.Live.Team.Show do
       {:error, error} ->
         {:noreply, assign(socket, error: error)}
     end
+  end
+
+  @impl true
+  def handle_event("update_role:" <> id, %{"role" => role}, socket) do
+    case Contributors.update(id, %{role: role}) do
+      {:ok, _} -> {:noreply, socket}
+      {:error, _} -> {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_event(_, _, socket) do
+    {:noreply, socket}
+  end
+
+  def on_mount(:default, _params, _session, socket) do
+    {:cont, socket}
   end
 end

@@ -234,7 +234,16 @@ defmodule Runa.Teams do
     Repo.one(query)
   end
 
-  @spec get_members(Ecto.Schema.t() | integer()) :: [%{id: integer(), name: String.t(), role: atom(), joined_at: DateTime.t()}]
+  def get_roles, do: Contributor.roles()
+
+  @spec get_members(Ecto.Schema.t() | integer()) :: [
+          %{
+            id: integer(),
+            name: String.t(),
+            role: atom(),
+            joined_at: DateTime.t()
+          }
+        ]
   def get_members(%Team{id: id}), do: get_members(id)
 
   def get_members(team_id) when is_integer(team_id) do
@@ -242,7 +251,12 @@ defmodule Runa.Teams do
       from c in Contributor,
         where: c.team_id == ^team_id,
         join: u in assoc(c, :user),
-        select: %{id: u.id, name: u.name, role: c.role, joined_at: c.inserted_at}
+        select: %{
+          id: u.id,
+          name: u.name,
+          role: c.role,
+          joined_at: c.inserted_at
+        }
 
     Repo.all(query)
   end

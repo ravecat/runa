@@ -89,10 +89,21 @@ defmodule Runa.Contributors do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec update(Ecto.Schema.t() | binary(), map()) ::
+          {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def update(_, attrs \\ %{})
+
   def update(%Contributor{} = contributor, attrs) do
     contributor
     |> Contributor.changeset(attrs)
     |> Repo.update()
+  end
+
+  def update(id, attrs) when is_number(id) do
+    case get(id) do
+      {:ok, data} -> __MODULE__.update(data, attrs)
+      {:error, error} -> {:error, error}
+    end
   end
 
   @doc """
