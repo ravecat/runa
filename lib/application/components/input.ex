@@ -47,7 +47,7 @@ defmodule RunaWeb.Components.Input do
   attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
 
   attr :prompt, :string,
-    default: "",
+    default: nil,
     doc: "the prompt for select inputs"
 
   attr :options, :list,

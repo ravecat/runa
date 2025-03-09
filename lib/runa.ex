@@ -9,6 +9,7 @@ defmodule Runa do
 
   def context do
     quote do
+      import Ecto
       import Ecto.Query
       import Ecto.Changeset, except: [change: 2]
 

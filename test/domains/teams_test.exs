@@ -139,7 +139,8 @@ defmodule Runa.TeamsTest do
       assert length(members) == 2
 
       for member <- members do
-        assert %{id: _, name: _, role: _, joined_at: _} = member
+        assert %Contributor{} = member
+        assert Ecto.assoc_loaded?(member.user)
       end
     end
   end
