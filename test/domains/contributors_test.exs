@@ -89,7 +89,7 @@ defmodule Runa.ContributorsTest do
     end
 
     test "returns error changeset on update with invalid data", ctx do
-      attrs = %{team_id: nil}
+      attrs = %{role: nil}
 
       assert {:error, %Ecto.Changeset{}} =
                Contributors.update(ctx.contributor, attrs)

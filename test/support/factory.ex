@@ -42,7 +42,7 @@ defmodule Runa.Factory do
   end
 
   def contributor_factory(attrs) do
-    %Contributor{role: sequence(:role, [:owner, :admin, :editor, :viewer])}
+    %Contributor{role: sequence(:role, [:admin, :editor, :viewer])}
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end

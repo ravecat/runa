@@ -94,14 +94,14 @@ defmodule Runa.Contributors do
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
   def update(_, attrs \\ %{})
 
-  def update(id, attrs) when is_number(id) do
+  def update(id, attrs) when is_binary(id) or is_integer(id) do
     case get(id) do
       {:ok, data} -> __MODULE__.update(data, attrs)
       {:error, error} -> {:error, error}
     end
   end
 
-  def update(%Contributor{} = contributor, attrs) do
+  def update(contributor, attrs) when is_struct(contributor, Contributor) do
     contributor
     |> Contributor.changeset(attrs)
     |> Repo.update()
