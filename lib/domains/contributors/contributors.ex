@@ -75,6 +75,7 @@ defmodule Runa.Contributors do
     %Contributor{}
     |> Contributor.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:contributor_created)
   end
 
   @doc """
@@ -89,10 +90,22 @@ defmodule Runa.Contributors do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec update(Ecto.Schema.t() | binary(), map()) ::
+          {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def update(_, attrs \\ %{})
+
+  def update(id, attrs) when is_number(id) do
+    case get(id) do
+      {:ok, data} -> __MODULE__.update(data, attrs)
+      {:error, error} -> {:error, error}
+    end
+  end
+
   def update(%Contributor{} = contributor, attrs) do
     contributor
     |> Contributor.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:contributor_updated)
   end
 
   @doc """
@@ -109,6 +122,7 @@ defmodule Runa.Contributors do
   """
   def delete(%Contributor{} = contributor) do
     Repo.delete(contributor)
+    |> broadcast(:contributor_deleted)
   end
 
   @doc """
@@ -123,4 +137,16 @@ defmodule Runa.Contributors do
   def change(%Contributor{} = contributor, attrs \\ %{}) do
     Contributor.changeset(contributor, attrs)
   end
+
+  def subscribe do
+    PubSub.subscribe(Contributor.__schema__(:source))
+  end
+
+  defp broadcast({:ok, %Contributor{} = data}, event) do
+    PubSub.broadcast(Contributor.__schema__(:source), {event, data})
+
+    {:ok, data}
+  end
+
+  defp broadcast({:error, reason}, _event), do: {:error, reason}
 end
