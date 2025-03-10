@@ -42,9 +42,7 @@ defmodule Runa.TeamsTest do
 
       {:ok, data} = Teams.create(attrs)
 
-      assert_receive {:team_created, payload}
-
-      assert match?(^data, payload)
+      assert_receive {:team_created, ^data}
     end
 
     test "returns error changeset during creation with invalid data" do
@@ -82,9 +80,7 @@ defmodule Runa.TeamsTest do
 
       {:ok, data} = Teams.update(ctx.team, attrs)
 
-      assert_receive {:team_updated, payload}
-
-      assert match?(^data, payload)
+      assert_receive {:team_updated, ^data}
     end
 
     test "returns error changeset after update with invalid data", ctx do
@@ -97,6 +93,14 @@ defmodule Runa.TeamsTest do
       assert {:ok, %Team{}} = Teams.delete(ctx.team)
 
       assert {:error, %Ecto.NoResultsError{}} = Teams.get(ctx.team.id)
+    end
+
+    test "sends broadcast after delete the entity", ctx do
+      Teams.subscribe()
+
+      assert {:ok, %Team{} = data} = Teams.delete(ctx.team)
+
+      assert_receive {:team_deleted, ^data}
     end
 
     test "returns changeset", ctx do
