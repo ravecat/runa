@@ -136,6 +136,7 @@ defmodule Runa.Teams do
   """
   def delete(%Team{} = data) do
     Repo.delete(data)
+    |> broadcast(:team_deleted)
   end
 
   @doc """
