@@ -7,10 +7,11 @@ defmodule Runa.Contributors.Contributor do
   alias Runa.Accounts
   alias Runa.Teams
 
-  @roles [owner: 8, admin: 4, editor: 2, viewer: 1]
+  @owner [owner: 8]
+  @roles [admin: 4, editor: 2, viewer: 1]
 
   schema "contributors" do
-    field :role, Ecto.Enum, values: @roles
+    field :role, Ecto.Enum, values: @owner ++ @roles
 
     belongs_to :user, Accounts.User
     belongs_to :team, Teams.Team
