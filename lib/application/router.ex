@@ -94,7 +94,10 @@ defmodule RunaWeb.Router do
       pipe_through [:browser, :authenticate]
 
       live "/", Project.Index
-      live "/:project_id", Project.Show
+      live "/new", Project.Index, :new
+      live "/:id/edit", Project.Index, :edit
+      live "/:id/delete", Project.Index, :delete
+      live "/:id", Project.Show
     end
 
     scope "/team", RunaWeb.Live do

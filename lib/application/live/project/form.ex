@@ -56,7 +56,7 @@ defmodule RunaWeb.Live.Project.Form do
         phx-target={@myself}
         aria-label="Project form"
       >
-        <.input type="hidden" field={@form[:team_id]} value={@team_id} />
+        <.input type="hidden" field={@form[:team_id]} />
         <.input type="text" aria-label="Project name" field={@form[:name]}>
           <:label>Name</:label>
         </.input>

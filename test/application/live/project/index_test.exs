@@ -127,9 +127,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
              |> element("[aria-label='Project #{project.name} keys count']")
              |> render() =~ "#{Enum.count(keys)}"
     end
-  end
 
-  describe "projects compact view" do
     test "renders project languages list", ctx do
       language = insert(:language)
       project = insert(:project, team: ctx.team, languages: [language])
@@ -148,24 +146,6 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       assert has_element?(view, "[aria-label='Create new project']")
     end
-
-    test "renders list view button", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/projects")
-
-      assert has_element?(view, "[aria-label='Compact view']")
-    end
-
-    test "renders row view button", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/projects")
-
-      assert has_element?(view, "[aria-label='Expand view']")
-    end
-
-    test "renders grid view button", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/projects")
-
-      assert has_element?(view, "[aria-label='Grid view']")
-    end
   end
 
   describe "edit project modal" do
@@ -174,7 +154,9 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
-      element(view, "button[aria-label='Edit #{project.name} project']")
+      refute has_element?(view, "[aria-modal='true'][role='dialog']")
+
+      element(view, "[aria-label='Edit #{project.name} project']")
       |> render_click()
 
       assert has_element?(view, "[aria-modal='true'][role='dialog']")
@@ -193,9 +175,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
-      refute has_element?(view, "[aria-label='Project #{title} card']")
-
-      element(view, "button[aria-label='Edit #{project.name} project']")
+      element(view, "[aria-label='Edit #{project.name} project']")
       |> render_click()
 
       element(view, "[aria-label='Project form']")
@@ -206,16 +186,20 @@ defmodule RunaWeb.Live.Project.IndexTest do
       assert view
              |> element("[aria-label='Project #{title} card']")
              |> render() =~ title
+
+      refute has_element?(view, "[aria-label='Edit #{project.name} project']")
+
+      assert_patched(view, "/projects")
     end
   end
 
-  describe "delete project button" do
-    test "rendered by click delete button", ctx do
+  describe "delete project action" do
+    test "renders delete project dialog", ctx do
       project = List.first(ctx.projects)
 
       {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
-      element(view, "button[aria-label='Delete #{project.name} project']")
+      element(view, "[aria-label='Delete #{project.name} project']")
       |> render_click()
 
       assert has_element?(view, "[aria-modal='true'][role='dialog']")
@@ -226,13 +210,10 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
-      element(view, "button[aria-label='Delete #{project.name} project']")
+      element(view, "[aria-label='Delete #{project.name} project']")
       |> render_click()
 
-      element(
-        view,
-        "button[aria-label='Confirm delete #{project.name} project']"
-      )
+      element(view, "[aria-label='Confirm delete project']")
       |> render_click()
 
       refute has_element?(view, "[aria-label='Project #{project.name} card']")
@@ -243,7 +224,9 @@ defmodule RunaWeb.Live.Project.IndexTest do
     test "rendered by click create button", ctx do
       {:ok, view, _} = live(ctx.conn, ~p"/projects")
 
-      element(view, "button[aria-label='Create new project']")
+      refute has_element?(view, "[aria-modal='true'][role='dialog']")
+
+      element(view, "[aria-label='Create new project']")
       |> render_click()
 
       assert has_element?(view, "[aria-modal='true'][role='dialog']")
@@ -257,7 +240,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       refute has_element?(view, "[aria-label='Project #{title} card']")
 
-      element(view, "button[aria-label='Create new project']")
+      element(view, "[aria-label='Create new project']")
       |> render_click()
 
       element(view, "[aria-label='Project form']")
@@ -268,6 +251,10 @@ defmodule RunaWeb.Live.Project.IndexTest do
       assert view
              |> element("[aria-label='Project #{title} card']")
              |> render() =~ title
+
+      refute has_element?(view, "[aria-modal='true'][role='dialog']")
+
+      assert_patched(view, "/projects")
     end
   end
 

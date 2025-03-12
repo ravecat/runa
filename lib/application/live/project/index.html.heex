@@ -3,19 +3,12 @@
     <div class="text-sm centered justify-start">
       <.icon icon="folder" /> Projects
     </div>
-    <div class="flex justify-start gap-2">
-      <.button variant="ghost" square aria-label="Compact view">
-        <.icon icon="bars-3" />
-      </.button>
-      <.button variant="ghost" square aria-label="Expand view">
-        <.icon icon="rows-2" />
-      </.button>
-      <.button variant="ghost" square aria-label="Grid view">
-        <.icon icon="squares" />
-      </.button>
-      <.button phx-click="open_project_modal" aria-label="Create new project">
-        <.icon icon="plus" /> New
-      </.button>
+    <div class="flex justify-end gap-2">
+      <.link patch={~p"/projects/new"} aria-label="Create new project">
+        <.button>
+          <.icon icon="plus" /> New
+        </.button>
+      </.link>
     </div>
   </:header>
   <div id="projects" phx-update="stream" class="grid grid-cols-1 gap-2">
@@ -25,15 +18,14 @@
       class="grid grid-cols-[auto_1fr] grid-rows-[repeat(auto-fit,minmax(8rem,8rem))] gap-1"
     >
       <div class="grid grid-rows-[auto_1fr_auto] gap-1">
-        <.button
-          variant="ghost"
-          phx-click="open_project_modal"
-          phx-value-id={project.id}
-          square
+        <.link
+          patch={~p"/projects/#{project.id}/edit"}
           aria-label={"Edit #{project.name} project"}
         >
-          <.icon icon="pencil" />
-        </.button>
+          <.button variant="ghost" square>
+            <.icon icon="pencil" />
+          </.button>
+        </.link>
 
         <.button
           variant="ghost"
@@ -45,15 +37,14 @@
           <.icon icon="duplicate" />
         </.button>
 
-        <.button
-          variant="ghost"
-          phx-click="open_delete_project_modal"
-          phx-value-id={project.id}
-          square
+        <.link
+          patch={~p"/projects/#{project.id}/delete"}
           aria-label={"Delete #{project.name} project"}
         >
-          <.icon icon="trash" />
-        </.button>
+          <.button variant="ghost" square>
+            <.icon icon="trash" />
+          </.button>
+        </.link>
       </div>
       <.link navigate={~p"/projects/#{project.id}?section=settings"}>
         <div
@@ -112,43 +103,37 @@
   </div>
 </.panel>
 <.modal
-  :if={@is_visible_project_modal}
+  :if={@live_action in [:new, :edit]}
   show
-  on_cancel={JS.push("close_project_modal")}
+  on_cancel={JS.patch(~p"/projects")}
 >
   <:title>
-    {if @project.id, do: "Update project", else: "Create project"}
+    {if @live_action == :edit, do: "Update project", else: "Create project"}
   </:title>
-  <:content :let={{on_cancel, _}}>
+  <:content>
     <.live_component
       module={RunaWeb.Live.Project.Form}
-      id={if @project.id, do: "update_project", else: "create_project"}
+      id={to_string(@project.id || :new)}
       data={@project}
-      team_id={@team_id}
-    >
-      <:actions>
-        <.button variant="secondary" phx-click={on_cancel}>Cancel</.button>
-        <.button
-          variant="warning"
-          phx-value-id={@project.id}
-          type="submit"
-          aria-label={
-            if @project.id,
-              do: "Confirm update project",
-              else: "Confirm create project"
-          }
-        >
-          {if @project.id, do: "Update", else: "Create"}
-        </.button>
-      </:actions>
-    </.live_component>
+    />
   </:content>
+  <:actions :let={{on_cancel, _}}>
+    <.button variant="secondary" phx-click={on_cancel}>Cancel</.button>
+    <.button
+      variant="warning"
+      phx-value-id={@project.id}
+      type="submit"
+      aria-label={
+        if @project.id,
+          do: "Confirm update project",
+          else: "Confirm create project"
+      }
+    >
+      {if @project.id, do: "Update", else: "Create"}
+    </.button>
+  </:actions>
 </.modal>
-<.modal
-  :if={@is_visible_delete_project_modal}
-  show
-  on_cancel={JS.push("close_delete_project_modal")}
->
+<.modal :if={@live_action in [:delete]} show on_cancel={JS.patch(~p"/projects")}>
   <:title>
     Delete project data?
   </:title>
@@ -160,8 +145,9 @@
     <.button
       variant="danger"
       phx-click="delete_project"
+      phx-value-id={@project.id}
       type="submit"
-      aria-label={"Confirm delete #{@project.name} project"}
+      aria-label="Confirm delete project"
     >
       Delete
     </.button>
