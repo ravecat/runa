@@ -10,13 +10,23 @@ defmodule RunaWeb.SaveRequestUri do
   import Phoenix.Component, only: [assign: 3]
   import Phoenix.LiveView, only: [attach_hook: 4]
 
-  def on_mount(_, _params, _session, socket) do
+  def on_mount(:default, _params, _session, socket) do
     {:cont,
      attach_hook(
        socket,
        :save_request_path,
        :handle_params,
        &save_request_path/3
+     )}
+  end
+
+  def on_mount(:params, _params, _session, socket) do
+    {:cont,
+     attach_hook(
+       socket,
+       :save_request_params,
+       :handle_params,
+       &save_request_params/3
      )}
   end
 
@@ -35,5 +45,9 @@ defmodule RunaWeb.SaveRequestUri do
     else
       {:cont, socket}
     end
+  end
+
+  defp save_request_params(params, _url, socket) do
+    {:cont, assign(socket, :current_params, params)}
   end
 end

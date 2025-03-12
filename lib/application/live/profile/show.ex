@@ -1,4 +1,4 @@
-defmodule RunaWeb.Live.Profile do
+defmodule RunaWeb.Live.Profile.Show do
   @moduledoc """
   This module is responsible for the profile page and user data management.
   """
@@ -12,6 +12,7 @@ defmodule RunaWeb.Live.Profile do
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Input
   import RunaWeb.Components.Form
+  import RunaWeb.Components.Panel
   import RunaWeb.Formatters
 
   @impl true
@@ -20,10 +21,14 @@ defmodule RunaWeb.Live.Profile do
       Tokens.subscribe(user.id)
     end
 
-    socket =
-      assign_new(socket, :user_form_data, fn -> prepare_user_form(user) end)
+    socket = assign(socket, :profile, to_user_form(user))
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_params(_, _, socket) do
+    {:noreply, socket}
   end
 
   @impl true
@@ -33,10 +38,10 @@ defmodule RunaWeb.Live.Profile do
 
   @impl true
   def handle_event("validate", %{"user" => attrs}, socket) do
-    changeset = Accounts.change(socket.assigns.user, attrs)
-
     {:noreply,
-     assign(socket, user_form_data: to_form(changeset, action: :validate))}
+     assign(socket,
+       profile: to_user_form(socket.assigns.user, attrs, action: :validate)
+     )}
   end
 
   @impl true
@@ -64,15 +69,12 @@ defmodule RunaWeb.Live.Profile do
       {:ok, user} ->
         user = Repo.preload(user, tokens: :user)
 
-        socket =
-          socket
-          |> assign(:user, user)
-          |> assign(:user_form_data, prepare_user_form(user))
+        socket = assign(socket, user: user, profile: to_user_form(user))
 
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, user_form_data: to_form(changeset))}
+        {:noreply, assign(socket, profile: to_user_form(changeset))}
     end
   end
 
@@ -81,13 +83,10 @@ defmodule RunaWeb.Live.Profile do
     {:noreply, socket}
   end
 
-  defp prepare_user_form(user) do
-    %{
-      user
-      | inserted_at: format_datetime_to_view(user.inserted_at),
-        updated_at: format_datetime_to_view(user.updated_at)
-    }
-    |> Accounts.change()
-    |> to_form()
+  @spec to_user_form(Ecto.Schema.t(), map(), keyword()) :: Phoenix.HTML.Form.t()
+  defp to_user_form(user, attrs \\ %{}, opts \\ []) do
+    user
+    |> Accounts.change(attrs)
+    |> to_form(opts)
   end
 end

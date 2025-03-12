@@ -105,6 +105,15 @@
       <.icon icon="user" /> Profile
     </.active_link>
     <.active_link
+      navigate={~p"/tokens"}
+      aria-label="Navigate to API tokens list"
+      class="self-end ghost optionable"
+      active_class="bg-accent"
+      current_uri={@current_uri}
+    >
+      <.icon icon="gear" /> API keys
+    </.active_link>
+    <.active_link
       navigate={~p"/team"}
       aria-label="Navigate to team settings"
       class="self-end ghost optionable"

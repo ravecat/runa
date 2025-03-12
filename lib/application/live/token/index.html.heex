@@ -1,9 +1,11 @@
 <div class="cardable">
   <div class="flex flex-row justify-between items-center">
     <span class="text-lg font-medium">API keys</span>
-    <.button phx-click="open_token_modal" aria-label="Create token">
-      <.icon icon="plus" /> Create key
-    </.button>
+    <.link patch={~p"/tokens/new"} aria-label="Create token">
+      <.button>
+        <.icon icon="plus" /> Create key
+      </.button>
+    </.link>
   </div>
   <div class="text-sm leading-normal">
     API keys for external services (removed after the creator is removed from the platform)
@@ -31,38 +33,37 @@
       {token.access}
     </:col>
     <:action :let={token}>
-      <button
-        type="button"
-        role="button"
-        class="flex rounded p-1 accent cursor-pointer transition"
-        phx-click="open_token_modal"
-        phx-value-id={token.id}
-        aria-label="Update token"
+      <.link
+        patch={~p"/tokens/#{token.id}/edit"}
         data-token-id={token.id}
+        aria-label={"Update #{token.title} token"}
       >
-        <.icon icon="pencil" />
-      </button>
+        <button
+          type="button"
+          role="button"
+          class="flex rounded p-1 accent cursor-pointer transition"
+        >
+          <.icon icon="pencil" />
+        </button>
+      </.link>
     </:action>
     <:action :let={token}>
-      <button
-        type="button"
-        role="button"
-        class="flex rounded p-1 warning cursor-pointer transition"
-        phx-click="open_delete_token_modal"
-        phx-value-id={token.id}
-        aria-label="Delete token"
-        data-token-id={token.id}
+      <.link
+        patch={~p"/tokens/#{token.id}/delete"}
+        aria-label={"Delete #{token.title} token"}
       >
-        <.icon icon="trash" />
-      </button>
+        <button
+          type="button"
+          role="button"
+          class="flex rounded p-1 warning cursor-pointer transition"
+        >
+          <.icon icon="trash" />
+        </button>
+      </.link>
     </:action>
   </.table>
 </div>
-<.modal
-  :if={@is_visible_delete_token_modal}
-  show
-  on_cancel={JS.push("close_delete_token_modal")}
->
+<.modal :if={@live_action in [:delete]} show on_cancel={JS.patch(~p"/tokens")}>
   <:title>
     Delete token data?
   </:title>
@@ -74,20 +75,22 @@
     <.button
       variant="danger"
       phx-click="delete_token"
+      phx-value-id={@token.id}
       type="submit"
       aria-label="Confirm delete token"
     >
+    
       Delete
     </.button>
   </:actions>
 </.modal>
 <.modal
-  :if={@is_visible_token_modal}
+  :if={@live_action in [:new, :edit]}
   show
-  on_cancel={JS.push("close_token_modal")}
+  on_cancel={JS.patch(~p"/tokens")}
 >
   <:title>
-    {if @token.id, do: "Update API key", else: "Create API key"}
+    {(@token.id && "Update key") || "Create key"}
   </:title>
   <:content :let={{on_cancel, _}}>
     <.live_component

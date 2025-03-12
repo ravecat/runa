@@ -91,11 +91,10 @@ defmodule RunaWeb.Live.Team.Show do
     stream(socket, :members, members)
   end
 
-  @spec to_member_form(Ecto.Schema.t() | Ecto.Changeset.t(), map()) ::
-          Phoenix.HTML.Form.t()
-  defp to_member_form(member_or_changeset, attrs \\ %{}) do
-    member_or_changeset
+  @spec to_member_form(Ecto.Schema.t(), map()) :: Phoenix.HTML.Form.t()
+  defp to_member_form(member, attrs \\ %{}) do
+    member
     |> Contributors.change(attrs)
-    |> to_form(id: member_or_changeset.id)
+    |> to_form(id: member.id)
   end
 end

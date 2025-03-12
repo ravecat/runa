@@ -87,7 +87,16 @@ defmodule RunaWeb.Router do
     scope "/profile", RunaWeb.Live do
       pipe_through [:browser, :authenticate]
 
-      live "/", Profile
+      live "/", Profile.Show
+    end
+
+    scope "/tokens", RunaWeb.Live do
+      pipe_through [:browser, :authenticate]
+
+      live "/", Token.Index
+      live "/new", Token.Index, :new
+      live "/:id/edit", Token.Index, :edit
+      live "/:id/delete", Token.Index, :delete
     end
 
     scope "/projects", RunaWeb.Live do
