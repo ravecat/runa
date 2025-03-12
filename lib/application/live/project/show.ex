@@ -12,7 +12,7 @@ defmodule RunaWeb.Live.Project.Show do
   alias Runa.Teams
 
   @impl true
-  def mount(%{"project_id" => project_id}, _session, socket) do
+  def mount(%{"id" => project_id}, _session, socket) do
     {:ok, team} = Teams.get_team_by_project_id(project_id)
     {:ok, project} = Projects.get(project_id)
 
@@ -31,7 +31,7 @@ defmodule RunaWeb.Live.Project.Show do
   end
 
   @impl true
-  def handle_params(%{"project_id" => project_id}, _, socket) do
+  def handle_params(%{"id" => project_id}, _, socket) do
     {:noreply,
      push_patch(socket, to: ~p"/projects/#{project_id}?section=files")}
   end

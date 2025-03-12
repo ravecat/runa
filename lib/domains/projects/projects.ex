@@ -63,7 +63,7 @@ defmodule Runa.Projects do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec update(Ecto.Schema.t(), map, keyword()) ::
+  @spec create(map, keyword()) ::
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
   def create(attrs, opts \\ []) do
     changeset_func = Keyword.get(opts, :with, &change/2)
@@ -116,8 +116,17 @@ defmodule Runa.Projects do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec change(Ecto.Schema.t() | integer()) :: Ecto.Schema.t()
   def delete(%Project{} = project) do
     Repo.delete(project)
+  end
+
+  def delete(id) do
+    get(id)
+    |> case do
+      {:ok, project} -> delete(project)
+      {:error, error} -> {:error, error}
+    end
   end
 
   @doc """

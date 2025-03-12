@@ -14,101 +14,56 @@ defmodule RunaWeb.Live.Project.Index do
   alias Runa.Projects.Project
   alias Runa.Teams
 
-  @impl true
-  def mount(_, _, %{assigns: %{user: %{teams: [team | _]}}} = socket) do
+  on_mount __MODULE__
+
+  def on_mount(_, _, _, %{assigns: %{user: %{teams: [team | _]}}} = socket) do
     if connected?(socket) do
       Projects.subscribe(team)
     end
 
+    {:cont, socket}
+  end
+
+  @impl true
+  def mount(_, _, %{assigns: %{user: %{teams: [team | _]}}} = socket) do
     projects = Teams.get_projects_with_statistics(team.id)
 
-    socket =
-      assign(socket,
-        team_id: team.id,
-        project: %Project{},
-        is_visible_project_modal: false,
-        is_visible_delete_project_modal: false
-      )
-      |> stream(:projects, projects)
+    socket = assign(socket, team_id: team.id) |> stream(:projects, projects)
 
     {:ok, socket}
   end
 
   def mount(_, _, socket) do
-    socket =
-      assign(socket,
-        team_id: nil,
-        project: %Project{},
-        is_visible_project_modal: false,
-        is_visible_delete_project_modal: false
-      )
-      |> stream(:projects, [])
+    socket = assign(socket, team_id: nil) |> stream(:projects, [])
 
     {:ok, socket}
   end
 
   @impl true
-  def handle_params(_, _, socket) do
-    {:noreply, socket}
+  def handle_params(params, _uri, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :new, _) do
+    assign(socket, project: build_project(socket.assigns.team_id))
+  end
+
+  defp apply_action(socket, action, %{"id" => id})
+       when action in [:edit, :delete] do
+    {:ok, data} = Projects.get(id)
+
+    assign(socket, project: data)
+  end
+
+  defp apply_action(socket, _, _) do
+    socket
   end
 
   @impl true
-  def handle_event("open_project_modal", %{"id" => id}, socket) do
-    case Projects.get(id) do
+  def handle_event("delete_project", %{"id" => id}, socket) do
+    case Projects.delete(id) do
       {:ok, data} ->
-        socket =
-          socket
-          |> assign(:project, data)
-          |> assign(:is_visible_project_modal, true)
-
-        {:noreply, socket}
-
-      _ ->
-        {:noreply, socket}
-    end
-  end
-
-  @impl true
-  def handle_event("open_project_modal", _, socket) do
-    socket = assign(socket, :is_visible_project_modal, true)
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("open_delete_project_modal", %{"id" => id}, socket) do
-    case Projects.get(id) do
-      {:ok, data} ->
-        socket =
-          socket
-          |> assign(:project, data)
-          |> assign(:is_visible_delete_project_modal, true)
-
-        {:noreply, socket}
-
-      _ ->
-        {:noreply, socket}
-    end
-  end
-
-  @impl true
-  def handle_event("close_project_modal", _, socket) do
-    socket =
-      assign(socket, :is_visible_project_modal, false)
-      |> assign(:project, %Project{})
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("delete_project", _, socket) do
-    case Projects.delete(socket.assigns.project) do
-      {:ok, _} ->
-        socket =
-          socket
-          |> stream_delete(:projects, socket.assigns.project)
-          |> assign(:project, %Project{})
-          |> assign(:is_visible_delete_project_modal, false)
+        socket = stream_delete(socket, :projects, data)
 
         {:noreply, socket}
 
@@ -154,8 +109,7 @@ defmodule RunaWeb.Live.Project.Index do
       socket
       |> stream_delete(:projects, data)
       |> stream_insert(:projects, updated_data)
-      |> assign(:project, %Project{})
-      |> assign(:is_visible_project_modal, false)
+      |> push_patch(to: ~p"/projects")
 
     {:noreply, socket}
   end
@@ -167,13 +121,13 @@ defmodule RunaWeb.Live.Project.Index do
       |> Enum.find(&(&1.id == data.id))
 
     socket =
-      socket
-      |> stream_insert(:projects, updated_data)
-      |> assign(:project, %Project{})
-      |> assign(:is_visible_project_modal, false)
+      stream_insert(socket, :projects, updated_data)
+      |> push_patch(to: ~p"/projects")
 
     {:noreply, socket}
   end
 
   def handle_info(_, socket), do: {:noreply, socket}
+
+  defp build_project(team_id), do: %Project{team_id: team_id}
 end

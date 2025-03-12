@@ -75,7 +75,7 @@ defmodule RunaWeb.Live.Project.FormTest do
 
     test "creates project", ctx do
       {:ok, view, _} =
-        live_isolated_component(Form, %{data: %Project{}, team_id: ctx.team.id})
+        live_isolated_component(Form, %{data: %Project{team_id: ctx.team.id}})
 
       view
       |> element("[aria-label='Project form']")
