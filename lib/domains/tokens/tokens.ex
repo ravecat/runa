@@ -104,7 +104,7 @@ defmodule Runa.Tokens do
   end
 
   def delete(id) do
-    Repo.get_by(Token, id: id) |> Repo.delete()
+    Repo.get_by(Token, id: id) |> delete()
   end
 
   @doc """
@@ -127,17 +127,14 @@ defmodule Runa.Tokens do
     :crypto.strong_rand_bytes(24) |> Base.url_encode64(padding: false)
   end
 
+  def get_access_labels,
+    do: Enum.map(Token.access_levels(), fn {label, _} -> {label, label} end)
+
   @doc """
   Generate a hash for a token.
   """
   def hash(token) when is_binary(token) do
     :crypto.hash(:sha256, token) |> Base.encode16(case: :lower)
-  end
-
-  def apply(token, attrs) do
-    token
-    |> change(attrs)
-    |> Ecto.Changeset.apply_changes()
   end
 
   def subscribe do

@@ -63,7 +63,9 @@ defmodule RunaWeb.Live.Project.Index do
   def handle_event("delete_project", %{"id" => id}, socket) do
     case Projects.delete(id) do
       {:ok, data} ->
-        socket = stream_delete(socket, :projects, data)
+        socket =
+          stream_delete(socket, :projects, data)
+          |> push_patch(to: ~p"/projects")
 
         {:noreply, socket}
 

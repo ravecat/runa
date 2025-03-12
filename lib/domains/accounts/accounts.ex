@@ -125,7 +125,7 @@ defmodule Runa.Accounts do
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change(%User{} = user, attrs \\ %{}) do
+  def change(user, attrs \\ %{}) do
     User.changeset(user, attrs)
   end
 

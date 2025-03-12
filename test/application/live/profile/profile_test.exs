@@ -69,20 +69,6 @@ defmodule RunaWeb.Live.ProfileTest do
              "John Doe"
   end
 
-  test "name updates in profile propagates to token list", ctx do
-    {:ok, view, _} = live(ctx.conn, ~p"/profile")
-
-    child_view = find_live_child(view, "api_keys")
-
-    view
-    |> element("input[aria-label='Profile name']")
-    |> render_blur(%{"value" => "John Doe"})
-
-    for _ <- ctx.tokens do
-      assert has_element?(child_view, "td", "John Doe")
-    end
-  end
-
   test "authenticated user can see email", ctx do
     {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
@@ -97,10 +83,8 @@ defmodule RunaWeb.Live.ProfileTest do
 
     formatted_date = format_datetime_to_view(ctx.user.inserted_at)
 
-    assert has_element?(
-             view,
-             "input[aria-label='Account creation date'][value='#{formatted_date}']"
-           )
+    assert element(view, "[aria-label='Account creation date']")
+           |> render() =~ formatted_date
   end
 
   test "authenticated user can see last update date", ctx do
@@ -108,10 +92,8 @@ defmodule RunaWeb.Live.ProfileTest do
 
     formatted_date = format_datetime_to_view(ctx.user.updated_at)
 
-    assert has_element?(
-             view,
-             "input[aria-label='Last profile update date'][value='#{formatted_date}']"
-           )
+    assert element(view, "[aria-label='Last profile update date']")
+           |> render() =~ formatted_date
   end
 
   test "authenticated user can see avatar", ctx do

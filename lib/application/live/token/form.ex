@@ -12,25 +12,8 @@ defmodule RunaWeb.Live.Token.Form do
   import RunaWeb.Components.Input
   import RunaWeb.Components.Select
 
-  @impl true
-  def update(%{data: %Token{} = data} = assigns, socket) do
-    action = if data.id, do: :edit, else: :new
+  slot :actions, doc: "the slot for form actions, such as a submit button"
 
-    socket =
-      socket
-      |> assign(assigns)
-      |> assign(:action, action)
-      |> assign_new(:access, fn ->
-        Enum.map(Token.access_levels(), fn {label, _} -> {label, label} end)
-      end)
-      |> assign_new(:form, fn -> to_form(Tokens.change(data)) end)
-
-    {:ok, socket}
-  end
-
-  slot(:actions, doc: "the slot for form actions, such as a submit button")
-
-  @impl true
   def render(assigns) do
     ~H"""
     <div>
@@ -56,10 +39,27 @@ defmodule RunaWeb.Live.Token.Form do
   end
 
   @impl true
-  def handle_event("validate", %{"token" => attrs}, socket) do
-    changeset = Tokens.change(socket.assigns.data, attrs)
+  def update(%{data: %Token{} = data} = assigns, socket) do
+    action = if data.id, do: :edit, else: :new
 
-    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
+    socket =
+      socket
+      |> assign(assigns)
+      |> assign(
+        action: action,
+        access: Tokens.get_access_labels(),
+        form: to_token_form(data)
+      )
+
+    {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("validate", %{"token" => attrs}, socket) do
+    {:noreply,
+     assign(socket,
+       form: to_token_form(socket.assigns.data, attrs, action: :validate)
+     )}
   end
 
   @impl true
@@ -91,5 +91,12 @@ defmodule RunaWeb.Live.Token.Form do
       {:error, error} ->
         {:noreply, assign(socket, error: error)}
     end
+  end
+
+  @spec to_token_form(Ecto.Schema.t(), map(), list()) :: Phoenix.HTML.Form.t()
+  defp to_token_form(data, attrs \\ %{}, opts \\ []) do
+    data
+    |> Tokens.change(attrs)
+    |> to_form(opts)
   end
 end

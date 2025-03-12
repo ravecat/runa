@@ -15,38 +15,53 @@ defmodule RunaWeb.Live.Token.Index do
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Modal
 
-  on_mount(RunaWeb.HandleUserData)
+  on_mount RunaWeb.HandleUserData
+  on_mount __MODULE__
 
-  @impl true
-  def mount(_, _, %{assigns: %{user: user}} = socket) do
+  def on_mount(_, _, _, %{assigns: %{user: user}} = socket) do
     if connected?(socket) do
       Tokens.subscribe(user.id)
       Accounts.subscribe(user.id)
     end
 
+    {:cont, socket}
+  end
+
+  @impl true
+  def mount(_, _, %{assigns: %{user: user}} = socket) do
     user = Repo.preload(user, tokens: :user)
 
     socket =
       socket
-      |> assign(:is_visible_delete_token_modal, false)
-      |> assign(:is_visible_token_modal, false)
-      |> assign(:user, user)
-      |> assign_new(:access, fn ->
-        Enum.map(Token.access_levels(), fn {label, _} -> {label, label} end)
-      end)
-      |> assign(token: %Token{})
+      |> assign(user: user, access: Tokens.get_access_labels())
       |> stream(:tokens, user.tokens)
 
     {:ok, socket}
   end
 
   @impl true
+  def handle_params(params, _uri, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :new, _) do
+    assign(socket, token: build_token(socket.assigns.user.id))
+  end
+
+  defp apply_action(socket, action, %{"id" => id})
+       when action in [:edit, :delete] do
+    {:ok, data} = Tokens.get(id)
+
+    assign(socket, token: data)
+  end
+
+  defp apply_action(socket, _, _) do
+    socket
+  end
+
+  @impl true
   def handle_info({:token_created, %Token{} = data}, socket) do
-    socket =
-      socket
-      |> stream_insert(:tokens, data)
-      |> assign(:token, %Token{})
-      |> assign(:is_visible_token_modal, false)
+    socket = socket |> stream_insert(:tokens, data) |> assign(:token, %Token{})
 
     {:noreply, socket}
   end
@@ -58,7 +73,6 @@ defmodule RunaWeb.Live.Token.Index do
       |> stream_delete(:tokens, data)
       |> stream_insert(:tokens, data)
       |> assign(:token, %Token{})
-      |> assign(:is_visible_token_modal, false)
 
     {:noreply, socket}
   end
@@ -78,71 +92,11 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   @impl true
-  def handle_event("open_delete_token_modal", %{"id" => id}, socket) do
-    case Tokens.get(id) do
+  def handle_event("delete_token", %{"id" => id}, socket) do
+    case Tokens.delete(id) do
       {:ok, data} ->
         socket =
-          socket
-          |> assign(:token, data)
-          |> assign(:is_visible_delete_token_modal, true)
-
-        {:noreply, socket}
-
-      {:error, _} ->
-        {:noreply, put_flash(socket, :error, "Failed to delete token")}
-    end
-  end
-
-  @impl true
-  def handle_event("close_delete_token_modal", _, socket) do
-    socket =
-      socket
-      |> assign(:token, %Token{})
-      |> assign(:is_visible_delete_token_modal, false)
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("open_token_modal", %{"id" => id}, socket) do
-    case Tokens.get(id) do
-      {:ok, token} ->
-        socket =
-          socket
-          |> assign(:token, token)
-          |> assign(:is_visible_token_modal, true)
-
-        {:noreply, socket}
-
-      _ ->
-        {:noreply, socket}
-    end
-  end
-
-  @impl true
-  def handle_event("open_token_modal", _, socket) do
-    {:noreply, assign(socket, :is_visible_token_modal, true)}
-  end
-
-  @impl true
-  def handle_event("close_token_modal", _, socket) do
-    socket =
-      socket
-      |> assign(:token, %Token{})
-      |> assign(:is_visible_token_modal, false)
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("delete_token", _, socket) do
-    case Tokens.delete(socket.assigns.token.id) do
-      {:ok, data} ->
-        socket =
-          socket
-          |> stream_delete(:tokens, data)
-          |> assign(:token, %Token{})
-          |> assign(:is_visible_delete_token_modal, false)
+          stream_delete(socket, :tokens, data) |> push_patch(to: ~p"/tokens")
 
         {:noreply, socket}
 
@@ -154,5 +108,9 @@ defmodule RunaWeb.Live.Token.Index do
   @impl true
   def handle_event(_, _, socket) do
     {:noreply, socket}
+  end
+
+  defp build_token(user_id) do
+    %Token{user_id: user_id}
   end
 end

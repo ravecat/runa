@@ -1,10 +1,10 @@
-<div class="cardable">
+<.panel>
   <span class="text-lg font-medium">Profile</span>
   <div class="text-sm leading-normal">
     These settings are personal to you, these wont't be affected the rest of the workspace
   </div>
   <.custom_form
-    for={@user_form_data}
+    for={@profile}
     phx-change="validate"
     phx-submit="save"
     class="grid grid-cols-[1fr,1fr] gap-4"
@@ -36,7 +36,7 @@
         </div>
         <.avatar
           class="w-16 h-16"
-          src={Phoenix.HTML.Form.input_value(@user_form_data, :avatar)}
+          src={Phoenix.HTML.Form.input_value(@profile, :avatar)}
           aria-label="Profile avatar"
         />
       </div>
@@ -44,7 +44,7 @@
       <div class="flex-1">
         <.input
           type="text"
-          field={@user_form_data[:name]}
+          field={@profile[:name]}
           aria-label="Profile name"
           phx-blur="save"
           phx-keydown="save"
@@ -59,7 +59,7 @@
     </div>
     <.input
       type="text"
-      field={@user_form_data[:email]}
+      field={@profile[:email]}
       readonly
       aria-label="Profile email"
     >
@@ -67,29 +67,13 @@
         <.icon icon="email" />Email
       </:label>
     </.input>
-    <.input
-      type="text"
-      field={@user_form_data[:inserted_at]}
-      readonly
-      aria-label="Account creation date"
-    >
-      <:label>
-        <.icon icon="calendar" />Created at
-      </:label>
-    </.input>
-    <.input
-      type="text"
-      field={@user_form_data[:updated_at]}
-      readonly
-      aria-label="Last profile update date"
-    >
-      <:label>
-        <.icon icon="calendar" />Updated at
-      </:label>
-    </.input>
+    <span aria-label="Account creation date">
+      <.icon icon="calendar" />
+      Created at {format_datetime_to_view(@profile[:inserted_at].value)}
+    </span>
+    <span aria-label="Last profile update date">
+      <.icon icon="calendar" />
+      Updated at {format_datetime_to_view(@profile[:updated_at].value)}
+    </span>
   </.custom_form>
-</div>
-{live_render(@socket, RunaWeb.Live.Token.Index,
-  id: "api_keys",
-  container: {:div, class: "contents"}
-)}
+</.panel>
