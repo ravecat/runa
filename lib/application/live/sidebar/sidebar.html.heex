@@ -16,43 +16,43 @@
             classes([
               "size-12 border-primary",
               [
-                "border-secondary": match?(:admin, @role),
-                "border-accent": match?(:editor, @role),
-                "border-info": match?(:viewer, @role)
+                "border-secondary": match?(:admin, @active_role),
+                "border-accent": match?(:editor, @active_role),
+                "border-info": match?(:viewer, @active_role)
               ]
             ])
           }
           src={@user.avatar}
         />
         <div class="grid">
-          <%= if @team do %>
+          <%= if @active_team do %>
             <strong
-              :if={@team}
+              :if={@active_team}
               aria-label="Current team"
               class="font-medium truncate"
             >
-              {@team.title}
+              {@active_team.title}
             </strong>
           <% end %>
           <span aria-label="Current user" class="text-sm truncate">
             {@user.name}
           </span>
-          <%= if @team do %>
+          <%= if @active_team do %>
             <span
               aria-label="Current team role"
               class={[
                 classes([
                   "text-primary truncate",
                   [
-                    "text-secondary": match?(:admin, @role),
-                    "text-accent": match?(:editor, @role),
-                    "text-info": match?(:viewer, @role)
+                    "text-secondary": match?(:admin, @active_role),
+                    "text-accent": match?(:editor, @active_role),
+                    "text-info": match?(:viewer, @active_role)
                   ]
                 ]),
                 "text-xs"
               ]}
             >
-              {@role}
+              {@active_role}
             </span>
           <% end %>
         </div>
@@ -80,7 +80,7 @@
       </span>
     </:row>
     <:footer class="cursor-default">
-      <.button phx-click="open_create_team_modal" class="w-full">
+      <.button phx-click="create_team" class="w-full">
         Create team
       </.button>
     </:footer>
@@ -133,9 +133,9 @@
   </div>
 </aside>
 <.modal
-  :if={@is_visible_create_team_modal}
+  :if={@live_action == :create_team}
   show
-  on_cancel={JS.push("close_create_team_modal")}
+  on_cancel={JS.push("close_team_modal")}
 >
   <:title>
     Create team
@@ -143,10 +143,9 @@
   <:content>
     <.live_component
       module={RunaWeb.Live.Team.Form}
-      data={@team_form_data}
+      data={@team}
       user={@user}
-      action={:new}
-      id="create_team"
+      id={:new}
     />
   </:content>
 </.modal>

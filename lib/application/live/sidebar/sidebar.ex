@@ -18,25 +18,30 @@ defmodule RunaWeb.Live.Sidebar do
   on_mount RunaWeb.HandleUserData
   on_mount __MODULE__
 
-  @impl true
-  def mount(
+  def on_mount(
+        _,
         _,
         %{"current_uri" => current_uri},
-        %{assigns: %{user: %{teams: [team | _]} = user}} = socket
+        %{assigns: %{user: user}} = socket
       ) do
-    role = get_role(user.id, team.id)
+    if connected?(socket) do
+      Teams.subscribe()
+      Accounts.subscribe(user.id)
+      Phoenix.PubSub.subscribe(Runa.PubSub, "sidebar:#{user.id}")
+    end
 
+    socket = assign(socket, current_uri: current_uri, team: %Team{}, user: user)
+
+    {:cont, socket}
+  end
+
+  @impl true
+  def mount(_, _, %{assigns: %{user: %{teams: [team | _]} = user}} = socket) do
+    role = Contributors.get_role(user.id, team.id)
     teams = Teams.get_user_teams_with_role(user.id)
 
     socket =
-      assign(socket,
-        user: user,
-        team: team,
-        role: role,
-        current_uri: current_uri,
-        team_form_data: %Team{},
-        is_visible_create_team_modal: false
-      )
+      assign(socket, active_team: team, active_role: role)
       |> stream_configure(:teams, dom_id: &"#{elem(&1, 0).id}")
       |> stream(:teams, teams)
 
@@ -44,21 +49,9 @@ defmodule RunaWeb.Live.Sidebar do
   end
 
   @impl true
-  def mount(
-        _,
-        %{"current_uri" => current_uri},
-        %{assigns: %{user: user}} = socket
-      ) do
+  def mount(_, _, socket) do
     socket =
-      assign(socket,
-        team: nil,
-        user: user,
-        role: nil,
-        team_form_data: %Team{},
-        current_uri: current_uri,
-        is_visible_create_team_modal: false
-      )
-      |> stream(:teams, [])
+      assign(socket, active_team: nil, active_role: nil) |> stream(:teams, [])
 
     {:ok, socket, layout: false}
   end
@@ -66,12 +59,12 @@ defmodule RunaWeb.Live.Sidebar do
   @impl true
   def handle_info({:team_created, data}, socket) do
     socket =
-      socket
-      |> stream_insert(
+      stream_insert(
+        socket,
         :teams,
-        {data, get_role(socket.assigns.user.id, data.id)}
+        {data, Contributors.get_role(socket.assigns.user.id, data.id)}
       )
-      |> assign(:is_visible_create_team_modal, false)
+      |> assign(live_action: nil)
 
     {:noreply, socket}
   end
@@ -85,7 +78,7 @@ defmodule RunaWeb.Live.Sidebar do
 
   @impl true
   def handle_info({:team_selected, team}, socket) do
-    role = get_role(socket.assigns.user.id, team.id)
+    role = Contributors.get_role(socket.assigns.user.id, team.id)
 
     socket = assign(socket, team: team, role: role)
 
@@ -96,26 +89,12 @@ defmodule RunaWeb.Live.Sidebar do
   def handle_info(_, socket), do: {:noreply, socket}
 
   @impl true
-  def handle_event("open_create_team_modal", _, socket) do
-    {:noreply, assign(socket, :is_visible_create_team_modal, true)}
+  def handle_event("create_team", _, socket) do
+    {:noreply, assign(socket, live_action: :create_team)}
   end
 
   @impl true
-  def handle_event("close_create_team_modal", _, socket) do
-    {:noreply, assign(socket, :is_visible_create_team_modal, false)}
-  end
-
-  defp get_role(user_id, team_id) do
-    Contributors.get_by(user_id: user_id, team_id: team_id).role
-  end
-
-  def on_mount(_, _, _, %{assigns: %{user: user}} = socket) do
-    if connected?(socket) do
-      Teams.subscribe()
-      Accounts.subscribe(user.id)
-      Phoenix.PubSub.subscribe(Runa.PubSub, "sidebar:#{user.id}")
-    end
-
-    {:cont, socket}
+  def handle_event("close_team_modal", _, socket) do
+    {:noreply, assign(socket, live_action: nil)}
   end
 end

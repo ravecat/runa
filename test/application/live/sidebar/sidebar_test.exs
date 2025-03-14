@@ -90,11 +90,7 @@ defmodule RunaWeb.Live.SidebarTest do
 
       {:ok, view, _} =
         live_isolated(ctx.conn, Sidebar,
-          session: %{
-            "user_id" => user.id,
-            "current_uri" => "/",
-            "TREYTREUR" => "TREYTREUR"
-          }
+          session: %{"user_id" => user.id, "current_uri" => "/"}
         )
 
       refute has_element?(view, "[aria-label='Current team']")
