@@ -6,6 +6,7 @@ defmodule Runa.Contributors do
   use Runa, :context
 
   alias Runa.Contributors.Contributor
+  alias Runa.Accounts.User
 
   @doc """
   Returns the list of contributors.
@@ -106,6 +107,21 @@ defmodule Runa.Contributors do
       {:ok, data} -> __MODULE__.update(data, attrs)
       {:error, error} -> {:error, error}
     end
+  end
+
+  @spec get_role(Ecto.Schema.t() | binary(), Ecto.Schema.t() | binary()) ::
+          Ecto.Schema.t() | nil
+  def get_role(%Team{} = team, %User{} = user) do
+    get_role(user.id, team.id)
+  end
+
+  def get_role(user_id, team_id) do
+    query =
+      from c in Contributor,
+        where: c.team_id == ^team_id and c.user_id == ^user_id,
+        select: c.role
+
+    Repo.one(query)
   end
 
   @doc """
