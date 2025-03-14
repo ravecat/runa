@@ -57,10 +57,6 @@ defmodule RunaWeb.Live.Team.Form do
 
   @impl true
   def handle_event("save", %{"team" => attrs}, socket) do
-    save(socket, socket.assigns.action, attrs)
-  end
-
-  defp save(socket, :new, attrs) do
     case Teams.create(attrs, socket.assigns.user) do
       {:ok, _} ->
         {:noreply, put_flash(socket, :info, "Team created successfully")}
