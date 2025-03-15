@@ -89,3 +89,7 @@ config :phoenix_live_view, :debug_heex_annotations, true
 config :open_api_spex, :cache_adapter, OpenApiSpex.Plug.NoneCache
 
 config :live_debugger, browser_features?: true
+
+# Path to install SaladUI components
+config :salad_ui,
+  components_path: Path.join(File.cwd!(), "lib/application/components")
