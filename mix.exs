@@ -97,8 +97,8 @@ defmodule Runa.MixProject do
       {:sweet_xml, "~> 0.6.6"},
       {:jaxon, "~> 2.0"},
       {:flow, "~> 1.0"},
-      {:live_debugger, "~> 0.1.0", only: :dev}
-    ]
+      {:live_debugger, "~> 0.1.0", only: :dev},
+      {:typed_struct, "~> 0.3.0"}    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

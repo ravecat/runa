@@ -8,7 +8,7 @@ defmodule RunaWeb.Live.Team.ShowTest do
 
   setup ctx do
     team = insert(:team)
-
+    scope = Scope.new(ctx.user)
     owner = insert(:contributor, team: team, user: ctx.user, role: :owner)
 
     contributors =
@@ -18,9 +18,9 @@ defmodule RunaWeb.Live.Team.ShowTest do
         role: :editor
       )
 
-    members = Enum.map(contributors, &{&1.user, &1})
+    members = Enum.map(contributors, &{&1.user, &1}) ++ [{owner.user, owner}]
 
-    {:ok, members: members ++ [{owner.user, owner}]}
+    {:ok, members: members, scope: scope}
   end
 
   describe "team dashboard" do
@@ -55,11 +55,11 @@ defmodule RunaWeb.Live.Team.ShowTest do
     test "updates member role", ctx do
       {:ok, view, _} = live(ctx.conn, ~p"/team")
 
-      Repatch.patch(Runa.Contributors, :update, [mode: :shared], fn _, _ ->
+      Repatch.allow(self(), view.pid)
+
+      Repatch.patch(Runa.Contributors, :update, [mode: :shared], fn _, _, _ ->
         {:ok, %{}}
       end)
-
-      Repatch.allow(self(), view.pid)
 
       for {member, role} <- ctx.members do
         if role.role != :owner do
@@ -70,7 +70,7 @@ defmodule RunaWeb.Live.Team.ShowTest do
           assert Repatch.called?(
                    Runa.Contributors,
                    :update,
-                   [to_string(role.id), %{"role" => "admin"}],
+                   [%{}, to_string(role.id), %{"role" => "admin"}],
                    by: view.pid
                  )
         end
@@ -80,7 +80,7 @@ defmodule RunaWeb.Live.Team.ShowTest do
     test "updates member role based on event", ctx do
       {:ok, view, _} = live(ctx.conn, ~p"/team")
 
-      Contributors.subscribe()
+      Contributors.subscribe(ctx.scope)
 
       for {member, role} <- ctx.members do
         if role.role != :owner do
@@ -88,7 +88,7 @@ defmodule RunaWeb.Live.Team.ShowTest do
           |> element("[aria-label='Member #{member.name} form']")
           |> render_change(%{"contributor" => %{"role" => "admin"}})
 
-          assert_received {:contributor_updated, _}
+          assert_received %Events.ContributorUpdated{}
         end
       end
     end

@@ -39,13 +39,12 @@ defmodule Runa.Projects do
       {:error, %Ecto.NoResultsError{}}
   """
   def get(id) do
-    query =
-      from(p in Project,
-        where: p.id == ^id,
-        preload: [:languages, :team, :files, :base_language]
-      )
-
-    case Repo.one(query) do
+    from(p in Project,
+      where: p.id == ^id,
+      preload: [:languages, :team, :files, :base_language]
+    )
+    |> Repo.one()
+    |> case do
       nil -> {:error, %Ecto.NoResultsError{}}
       data -> {:ok, data}
     end

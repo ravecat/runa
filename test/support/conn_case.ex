@@ -52,6 +52,8 @@ defmodule RunaWeb.ConnCase do
       alias Phoenix.Flash
       alias Runa.PubSub
       alias Runa.Repo
+      alias Runa.Scope
+      alias Runa.Events
 
       require Pathex
     end

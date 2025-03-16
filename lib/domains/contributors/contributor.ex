@@ -10,9 +10,8 @@ defmodule Runa.Contributors.Contributor do
   @owner [owner: 8]
   @roles [admin: 4, editor: 2, viewer: 1]
 
-  schema "contributors" do
+  typed_schema "contributors" do
     field :role, Ecto.Enum, values: @owner ++ @roles
-
     belongs_to :user, Accounts.User
     belongs_to :team, Teams.Team
 

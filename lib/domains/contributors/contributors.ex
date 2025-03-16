@@ -51,10 +51,10 @@ defmodule Runa.Contributors do
       {:error, %Ecto.NoResultsError{}}
 
   """
-  def get(id) do
-    query = from p in Contributor, where: p.id == ^id, preload: [:team, :user]
-
-    case Repo.one(query) do
+  def get(%Scope{} = _scope, id) do
+    from(p in Contributor, where: p.id == ^id, preload: [:team, :user])
+    |> Repo.one()
+    |> case do
       nil -> {:error, %Ecto.NoResultsError{}}
       data -> {:ok, data}
     end
@@ -72,11 +72,19 @@ defmodule Runa.Contributors do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create(attrs \\ %{}) do
+  def create(%Scope{} = scope, attrs \\ %{}) do
     %Contributor{}
     |> Contributor.changeset(attrs)
     |> Repo.insert()
-    |> broadcast(:contributor_created)
+    |> case do
+      {:ok, data} ->
+        broadcast(scope, %Events.ContributorCreated{data: data})
+
+        {:ok, data}
+
+      other ->
+        other
+    end
   end
 
   @doc """
@@ -93,18 +101,26 @@ defmodule Runa.Contributors do
   """
   @spec update(Ecto.Schema.t() | binary(), map()) ::
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
-  def update(_, attrs \\ %{})
+  def update(_, _, attrs \\ %{})
 
-  def update(contributor, attrs) when is_struct(contributor, Contributor) do
+  def update(%Scope{} = scope, %Contributor{} = contributor, attrs) do
     contributor
     |> Contributor.changeset(attrs)
     |> Repo.update()
-    |> broadcast(:contributor_updated)
+    |> case do
+      {:ok, data} ->
+        broadcast(scope, %Events.ContributorUpdated{data: data})
+
+        {:ok, data}
+
+      other ->
+        other
+    end
   end
 
-  def update(id, attrs) do
-    case get(id) do
-      {:ok, data} -> __MODULE__.update(data, attrs)
+  def update(%Scope{} = scope, id, attrs) do
+    case get(scope, id) do
+      {:ok, data} -> __MODULE__.update(scope, data, attrs)
       {:error, error} -> {:error, error}
     end
   end
@@ -136,9 +152,17 @@ defmodule Runa.Contributors do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete(%Contributor{} = contributor) do
+  def delete(%Scope{} = scope, %Contributor{} = contributor) do
     Repo.delete(contributor)
-    |> broadcast(:contributor_deleted)
+    |> case do
+      {:ok, data} ->
+        broadcast(scope, %Events.ContributorDeleted{data: data})
+
+        {:ok, data}
+
+      other ->
+        other
+    end
   end
 
   @doc """
@@ -154,15 +178,14 @@ defmodule Runa.Contributors do
     Contributor.changeset(contributor, attrs)
   end
 
-  def subscribe do
-    PubSub.subscribe(Contributor.__schema__(:source))
+  def subscribe(%Scope{} = scope) do
+    PubSub.subscribe(topic(scope))
   end
 
-  defp broadcast({:ok, %Contributor{} = data}, event) do
-    PubSub.broadcast(Contributor.__schema__(:source), {event, data})
-
-    {:ok, data}
+  defp broadcast(%Scope{} = scope, event) do
+    PubSub.broadcast(topic(scope), event)
   end
 
-  defp broadcast({:error, reason}, _event), do: {:error, reason}
+  defp topic(scope),
+    do: "#{Contributor.__schema__(:source)}:#{scope.current_user.id}"
 end

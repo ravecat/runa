@@ -9,7 +9,7 @@ defmodule Runa.Accounts.User do
   alias Runa.Teams.Team
   alias Runa.Tokens.Token
 
-  schema "users" do
+  typed_schema "users" do
     field :email, :string
     field :uid, :string
     field :name, :string

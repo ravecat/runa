@@ -18,6 +18,8 @@ defmodule Runa.DataCase do
   using do
     quote do
       alias Runa.Repo
+      alias Runa.Scope
+      alias Runa.Events
 
       use ExUnit.Case
 

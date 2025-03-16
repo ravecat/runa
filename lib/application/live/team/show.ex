@@ -11,7 +11,6 @@ defmodule RunaWeb.Live.Team.Show do
   import RunaWeb.Formatters
 
   alias Runa.Contributors
-  alias Runa.Contributors.Contributor
   alias Runa.Teams
 
   on_mount(__MODULE__)
@@ -59,7 +58,7 @@ defmodule RunaWeb.Live.Team.Show do
         %{"contributor" => attrs},
         socket
       ) do
-    case Contributors.update(id, attrs) do
+    case Contributors.update(socket.assigns.scope, id, attrs) do
       {:ok, _} -> {:noreply, socket}
       {:error, _} -> {:noreply, socket}
     end
@@ -71,7 +70,7 @@ defmodule RunaWeb.Live.Team.Show do
   end
 
   @impl true
-  def handle_info({:contributor_updated, %Contributor{} = data}, socket) do
+  def handle_info(%Events.ContributorUpdated{data: data}, socket) do
     member = Teams.get_member(data) |> to_member_form()
 
     {:noreply, stream_insert(socket, :members, member)}
@@ -79,7 +78,7 @@ defmodule RunaWeb.Live.Team.Show do
 
   def on_mount(_, _, _, socket) do
     if connected?(socket) do
-      Contributors.subscribe()
+      Contributors.subscribe(socket.assigns.scope)
     end
 
     {:cont, socket}
