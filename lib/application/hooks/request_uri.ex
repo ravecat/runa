@@ -1,4 +1,4 @@
-defmodule RunaWeb.SaveRequestUri do
+defmodule RunaWeb.RequestUri do
   @moduledoc """
   Handles the storage of the current request URI in the LiveView socket.
 

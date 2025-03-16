@@ -18,6 +18,8 @@ defmodule Runa do
       alias Runa.Paginator
       alias Runa.PubSub
       alias Runa.Repo
+      alias Runa.Events
+      alias Runa.Scope
 
       import Runa.Paginator
     end

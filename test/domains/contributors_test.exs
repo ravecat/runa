@@ -14,7 +14,8 @@ defmodule Runa.ContributorsTest do
 
     contributor = insert(:contributor, team: team, user: user)
 
-    {:ok, contributor: contributor, team: team, user: user}
+    {:ok,
+     contributor: contributor, team: team, user: user, scope: Scope.new(user)}
   end
 
   describe "contributors context" do
@@ -25,32 +26,34 @@ defmodule Runa.ContributorsTest do
     end
 
     test "returns an entity with given id", ctx do
-      assert {:ok, contributor} = Contributors.get(ctx.contributor.id)
+      assert {:ok, contributor} =
+               Contributors.get(ctx.scope, ctx.contributor.id)
+
       assert contributor.id == ctx.contributor.id
     end
 
-    test "returns error if entity does not exist" do
-      assert {:error, %Ecto.NoResultsError{}} = Contributors.get(123)
+    test "returns error if entity does not exist", ctx do
+      assert {:error, %Ecto.NoResultsError{}} = Contributors.get(ctx.scope, 123)
     end
 
     test "creates an entity with valid data", ctx do
       attrs = %{team_id: ctx.team.id, user_id: ctx.user.id, role: :owner}
 
-      assert {:ok, %Contributor{}} = Contributors.create(attrs)
+      assert {:ok, %Contributor{}} = Contributors.create(ctx.scope, attrs)
     end
 
     test "sends broadcast after create", ctx do
       attrs = %{team_id: ctx.team.id, user_id: ctx.user.id, role: :owner}
 
-      Contributors.subscribe()
+      Contributors.subscribe(ctx.scope)
 
-      {:ok, data} = Contributors.create(attrs)
+      {:ok, data} = Contributors.create(ctx.scope, attrs)
 
-      assert_receive {:contributor_created, ^data}
+      assert_receive %Events.ContributorCreated{data: ^data}
     end
 
-    test "returns error changeset after creation with invalid data" do
-      assert {:error, %Ecto.Changeset{}} = Contributors.create(%{})
+    test "returns error changeset after creation with invalid data", ctx do
+      assert {:error, %Ecto.Changeset{}} = Contributors.create(ctx.scope, %{})
     end
 
     test "updates the entity with valid data ", ctx do
@@ -59,7 +62,7 @@ defmodule Runa.ContributorsTest do
       attrs = %{team_id: ctx.team.id, user_id: ctx.user.id, role: :owner}
 
       assert {:ok, %Contributor{} = contributor} =
-               Contributors.update(ctx.contributor, attrs)
+               Contributors.update(ctx.scope, ctx.contributor, attrs)
 
       assert contributor.role == :owner
     end
@@ -70,7 +73,7 @@ defmodule Runa.ContributorsTest do
       attrs = %{team_id: ctx.team.id, user_id: ctx.user.id, role: :owner}
 
       assert {:ok, %Contributor{} = contributor} =
-               Contributors.update(ctx.contributor.id, attrs)
+               Contributors.update(ctx.scope, ctx.contributor.id, attrs)
 
       assert contributor.role == :owner
     end
@@ -80,34 +83,36 @@ defmodule Runa.ContributorsTest do
 
       attrs = %{team_id: ctx.team.id, user_id: ctx.user.id, role: :owner}
 
-      Contributors.subscribe()
+      Contributors.subscribe(ctx.scope)
 
       assert {:ok, %Contributor{} = data} =
-               Contributors.update(ctx.contributor.id, attrs)
+               Contributors.update(ctx.scope, ctx.contributor.id, attrs)
 
-      assert_receive {:contributor_updated, ^data}
+      assert_receive %Events.ContributorUpdated{data: ^data}
     end
 
     test "returns error changeset on update with invalid data", ctx do
       attrs = %{role: nil}
 
       assert {:error, %Ecto.Changeset{}} =
-               Contributors.update(ctx.contributor, attrs)
+               Contributors.update(ctx.scope, ctx.contributor, attrs)
     end
 
     test "deletes the entity", ctx do
-      assert {:ok, %Contributor{}} = Contributors.delete(ctx.contributor)
+      assert {:ok, %Contributor{}} =
+               Contributors.delete(ctx.scope, ctx.contributor)
 
       assert {:error, %Ecto.NoResultsError{}} =
-               Contributors.get(ctx.contributor.id)
+               Contributors.get(ctx.scope, ctx.contributor.id)
     end
 
     test "sends broadcast after delete the entity", ctx do
-      Contributors.subscribe()
+      Contributors.subscribe(ctx.scope)
 
-      assert {:ok, %Contributor{} = data} = Contributors.delete(ctx.contributor)
+      assert {:ok, %Contributor{} = data} =
+               Contributors.delete(ctx.scope, ctx.contributor)
 
-      assert_receive {:contributor_deleted, ^data}
+      assert_receive %Events.ContributorDeleted{data: ^data}
     end
 
     test "returns an entity changeset", ctx do

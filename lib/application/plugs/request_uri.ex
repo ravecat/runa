@@ -1,4 +1,4 @@
-defmodule RunaWeb.Plugs.SaveRequestUri do
+defmodule RunaWeb.Plugs.RequestUri do
   @moduledoc """
   Plug to save the current request URI in the connection assigns.
   """

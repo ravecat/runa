@@ -15,13 +15,13 @@ defmodule RunaWeb.Live.Token.Index do
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Modal
 
-  on_mount RunaWeb.HandleUserData
+  on_mount RunaWeb.Scope
   on_mount __MODULE__
 
-  def on_mount(_, _, _, %{assigns: %{user: user}} = socket) do
+  def on_mount(_, _, _, socket) do
     if connected?(socket) do
-      Tokens.subscribe(user.id)
-      Accounts.subscribe(user.id)
+      Tokens.subscribe(socket.assigns.user.id)
+      Accounts.subscribe(socket.assigns.scope)
     end
 
     {:cont, socket}
