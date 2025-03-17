@@ -41,7 +41,7 @@ defmodule RunaWeb.ProjectController do
         _params
       ) do
     with {:ok, {data, meta}} <-
-           Projects.index(%{sort: sort, filter: filter, page: page}) do
+           Projects.index(conn.assigns.scope, %{sort: sort, filter: filter, page: page}) do
       conn |> put_status(200) |> render(data: data, meta: meta)
     end
   end
@@ -69,7 +69,7 @@ defmodule RunaWeb.ProjectController do
   end
 
   def show(conn, %{"id" => id}) do
-    with {:ok, data} <- Projects.get(id) do
+    with {:ok, data} <- Projects.get(conn.assigns.scope, id) do
       conn |> put_status(200) |> render(data: data)
     end
   end
@@ -109,9 +109,9 @@ defmodule RunaWeb.ProjectController do
         } = conn,
         _
       ) do
-    with {:ok, schema} <- Projects.get(id),
-         {:ok, data} <-
-           create_relationships(
+    with {:ok, schema} <- Projects.get(conn.assigns.scope, id),
+        {:ok, data} <-
+          create_relationships(
              schema,
              String.to_atom(relationship),
              relationships
@@ -125,7 +125,7 @@ defmodule RunaWeb.ProjectController do
           conn,
         params
       ) do
-    with {:ok, data} <- Projects.create(params) do
+    with {:ok, data} <- Projects.create(conn.assigns.scope, params) do
       conn |> put_status(201) |> render(data: data)
     end
   end
@@ -167,7 +167,7 @@ defmodule RunaWeb.ProjectController do
         } = conn,
         _
       ) do
-    with {:ok, data} <- Projects.get(id),
+    with {:ok, data} <- Projects.get(conn.assigns.scope, id),
          {:ok, data} <-
            update_relationships(
              data,
@@ -185,8 +185,8 @@ defmodule RunaWeb.ProjectController do
         } = conn,
         _
       ) do
-    with {:ok, data} <- Projects.get(id),
-         {:ok, data} <- Projects.update(data, attrs) do
+    with {:ok, data} <- Projects.get(conn.assigns.scope, id),
+         {:ok, data} <- Projects.update(conn.assigns.scope, data, attrs) do
       conn |> put_status(200) |> render(data: data)
     end
   end
@@ -209,7 +209,7 @@ defmodule RunaWeb.ProjectController do
         } = conn,
         _
       ) do
-    with {:ok, schema} <- Projects.get(id),
+    with {:ok, schema} <- Projects.get(conn.assigns.scope, id),
          {:ok, data} <-
            delete_relationships(
              schema,
@@ -221,8 +221,8 @@ defmodule RunaWeb.ProjectController do
   end
 
   def delete(%{path_params: %{"id" => id}} = conn, _) do
-    with {:ok, data} <- Projects.get(id),
-         {:ok, _} <- Projects.delete(data) do
+    with {:ok, data} <- Projects.get(conn.assigns.scope, id),
+         {:ok, _} <- Projects.delete(conn.assigns.scope, data) do
       conn |> put_status(204) |> render(:show)
     end
   end

@@ -14,7 +14,7 @@ defmodule RunaWeb.Live.Project.Show do
   @impl true
   def mount(%{"id" => project_id}, _session, socket) do
     {:ok, team} = Teams.get_team_by_project_id(project_id)
-    {:ok, project} = Projects.get(project_id)
+    {:ok, project} = Projects.get(socket.assigns.scope, project_id)
 
     socket =
       assign(socket, project_id: project_id, team_id: team.id, project: project)

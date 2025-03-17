@@ -52,4 +52,34 @@ defmodule Runa.Events do
       field :data, Runa.Contributors.Contributor.t(), enforce: true
     end
   end
+
+  defmodule ProjectCreated do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Runa.Projects.Project.t(), enforce: true
+    end
+  end
+
+  defmodule ProjectUpdated do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Runa.Projects.Project.t(), enforce: true
+    end
+  end
+
+  defmodule ProjectDeleted do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Runa.Projects.Project.t(), enforce: true
+    end
+  end
 end

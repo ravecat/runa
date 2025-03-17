@@ -4,7 +4,7 @@ defmodule RunaWeb.LanguageControllerTest do
   use RunaWeb.ConnCase, async: true
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
-  use RunaWeb.VerifiedConnCase
+  use RunaWeb.AuthorizedAPIConnCase
 
   @moduletag :languages
 
