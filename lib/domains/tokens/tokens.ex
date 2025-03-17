@@ -21,9 +21,9 @@ defmodule Runa.Tokens do
   end
 
   def get_by_token(token) do
-    query = from t in Token, where: t.hash == ^hash(token), preload: [:user]
-
-    case Repo.one(query) do
+    from(t in Token, where: t.hash == ^hash(token), preload: [:user])
+    |> Repo.one()
+    |> case do
       nil -> {:error, %Ecto.NoResultsError{}}
       data -> {:ok, data}
     end

@@ -50,10 +50,10 @@ defmodule RunaWeb.ConnCase do
       import RunaWeb.Formatters
 
       alias Phoenix.Flash
+      alias Runa.Events
       alias Runa.PubSub
       alias Runa.Repo
       alias Runa.Scope
-      alias Runa.Events
 
       require Pathex
     end

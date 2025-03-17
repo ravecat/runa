@@ -16,9 +16,9 @@ defmodule RunaWeb.Live.Project.Index do
 
   on_mount __MODULE__
 
-  def on_mount(_, _, _, %{assigns: %{user: %{teams: [team | _]}}} = socket) do
+  def on_mount(_, _, _, socket) do
     if connected?(socket) do
-      Projects.subscribe(team)
+      Projects.subscribe(socket.assigns.scope)
     end
 
     {:cont, socket}
@@ -50,7 +50,7 @@ defmodule RunaWeb.Live.Project.Index do
 
   defp apply_action(socket, action, %{"id" => id})
        when action in [:edit, :delete] do
-    {:ok, data} = Projects.get(id)
+    {:ok, data} = Projects.get(socket.assigns.scope, id)
 
     assign(socket, project: data)
   end
@@ -61,7 +61,7 @@ defmodule RunaWeb.Live.Project.Index do
 
   @impl true
   def handle_event("delete_project", %{"id" => id}, socket) do
-    case Projects.delete(id) do
+    case Projects.delete(socket.assigns.scope, id) do
       {:ok, data} ->
         socket =
           stream_delete(socket, :projects, data)
@@ -76,7 +76,7 @@ defmodule RunaWeb.Live.Project.Index do
 
   @impl true
   def handle_event("duplicate_project", %{"id" => id}, socket) do
-    with {:ok, data} <- Projects.get(id),
+    with {:ok, data} <- Projects.get(socket.assigns.scope, id),
          {:ok, new_data} <-
            Projects.duplicate(data, %{
              name: "#{data.name} (copy)",
@@ -102,7 +102,7 @@ defmodule RunaWeb.Live.Project.Index do
   end
 
   @impl true
-  def handle_info({:project_updated, %Project{} = data}, socket) do
+  def handle_info(%Events.ProjectUpdated{data: data}, socket) do
     updated_data =
       Teams.get_projects_with_statistics(socket.assigns.team_id)
       |> Enum.find(&(&1.id == data.id))
@@ -117,7 +117,7 @@ defmodule RunaWeb.Live.Project.Index do
   end
 
   @impl true
-  def handle_info({:project_created, %Project{} = data}, socket) do
+  def handle_info(%Events.ProjectCreated{data: data}, socket) do
     updated_data =
       Teams.get_projects_with_statistics(socket.assigns.team_id)
       |> Enum.find(&(&1.id == data.id))

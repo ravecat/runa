@@ -10,7 +10,7 @@ defmodule Runa.Projects.Project do
   alias Runa.Languages.Locale
   alias Runa.Teams.Team
 
-  schema "projects" do
+  typed_schema "projects" do
     field :name, :string
     field :description, :string
     field :base_language_title, :string, virtual: true

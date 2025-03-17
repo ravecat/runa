@@ -108,13 +108,14 @@
   on_cancel={JS.patch(~p"/projects")}
 >
   <:title>
-    {if @live_action == :edit, do: "Update project", else: "Create project"}
+    {if @project.id, do: "Update project", else: "Create project"}
   </:title>
   <:content>
     <.live_component
       module={RunaWeb.Live.Project.Form}
       id={to_string(@project.id || :new)}
       data={@project}
+      scope={@scope}
     />
   </:content>
   <:actions :let={{on_cancel, _}}>

@@ -29,7 +29,7 @@ defmodule RunaWeb.Plugs.APIKeyVerification do
   defp validate([api_key], conn) do
     case Tokens.get_by_token(api_key) do
       {:ok, token} ->
-        check_rights(conn, token)
+        check_rights(conn, token) |> assign_related_user(token)
 
       {:error, _} ->
         conn
@@ -51,5 +51,9 @@ defmodule RunaWeb.Plugs.APIKeyVerification do
     |> put_view(json: ErrorJSON, jsonapi: ErrorJSON)
     |> render(:"403")
     |> halt()
+  end
+
+  defp assign_related_user(conn, token) do
+    assign(conn, :current_user, token.user)
   end
 end

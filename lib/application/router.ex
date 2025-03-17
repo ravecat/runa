@@ -26,6 +26,7 @@ defmodule RunaWeb.Router do
     plug :accepts, ["jsonapi"]
     plug OpenApiSpex.Plug.PutApiSpec, module: RunaWeb.APISpec
     plug RunaWeb.Plugs.APIKeyVerification
+    plug RunaWeb.Plugs.Scope
     plug JSONAPI.ContentTypeNegotiation
     plug JSONAPI.FormatRequired
     plug JSONAPI.ResponseContentType

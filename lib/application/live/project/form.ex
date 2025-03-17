@@ -112,8 +112,10 @@ defmodule RunaWeb.Live.Project.Form do
   end
 
   defp submit(socket, :edit, attrs) do
-    socket.assigns.data
-    |> Projects.update(attrs, with: &Project.form_changeset/2)
+    socket.assigns.scope
+    |> Projects.update(socket.assigns.data, attrs,
+      with: &Project.form_changeset/2
+    )
     |> case do
       {:ok, _} ->
         {:noreply, socket}
@@ -124,8 +126,8 @@ defmodule RunaWeb.Live.Project.Form do
   end
 
   defp submit(socket, :new, attrs) do
-    attrs
-    |> Projects.create(with: &Project.form_changeset/2)
+    socket.assigns.scope
+    |> Projects.create(attrs, with: &Project.form_changeset/2)
     |> case do
       {:ok, _} ->
         {:noreply, socket}

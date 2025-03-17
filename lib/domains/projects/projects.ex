@@ -6,7 +6,6 @@ defmodule Runa.Projects do
   use Runa, :context
 
   alias Runa.Projects.Project
-  alias Runa.Teams.Team
 
   @doc """
   Returns the list of projects with pagination metadata.
@@ -21,7 +20,7 @@ defmodule Runa.Projects do
   """
   @spec index(Paginator.params()) ::
           {:ok, {[Ecto.Schema.t()], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
-  def index(opts \\ %{}) do
+  def index(%Scope{} = _scope, opts \\ %{}) do
     Project
     |> preload([:languages, :team, :files, :base_language])
     |> paginate(opts, for: Project)
@@ -38,7 +37,7 @@ defmodule Runa.Projects do
       iex> get(99)
       {:error, %Ecto.NoResultsError{}}
   """
-  def get(id) do
+  def get(%Scope{} = _scope, id) do
     from(p in Project,
       where: p.id == ^id,
       preload: [:languages, :team, :files, :base_language]
@@ -64,7 +63,7 @@ defmodule Runa.Projects do
   """
   @spec create(map, keyword()) ::
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
-  def create(attrs, opts \\ []) do
+  def create(%Scope{} = scope, attrs, opts \\ []) do
     changeset_func = Keyword.get(opts, :with, &change/2)
 
     %Project{}
@@ -72,12 +71,15 @@ defmodule Runa.Projects do
     |> Repo.insert()
     |> case do
       {:ok, project} ->
-        {:ok, Repo.preload(project, [:team, :base_language, :languages])}
+        project = Repo.preload(project, [:team, :base_language, :languages])
 
-      error ->
-        error
+        broadcast(scope, %Events.ProjectCreated{data: project})
+
+        {:ok, project}
+
+      other ->
+        other
     end
-    |> broadcast(:project_created)
   end
 
   @doc """
@@ -94,13 +96,21 @@ defmodule Runa.Projects do
 
   @spec update(Ecto.Schema.t(), map, keyword()) ::
           {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
-  def update(%Project{} = project, attrs, opts \\ []) do
+  def update(%Scope{} = scope, %Project{} = project, attrs, opts \\ []) do
     changeset_func = Keyword.get(opts, :with, &change/2)
 
     project
     |> changeset_func.(attrs)
     |> Repo.update()
-    |> broadcast(:project_updated)
+    |> case do
+      {:ok, data} ->
+        broadcast(scope, %Events.ProjectUpdated{data: data})
+
+        {:ok, data}
+
+      other ->
+        other
+    end
   end
 
   @doc """
@@ -116,15 +126,24 @@ defmodule Runa.Projects do
 
   """
   @spec change(Ecto.Schema.t() | integer()) :: Ecto.Schema.t()
-  def delete(%Project{} = project) do
+  def delete(%Scope{} = scope, %Project{} = project) do
     Repo.delete(project)
+    |> case do
+      {:ok, data} ->
+        broadcast(scope, %Events.ProjectDeleted{data: data})
+
+        {:ok, data}
+
+      other ->
+        other
+    end
   end
 
-  def delete(id) do
-    get(id)
+  def delete(%Scope{} = scope, id) do
+    get(scope, id)
     |> case do
-      {:ok, project} -> delete(project)
-      {:error, error} -> {:error, error}
+      {:ok, project} -> delete(scope, project)
+      other -> other
     end
   end
 
@@ -154,22 +173,14 @@ defmodule Runa.Projects do
     Repo.duplicate(project, attrs)
   end
 
-  def subscribe do
-    PubSub.subscribe(Project.__schema__(:source))
+  def subscribe(%Scope{} = scope) do
+    PubSub.subscribe(topic(scope))
   end
 
-  def subscribe(%Team{} = data) do
-    PubSub.subscribe("#{Project.__schema__(:source)}:#{data.id}")
+  defp broadcast(%Scope{} = scope, event) do
+    PubSub.broadcast(topic(scope), event)
   end
 
-  defp broadcast({:ok, %Project{} = data}, event) do
-    PubSub.broadcast(
-      "#{Project.__schema__(:source)}:#{data.team.id}",
-      {event, data}
-    )
-
-    {:ok, data}
-  end
-
-  defp broadcast({:error, reason}, _event), do: {:error, reason}
+  defp topic(scope),
+    do: "#{Project.__schema__(:source)}:#{scope.current_user.id}"
 end

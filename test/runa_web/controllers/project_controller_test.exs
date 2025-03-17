@@ -4,7 +4,7 @@ defmodule RunaWeb.ProjectControllerTest do
   use RunaWeb.ConnCase, async: true
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
-  use RunaWeb.VerifiedConnCase
+  use RunaWeb.AuthorizedAPIConnCase
 
   @moduletag :projects
 
@@ -16,6 +16,7 @@ defmodule RunaWeb.ProjectControllerTest do
   end
 
   describe "index endpoint" do
+    @tag :only
     test "returns list of resources", ctx do
       insert(:project, team: ctx.team)
 
