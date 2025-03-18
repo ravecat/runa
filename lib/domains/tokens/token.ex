@@ -1,6 +1,6 @@
 defmodule Runa.Tokens.Token do
   @moduledoc """
-  The api tokens  schema.
+  The api tokens schema.
   """
   use Runa, :schema
 
@@ -9,7 +9,7 @@ defmodule Runa.Tokens.Token do
 
   @access_levels [write: 4, read: 2, suspended: 1]
 
-  schema "tokens" do
+  typed_schema "tokens" do
     field :hash, :string
     field :token, :string, virtual: true
     field :access, Ecto.Enum, values: @access_levels
@@ -23,7 +23,7 @@ defmodule Runa.Tokens.Token do
   def changeset(token, attrs) do
     token
     |> cast(attrs, [:access, :user_id, :title])
-    |> validate_required([:access, :user_id, :title])
+    |> validate_required([:access, :title])
     |> assoc_constraint(:user)
     |> put_token()
     |> put_hash()

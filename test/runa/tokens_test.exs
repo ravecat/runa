@@ -9,21 +9,22 @@ defmodule Runa.TokensTest do
 
   setup do
     user = insert(:user)
+    scope = build_scope(user)
     token = insert(:token, user: user, access: :read)
 
-    {:ok, token: token, user: user}
+    {:ok, token: token, user: user, scope: scope}
   end
 
   describe "tokens context" do
     test "returns all entities", ctx do
-      assert data = Tokens.index(ctx.user)
+      assert data = Tokens.index(ctx.scope)
 
       Enum.each(data, &assert(is_struct(&1, Token)))
     end
 
     test "creates entity with valid data", ctx do
       assert {:ok, %Token{} = token} =
-               Tokens.create(%{
+               Tokens.create(ctx.scope, %{
                  access: :read,
                  user_id: ctx.user.id,
                  title: Atom.to_string(ctx.test)
@@ -35,29 +36,28 @@ defmodule Runa.TokensTest do
     end
 
     test "sends pubsub event after create", ctx do
-      Tokens.subscribe(ctx.user.id)
+      Tokens.subscribe(ctx.scope)
 
       {:ok, data} =
-        Tokens.create(%{
+        Tokens.create(ctx.scope, %{
           access: :read,
           user_id: ctx.user.id,
           title: Atom.to_string(ctx.test)
         })
 
-      assert_receive {:token_created, payload}
-
-      assert match?(^data, payload)
+      assert_receive %Events.TokenCreated{data: ^data}
     end
 
     test "returns error changeset during creation with invalid data", ctx do
       assert {:error, %Ecto.Changeset{}} =
-               Tokens.create(%{access: nil, user_id: ctx.user.id})
+               Tokens.create(ctx.scope, %{access: nil, user_id: ctx.user.id})
     end
 
     test "updates access", ctx do
       token = insert(:token, access: :read, user: ctx.user)
 
-      assert {:ok, %Token{} = token} = Tokens.update(token, %{access: :write})
+      assert {:ok, %Token{} = token} =
+               Tokens.update(ctx.scope, token, %{access: :write})
 
       assert token.access == :write
     end
@@ -65,20 +65,21 @@ defmodule Runa.TokensTest do
     test "sends pubsub event after update", ctx do
       token = insert(:token, access: :read, user: ctx.user)
 
-      Tokens.subscribe(ctx.user.id)
+      Tokens.subscribe(ctx.scope)
 
-      assert {:ok, data} = Tokens.update(token, %{access: :write})
+      assert {:ok, data} = Tokens.update(ctx.scope, token, %{access: :write})
 
-      assert_receive {:token_updated, payload}
-
-      assert match?(^data, payload)
+      assert_receive %Events.TokenUpdated{data: ^data}
     end
 
     test "ignores fields other than access on update", ctx do
       user = insert(:user)
 
       assert {:ok, %Token{} = token} =
-               Tokens.update(ctx.token, %{access: :write, user_id: user.id})
+               Tokens.update(ctx.scope, ctx.token, %{
+                 access: :write,
+                 user_id: user.id
+               })
 
       assert token.access == :write
       assert token.user_id == ctx.user.id
@@ -86,11 +87,11 @@ defmodule Runa.TokensTest do
 
     test "returns error changeset during update with invalid data", ctx do
       assert {:error, %Ecto.Changeset{}} =
-               Tokens.update(ctx.token, %{access: nil})
+               Tokens.update(ctx.scope, ctx.token, %{access: nil})
     end
 
     test "deletes entity", ctx do
-      assert {:ok, %Token{}} = Tokens.delete(ctx.token)
+      assert {:ok, %Token{}} = Tokens.delete(ctx.scope, ctx.token)
 
       assert Repo.get(Token, ctx.token.id) == nil
     end

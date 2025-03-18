@@ -5,23 +5,50 @@ defmodule Runa.Tokens do
 
   use Runa, :context
 
-  alias Runa.Accounts.User
   alias Runa.Tokens.Token
 
   @doc """
-  Return token
-  """
-  def get(id) do
-    query = from t in Token, where: t.id == ^id, preload: [:user]
+  Return token by id.
 
-    case Repo.one(query) do
+  ## Examples
+
+      iex> get(scope, 1)
+      {:ok, %Token{}}
+
+      iex> get(scope, 123)
+      {:error, %Ecto.NoResultsError{}}
+
+  """
+  @spec get(Scope.t(), non_neg_integer()) ::
+          {:ok, Token.t()} | {:error, Ecto.NoResultsError.t()}
+  def get(%Scope{} = scope, id) do
+    from(t in Token,
+      where: t.id == ^id and t.user_id == ^scope.current_user.id,
+      preload: [:user]
+    )
+    |> Repo.one()
+    |> case do
       nil -> {:error, %Ecto.NoResultsError{}}
       data -> {:ok, data}
     end
   end
 
-  def get_by_token(token) do
-    from(t in Token, where: t.hash == ^hash(token), preload: [:user])
+  @doc """
+  Return token by x-apy-key header.
+
+  ## Examples
+
+    iex> get_by_api_key(scope, "token_hash")
+    {:ok, %Token{}}
+
+    iex> get_by_api_key(scope, "invalid_hash")
+    {:error, %Ecto.NoResultsError{}}
+
+  """
+  @spec get_by_api_key(String.t()) ::
+          {:ok, Token.t()} | {:error, Ecto.NoResultsError.t()}
+  def get_by_api_key(x_api_key) do
+    from(t in Token, where: t.hash == ^hash(x_api_key), preload: [:user])
     |> Repo.one()
     |> case do
       nil -> {:error, %Ecto.NoResultsError{}}
@@ -34,14 +61,16 @@ defmodule Runa.Tokens do
 
   ## Examples
 
-      iex> index()
+      iex> index(scope)
       [%Token{}, ...]
 
   """
-  def index(%User{} = user) do
-    Token
-    |> where(user_id: ^user.id)
-    |> preload(:user)
+  @spec index(Scope.t()) :: list(Token.t())
+  def index(%Scope{} = scope) do
+    from(t in Token,
+      where: t.user_id == ^scope.current_user.id,
+      preload: [:user]
+    )
     |> Repo.all()
   end
 
@@ -50,22 +79,30 @@ defmodule Runa.Tokens do
 
   ## Examples
 
-      iex> create(%{field: value})
+      iex> create(scope, %{field: value})
       {:ok, %Token{}}
 
-      iex> create(%{field: bad_value})
+      iex> create(scope, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create(attrs \\ %{}) do
+  @spec create(Scope.t(), map()) ::
+          {:ok, Token.t()} | {:error, Ecto.Changeset.t()}
+  def create(%Scope{} = scope, attrs \\ %{}) do
     %Token{}
     |> change(attrs)
     |> Repo.insert()
     |> case do
-      {:ok, data} -> {:ok, Repo.preload(data, :user)}
-      error -> error
+      {:ok, data} ->
+        data = Repo.preload(data, :user)
+
+        broadcast(scope, %Events.TokenCreated{data: data})
+
+        {:ok, data}
+
+      error ->
+        error
     end
-    |> broadcast(:token_created)
   end
 
   @doc """
@@ -73,18 +110,27 @@ defmodule Runa.Tokens do
 
   ## Examples
 
-      iex> update(token, %{field: new_value})
+      iex> update(scope, token, %{field: new_value})
       {:ok, %Token{}}
 
-      iex> update(token, %{field: bad_value})
+      iex> update(scope, token, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update(%Token{} = token, attrs \\ %{}) do
+  @spec update(Scope.t(), Token.t(), map()) ::
+          {:ok, Token.t()} | {:error, Ecto.Changeset.t()}
+  def update(%Scope{} = scope, %Token{} = token, attrs \\ %{}) do
     token
     |> Token.update_changeset(attrs)
     |> Repo.update()
-    |> broadcast(:token_updated)
+    |> case do
+      {:ok, data} ->
+        broadcast(scope, %Events.TokenUpdated{data: data})
+        {:ok, data}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -92,19 +138,33 @@ defmodule Runa.Tokens do
 
   ## Examples
 
-      iex> delete(token)
+      iex> delete(scope, token)
       {:ok, %Token{}}
 
-      iex> delete(token)
+      iex> delete(scope, token)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete(%Token{} = token) do
+  @spec delete(Scope.t(), Token.t()) ::
+          {:ok, Token.t()} | {:error, Ecto.Changeset.t()}
+  def delete(%Scope{} = scope, %Token{} = token) do
     Repo.delete(token)
+    |> case do
+      {:ok, data} ->
+        broadcast(scope, %Events.TokenDeleted{data: data})
+        {:ok, data}
+
+      error ->
+        error
+    end
   end
 
-  def delete(id) do
-    Repo.get_by(Token, id: id) |> delete()
+  def delete(%Scope{} = scope, id) do
+    get(scope, id)
+    |> case do
+      {:ok, token} -> delete(scope, token)
+      other -> other
+    end
   end
 
   @doc """
@@ -137,22 +197,16 @@ defmodule Runa.Tokens do
     :crypto.hash(:sha256, token) |> Base.encode16(case: :lower)
   end
 
-  def subscribe do
-    Phoenix.PubSub.subscribe(PubSub, Token.__schema__(:source))
+  @spec subscribe(Scope.t()) :: :ok | {:error, term()}
+  def subscribe(%Scope{} = scope) do
+    PubSub.subscribe(topic(scope))
   end
 
-  def subscribe(user_id) do
-    Phoenix.PubSub.subscribe(PubSub, "#{Token.__schema__(:source)}:#{user_id}")
+  @spec broadcast(Scope.t(), term()) :: :ok | {:error, term()}
+  defp broadcast(%Scope{} = scope, event) do
+    Runa.PubSub.broadcast(topic(scope), event)
   end
 
-  defp broadcast({:ok, %Token{} = data}, event) do
-    PubSub.broadcast(
-      "#{Token.__schema__(:source)}:#{data.user.id}",
-      {event, data}
-    )
-
-    {:ok, data}
-  end
-
-  defp broadcast({:error, reason}, _event), do: {:error, reason}
+  defp topic(scope),
+    do: "#{Token.__schema__(:source)}:#{scope.current_user.id}"
 end

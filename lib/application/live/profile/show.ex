@@ -16,12 +16,13 @@ defmodule RunaWeb.Live.Profile.Show do
   import RunaWeb.Formatters
 
   @impl true
-  def mount(_, _, %{assigns: %{user: user}} = socket) do
+  def mount(_, _, socket) do
     if connected?(socket) do
-      Tokens.subscribe(user.id)
+      Tokens.subscribe(socket.assigns.scope)
     end
 
-    socket = assign(socket, :profile, to_user_form(user))
+    socket =
+      assign(socket, :profile, to_user_form(socket.assigns.scope.current_user))
 
     {:ok, socket}
   end
