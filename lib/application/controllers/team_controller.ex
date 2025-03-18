@@ -39,7 +39,7 @@ defmodule RunaWeb.TeamController do
         _params
       ) do
     with {:ok, {data, meta}} <-
-           Teams.index(%{sort: sort, filter: filter, page: page}) do
+           Teams.index(conn.assigns.scope, %{sort: sort, filter: filter, page: page}) do
       conn |> put_status(200) |> render(data: data, meta: meta)
     end
   end
@@ -67,7 +67,7 @@ defmodule RunaWeb.TeamController do
   end
 
   def show(conn, %{"id" => id}) do
-    with {:ok, data} <- Teams.get(id) do
+    with {:ok, data} <- Teams.get(conn.assigns.scope, id) do
       conn |> put_status(200) |> render(data: data)
     end
   end
@@ -102,7 +102,7 @@ defmodule RunaWeb.TeamController do
   end
 
   def create(%{body_params: %{"data" => %{"attributes" => attrs}}} = conn, _) do
-    with {:ok, data} <- Teams.create(attrs) do
+    with {:ok, data} <- Teams.create(conn.assigns.scope, attrs) do
       conn |> put_status(201) |> render(data: data)
     end
   end
@@ -144,8 +144,8 @@ defmodule RunaWeb.TeamController do
         } = conn,
         _
       ) do
-    with {:ok, data} <- Teams.get(id),
-         {:ok, data} <- Teams.update(data, attrs) do
+    with {:ok, data} <- Teams.get(conn.assigns.scope, id),
+         {:ok, data} <- Teams.update(conn.assigns.scope, data, attrs) do
       render(conn, data: data)
     end
   end
@@ -162,8 +162,8 @@ defmodule RunaWeb.TeamController do
   end
 
   def delete(conn, %{"id" => id}) do
-    with {:ok, data} <- Teams.get(id),
-         {:ok, _} <- Teams.delete(data) do
+    with {:ok, data} <- Teams.get(conn.assigns.scope, id),
+         {:ok, _} <- Teams.delete(conn.assigns.scope, data) do
       conn |> put_status(204) |> render(:show)
     end
   end

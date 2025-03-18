@@ -169,7 +169,7 @@ defmodule RunaWeb.Live.SidebarTest do
           session: %{"user_id" => ctx.user.id, "current_uri" => "/"}
         )
 
-      title = Atom.to_string(ctx.test)
+      title = to_string(ctx.test)
 
       assert view
              |> element("button", "Create team")

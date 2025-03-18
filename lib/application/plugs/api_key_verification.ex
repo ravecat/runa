@@ -27,7 +27,7 @@ defmodule RunaWeb.Plugs.APIKeyVerification do
       |> halt()
 
   defp validate([api_key], conn) do
-    case Tokens.get_by_token(api_key) do
+    case Tokens.get_by_api_key(api_key) do
       {:ok, token} ->
         check_rights(conn, token) |> assign_related_user(token)
 

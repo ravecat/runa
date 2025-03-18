@@ -5,102 +5,88 @@ defmodule Runa.TeamsTest do
 
   @moduletag :teams
 
-  alias Runa.Accounts.User
-  alias Runa.Contributors
   alias Runa.Contributors.Contributor
   alias Runa.Teams
   alias Runa.Teams.Team
 
   setup do
     team = insert(:team)
+    user = insert(:user)
 
-    {:ok, team: team}
+    {:ok, team: team, scope: Scope.new(user), user: user}
   end
 
   describe "teams context" do
-    test "returns all entities" do
-      {:ok, {data, %{}}} = Teams.index()
+    test "returns all entities", ctx do
+      {:ok, {data, %{}}} = Teams.index(ctx.scope)
 
-      Enum.each(data, &assert(is_struct(&1, Team)))
+      for item <- data do
+        assert(is_struct(item, Team))
+      end
     end
 
     test "returns entity with given id", ctx do
-      assert {:ok, team} = Teams.get(ctx.team.id)
+      assert {:ok, team} = Teams.get(ctx.scope, ctx.team.id)
       assert team.id == ctx.team.id
     end
 
-    test "creates entity with valid data" do
+    test "creates entity with valid data", ctx do
       attrs = %{title: "some title"}
 
-      assert {:ok, %Team{}} = Teams.create(attrs)
+      assert {:ok, %Team{}} = Teams.create(ctx.scope, attrs)
     end
 
-    test "sends broadcast after create" do
+    test "sends broadcast after create", ctx do
       attrs = %{title: "some title"}
 
-      Teams.subscribe()
+      Teams.subscribe(ctx.scope)
 
-      {:ok, data} = Teams.create(attrs)
+      {:ok, data} = Teams.create(ctx.scope, attrs)
 
-      assert_receive {:team_created, ^data}
+      assert_receive %Events.TeamCreated{data: ^data}
     end
 
-    test "returns error changeset during creation with invalid data" do
-      invalid_attrs = %{}
+    test "returns error changeset during creation with invalid data", ctx do
+      attrs = %{}
 
-      assert {:error, %Ecto.Changeset{}} = Teams.create(invalid_attrs)
-    end
-
-    test "creates entity with linked user" do
-      user = insert(:user)
-
-      assert {:ok, %Team{} = team} = Teams.create(%{title: "some title"}, user)
-
-      assert %Contributor{} =
-               Contributors.get_by(user_id: user.id, team_id: team.id)
-    end
-
-    test "returns error changeset during creation with invalid linked user" do
-      assert {:error, %Ecto.Changeset{}} =
-               Teams.create(%{title: "some title"}, %User{id: 1})
+      assert {:error, %Ecto.Changeset{}} = Teams.create(ctx.scope, attrs)
     end
 
     test "updates entity with valid data", ctx do
-      attrs = %{title: "some updated title"}
-
-      assert {:ok, %Team{} = data} = Teams.update(ctx.team, attrs)
-
-      assert data.title == "some updated title"
+      assert {:ok, %Team{title: "some updated title"}} =
+               Teams.update(ctx.scope, ctx.team, %{title: "some updated title"})
     end
 
     test "sends broadcast after update", ctx do
       attrs = %{title: "some title"}
 
-      Teams.subscribe()
+      Teams.subscribe(ctx.scope)
 
-      {:ok, data} = Teams.update(ctx.team, attrs)
+      {:ok, data} = Teams.update(ctx.scope, ctx.team, attrs)
 
-      assert_receive {:team_updated, ^data}
+      assert_receive %Events.TeamUpdated{data: ^data}
     end
 
     test "returns error changeset after update with invalid data", ctx do
       invalid_attrs = %{title: nil}
 
-      assert {:error, %Ecto.Changeset{}} = Teams.update(ctx.team, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Teams.update(ctx.scope, ctx.team, invalid_attrs)
     end
 
     test "deletes entity", ctx do
-      assert {:ok, %Team{}} = Teams.delete(ctx.team)
+      assert {:ok, %Team{}} = Teams.delete(ctx.scope, ctx.team)
 
-      assert {:error, %Ecto.NoResultsError{}} = Teams.get(ctx.team.id)
+      assert {:error, %Ecto.NoResultsError{}} =
+               Teams.get(ctx.scope, ctx.team.id)
     end
 
     test "sends broadcast after delete the entity", ctx do
-      Teams.subscribe()
+      Teams.subscribe(ctx.scope)
 
-      assert {:ok, %Team{} = data} = Teams.delete(ctx.team)
+      assert {:ok, %Team{} = data} = Teams.delete(ctx.scope, ctx.team)
 
-      assert_receive {:team_deleted, ^data}
+      assert_receive %Events.TeamDeleted{data: ^data}
     end
 
     test "returns changeset", ctx do
