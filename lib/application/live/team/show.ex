@@ -40,7 +40,7 @@ defmodule RunaWeb.Live.Team.Show do
 
   @impl true
   def handle_event("save", %{"team" => attrs}, socket) do
-    case Teams.update(socket.assigns.team, attrs) do
+    case Teams.update(socket.assigns.scope, socket.assigns.team, attrs) do
       {:ok, _} ->
         {:noreply, socket}
 

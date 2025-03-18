@@ -82,4 +82,64 @@ defmodule Runa.Events do
       field :data, Runa.Projects.Project.t(), enforce: true
     end
   end
+
+  defmodule TeamCreated do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Runa.Teams.Team.t(), enforce: true
+    end
+  end
+
+  defmodule TeamUpdated do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Runa.Teams.Team.t(), enforce: true
+    end
+  end
+
+  defmodule TeamDeleted do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Runa.Teams.Team.t(), enforce: true
+    end
+  end
+
+  defmodule TokenCreated do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Ecto.Schema.t(), enforce: true
+    end
+  end
+
+  defmodule TokenUpdated do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Ecto.Schema.t(), enforce: true
+    end
+  end
+
+  defmodule TokenDeleted do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Ecto.Schema.t(), enforce: true
+    end
+  end
 end

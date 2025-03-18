@@ -20,7 +20,7 @@ defmodule RunaWeb.Live.Sidebar do
 
   def on_mount(_, _, %{"current_uri" => current_uri}, socket) do
     if connected?(socket) do
-      Teams.subscribe()
+      Teams.subscribe(socket.assigns.scope)
       Accounts.subscribe(socket.assigns.scope)
     end
 
@@ -28,7 +28,7 @@ defmodule RunaWeb.Live.Sidebar do
       assign(socket,
         current_uri: current_uri,
         team: %Team{},
-        user: socket.assigns.user
+        user: socket.assigns.scope.current_user
       )
 
     {:cont, socket}
@@ -56,7 +56,7 @@ defmodule RunaWeb.Live.Sidebar do
   end
 
   @impl true
-  def handle_info({:team_created, data}, socket) do
+  def handle_info(%Events.TeamCreated{data: data}, socket) do
     socket =
       stream_insert(
         socket,
@@ -71,15 +71,6 @@ defmodule RunaWeb.Live.Sidebar do
   @impl true
   def handle_info(%Events.AccountUpdated{data: data}, socket) do
     socket = assign(socket, :user, data)
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info({:team_selected, team}, socket) do
-    role = Contributors.get_role(socket.assigns.user.id, team.id)
-
-    socket = assign(socket, team: team, role: role)
 
     {:noreply, socket}
   end

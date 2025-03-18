@@ -16,14 +16,14 @@ defmodule Runa.Paginator do
           optional(:before) => String.t()
         }
 
-  @type params :: %{
+  @type opts :: %{
           optional(:sort) => [{atom(), atom()}],
           optional(:filter) => [{atom(), term()}],
           optional(:page) =>
             page_number_params() | offset_params() | cursor_params()
         }
 
-  @spec paginate(Queryable.t(), params, [Flop.option()]) ::
+  @spec paginate(Queryable.t(), opts, [Flop.option()]) ::
           {:ok, {[any], Flop.Meta.t()}} | {:error, Flop.Meta.t()}
   def paginate(query, %{page: page} = params, opts) when map_size(page) > 0 do
     sort = Map.get(params, :sort, [])

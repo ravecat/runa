@@ -1,4 +1,7 @@
 defmodule RunaWeb.Plugs.Scope do
+  @moduledoc """
+  Plug to extend the connection with a user scope.
+  """
   import Plug.Conn
 
   use RunaWeb, :controller
@@ -6,12 +9,9 @@ defmodule RunaWeb.Plugs.Scope do
   alias Runa.Scope
 
   def call(conn, _opts) do
-    cond do
-      user = conn.assigns[:current_user] ->
-        assign(conn, :scope, Scope.new(user))
-
-      true ->
-        assign(conn, :scope, Scope.new(nil))
+    case conn.assigns[:current_user] do
+      %Runa.Accounts.User{} = user -> assign(conn, :scope, Scope.new(user))
+      _ -> assign(conn, :scope, Scope.new(nil))
     end
   end
 end

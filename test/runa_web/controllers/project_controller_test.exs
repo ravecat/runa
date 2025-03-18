@@ -16,7 +16,6 @@ defmodule RunaWeb.ProjectControllerTest do
   end
 
   describe "index endpoint" do
-    @tag :only
     test "returns list of resources", ctx do
       insert(:project, team: ctx.team)
 

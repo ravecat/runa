@@ -4,8 +4,10 @@ defmodule Runa.Scope do
   """
   use TypedStruct
 
+  alias Runa.Accounts.User
+
   typedstruct do
-    field :current_user, Ecto.Schema.t(), default: nil
+    field :current_user, User.t(), default: nil
     field :current_user_id, :integer, default: nil
   end
 
