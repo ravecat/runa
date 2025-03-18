@@ -96,7 +96,7 @@
     <.live_component
       module={RunaWeb.Live.Token.Form}
       data={@token}
-      user={@user}
+      scope={@scope}
       id={if @token.id, do: "update_token", else: "create_token"}
     >
       <:actions>

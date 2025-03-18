@@ -119,7 +119,7 @@ defmodule Runa.Events do
     use TypedStruct
 
     typedstruct do
-      field :data, Ecto.Schema.t(), enforce: true
+      field :data, Runa.Tokens.Token.t(), enforce: true
     end
   end
 
@@ -129,7 +129,7 @@ defmodule Runa.Events do
     use TypedStruct
 
     typedstruct do
-      field :data, Ecto.Schema.t(), enforce: true
+      field :data, Runa.Tokens.Token.t(), enforce: true
     end
   end
 
@@ -139,7 +139,7 @@ defmodule Runa.Events do
     use TypedStruct
 
     typedstruct do
-      field :data, Ecto.Schema.t(), enforce: true
+      field :data, Runa.Tokens.Token.t(), enforce: true
     end
   end
 end

@@ -6,7 +6,6 @@ defmodule RunaWeb.Live.Token.Index do
   use RunaWeb, :live_view
 
   alias Runa.Accounts
-  alias Runa.Accounts.User
   alias Runa.Tokens
   alias Runa.Tokens.Token
 
@@ -20,7 +19,7 @@ defmodule RunaWeb.Live.Token.Index do
 
   def on_mount(_, _, _, socket) do
     if connected?(socket) do
-      Tokens.subscribe(socket.assigns.user.id)
+      Tokens.subscribe(socket.assigns.scope)
       Accounts.subscribe(socket.assigns.scope)
     end
 
@@ -50,7 +49,7 @@ defmodule RunaWeb.Live.Token.Index do
 
   defp apply_action(socket, action, %{"id" => id})
        when action in [:edit, :delete] do
-    {:ok, data} = Tokens.get(id)
+    {:ok, data} = Tokens.get(socket.assigns.scope, id)
 
     assign(socket, token: data)
   end
@@ -60,14 +59,14 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   @impl true
-  def handle_info({:token_created, %Token{} = data}, socket) do
-    socket = socket |> stream_insert(:tokens, data) |> assign(:token, %Token{})
+  def handle_info(%Events.TokenCreated{data: data}, socket) do
+    socket = stream_insert(socket, :tokens, data)
 
     {:noreply, socket}
   end
 
   @impl true
-  def handle_info({:token_updated, %Token{} = data}, socket) do
+  def handle_info(%Events.TokenUpdated{data: data}, socket) do
     socket =
       socket
       |> stream_delete(:tokens, data)
@@ -78,7 +77,7 @@ defmodule RunaWeb.Live.Token.Index do
   end
 
   @impl true
-  def handle_info({:account_updated, %User{} = data}, socket) do
+  def handle_info(%Events.AccountUpdated{data: data}, socket) do
     data = Repo.preload(data, [tokens: :user], force: true)
 
     socket = stream(socket, :tokens, data.tokens, reset: true)
@@ -93,7 +92,7 @@ defmodule RunaWeb.Live.Token.Index do
 
   @impl true
   def handle_event("delete_token", %{"id" => id}, socket) do
-    case Tokens.delete(id) do
+    case Tokens.delete(socket.assigns.scope, id) do
       {:ok, data} ->
         socket =
           stream_delete(socket, :tokens, data) |> push_patch(to: ~p"/tokens")

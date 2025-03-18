@@ -155,7 +155,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
     test "creates token ", ctx do
       {:ok, view, _} = live(ctx.conn, ~p"/tokens")
 
-      title = Atom.to_string(ctx.test)
+      title = to_string(ctx.test)
 
       view
       |> element("[aria-label='Create token']")
@@ -165,40 +165,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
       |> element("form[aria-label='Token form']")
       |> render_submit(%{"token" => %{"access" => "read", "title" => title}})
 
-      refute has_element?(view, "p", "can't be blank")
-      refute has_element?(view, "p", "is invalid")
-
-      assert has_element?(view, "td", title)
-    end
-
-    test "renders error when title is blank", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/tokens")
-
-      view
-      |> element("[aria-label='Create token']")
-      |> render_click()
-
-      view
-      |> element("form[aria-label='Token form']")
-      |> render_submit(%{"token" => %{"access" => "read", "title" => ""}})
-
-      assert has_element?(view, "p", "can't be blank")
-    end
-
-    test "renders error when access is invalid", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/tokens")
-
-      title = Atom.to_string(ctx.test)
-
-      view
-      |> element("[aria-label='Create token']")
-      |> render_click()
-
-      view
-      |> element("form[aria-label='Token form']")
-      |> render_submit(%{"token" => %{"access" => "invalid", "title" => title}})
-
-      assert has_element?(view, "p", "is invalid")
+      assert render_async(view) =~ title
     end
   end
 

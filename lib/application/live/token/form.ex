@@ -25,7 +25,11 @@ defmodule RunaWeb.Live.Token.Form do
         phx-target={@myself}
         aria-label="Token form"
       >
-        <.input type="hidden" field={@form[:user_id]} value={to_string(@user.id)} />
+        <.input
+          type="hidden"
+          field={@form[:user_id]}
+          value={to_string(@scope.current_user.id)}
+        />
         <.input type="text" field={@form[:title]}>
           <:label>Title</:label>
         </.input>
@@ -68,28 +72,22 @@ defmodule RunaWeb.Live.Token.Form do
   end
 
   defp save(socket, :edit, attrs) do
-    case Tokens.update(socket.assigns.data, attrs) do
+    case Tokens.update(socket.assigns.scope, socket.assigns.data, attrs) do
       {:ok, _} ->
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
-
-      {:error, error} ->
-        {:noreply, assign(socket, error: error)}
     end
   end
 
   defp save(socket, :new, attrs) do
-    case Tokens.create(attrs) do
+    case Tokens.create(socket.assigns.scope, attrs) do
       {:ok, _} ->
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
-
-      {:error, error} ->
-        {:noreply, assign(socket, error: error)}
     end
   end
 
