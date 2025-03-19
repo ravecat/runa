@@ -82,9 +82,9 @@ defmodule RunaWeb do
 
   def live_view do
     quote do
+      alias Runa.Events
       alias Runa.PubSub
       alias Runa.Repo
-      alias Runa.Events
 
       import Ecto.Changeset
       import Runa.Repo
