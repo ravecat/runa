@@ -1,17 +1,15 @@
-defmodule RunaWeb.ProjectController do
+defmodule RunaWeb.TeamController do
   use RunaWeb, :controller
   use RunaWeb, :jsonapi
-  use Runa.JSONAPI
 
-  alias Runa.Projects
-  alias Runa.Projects.Project
-  alias RunaWeb.Schemas.Projects, as: OperationSchemas
-  alias RunaWeb.Serializers.Project, as: Serializer
+  alias Runa.Teams
+  alias Runa.Teams.Team, as: Schema
+  alias RunaWeb.Schemas.Teams, as: OperationSchemas
+  alias RunaWeb.Serializers.Team, as: Serializer
 
   use RunaWeb.Plugs.QueryParser,
-    serializer: Serializer
-
-  plug RunaWeb.JSONAPI.Plug.ValidateRelationships, schema: Project
+    serializer: Serializer,
+    schema: Schema
 
   @resource Serializer.type()
 
@@ -41,7 +39,11 @@ defmodule RunaWeb.ProjectController do
         _params
       ) do
     with {:ok, {data, meta}} <-
-           Projects.index(conn.assigns.scope, %{sort: sort, filter: filter, page: page}) do
+           Teams.index(conn.assigns.scope, %{
+             sort: sort,
+             filter: filter,
+             page: page
+           }) do
       conn |> put_status(200) |> render(data: data, meta: meta)
     end
   end
@@ -69,7 +71,7 @@ defmodule RunaWeb.ProjectController do
   end
 
   def show(conn, %{"id" => id}) do
-    with {:ok, data} <- Projects.get(conn.assigns.scope, id) do
+    with {:ok, data} <- Teams.get(conn.assigns.scope, id) do
       conn |> put_status(200) |> render(data: data)
     end
   end
@@ -86,7 +88,8 @@ defmodule RunaWeb.ProjectController do
           "application/vnd.api+json" => %MediaType{
             schema: OperationSchemas.CreateBody
           }
-        }
+        },
+        required: true
       },
       responses:
         generate_response_schemas(:create, %{
@@ -102,30 +105,8 @@ defmodule RunaWeb.ProjectController do
     }
   end
 
-  def create(
-        %{
-          path_params: %{"relationship" => relationship, "id" => id},
-          body_params: %{"data" => relationships}
-        } = conn,
-        _
-      ) do
-    with {:ok, schema} <- Projects.get(conn.assigns.scope, id),
-        {:ok, data} <-
-          create_relationships(
-             schema,
-             String.to_atom(relationship),
-             relationships
-           ) do
-      conn |> put_status(201) |> render(data: data)
-    end
-  end
-
-  def create(
-        %{body_params: %{"data" => %{"relationships" => _, "attributes" => _}}} =
-          conn,
-        params
-      ) do
-    with {:ok, data} <- Projects.create(conn.assigns.scope, params) do
+  def create(%{body_params: %{"data" => %{"attributes" => attrs}}} = conn, _) do
+    with {:ok, data} <- Teams.create(conn.assigns.scope, attrs) do
       conn |> put_status(201) |> render(data: data)
     end
   end
@@ -162,32 +143,14 @@ defmodule RunaWeb.ProjectController do
 
   def update(
         %{
-          path_params: %{"relationship" => relationship, "id" => id},
-          body_params: %{"data" => relationships}
-        } = conn,
-        _
-      ) do
-    with {:ok, data} <- Projects.get(conn.assigns.scope, id),
-         {:ok, data} <-
-           update_relationships(
-             data,
-             String.to_atom(relationship),
-             relationships
-           ) do
-      conn |> put_status(200) |> render(data: data)
-    end
-  end
-
-  def update(
-        %{
           body_params: %{"data" => %{"attributes" => attrs}},
           path_params: %{"id" => id}
         } = conn,
         _
       ) do
-    with {:ok, data} <- Projects.get(conn.assigns.scope, id),
-         {:ok, data} <- Projects.update(conn.assigns.scope, data, attrs) do
-      conn |> put_status(200) |> render(data: data)
+    with {:ok, data} <- Teams.get(conn.assigns.scope, id),
+         {:ok, data} <- Teams.update(conn.assigns.scope, data, attrs) do
+      render(conn, data: data)
     end
   end
 
@@ -202,27 +165,9 @@ defmodule RunaWeb.ProjectController do
     }
   end
 
-  def delete(
-        %{
-          path_params: %{"relationship" => relationship, "id" => id},
-          body_params: %{"data" => relationships}
-        } = conn,
-        _
-      ) do
-    with {:ok, schema} <- Projects.get(conn.assigns.scope, id),
-         {:ok, data} <-
-           delete_relationships(
-             schema,
-             String.to_atom(relationship),
-             relationships
-           ) do
-      conn |> put_status(204) |> render(data: data)
-    end
-  end
-
-  def delete(%{path_params: %{"id" => id}} = conn, _) do
-    with {:ok, data} <- Projects.get(conn.assigns.scope, id),
-         {:ok, _} <- Projects.delete(conn.assigns.scope, data) do
+  def delete(conn, %{"id" => id}) do
+    with {:ok, data} <- Teams.get(conn.assigns.scope, id),
+         {:ok, _} <- Teams.delete(conn.assigns.scope, data) do
       conn |> put_status(204) |> render(:show)
     end
   end

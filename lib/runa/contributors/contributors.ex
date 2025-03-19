@@ -5,8 +5,8 @@ defmodule Runa.Contributors do
 
   use Runa, :context
 
-  alias Runa.Contributors.Contributor
   alias Runa.Accounts.User
+  alias Runa.Contributors.Contributor
 
   @doc """
   Returns the list of contributors.
