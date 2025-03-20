@@ -44,6 +44,7 @@ openapi.yaml
 
 # In case you use Node.js/npm, you want to ignore these.
 /node_modules/
+/assets/node_modules/
 npm-debug.log
 
 # Environment file
