@@ -16,8 +16,7 @@ defmodule Runa.Application do
       # Start a worker by calling: Runa.Worker.start_link(arg)
       # {Runa.Worker, arg},
       # Start to serve requests, typically the last entry
-      RunaWeb.Endpoint,
-      TwMerge.Cache
+      RunaWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
