@@ -98,7 +98,8 @@ defmodule Runa.MixProject do
       {:jaxon, "~> 2.0"},
       {:flow, "~> 1.0"},
       {:live_debugger, "~> 0.1.0", only: :dev},
-      {:typed_struct, "~> 0.3.0"}    ]
+      {:typed_struct, "~> 0.3.0"}
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

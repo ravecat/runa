@@ -1,0 +1,12 @@
+{
+  "name": "runa",
+  "version": "1.0.0",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "daisyui": "^5.0.6"
+  }
+}

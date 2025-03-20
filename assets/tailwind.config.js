@@ -9,6 +9,7 @@ module.exports = {
   darkMode: ["selector", '[data-mode="dark"]'],
   content: ["./js/**/*.js", "../lib/**/*.*ex"],
   plugins: [
+    require("daisyui"),
     require("@tailwindcss/typography"),
     plugin(({ addVariant }) =>
       addVariant("phx-no-feedback", ["&.phx-no-feedback", ".phx-no-feedback &"])
