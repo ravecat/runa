@@ -111,7 +111,13 @@ defmodule Runa.MixProject do
     [
       start: ["deps", "phx.server"],
       deps: ["deps.get", "deps.compile"],
-      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      setup: [
+        "deps.get",
+        "ecto.setup",
+        "assets.setup",
+        "assets.build",
+        "cmd --cd assets npm i"
+      ],
       "ecto.seed": ["seed.languages", "seed.data"],
       "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
