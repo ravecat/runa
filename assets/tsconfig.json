@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "verbatimModuleSyntax": true,
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "$lib": ["svelte"],
+      "$lib/*": ["svelte/*"]
+    }
+  }
+}
