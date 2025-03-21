@@ -7,7 +7,7 @@ let plugin = require("tailwindcss/plugin");
 
 module.exports = {
   darkMode: ["selector", '[data-mode="dark"]'],
-  content: ["./js/**/*.js", "../lib/**/*.*ex"],
+  content: ["./js/**/*.js", "../lib/**/*.*ex", "./svelte/**/*.svelte"],
   plugins: [
     require("daisyui"),
     require("@tailwindcss/typography"),
