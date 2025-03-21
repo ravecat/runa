@@ -29,4 +29,5 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :mix_test_watch,
   tasks: ["coveralls.multiple --type html --type json --type lcov", "credo"],
-  clear: true
+  clear: true,
+  extra_extensions: [".svelte", ".ts", ".js"]
