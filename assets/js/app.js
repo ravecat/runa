@@ -21,19 +21,16 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
-import { selectObserver } from "./hooks/select_observer";
+import { getHooks } from "live_svelte";
+import * as Components from "../svelte/**/*.svelte";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 
-let hooks = {
-  selectObserver,
-};
-
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  hooks: hooks,
+  hooks: getHooks(Components),
   params: { _csrf_token: csrfToken },
 });
 
@@ -58,8 +55,8 @@ window.addEventListener("phx:live_reload:attached", ({ detail: reloader }) => {
 });
 
 // Allows to execute JS commands from the server
-window.addEventListener("phx:js-exec", ({detail}) => {
-  document.querySelectorAll(detail.to).forEach(el => {
-    liveSocket.execJS(el, el.getAttribute(detail.attr))
-  })
-})
+window.addEventListener("phx:js-exec", ({ detail }) => {
+  document.querySelectorAll(detail.to).forEach((el) => {
+    liveSocket.execJS(el, el.getAttribute(detail.attr));
+  });
+});
