@@ -156,6 +156,8 @@ defmodule RunaWeb do
 
   defp html_helpers do
     quote do
+      import LiveSvelte
+
       # HTML escaping functionality
       import Phoenix.HTML
 
