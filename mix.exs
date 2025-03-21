@@ -65,7 +65,6 @@ defmodule Runa.MixProject do
       {:phoenix_live_reload, "~> 1.5", only: :dev},
       {:phoenix_live_view, "~> 1.0.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
-      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
@@ -98,7 +97,8 @@ defmodule Runa.MixProject do
       {:jaxon, "~> 2.0"},
       {:flow, "~> 1.0"},
       {:live_debugger, "~> 0.1.0", only: :dev},
-      {:typed_struct, "~> 0.3.0"}
+      {:typed_struct, "~> 0.3.0"},
+      {:live_svelte, "~> 0.15.0"}
     ]
   end
 
@@ -112,13 +112,7 @@ defmodule Runa.MixProject do
     [
       start: ["deps", "phx.server"],
       deps: ["deps.get", "deps.compile"],
-      setup: [
-        "deps.get",
-        "ecto.setup",
-        "assets.setup",
-        "assets.build",
-        "cmd --cd assets npm i"
-      ],
+      setup: ["deps", "ecto.setup", "cmd --cd assets npm i"],
       "ecto.seed": ["seed.languages", "seed.data"],
       "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
@@ -126,11 +120,9 @@ defmodule Runa.MixProject do
       "test.only": ["test --only only"],
       "test.watch.only": ["test.watch --only only"],
       "test.format": ["credo", "format --check-formatted"],
-      "assets.setup": ["esbuild.install --if-missing"],
-      "assets.build": ["esbuild runa"],
       "assets.deploy": [
         "tailwind default --minify",
-        "esbuild runa --minify",
+        "cmd --cd assets node build.js --deploy",
         "phx.digest"
       ],
       deploy: [
