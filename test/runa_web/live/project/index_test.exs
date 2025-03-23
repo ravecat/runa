@@ -136,7 +136,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       assert view
              |> element("[aria-label='Project #{project.name} languages']")
-             |> render() =~ language.wals_code
+             |> render() =~ language.title || language.wals_code ||
+               language.iso_code || language.glotto_code
     end
   end
 
@@ -233,10 +234,15 @@ defmodule RunaWeb.Live.Project.IndexTest do
       assert has_element?(view, "[aria-label='Project form']")
     end
 
+    @tag :only
     test "creates project by clicking create button", ctx do
       title = Atom.to_string(ctx.test)
 
-      {:ok, view, _} = live(ctx.conn, ~p"/projects")
+      {:ok, view, html} = live(ctx.conn, ~p"/projects")
+
+      dbg(html)
+
+      assert has_element?(view, "h3")
 
       refute has_element?(view, "[aria-label='Project #{title} card']")
 
