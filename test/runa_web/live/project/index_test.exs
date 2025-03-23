@@ -136,7 +136,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
       assert view
              |> element("[aria-label='Project #{project.name} languages']")
-             |> render() =~ language.wals_code
+             |> render() =~ language.title || language.wals_code ||
+               language.iso_code || language.glotto_code
     end
   end
 

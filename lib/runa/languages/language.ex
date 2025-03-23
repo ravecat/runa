@@ -16,6 +16,17 @@ defmodule Runa.Languages.Language do
              order_directions: [:desc, :asc]
            }}
 
+  @derive {Jason.Encoder,
+           only: [
+             :id,
+             :wals_code,
+             :iso_code,
+             :glotto_code,
+             :title,
+             :inserted_at,
+             :updated_at
+           ]}
+
   typed_schema "languages" do
     field :wals_code, :string
     field :iso_code, :string

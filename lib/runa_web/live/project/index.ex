@@ -5,10 +5,7 @@ defmodule RunaWeb.Live.Project.Index do
   use RunaWeb, :live_view
 
   import RunaWeb.Components.Button
-  import RunaWeb.Components.Icon
-  import RunaWeb.Components.Pill
   import RunaWeb.Components.Modal
-  import RunaWeb.Components.Panel
 
   alias Runa.Projects
   alias Runa.Projects.Project
@@ -28,7 +25,9 @@ defmodule RunaWeb.Live.Project.Index do
   def mount(_, _, %{assigns: %{user: %{teams: [team | _]}}} = socket) do
     projects = Teams.get_projects_with_statistics(team.id)
 
-    socket = assign(socket, team_id: team.id) |> stream(:projects, projects)
+    socket =
+      assign(socket, team_id: team.id, projects: projects)
+      |> stream(:projects, projects)
 
     {:ok, socket}
   end

@@ -11,6 +11,7 @@ defmodule RunaWeb.FeatureCase do
       @endpoint RunaWeb.Endpoint
       @moduletag :e2e
 
+      use ExUnit.Case
       use Wallaby.Feature
 
       import Wallaby.Query

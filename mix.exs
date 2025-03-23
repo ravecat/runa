@@ -121,7 +121,7 @@ defmodule Runa.MixProject do
         "cmd --cd assets node build.js",
         "ecto.create --quiet",
         "ecto.migrate --quiet",
-        "test --stale"
+        "test"
       ],
       "test.only": ["test --only only"],
       "test.watch.only": ["test.watch --only only"],
