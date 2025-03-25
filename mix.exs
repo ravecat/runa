@@ -10,7 +10,11 @@ defmodule Runa.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      preferred_cli_env: ["test.watch": :test, "test.only": :test],
+      preferred_cli_env: [
+        "test.watch": :test,
+        "test.only": :test,
+        "test.e2e": :test
+      ],
       elixirc_options: [debug_info: true, verbose: true, all_warnings: true],
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
@@ -98,7 +102,8 @@ defmodule Runa.MixProject do
       {:flow, "~> 1.0"},
       {:live_debugger, "~> 0.1.0", only: :dev},
       {:typed_struct, "~> 0.3.0"},
-      {:live_svelte, "~> 0.15.0"}
+      {:live_svelte, "~> 0.15.0"},
+      {:wallaby, "~> 0.30", runtime: false, only: :test}
     ]
   end
 
@@ -116,13 +121,22 @@ defmodule Runa.MixProject do
       "ecto.seed": ["seed.languages", "seed.data"],
       "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: [
+        "assets.client",
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
+        "test",
+        "cleanup.chromedrivers"
+      ],
       "test.only": ["test --only only"],
       "test.watch.only": ["test.watch --only only"],
-      "test.format": ["credo", "format --check-formatted"],
+      "test.static": "credo",
+      "test.format": ["test.static", "format --check-formatted"],
+      "test.coverage": "coveralls.multiple --type html --type json --type lcov",
+      "assets.client": "cmd --cd assets node build.js",
       "assets.deploy": [
         "tailwind default --minify",
-        "cmd --cd assets node build.js --deploy",
+        "assets.client --deploy",
         "phx.digest"
       ],
       deploy: [

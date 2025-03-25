@@ -11,11 +11,15 @@ defmodule RunaWeb.Endpoint do
     same_site: "Lax"
   ]
 
+  if sandbox = Application.compile_env(:runa, :sandbox, false) do
+    plug Phoenix.Ecto.SQL.Sandbox, sandbox: sandbox
+  end
+
   socket "/live", Phoenix.LiveView.Socket,
-    websocket: [connect_info: [session: @session_options]],
+    websocket: [connect_info: [:user_agent, session: @session_options]],
     longpoll: [connect_info: [session: @session_options]]
 
-  # Serve at "/" the static files from "priv/static" directory.
+  # Serve at "/" the static files from "priv/static" directory
   #
   # You should set gzip to true if you are running phx.digest
   # when deploying your static files in production.
