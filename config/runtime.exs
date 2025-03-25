@@ -1,7 +1,7 @@
 import Config
 import Dotenvy
 
-source!([".env", System.get_env()])
+source([".env", System.get_env()])
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -105,14 +105,14 @@ if config_env() == :prod do
 end
 
 config :ueberauth, Ueberauth.Strategy.Auth0.OAuth,
-  domain: System.get_env("AUTH0_DOMAIN"),
-  client_id: System.get_env("AUTH0_CLIENT_ID"),
-  client_secret: System.get_env("AUTH0_CLIENT_SECRET"),
-  redirect_uri: System.get_env("AUTH0_REDIRECT_URI")
+  domain: env!("AUTH0_DOMAIN", :string?, ""),
+  client_id: env!("AUTH0_CLIENT_ID", :string?, ""),
+  client_secret: env!("AUTH0_CLIENT_SECRET", :string?, ""),
+  redirect_uri: env!("AUTH0_REDIRECT_URI", :string?, "")
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
-  client_id: env!("GOOGLE_CLIENT_ID", :string),
-  client_secret: env!("GOOGLE_CLIENT_SECRET", :string)
+  client_id: env!("GOOGLE_CLIENT_ID", :string?, ""),
+  client_secret: env!("GOOGLE_CLIENT_SECRET", :string?, "")
 
 config :ex_aws,
   access_key_id: [{:system, "RUNA_AWS_ACCESS_KEY_ID"}, :instance_role],
