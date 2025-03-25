@@ -19,7 +19,7 @@ config :runa, RunaWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base:
     "C3Vz504bPAE0Ik6A4nGbALDBrwNFGurw445+WHG8e7H9toKW8EfaXfhJN+KYmTm7",
-  server: false
+  server: true
 
 # Print only warnings and errors during test
 config :logger, level: :warning
@@ -28,6 +28,22 @@ config :logger, level: :warning
 config :phoenix, :plug_init_mode, :runtime
 
 config :mix_test_watch,
-  tasks: ["coveralls.multiple --type html --type json --type lcov", "credo"],
+  tasks: ["test", "test.static"],
   clear: true,
-  extra_extensions: [".svelte", ".ts", ".js"]
+  extra_extensions: [".svelte", ".ts", ".js"],
+  exclude: [
+    ~r/\.#/,
+    ~r{priv/repo/migrations},
+    ~r{priv/static/assets},
+    ~r{priv/svelte}
+  ]
+
+config :wallaby,
+  otp_app: :runa,
+  screenshot_on_failure: true,
+  chromedriver: [
+    path: "assets/node_modules/chromedriver/bin/chromedriver",
+    headless: true
+  ]
+
+config :runa, :sandbox, Ecto.Adapters.SQL.Sandbox
