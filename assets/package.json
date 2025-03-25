@@ -8,6 +8,7 @@
   "description": "",
   "devDependencies": {
     "bits-ui": "^0.22.0",
+    "chromedriver": "^134.0.5",
     "clsx": "^2.1.1",
     "esbuild": "^0.25.1",
     "esbuild-plugin-import-glob": "^0.1.1",
