@@ -42,7 +42,7 @@ openapi.yaml
 /priv/static/*
 !/priv/static/robots.txt
 !/priv/static/favicon.ico
-!/priv/static/images/
+!/priv/static/images/**/*.svg
 
 # In case you use Node.js/npm, you want to ignore these.
 /node_modules/
@@ -60,6 +60,7 @@ npm-debug.log
 .aider*
 *.coverdata
 .continuerules
+/screenshots/
 
 # Ignore automatically generated Svelte files by the ~V sigil
 /assets/svelte/_build/

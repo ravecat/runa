@@ -14,7 +14,11 @@ defmodule RunaWeb.Router do
     plug :put_root_layout, html: {RunaWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug RunaWeb.Plugs.DevAuthentication
+
+    unless match?(:prod, Mix.env()) do
+      plug RunaWeb.Plugs.MockAuthentication
+    end
+
     plug RunaWeb.Plugs.Authentication
   end
 
@@ -83,7 +87,8 @@ defmodule RunaWeb.Router do
       only: [:create, :show, :update, :delete]
   end
 
-  live_session :default, on_mount: [RunaWeb.Scope, RunaWeb.RequestUri] do
+  live_session :default,
+    on_mount: [RunaWeb.EctoSandbox, RunaWeb.RequestUri, RunaWeb.Scope] do
     scope "/profile", RunaWeb.Live do
       pipe_through [:browser, :authenticate]
 

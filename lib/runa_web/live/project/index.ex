@@ -34,7 +34,7 @@ defmodule RunaWeb.Live.Project.Index do
   end
 
   def mount(_, _, socket) do
-    socket = assign(socket, team_id: nil) |> stream(:projects, [])
+    socket = assign(socket, team_id: nil, projects: []) |> stream(:projects, [])
 
     {:ok, socket}
   end
