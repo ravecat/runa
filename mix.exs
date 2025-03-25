@@ -98,7 +98,8 @@ defmodule Runa.MixProject do
       {:flow, "~> 1.0"},
       {:live_debugger, "~> 0.1.0", only: :dev},
       {:typed_struct, "~> 0.3.0"},
-      {:live_svelte, "~> 0.15.0"}
+      {:live_svelte, "~> 0.15.0"},
+      {:wallaby, "~> 0.30", runtime: false, only: :test}
     ]
   end
 
@@ -116,7 +117,12 @@ defmodule Runa.MixProject do
       "ecto.seed": ["seed.languages", "seed.data"],
       "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: [
+        "cmd --cd assets node build.js",
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
+        "test"
+      ],
       "test.only": ["test --only only"],
       "test.watch.only": ["test.watch --only only"],
       "test.format": ["credo", "format --check-formatted"],

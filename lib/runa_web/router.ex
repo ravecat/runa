@@ -83,7 +83,8 @@ defmodule RunaWeb.Router do
       only: [:create, :show, :update, :delete]
   end
 
-  live_session :default, on_mount: [RunaWeb.Scope, RunaWeb.RequestUri] do
+  live_session :default,
+    on_mount: [RunaWeb.EctoSandbox, RunaWeb.RequestUri, RunaWeb.Scope] do
     scope "/profile", RunaWeb.Live do
       pipe_through [:browser, :authenticate]
 
