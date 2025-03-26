@@ -3,8 +3,6 @@ defmodule RunaWeb.Live.Translation.IndexTest do
 
   @moduletag :translations
 
-  import RunaWeb.Formatters
-
   setup do
     team = insert(:team)
     project = insert(:project, team: team)

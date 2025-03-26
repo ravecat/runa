@@ -1,9 +1,5 @@
 defmodule RunaWeb.Live.Token.IndexTest do
-  @moduledoc false
-
   use RunaWeb.ConnCase, async: true
-
-  import RunaWeb.Formatters
 
   @moduletag :tokens
 

@@ -1,5 +1,4 @@
 defmodule RunaWeb.Live.Team.ShowTest do
-  @moduledoc false
   use RunaWeb.ConnCase, async: true
 
   @moduletag :teams
