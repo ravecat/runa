@@ -1,6 +1,4 @@
 defmodule Runa.FilesTest do
-  @moduledoc false
-
   use Runa.DataCase, async: true
 
   @moduletag :files
