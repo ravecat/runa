@@ -1,7 +1,7 @@
 defmodule Runa.LanguagesTest do
   @moduledoc false
 
-  use Runa.DataCase
+  use Runa.DataCase, async: true
 
   @moduletag :languages
 

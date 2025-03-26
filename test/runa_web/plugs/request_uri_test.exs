@@ -1,6 +1,4 @@
 defmodule RunaWeb.Plugs.RequestUriTest do
-  @moduledoc false
-
   use RunaWeb.ConnCase, async: true
 
   alias RunaWeb.Plugs.RequestUri

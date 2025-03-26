@@ -17,11 +17,13 @@ defmodule Runa.DataCase do
 
   using do
     quote do
+      @moduledoc false
+
+      @moduletag :context
+
       alias Runa.Events
       alias Runa.Repo
       alias Runa.Scope
-
-      use ExUnit.Case
 
       import Ecto
       import Ecto.Changeset
@@ -62,9 +64,5 @@ defmodule Runa.DataCase do
         opts |> Keyword.get(String.to_existing_atom(key), key) |> to_string()
       end)
     end)
-  end
-
-  def build_scope(user) do
-    %Runa.Scope{current_user: user}
   end
 end

@@ -129,7 +129,6 @@ defmodule Runa.MixProject do
         "cleanup.chromedrivers"
       ],
       "test.only": ["test --only only"],
-      "test.watch.only": ["test.watch --only only"],
       "test.static": "credo",
       "test.format": ["test.static", "format --check-formatted"],
       "test.coverage": "coveralls.multiple --type html --type json --type lcov",
