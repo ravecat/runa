@@ -30,6 +30,8 @@ defmodule RunaWeb.ConnCase do
 
   using do
     quote do
+      @moduledoc false
+
       # The default endpoint for testing
       @endpoint RunaWeb.Endpoint
 
