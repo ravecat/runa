@@ -1,10 +1,6 @@
 defmodule RunaWeb.ProjectControllerTest do
-  @moduledoc false
-
   use RunaWeb.ConnCase, async: true
-  use RunaWeb.JSONAPICase
-  use RunaWeb.OpenAPICase
-  use RunaWeb.AuthorizedAPIConnCase
+  use RunaWeb.APICase
 
   @moduletag :projects
 
@@ -36,9 +32,7 @@ defmodule RunaWeb.ProjectControllerTest do
       get(ctx.conn, ~p"/api/projects")
       |> json_response(200)
       |> get_in(["data", Access.at(0), "relationships"])
-      |> Enum.each(fn {_, value} ->
-        assert_schema(value, "RelationshipObject", ctx.spec)
-      end)
+      |> Enum.each(fn {_, value} -> assert_schema(value, "RelationshipObject", ctx.spec) end)
     end
   end
 
@@ -63,9 +57,7 @@ defmodule RunaWeb.ProjectControllerTest do
       get(ctx.conn, ~p"/api/projects/#{project.id}")
       |> json_response(200)
       |> get_in(["data", "relationships"])
-      |> Enum.each(fn {_, value} ->
-        assert_schema(value, "RelationshipObject", ctx.spec)
-      end)
+      |> Enum.each(fn {_, value} -> assert_schema(value, "RelationshipObject", ctx.spec) end)
     end
   end
 
@@ -77,9 +69,7 @@ defmodule RunaWeb.ProjectControllerTest do
           attributes: %{name: "title"},
           relationships: %{
             team: %{data: %{id: "#{ctx.team.id}", type: "teams"}},
-            base_language: %{
-              data: %{id: "#{ctx.language.id}", type: "languages"}
-            }
+            base_language: %{data: %{id: "#{ctx.language.id}", type: "languages"}}
           }
         }
       }
@@ -94,11 +84,7 @@ defmodule RunaWeb.ProjectControllerTest do
         data: %{
           type: "projects",
           attributes: %{},
-          relationships: %{
-            team: %{
-              data: %{id: "#{ctx.team.id}", type: "teams", title: "title"}
-            }
-          }
+          relationships: %{team: %{data: %{id: "#{ctx.team.id}", type: "teams", title: "title"}}}
         }
       }
 
@@ -112,13 +98,7 @@ defmodule RunaWeb.ProjectControllerTest do
     test "returns resource when data is valid", ctx do
       project = insert(:project, team: ctx.team, base_language: ctx.language)
 
-      body = %{
-        data: %{
-          type: "projects",
-          id: "#{project.id}",
-          attributes: %{name: "title"}
-        }
-      }
+      body = %{data: %{type: "projects", id: "#{project.id}", attributes: %{name: "title"}}}
 
       patch(ctx.conn, ~p"/api/projects/#{project.id}", body)
       |> json_response(200)
@@ -128,9 +108,7 @@ defmodule RunaWeb.ProjectControllerTest do
     test "renders errors when data is invalid", ctx do
       project = insert(:project, team: ctx.team)
 
-      body = %{
-        data: %{type: "projects", id: "#{project.id}", attributes: %{name: ""}}
-      }
+      body = %{data: %{type: "projects", id: "#{project.id}", attributes: %{name: ""}}}
 
       patch(ctx.conn, ~p"/api/projects/#{project.id}", body)
       |> json_response(409)
@@ -140,13 +118,7 @@ defmodule RunaWeb.ProjectControllerTest do
     test "renders errors when resource is not found", ctx do
       project = insert(:project, team: ctx.team)
 
-      body = %{
-        data: %{
-          type: "projects",
-          id: "#{project.id}",
-          attributes: %{name: "title"}
-        }
-      }
+      body = %{data: %{type: "projects", id: "#{project.id}", attributes: %{name: "title"}}}
 
       patch(ctx.conn, ~p"/api/projects/1", body)
       |> json_response(404)
@@ -180,10 +152,7 @@ defmodule RunaWeb.ProjectControllerTest do
 
       assert_schema(response, "Document", ctx.spec)
 
-      Enum.each(
-        response["data"],
-        &assert_schema(&1, "ResourceIdentifierObject", ctx.spec)
-      )
+      Enum.each(response["data"], &assert_schema(&1, "ResourceIdentifierObject", ctx.spec))
     end
 
     test "updates associations", ctx do
@@ -194,11 +163,7 @@ defmodule RunaWeb.ProjectControllerTest do
       body = %{data: [%{id: "#{language.id}", type: "languages"}]}
 
       response =
-        patch(
-          ctx.conn,
-          ~p"/api/projects/#{project.id}/relationships/languages",
-          body
-        )
+        patch(ctx.conn, ~p"/api/projects/#{project.id}/relationships/languages", body)
         |> json_response(200)
 
       assert_schema(response, "Document", ctx.spec)
@@ -217,11 +182,7 @@ defmodule RunaWeb.ProjectControllerTest do
 
       body = %{data: [%{id: "1", type: "languages"}]}
 
-      patch(
-        ctx.conn,
-        ~p"/api/projects/#{project.id}/relationships/languages",
-        body
-      )
+      patch(ctx.conn, ~p"/api/projects/#{project.id}/relationships/languages", body)
       |> json_response(409)
       |> assert_schema("Error", ctx.spec)
     end
@@ -235,11 +196,7 @@ defmodule RunaWeb.ProjectControllerTest do
       body = %{data: [%{id: "#{language.id}", type: "languages"}]}
 
       response =
-        post(
-          ctx.conn,
-          ~p"/api/projects/#{project.id}/relationships/languages",
-          body
-        )
+        post(ctx.conn, ~p"/api/projects/#{project.id}/relationships/languages", body)
         |> json_response(201)
 
       assert length(response["data"]) == 2
@@ -249,9 +206,7 @@ defmodule RunaWeb.ProjectControllerTest do
 
       ids = get_in(response, ["data", Access.all(), "id"])
 
-      assert Enum.all?(ids, fn id ->
-               id in ["#{language.id}", "#{ctx.language.id}"]
-             end)
+      assert Enum.all?(ids, fn id -> id in ["#{language.id}", "#{ctx.language.id}"] end)
     end
 
     test "deletes associations", ctx do
@@ -263,11 +218,7 @@ defmodule RunaWeb.ProjectControllerTest do
 
       body = %{data: [%{id: "#{language.id}", type: "languages"}]}
 
-      delete(
-        ctx.conn,
-        ~p"/api/projects/#{project.id}/relationships/languages",
-        body
-      )
+      delete(ctx.conn, ~p"/api/projects/#{project.id}/relationships/languages", body)
       |> json_response(204)
 
       response =
@@ -288,11 +239,7 @@ defmodule RunaWeb.ProjectControllerTest do
 
       body = %{data: []}
 
-      delete(
-        ctx.conn,
-        ~p"/api/projects/#{project.id}/relationships/languages",
-        body
-      )
+      delete(ctx.conn, ~p"/api/projects/#{project.id}/relationships/languages", body)
       |> json_response(204)
       |> get_in(["data", Access.all()])
       |> Enum.each(&assert_schema(&1, "ResourceIdentifierObject", ctx.spec))
