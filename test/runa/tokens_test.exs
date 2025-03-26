@@ -1,6 +1,6 @@
 defmodule Runa.TokensTest do
   @moduledoc false
-  use Runa.DataCase
+  use Runa.DataCase, async: true
 
   @moduletag :tokens
 

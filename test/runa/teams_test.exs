@@ -1,7 +1,5 @@
 defmodule Runa.TeamsTest do
-  @moduledoc false
-
-  use Runa.DataCase, async: true
+  use Runa.DataCase, async: true, async: true
 
   @moduletag :teams
 

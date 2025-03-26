@@ -17,6 +17,10 @@ defmodule Runa.DataCase do
 
   using do
     quote do
+      @moduledoc false
+
+      @moduletag :context
+
       alias Runa.Events
       alias Runa.Repo
       alias Runa.Scope
