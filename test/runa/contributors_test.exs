@@ -1,7 +1,7 @@
 defmodule Runa.ContributorsTest do
   @moduledoc false
 
-  use Runa.DataCase
+  use Runa.DataCase, async: true
 
   @moduletag :contributors
 

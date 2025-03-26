@@ -1,6 +1,4 @@
 defmodule RunaWeb.Live.Profile.ShowTest do
-  @moduledoc false
-
   use RunaWeb.ConnCase, async: true
 
   @moduletag :profile

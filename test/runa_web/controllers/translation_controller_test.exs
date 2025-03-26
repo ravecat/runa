@@ -1,6 +1,4 @@
 defmodule RunaWeb.TranslationControllerTest do
-  @moduledoc false
-
   use RunaWeb.ConnCase, async: true
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase

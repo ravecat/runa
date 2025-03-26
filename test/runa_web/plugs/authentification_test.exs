@@ -1,6 +1,4 @@
 defmodule RunaWeb.Plugs.AuthenticationTest do
-  @moduledoc false
-
   use RunaWeb.ConnCase, async: true
 
   alias Runa.Accounts

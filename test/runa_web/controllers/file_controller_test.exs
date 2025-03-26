@@ -1,6 +1,4 @@
 defmodule RunaWeb.FileControllerTest do
-  @moduledoc false
-
   use RunaWeb.ConnCase, async: true
   use RunaWeb.JSONAPICase
   use RunaWeb.OpenAPICase
@@ -21,9 +19,7 @@ defmodule RunaWeb.FileControllerTest do
         data: %{
           type: "files",
           attributes: %{filename: "name"},
-          relationships: %{
-            project: %{data: %{id: "#{ctx.project.id}", type: "projects"}}
-          }
+          relationships: %{project: %{data: %{id: "#{ctx.project.id}", type: "projects"}}}
         }
       }
 
