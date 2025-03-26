@@ -1,5 +1,4 @@
 defmodule RunaWeb.ErrorJSONTest do
-  @moduledoc false
   use RunaWeb.ConnCase, async: true
 
   @moduletag :json
