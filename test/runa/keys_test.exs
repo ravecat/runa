@@ -1,6 +1,4 @@
 defmodule Runa.KeysTest do
-  @moduledoc false
-
   use Runa.DataCase, async: true
 
   @moduletag :keys

@@ -1,6 +1,6 @@
 defmodule RunaWeb.Plugs.APIKeyVerificationTest do
-  use RunaWeb.ConnCase
-  use RunaWeb.OpenAPICase
+  use RunaWeb.ConnCase, async: true
+  use RunaWeb.APICase
 
   alias RunaWeb.JSONAPI
   alias RunaWeb.Plugs.APIKeyVerification
@@ -12,6 +12,7 @@ defmodule RunaWeb.Plugs.APIKeyVerificationTest do
   test "returns 401 error if no api key is provided", ctx do
     conn =
       ctx.conn
+      |> put_req_header(JSONAPI.Headers.api_key(), "")
       |> Map.put(:method, "GET")
       |> bypass_through()
       |> Phoenix.Controller.accepts(["jsonapi"])
