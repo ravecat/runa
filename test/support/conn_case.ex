@@ -62,16 +62,20 @@ defmodule RunaWeb.ConnCase do
   setup tags do
     Runa.DataCase.setup_sandbox(tags)
 
-    user = insert(:user)
-
     conn =
       Phoenix.ConnTest.build_conn()
       |> Plug.Session.call(@session_opts)
       |> Plug.Conn.fetch_session()
       |> Phoenix.Controller.fetch_flash()
       |> Plug.Conn.put_private(:phoenix_endpoint, RunaWeb.Endpoint)
-      |> Plug.Conn.put_session(:user_id, user.id)
 
-    {:ok, conn: conn, user: user}
+    {:ok, conn: conn}
+  end
+
+  setup context do
+    user = insert(:user)
+
+    {:ok,
+     user: user, conn: Plug.Conn.put_session(context.conn, :user_id, user.id)}
   end
 end
