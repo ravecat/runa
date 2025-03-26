@@ -1,6 +1,4 @@
 defmodule Runa.TranslationsTest do
-  @moduledoc false
-
   use Runa.DataCase, async: true
 
   @moduletag :translations
