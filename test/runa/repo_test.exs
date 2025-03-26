@@ -1,5 +1,5 @@
 defmodule Runa.RepoTest do
-  use Runa.DataCase
+  use Runa.DataCase, async: true
 
   alias __MODULE__.Child
   alias __MODULE__.ManyToManyAssociation

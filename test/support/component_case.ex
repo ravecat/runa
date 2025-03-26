@@ -6,6 +6,8 @@ defmodule RunaWeb.ComponentCase do
 
   using do
     quote do
+      @moduledoc false
+
       @endpoint RunaWeb.Endpoint
 
       import Phoenix.LiveViewTest

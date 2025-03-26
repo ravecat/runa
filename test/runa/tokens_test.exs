@@ -1,15 +1,16 @@
 defmodule Runa.TokensTest do
   @moduledoc false
-  use Runa.DataCase
+  use Runa.DataCase, async: true
 
   @moduletag :tokens
 
+  alias Runa.Scope
   alias Runa.Tokens
   alias Runa.Tokens.Token
 
   setup do
     user = insert(:user)
-    scope = build_scope(user)
+    scope = Scope.new(user)
     token = insert(:token, user: user, access: :read)
 
     {:ok, token: token, user: user, scope: scope}

@@ -1,6 +1,4 @@
 defmodule RunaWeb.Live.SidebarTest do
-  @moduledoc false
-
   use RunaWeb.ConnCase, async: true
 
   alias RunaWeb.Live.Sidebar
