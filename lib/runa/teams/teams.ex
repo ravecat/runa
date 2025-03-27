@@ -187,6 +187,7 @@ defmodule Runa.Teams do
       left_join: t in assoc(k, :translations),
       group_by: p.id,
       select: %{
+        id: p.id,
         project: p,
         languages_count: count(l.id, :distinct),
         keys_count: count(k.id, :distinct),
@@ -210,13 +211,21 @@ defmodule Runa.Teams do
     )
     |> Repo.all()
     |> Enum.map(fn %{project: project} = data ->
-      Map.merge(project, %{
-        statistics: %{
-          languages_count: data.languages_count,
-          keys_count: data.keys_count,
-          files_count: data.files_count,
-          done: data.done
-        }
+      project
+      |> Map.from_struct()
+      |> Map.drop([
+        :__struct__,
+        :__meta__,
+        :files,
+        :team,
+        :base_language,
+        :locales
+      ])
+      |> Map.put(:statistics, %{
+        languages_count: data.languages_count,
+        keys_count: data.keys_count,
+        files_count: data.files_count,
+        done: data.done
       })
     end)
   end
