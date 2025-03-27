@@ -15,6 +15,7 @@ defmodule RunaWeb.Live.Sidebar do
   import RunaWeb.Components.Button
   import RunaWeb.Components.Icon
 
+  on_mount RunaWeb.EctoSandbox
   on_mount RunaWeb.Scope
   on_mount __MODULE__
 

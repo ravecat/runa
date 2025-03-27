@@ -13,6 +13,7 @@ defmodule RunaWeb.FeatureCase do
       @moduletag :e2e
 
       use Wallaby.Feature
+      use Repatch.ExUnit
 
       import Wallaby.Query
       import Runa.Factory

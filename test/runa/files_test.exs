@@ -8,7 +8,10 @@ defmodule Runa.FilesTest do
 
   setup do
     team = insert(:team)
-    project = insert(:project, team: team)
+
+    project =
+      insert(:project, base_language: fn -> build(:language) end, team: team)
+
     file = insert(:file, project: project)
 
     %{uploaded_file: file, team: team}
@@ -26,7 +29,11 @@ defmodule Runa.FilesTest do
     end
 
     test "creates a file with valid data", ctx do
-      project = insert(:project, team: ctx.team)
+      project =
+        insert(:project,
+          base_language: fn -> build(:language) end,
+          team: ctx.team
+        )
 
       valid_attrs = %{
         filename: Atom.to_string(ctx.test),
@@ -38,7 +45,12 @@ defmodule Runa.FilesTest do
     end
 
     test "creates a file with keys from upload entry", ctx do
-      project = insert(:project, team: ctx.team)
+      project =
+        insert(:project,
+          base_language: fn -> build(:language) end,
+          team: ctx.team
+        )
+
       language = insert(:language)
       meta = %{project_id: project.id, language_id: language.id}
       upload_entry = %{client_name: "test_file.csv"}
