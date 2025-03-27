@@ -21,7 +21,12 @@ defmodule RunaWeb.TeamControllerTest do
 
     test "returns resources with relationships", ctx do
       team = insert(:team)
-      insert(:project, team: team)
+
+      insert(:project,
+        base_language: fn -> build(:language) end,
+        base_language: fn -> build(:language) end,
+        team: team
+      )
 
       get(ctx.conn, ~p"/api/teams")
       |> json_response(200)
@@ -49,7 +54,7 @@ defmodule RunaWeb.TeamControllerTest do
 
     test "returns resource with relationships", ctx do
       team = insert(:team)
-      insert(:project, team: team)
+      insert(:project, base_language: fn -> build(:language) end, team: team)
 
       get(ctx.conn, ~p"/api/teams/#{team.id}")
       |> json_response(200)
@@ -119,7 +124,7 @@ defmodule RunaWeb.TeamControllerTest do
   describe "inclusion endpoint (projects)" do
     test "returns related resources for entity", ctx do
       team = insert(:team)
-      insert(:project, team: team)
+      insert(:project, base_language: fn -> build(:language) end, team: team)
 
       response =
         get(ctx.conn, ~p"/api/teams/#{team.id}?include=projects")
@@ -145,7 +150,7 @@ defmodule RunaWeb.TeamControllerTest do
 
     test "returns sparse fieldset for related resource", ctx do
       team = insert(:team)
-      insert(:project, team: team)
+      insert(:project, base_language: fn -> build(:language) end, team: team)
 
       get(
         ctx.conn,
@@ -541,7 +546,7 @@ defmodule RunaWeb.TeamControllerTest do
   describe "relationships endpoint (projects)" do
     test "returns list of associations", ctx do
       team = insert(:team)
-      insert(:project, team: team)
+      insert(:project, base_language: fn -> build(:language) end, team: team)
 
       response =
         get(ctx.conn, ~p"/api/teams/#{team.id}/relationships/projects")

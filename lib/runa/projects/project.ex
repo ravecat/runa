@@ -10,6 +10,16 @@ defmodule Runa.Projects.Project do
   alias Runa.Languages.Locale
   alias Runa.Teams.Team
 
+  @derive {Jason.Encoder,
+           only: [
+             :id,
+             :name,
+             :description,
+             :inserted_at,
+             :updated_at,
+             :languages
+           ]}
+
   typed_schema "projects" do
     field :name, :string
     field :description, :string
