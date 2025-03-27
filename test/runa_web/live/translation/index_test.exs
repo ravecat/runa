@@ -5,7 +5,10 @@ defmodule RunaWeb.Live.Translation.IndexTest do
 
   setup do
     team = insert(:team)
-    project = insert(:project, team: team)
+
+    project =
+      insert(:project, base_language: fn -> build(:language) end, team: team)
+
     file = insert(:file, project: project)
     keys = insert_list(2, :key, file: file)
 

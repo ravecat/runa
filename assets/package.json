@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "live_svelte": "file:../deps/live_svelte",
+    "lucide-svelte": "^0.483.0",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
     "phoenix_live_view": "file:../deps/phoenix_live_view"
