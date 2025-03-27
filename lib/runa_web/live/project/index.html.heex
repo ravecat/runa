@@ -1,107 +1,9 @@
-<.panel>
-  <:header class="flex flex-col gap-2">
-    <div class="text-sm centered justify-start">
-      <.icon icon="folder" /> Projects
-    </div>
-    <div class="flex justify-end gap-2">
-      <.link patch={~p"/projects/new"} aria-label="Create new project">
-        <.button>
-          <.icon icon="plus" /> New
-        </.button>
-      </.link>
-    </div>
-  </:header>
-  <div id="projects" phx-update="stream" class="grid grid-cols-1 gap-2">
-    <div
-      :for={{id, project} <- @streams.projects}
-      id={id}
-      class="grid grid-cols-[auto_1fr] grid-rows-[repeat(auto-fit,minmax(8rem,8rem))] gap-1"
-    >
-      <div class="grid grid-rows-[auto_1fr_auto] gap-1">
-        <.link
-          patch={~p"/projects/#{project.id}/edit"}
-          aria-label={"Edit #{project.name} project"}
-        >
-          <.button variant="ghost" square>
-            <.icon icon="pencil" />
-          </.button>
-        </.link>
-
-        <.button
-          variant="ghost"
-          phx-click="duplicate_project"
-          phx-value-id={project.id}
-          square
-          aria-label={"Duplicate #{project.name} project"}
-        >
-          <.icon icon="duplicate" />
-        </.button>
-
-        <.link
-          patch={~p"/projects/#{project.id}/delete"}
-          aria-label={"Delete #{project.name} project"}
-        >
-          <.button variant="ghost" square>
-            <.icon icon="trash" />
-          </.button>
-        </.link>
-      </div>
-      <.link navigate={~p"/projects/#{project.id}?section=settings"}>
-        <div
-          class="cardable grid grid-cols-[1fr,1fr,auto] h-full"
-          role="listitem"
-          aria-label={"Project #{project.name} card"}
-        >
-          <div class="text-lg font-medium text-primary truncate">
-            {project.name}
-          </div>
-          <div
-            class="flex flex-wrap content-start gap-1 truncate"
-            role="list"
-            aria-label={"Project #{project.name} languages"}
-          >
-            <.pill
-              :for={language <- project.languages}
-              role="listitem"
-              class="border"
-            >
-              {language.wals_code || language.iso_code ||
-                language.glotto_code}
-            </.pill>
-          </div>
-          <div
-            class="grid lg:grid-cols-4 grid-cols-1 lg:grid-rows-2 grid-rows-4 gap-2 transition"
-            role="group"
-            aria-label={"Project #{project.name} statistics"}
-          >
-            <div
-              :for={
-                {label, aria_label, value} <- [
-                  {"Languages", "Project #{project.name} languages count",
-                   project.statistics.languages_count},
-                  {"Keys", "Project #{project.name} keys count",
-                   project.statistics.keys_count},
-                  {"Files", "Project #{project.name} files count",
-                   project.statistics.files_count},
-                  {"Done", "Project #{project.name} translation progress",
-                   "#{project.statistics.done}%"}
-                ]
-              }
-              class="flex flex-row items-center gap-2 lg:flex-col lg:items-start"
-            >
-              <span class="text-sm uppercase whitespace-normal">
-                {label}
-              </span>
-              <span class="text-sm text-accent" aria-label={aria_label}>
-                {value}
-              </span>
-            </div>
-          </div>
-        </div>
-      </.link>
-    </div>
-  </div>
-</.panel>
+<.svelte
+  name="project/index"
+  class="flex min-h-0"
+  props={%{projects: @projects}}
+  socket={@socket}
+/>
 <.modal
   :if={@live_action in [:new, :edit]}
   show
@@ -110,29 +12,30 @@
   <:title>
     {if @project.id, do: "Update project", else: "Create project"}
   </:title>
-  <:content>
+  <:content :let={{on_cancel, _}}>
     <.live_component
       module={RunaWeb.Live.Project.Form}
       id={to_string(@project.id || :new)}
       data={@project}
       scope={@scope}
-    />
-  </:content>
-  <:actions :let={{on_cancel, _}}>
-    <.button variant="secondary" phx-click={on_cancel}>Cancel</.button>
-    <.button
-      variant="warning"
-      phx-value-id={@project.id}
-      type="submit"
-      aria-label={
-        if @project.id,
-          do: "Confirm update project",
-          else: "Confirm create project"
-      }
     >
-      {if @project.id, do: "Update", else: "Create"}
-    </.button>
-  </:actions>
+      <:actions>
+        <.button variant="secondary" phx-click={on_cancel}>Cancel</.button>
+        <.button
+          variant="warning"
+          phx-value-id={@project.id}
+          type="submit"
+          aria-label={
+            if @project.id,
+              do: "Confirm update project",
+              else: "Confirm create project"
+          }
+        >
+          {if @project.id, do: "Update", else: "Create"}
+        </.button>
+      </:actions>
+    </.live_component>
+  </:content>
 </.modal>
 <.modal :if={@live_action in [:delete]} show on_cancel={JS.patch(~p"/projects")}>
   <:title>

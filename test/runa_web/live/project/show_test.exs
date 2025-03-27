@@ -6,7 +6,10 @@ defmodule RunaWeb.Live.Project.ShowTest do
   setup ctx do
     team = insert(:team)
     contributor = insert(:contributor, team: team, user: ctx.user)
-    project = insert(:project, team: team)
+
+    project =
+      insert(:project, base_language: fn -> build(:language) end, team: team)
+
     language = insert(:language, wals_code: "eng", title: "English")
 
     {:ok,
