@@ -9,7 +9,9 @@ defmodule Runa.ProjectsTest do
   setup do
     user = insert(:user)
     team = insert(:team)
-    project = insert(:project, team: team)
+
+    project =
+      insert(:project, base_language: fn -> build(:language) end, team: team)
 
     {:ok, project: project, team: team, scope: Scope.new(user)}
   end

@@ -6,7 +6,9 @@ defmodule RunaWeb.FileControllerTest do
 
   setup do
     team = insert(:team)
-    project = insert(:project, team: team)
+
+    project =
+      insert(:project, base_language: fn -> build(:language) end, team: team)
 
     {:ok, project: project}
   end
@@ -17,7 +19,9 @@ defmodule RunaWeb.FileControllerTest do
         data: %{
           type: "files",
           attributes: %{filename: "name"},
-          relationships: %{project: %{data: %{id: "#{ctx.project.id}", type: "projects"}}}
+          relationships: %{
+            project: %{data: %{id: "#{ctx.project.id}", type: "projects"}}
+          }
         }
       }
 
