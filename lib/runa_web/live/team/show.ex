@@ -20,8 +20,7 @@ defmodule RunaWeb.Live.Team.Show do
 
     socket =
       assign(socket,
-        team: team,
-        form: to_form(Teams.change(team)),
+        team: to_form(Teams.change(team)),
         owner: Teams.get_owner(team),
         roles: roles
       )
@@ -34,7 +33,7 @@ defmodule RunaWeb.Live.Team.Show do
   def handle_event("validate", %{"team" => attrs}, socket) do
     changeset = Teams.change(socket.assigns.team, attrs)
 
-    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
+    {:noreply, assign(socket, team: to_form(changeset, action: :validate))}
   end
 
   @impl true

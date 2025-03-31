@@ -4,20 +4,20 @@
       <.icon icon="users" /> Teams
     </div>
   </:header>
-  <.custom_form for={@form} phx-change="validate" phx-submit="save">
-    <.input type="textarea" aria-label="Team name" field={@form[:title]} />
+  <.custom_form for={@team} phx-change="validate" phx-submit="save">
+    <.input type="textarea" aria-label="Team name" field={@team[:title]} />
     <div class="grid grid-cols-[16rem_1fr] gap-2">
       <span class="centered justify-start">
         <.icon icon="calendar" />Creation date
       </span>
       <span aria-label="Team creation date">
-        {dt_to_string(@form[:inserted_at].value)}
+        {dt_to_string(@team[:inserted_at].value)}
       </span>
       <span class="centered justify-start">
         <.icon icon="calendar" />Modificiation date
       </span>
       <span aria-label="Team update date">
-        {dt_to_string(@form[:updated_at].value)}
+        {dt_to_string(@team[:updated_at].value)}
       </span>
       <span class="centered justify-start">
         <.icon icon="user" />Created by
@@ -52,7 +52,12 @@
           options={@roles}
         />
       <% end %>
-      {dt_to_string(@form[:inserted_at].value)}
+      {dt_to_string(@team[:inserted_at].value)}
     </.custom_form>
   </div>
 </.panel>
+<.svelte
+  name="team/show"
+  props={%{team: @team}}
+  class="flex min-h-0"
+/>
