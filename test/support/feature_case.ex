@@ -15,8 +15,12 @@ defmodule RunaWeb.FeatureCase do
       use Wallaby.Feature
       use Repatch.ExUnit
 
+      # import Wallaby.Element
       import Wallaby.Query
       import Runa.Factory
+
+      alias Runa.Repo
+      alias Runa.Scope
 
       if unquote(options)[:auth] do
         setup do

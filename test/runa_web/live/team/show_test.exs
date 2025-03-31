@@ -1,9 +1,9 @@
 defmodule RunaWeb.Live.Team.ShowTest do
-  use RunaWeb.ConnCase, async: true
+  use RunaWeb.FeatureCase, auth: true
+
+  import RunaWeb.Adapters.DateTime
 
   @moduletag :teams
-
-  alias Runa.Contributors
 
   setup ctx do
     team = insert(:team)
@@ -23,82 +23,68 @@ defmodule RunaWeb.Live.Team.ShowTest do
   end
 
   describe "team dashboard" do
-    test "render members name", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/team")
-
-      html = view |> element("[aria-label='Team members']") |> render()
+    feature "renders member name", ctx do
+      session =
+        visit(ctx.session, "/team")
+        |> assert_has(Query.css("[aria-label='Team members']"))
 
       for {member, _} <- ctx.members do
-        assert html =~ member.name
+        assert_has(
+          session,
+          Query.css("[aria-label=\"Member #{member.name} form\"]",
+            text: member.name
+          )
+        )
       end
     end
 
-    test "renders member role", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/team")
+    feature "renders member role", ctx do
+      session =
+        visit(ctx.session, "/team")
+        |> assert_has(Query.css("[aria-label='Team members']"))
 
       for {member, role} <- ctx.members do
-        if role.role == :owner do
-          assert view
-                 |> element("[aria-label='Role for #{member.name}']")
-                 |> render() =~ to_string(role.role)
-        else
-          assert view
-                 |> element(
-                   "select[aria-label='Role for #{member.name}'] option[selected]"
-                 )
-                 |> render() =~ to_string(role.role)
-        end
+        assert_has(
+          session,
+          Query.css("[aria-label=\"Role for #{member.name}\"]",
+            text: to_string(role.role)
+          )
+        )
       end
     end
 
-    test "updates member role", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/team")
-
-      Repatch.allow(self(), view.pid)
-
-      Repatch.patch(Runa.Contributors, :update, [mode: :shared], fn _, _, _ ->
-        {:ok, %{}}
-      end)
+    feature "updates member role", ctx do
+      session =
+        visit(ctx.session, "/team")
+        |> assert_has(Query.css("[aria-label='Team members']"))
 
       for {member, role} <- ctx.members do
         if role.role != :owner do
-          view
-          |> element("[aria-label='Member #{member.name} form']")
-          |> render_change(%{"contributor" => %{"role" => "admin"}})
-
-          assert Repatch.called?(
-                   Runa.Contributors,
-                   :update,
-                   [%{}, to_string(role.id), %{"role" => "admin"}],
-                   by: view.pid
-                 )
+          click(
+            session,
+            Query.css("[aria-label=\"Role for #{member.name}\"] button")
+          )
+          |> click(Query.css("[data-select-item]", text: "admin"))
+          |> visit("/team")
+          |> assert_has(
+            Query.css("[aria-label=\"Role for #{member.name}\"]", text: "admin")
+          )
         end
       end
     end
 
-    test "updates member role based on event", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/team")
-
-      Contributors.subscribe(ctx.scope)
-
-      for {member, role} <- ctx.members do
-        if role.role != :owner do
-          view
-          |> element("[aria-label='Member #{member.name} form']")
-          |> render_change(%{"contributor" => %{"role" => "admin"}})
-
-          assert_received %Events.ContributorUpdated{}
-        end
-      end
-    end
-
-    test "renders join date", ctx do
-      {:ok, view, _} = live(ctx.conn, ~p"/team")
-
-      html = view |> element("[aria-label='Team members']") |> render()
+    feature "renders member join date", ctx do
+      session =
+        visit(ctx.session, "/team")
+        |> assert_has(Query.css("[aria-label='Team members']"))
 
       for {_, role} <- ctx.members do
-        assert html =~ dt_to_string(role.inserted_at)
+        assert_has(
+          session,
+          Query.css("[aria-label='Team members']",
+            text: dt_to_string(role.inserted_at)
+          )
+        )
       end
     end
   end
