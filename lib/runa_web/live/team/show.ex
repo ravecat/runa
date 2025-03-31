@@ -4,28 +4,41 @@ defmodule RunaWeb.Live.Team.Show do
   """
   use RunaWeb, :live_view
 
-  import RunaWeb.Components.Panel
-  import RunaWeb.Components.Icon
-  import RunaWeb.Components.Form
-  import RunaWeb.Components.Input
-
   alias Runa.Contributors
   alias Runa.Teams
 
   on_mount(__MODULE__)
 
   @impl true
+  def render(assigns) do
+    ~H"""
+    <.svelte
+      name="team/show"
+      props={%{team: @team, owner: @owner, members: @members, roles: @roles}}
+      class="flex min-h-0"
+    />
+    """
+  end
+
+  def on_mount(_, _, _, socket) do
+    if connected?(socket) do
+      Contributors.subscribe(socket.assigns.scope)
+    end
+
+    {:cont, socket}
+  end
+
+  @impl true
   def mount(_, _, %{assigns: %{user: %{teams: [team | _]}}} = socket) do
-    roles = Enum.map(Teams.get_roles(), fn {role, _} -> {role, role} end)
+    roles = Enum.map(Teams.get_roles(), fn {role, _} -> role end)
 
     socket =
       assign(socket,
-        team: team,
-        form: to_form(Teams.change(team)),
+        team: to_form(Teams.change(team)),
         owner: Teams.get_owner(team),
-        roles: roles
+        roles: roles,
+        members: Teams.get_members(team)
       )
-      |> stream_members(team)
 
     {:ok, socket}
   end
@@ -34,7 +47,7 @@ defmodule RunaWeb.Live.Team.Show do
   def handle_event("validate", %{"team" => attrs}, socket) do
     changeset = Teams.change(socket.assigns.team, attrs)
 
-    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
+    {:noreply, assign(socket, team: to_form(changeset, action: :validate))}
   end
 
   @impl true
@@ -73,20 +86,6 @@ defmodule RunaWeb.Live.Team.Show do
     member = Teams.get_member(data) |> to_member_form()
 
     {:noreply, stream_insert(socket, :members, member)}
-  end
-
-  def on_mount(_, _, _, socket) do
-    if connected?(socket) do
-      Contributors.subscribe(socket.assigns.scope)
-    end
-
-    {:cont, socket}
-  end
-
-  defp stream_members(socket, team) do
-    members = Teams.get_members(team) |> Enum.map(&to_member_form(&1))
-
-    stream(socket, :members, members)
   end
 
   @spec to_member_form(Ecto.Schema.t(), map()) :: Phoenix.HTML.Form.t()
