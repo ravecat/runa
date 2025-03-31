@@ -265,7 +265,7 @@ defmodule Runa.Teams do
   @doc """
   Returns team owner.
   """
-  @spec get_owner(Team.t() | integer()) :: Accounts.User.t() | nil
+  @spec get_owner(Team.t() | integer()) :: Runa.Accounts.User.t() | nil
   def get_owner(%Team{id: id}), do: get_owner(id)
 
   def get_owner(team_id) when is_integer(team_id) do
