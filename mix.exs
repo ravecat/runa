@@ -24,7 +24,8 @@ defmodule Runa.MixProject do
         "coveralls.lcov": :test,
         "coveralls.html": :test,
         "coveralls.cobertura": :test
-      ]
+      ],
+      consolidate_protocols: Mix.env() != :test
     ]
   end
 
