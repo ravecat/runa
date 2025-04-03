@@ -12,6 +12,9 @@ defmodule RunaWeb.ErrorJSON do
   # def render("500.json", _assigns) do
   #   %{errors: %{detail: "Internal Server Error"}}
   # end
+
+  import RunaWeb.Adapters.Error
+
   def render(template, _assigns) do
     [status, _format] = String.split(template, ".")
 
@@ -79,20 +82,5 @@ defmodule RunaWeb.ErrorJSON do
           end
         end)
     }
-  end
-
-  defp translate_error({msg, opts}) do
-    # You can make use of gettext to translate error messages by
-    # uncommenting and adjusting the following code:
-
-    # if count = opts[:count] do
-    #   Gettext.dngettext(RunaWeb.Gettext, "errors", msg, msg, count, opts)
-    # else
-    #   Gettext.dgettext(RunaWeb.Gettext, "errors", msg, opts)
-    # end
-
-    Enum.reduce(opts, msg, fn {key, value}, acc ->
-      String.replace(acc, "%{#{key}}", fn _ -> to_string(value) end)
-    end)
   end
 end
