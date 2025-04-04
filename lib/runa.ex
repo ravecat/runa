@@ -32,6 +32,7 @@ defmodule Runa do
 
       alias Runa.Repo
 
+      import RunaWeb.Adapters.DateTime
       import Ecto.Changeset
       import Ecto.Query
     end

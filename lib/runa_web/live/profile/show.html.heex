@@ -69,11 +69,11 @@
     </.input>
     <span aria-label="Account creation date">
       <.icon icon="calendar" />
-      Created at {format_datetime_to_view(@profile[:inserted_at].value)}
+      Created at {dt_to_string(@profile[:inserted_at].value)}
     </span>
     <span aria-label="Last profile update date">
       <.icon icon="calendar" />
-      Updated at {format_datetime_to_view(@profile[:updated_at].value)}
+      Updated at {dt_to_string(@profile[:updated_at].value)}
     </span>
   </.custom_form>
 </.panel>

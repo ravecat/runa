@@ -98,7 +98,7 @@ defmodule RunaWeb.Live.Team.ShowTest do
       html = view |> element("[aria-label='Team members']") |> render()
 
       for {_, role} <- ctx.members do
-        assert html =~ format_datetime_to_view(role.inserted_at)
+        assert html =~ dt_to_string(role.inserted_at)
       end
     end
   end
