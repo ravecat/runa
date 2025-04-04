@@ -11,13 +11,13 @@
         <.icon icon="calendar" />Creation date
       </span>
       <span aria-label="Team creation date">
-        {format_datetime_to_view(@form[:inserted_at].value)}
+        {dt_to_string(@form[:inserted_at].value)}
       </span>
       <span class="centered justify-start">
         <.icon icon="calendar" />Modificiation date
       </span>
       <span aria-label="Team update date">
-        {format_datetime_to_view(@form[:updated_at].value)}
+        {dt_to_string(@form[:updated_at].value)}
       </span>
       <span class="centered justify-start">
         <.icon icon="user" />Created by
@@ -52,7 +52,7 @@
           options={@roles}
         />
       <% end %>
-      {format_datetime_to_view(@form[:inserted_at].value)}
+      {dt_to_string(@form[:inserted_at].value)}
     </.custom_form>
   </div>
 </.panel>
