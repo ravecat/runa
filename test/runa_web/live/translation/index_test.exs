@@ -39,7 +39,7 @@ defmodule RunaWeb.Live.Translation.IndexTest do
       for key <- ctx.keys do
         assert view
                |> element("[aria-label='Latest #{key.name} activity']")
-               |> render() =~ format_datetime_to_view(key.updated_at)
+               |> render() =~ dt_to_string(key.updated_at)
       end
     end
   end

@@ -13,7 +13,6 @@ defmodule RunaWeb.Live.Profile.Show do
   import RunaWeb.Components.Input
   import RunaWeb.Components.Form
   import RunaWeb.Components.Panel
-  import RunaWeb.Formatters
 
   @impl true
   def mount(_, _, socket) do
