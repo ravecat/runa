@@ -3,7 +3,6 @@ defmodule RunaWeb.Live.Profile.ShowTest do
 
   @moduletag :profile
 
-  import RunaWeb.Formatters
   alias Runa.Accounts
 
   setup ctx do
@@ -74,7 +73,7 @@ defmodule RunaWeb.Live.Profile.ShowTest do
     test "renders user creation date", ctx do
       {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
-      formatted_date = format_datetime_to_view(ctx.user.inserted_at)
+      formatted_date = dt_to_string(ctx.user.inserted_at)
 
       assert element(view, "[aria-label='Account creation date']")
              |> render() =~ formatted_date
@@ -83,7 +82,7 @@ defmodule RunaWeb.Live.Profile.ShowTest do
     test "renders user last update date", ctx do
       {:ok, view, _} = live(ctx.conn, ~p"/profile")
 
-      formatted_date = format_datetime_to_view(ctx.user.updated_at)
+      formatted_date = dt_to_string(ctx.user.updated_at)
 
       assert element(view, "[aria-label='Last profile update date']")
              |> render() =~ formatted_date

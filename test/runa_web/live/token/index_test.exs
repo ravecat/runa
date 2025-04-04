@@ -61,7 +61,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
           |> Floki.text()
           |> String.trim()
 
-        assert created_at == "#{format_datetime_to_view(token.inserted_at)}"
+        assert created_at == "#{dt_to_string(token.inserted_at)}"
       end
     end
 

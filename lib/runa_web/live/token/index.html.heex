@@ -24,10 +24,10 @@
       </span>
     </:col>
     <:col :let={token} label="Created at">
-      {format_datetime_to_view(token.inserted_at)}
+      {dt_to_string(token.inserted_at)}
     </:col>
     <:col :let={token} label="Updated at">
-      {format_datetime_to_view(token.updated_at)}
+      {dt_to_string(token.updated_at)}
     </:col>
     <:col :let={token} label="Status">
       {token.access}

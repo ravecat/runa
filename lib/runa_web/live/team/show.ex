@@ -8,7 +8,6 @@ defmodule RunaWeb.Live.Team.Show do
   import RunaWeb.Components.Icon
   import RunaWeb.Components.Form
   import RunaWeb.Components.Input
-  import RunaWeb.Formatters
 
   alias Runa.Contributors
   alias Runa.Teams

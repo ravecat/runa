@@ -49,7 +49,7 @@ defmodule RunaWeb.ConnCase do
       import Phoenix.Controller, only: [fetch_flash: 2]
       import Phoenix.LiveViewTest
       import LiveIsolatedComponent
-      import RunaWeb.Formatters
+      import RunaWeb.Adapters.DateTime
 
       alias Phoenix.Flash
       alias Runa.Events

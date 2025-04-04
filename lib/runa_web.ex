@@ -88,7 +88,7 @@ defmodule RunaWeb do
 
       import Ecto.Changeset
       import Runa.Repo
-      import RunaWeb.Formatters
+      import RunaWeb.Adapters.DateTime
       import RunaWeb.Components.Link
 
       use Phoenix.LiveView,
@@ -115,7 +115,7 @@ defmodule RunaWeb do
 
       import Ecto
       import Runa.Repo
-      import RunaWeb.Formatters
+      import RunaWeb.Adapters.DateTime
       import RunaWeb.Components.Link
 
       use Phoenix.LiveComponent
@@ -141,15 +141,15 @@ defmodule RunaWeb do
     quote do
       use JSONAPI.View, paginator: RunaWeb.JSONAPI.LinksConstructor
 
-      alias RunaWeb.Formatters
+      alias RunaWeb.Adapters.DateTime
       alias RunaWeb.Serializers
 
       def inserted_at_timestamp(data, _conn) do
-        Formatters.format_datetime_to_timestamp(data.inserted_at)
+        DateTime.dt_to_timestamp(data.inserted_at)
       end
 
       def updated_at_timestamp(data, _conn) do
-        Formatters.format_datetime_to_timestamp(data.updated_at)
+        DateTime.dt_to_timestamp(data.updated_at)
       end
     end
   end
