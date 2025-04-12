@@ -14,7 +14,9 @@
     "esbuild-plugin-import-glob": "^0.1.1",
     "esbuild-svelte": "^0.9.2",
     "formsnap": "^1.0.1",
+    "lucide-svelte": "^0.487.0",
     "svelte": "^5.23.2",
+    "svelte-modals": "^2.0.1",
     "svelte-preprocess": "^6.0.3",
     "sveltekit-superforms": "^2.24.0",
     "tailwind-merge": "^3.0.2",
@@ -24,7 +26,6 @@
   },
   "dependencies": {
     "live_svelte": "file:../deps/live_svelte",
-    "lucide-svelte": "^0.483.0",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
     "phoenix_live_view": "file:../deps/phoenix_live_view"
