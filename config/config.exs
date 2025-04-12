@@ -62,7 +62,7 @@ config :mime, :types, %{
 config :flop, repo: Runa.Repo
 
 config :live_svelte,
-  ssr: false
+  ssr: true
 
 config :phoenix_template, :format_encoders, jsonapi: Jason
 
