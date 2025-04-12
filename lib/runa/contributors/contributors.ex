@@ -152,6 +152,8 @@ defmodule Runa.Contributors do
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec delete(Scope.t(), Contributor.t()) ::
+          {:ok, Contributor.t()} | {:error, Ecto.Changeset.t()}
   def delete(%Scope{} = scope, %Contributor{} = contributor) do
     Repo.delete(contributor)
     |> case do
@@ -162,6 +164,14 @@ defmodule Runa.Contributors do
 
       other ->
         other
+    end
+  end
+
+  def delete(%Scope{} = scope, id) do
+    get(scope, id)
+    |> case do
+      {:ok, contributor} -> delete(scope, contributor)
+      other -> other
     end
   end
 

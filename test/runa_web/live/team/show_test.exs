@@ -19,7 +19,8 @@ defmodule RunaWeb.Live.Team.ShowTest do
 
     members = Enum.map(contributors, &{&1.user, &1}) ++ [{owner.user, owner}]
 
-    {:ok, members: members, scope: scope}
+    {:ok,
+     members: members, scope: scope, owner: owner, contributors: contributors}
   end
 
   describe "team dashboard" do
@@ -53,7 +54,46 @@ defmodule RunaWeb.Live.Team.ShowTest do
       end
     end
 
-    feature "updates member role", ctx do
+    feature "renders member join date", ctx do
+      session =
+        visit(ctx.session, "/team")
+        |> assert_has(Query.css("[aria-label='Team members']"))
+
+      for {_, role} <- ctx.members do
+        assert_has(
+          session,
+          Query.css("[aria-label='Team members']",
+            text: dt_to_string(role.inserted_at)
+          )
+        )
+      end
+    end
+  end
+
+  describe "team owner" do
+    feature "has ability to delete non-owner members", ctx do
+      session =
+        visit(ctx.session, "/team")
+        |> assert_has(Query.css("[aria-label='Team members']"))
+
+      {member, _} =
+        Enum.find(ctx.members, fn {_, role} -> role.role != :owner end)
+
+      assert_has(
+        session,
+        Query.css("[aria-label=\"Member #{member.name} form\"]",
+          text: member.name
+        )
+      )
+      |> click(Query.css("[aria-label=\"Delete #{member.name} from team\"]"))
+      |> click(Query.css("[aria-label=\"Confirm delete contributor\"]"))
+      |> visit("/team")
+      |> assert_has(
+        Query.css("[aria-label=\"Member #{member.name} form\"]", count: 0)
+      )
+    end
+
+    feature "has ability to change member role", ctx do
       session =
         visit(ctx.session, "/team")
         |> assert_has(Query.css("[aria-label='Team members']"))
@@ -70,21 +110,6 @@ defmodule RunaWeb.Live.Team.ShowTest do
             Query.css("[aria-label=\"Role for #{member.name}\"]", text: "admin")
           )
         end
-      end
-    end
-
-    feature "renders member join date", ctx do
-      session =
-        visit(ctx.session, "/team")
-        |> assert_has(Query.css("[aria-label='Team members']"))
-
-      for {_, role} <- ctx.members do
-        assert_has(
-          session,
-          Query.css("[aria-label='Team members']",
-            text: dt_to_string(role.inserted_at)
-          )
-        )
       end
     end
   end
