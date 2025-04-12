@@ -18,7 +18,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
   describe "projects view" do
     feature "renders projects cards", ctx do
-      session = visit(ctx.session, "/projects")
+      session =
+        ctx.session |> put_session(:user_id, ctx.user.id) |> visit("/projects")
 
       for project <- ctx.projects do
         assert_has(
@@ -29,7 +30,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     feature "renders edit button", ctx do
-      session = visit(ctx.session, "/projects")
+      session =
+        ctx.session |> put_session(:user_id, ctx.user.id) |> visit("/projects")
 
       for project <- ctx.projects do
         assert_has(
@@ -40,7 +42,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     feature "renders delete button", ctx do
-      session = visit(ctx.session, "/projects")
+      session =
+        ctx.session |> put_session(:user_id, ctx.user.id) |> visit("/projects")
 
       for project <- ctx.projects do
         assert_has(
@@ -51,7 +54,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     feature "renders duplicate button", ctx do
-      session = visit(ctx.session, "/projects")
+      session =
+        ctx.session |> put_session(:user_id, ctx.user.id) |> visit("/projects")
 
       for project <- ctx.projects do
         assert_has(
@@ -68,6 +72,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         insert(:locale, project: project, language: language)
 
         ctx.session
+        |> put_session(:user_id, ctx.user.id)
         |> visit("/projects")
         |> assert_text(
           Query.css("[aria-label=\"Project #{project.name} languages\"]"),
@@ -93,6 +98,7 @@ defmodule RunaWeb.Live.Project.IndexTest do
         )
 
         ctx.session
+        |> put_session(:user_id, ctx.user.id)
         |> visit("/projects")
         |> find(
           Query.css("[aria-label=\"Project #{project.name} statistics\"]")
@@ -121,7 +127,9 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
   describe "projects toolbar" do
     feature "renders create project button", ctx do
-      visit(ctx.session, "/projects")
+      ctx.session
+      |> put_session(:user_id, ctx.user.id)
+      |> visit("/projects")
       |> assert_has(
         Query.css("[aria-label=\"Create new project\"]", text: "New")
       )
@@ -130,7 +138,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
 
   describe "edit project modal" do
     feature "rendered by click edit button", ctx do
-      session = visit(ctx.session, "/projects")
+      session =
+        ctx.session |> put_session(:user_id, ctx.user.id) |> visit("/projects")
 
       for project <- ctx.projects do
         session
@@ -141,7 +150,8 @@ defmodule RunaWeb.Live.Project.IndexTest do
     end
 
     feature "edits project by clicking update button", ctx do
-      session = visit(ctx.session, "/projects")
+      session =
+        ctx.session |> put_session(:user_id, ctx.user.id) |> visit("/projects")
 
       for project <- ctx.projects do
         session

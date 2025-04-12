@@ -19,6 +19,12 @@ config :runa, RunaWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base:
     "C3Vz504bPAE0Ik6A4nGbALDBrwNFGurw445+WHG8e7H9toKW8EfaXfhJN+KYmTm7",
+  session_options: [
+    store: :cookie,
+    key: "_runa_key_test",
+    signing_salt: "buKCuE47",
+    same_site: "Lax"
+  ],
   server: true
 
 # Print only warnings and errors during test

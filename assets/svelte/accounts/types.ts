@@ -9,10 +9,10 @@ export type User = {
     updated_at: string;
 }
 
-export type Member = {
+export type Contributor = {
     id: string;
     role: string;
+    user: User;
     inserted_at: string;
     updated_at: string;
-    user: User;
 }
