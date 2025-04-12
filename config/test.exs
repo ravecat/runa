@@ -47,3 +47,6 @@ config :wallaby,
   ]
 
 config :runa, :sandbox, Ecto.Adapters.SQL.Sandbox
+
+config :live_svelte,
+  ssr: false
