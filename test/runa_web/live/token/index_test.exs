@@ -109,7 +109,7 @@ defmodule RunaWeb.Live.Token.IndexTest do
 
       for token <- ctx.tokens do
         view
-        |> element("[aria-label='Delete #{token.title} token']")
+        |> element("[aria-label=\"Delete #{token.title} token\"]")
         |> render_click()
 
         assert has_element?(view, "[aria-modal='true'][role='dialog']")

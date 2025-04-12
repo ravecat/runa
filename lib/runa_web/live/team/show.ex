@@ -14,7 +14,15 @@ defmodule RunaWeb.Live.Team.Show do
     ~H"""
     <.svelte
       name="team/show"
-      props={%{team: @team, owner: @owner, members: @members, roles: @roles}}
+      props={
+        %{
+          team: @team,
+          owner: @owner,
+          current_user: @current_user,
+          members: @members,
+          roles: @roles
+        }
+      }
       class="flex min-h-0"
     />
     """
@@ -37,6 +45,7 @@ defmodule RunaWeb.Live.Team.Show do
         team: to_form(Teams.change(team)),
         owner: Teams.get_owner(team),
         roles: roles,
+        current_user: socket.assigns.user,
         members: Teams.get_members(team)
       )
 
@@ -77,6 +86,14 @@ defmodule RunaWeb.Live.Team.Show do
   end
 
   @impl true
+  def handle_event("delete_contributor:" <> id, _, socket) do
+    case Contributors.delete(socket.assigns.scope, id) do
+      {:ok, _} -> {:noreply, socket}
+      {:error, _} -> {:noreply, socket}
+    end
+  end
+
+  @impl true
   def handle_event(_, _, socket) do
     {:noreply, socket}
   end
@@ -93,5 +110,18 @@ defmodule RunaWeb.Live.Team.Show do
       end)
 
     {:noreply, assign(socket, :members, members)}
+  end
+
+  @impl true
+  def handle_info(%Events.ContributorDeleted{data: data}, socket) do
+    members =
+      Enum.filter(socket.assigns.members, fn member -> member.id != data.id end)
+
+    {:noreply, assign(socket, :members, members)}
+  end
+
+  @impl true
+  def handle_info(_, socket) do
+    {:noreply, socket}
   end
 end

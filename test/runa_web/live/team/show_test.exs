@@ -22,6 +22,7 @@ defmodule RunaWeb.Live.Team.ShowTest do
 
     {:ok,
      members: members,
+     team: team,
      scope: scope,
      owner: owner,
      contributors: contributors,
@@ -79,6 +80,28 @@ defmodule RunaWeb.Live.Team.ShowTest do
   end
 
   describe "team owner" do
+    feature "has ability to delete non-owner members", ctx do
+      session =
+        put_session(ctx.session, :user_id, ctx.user.id)
+        |> visit("/team")
+        |> assert_has(Query.css("[aria-label='Team members']"))
+
+      {member, _} =
+        Enum.find(ctx.members, fn {_, role} -> role.role != :owner end)
+
+      assert_has(
+        session,
+        Query.css("[aria-label=\"Member #{member.name} form\"]",
+          text: member.name
+        )
+      )
+      |> click(Query.css("[aria-label=\"Delete #{member.name} from team\"]"))
+      |> click(Query.css("[aria-label=\"Confirm delete contributor\"]"))
+      |> assert_has(
+        Query.css("[aria-label=\"Member #{member.name} form\"]", count: 0)
+      )
+    end
+
     feature "has ability to change member role", ctx do
       session =
         put_session(ctx.session, :user_id, ctx.user.id)
@@ -96,6 +119,25 @@ defmodule RunaWeb.Live.Team.ShowTest do
             Query.css("[aria-label=\"Role for #{member.name}\"]", text: "admin")
           )
         end
+      end
+    end
+  end
+
+  describe "team non-owner" do
+    feature "hasn't ability to delete team member", ctx do
+      user = insert(:user)
+
+      insert(:contributor, team: ctx.team, user: user, role: :editor)
+
+      session = ctx.session |> put_session(:user_id, user.id) |> visit("/team")
+
+      for {member, _role} <- ctx.members do
+        assert_has(
+          session,
+          Query.css("[aria-label=\"Delete #{member.name} from team\"]",
+            count: 0
+          )
+        )
       end
     end
   end
