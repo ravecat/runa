@@ -55,5 +55,25 @@ defmodule RunaWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+  plug :introspect
   plug RunaWeb.Router
+
+  def introspect(conn, _opts) do
+    req_cookies = conn.req_cookies["_runa_key"]
+
+    if req_cookies do
+      [_, payload, _] = String.split(req_cookies, ".", parts: 3)
+      {:ok, encoded_cookie_data} = Base.url_decode64(payload, padding: false)
+
+      dbg("==========ENDPOINT===========")
+      IO.puts("path: #{conn.request_path}")
+      IO.puts("req_cookies: #{req_cookies}")
+
+      IO.puts(
+        "encoded_cookie_data: #{inspect(:erlang.binary_to_term(encoded_cookie_data))} \n\n"
+      )
+    end
+
+    conn
+  end
 end

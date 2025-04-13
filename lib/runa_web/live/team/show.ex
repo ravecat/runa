@@ -44,6 +44,21 @@ defmodule RunaWeb.Live.Team.Show do
   end
 
   @impl true
+  def mount(_, _, %{assigns: %{user: %{teams: [team | _]}}} = socket) do
+    roles = Enum.map(Teams.get_roles(), fn {role, _} -> role end)
+
+    socket =
+      assign(socket,
+        team: to_form(Teams.change(team)),
+        owner: Teams.get_owner(team),
+        roles: roles,
+        members: Teams.get_members(team)
+      )
+
+    {:ok, socket}
+  end
+
+  @impl true
   def handle_event("validate", %{"team" => attrs}, socket) do
     changeset = Teams.change(socket.assigns.team, attrs)
 

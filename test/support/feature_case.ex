@@ -15,9 +15,9 @@ defmodule RunaWeb.FeatureCase do
       use Wallaby.Feature
       use Repatch.ExUnit
 
-      # import Wallaby.Element
       import Wallaby.Query
       import Runa.Factory
+      import Wallaby.Browser
 
       alias Runa.Repo
       alias Runa.Scope

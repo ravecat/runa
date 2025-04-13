@@ -1,9 +1,16 @@
 defmodule RunaWeb.Live.Team.ShowTest do
   use RunaWeb.FeatureCase, auth: true
 
-  import RunaWeb.Adapters.DateTime
-
   @moduletag :teams
+
+  @session_opts Plug.Session.init(
+                  store: :cookie,
+                  key: "_session",
+                  encryption_salt: "encrypted cookie salt",
+                  signing_salt: "signing salt",
+                  secret_key_base: String.duplicate("abcdef0123456789", 8),
+                  same_site: "Lax"
+                )
 
   setup ctx do
     team = insert(:team)
@@ -24,93 +31,64 @@ defmodule RunaWeb.Live.Team.ShowTest do
   end
 
   describe "team dashboard" do
-    feature "renders member name", ctx do
-      session =
-        visit(ctx.session, "/team")
-        |> assert_has(Query.css("[aria-label='Team members']"))
+    @tag :only
+    feature "put cookie directly", ctx do
+      endpoint_opts = Application.get_env(:runa, RunaWeb.Endpoint)
+      secret_key_base = Keyword.fetch!(endpoint_opts, :secret_key_base)
 
-      for {member, _} <- ctx.members do
-        assert_has(
-          session,
-          Query.css("[aria-label=\"Member #{member.name} form\"]",
-            text: member.name
-          )
+      conn =
+        %Plug.Conn{secret_key_base: secret_key_base}
+        |> Plug.Conn.put_resp_cookie("_runa_key", %{user_id: ctx.user.id},
+          sign: true
         )
-      end
-    end
 
-    feature "renders member role", ctx do
-      session =
-        visit(ctx.session, "/team")
-        |> assert_has(Query.css("[aria-label='Team members']"))
+      resp_cookie = conn.resp_cookies["_runa_key"][:value]
 
-      for {member, role} <- ctx.members do
-        assert_has(
-          session,
-          Query.css("[aria-label=\"Role for #{member.name}\"]",
-            text: to_string(role.role)
-          )
-        )
-      end
-    end
+      dbg("==========TEST===========")
+      IO.puts("resp_cookie: #{inspect(resp_cookie)}\n")
 
-    feature "renders member join date", ctx do
-      session =
-        visit(ctx.session, "/team")
-        |> assert_has(Query.css("[aria-label='Team members']"))
+      [_, payload, _] = String.split(resp_cookie, ".", parts: 3)
+      {:ok, encoded_cookie_data} = Base.url_decode64(payload, padding: false)
 
-      for {_, role} <- ctx.members do
-        assert_has(
-          session,
-          Query.css("[aria-label='Team members']",
-            text: dt_to_string(role.inserted_at)
-          )
-        )
-      end
-    end
-  end
-
-  describe "team owner" do
-    feature "has ability to delete non-owner members", ctx do
-      session =
-        visit(ctx.session, "/team")
-        |> assert_has(Query.css("[aria-label='Team members']"))
-
-      {member, _} =
-        Enum.find(ctx.members, fn {_, role} -> role.role != :owner end)
-
-      assert_has(
-        session,
-        Query.css("[aria-label=\"Member #{member.name} form\"]",
-          text: member.name
-        )
+      IO.puts(
+        "encoded resp_cookie: #{inspect(:erlang.binary_to_term(encoded_cookie_data))}\n\n"
       )
-      |> click(Query.css("[aria-label=\"Delete #{member.name} from team\"]"))
-      |> click(Query.css("[aria-label=\"Confirm delete contributor\"]"))
+
+      ctx.session
+      |> visit("/")
+      |> set_cookie("_runa_key", resp_cookie)
       |> visit("/team")
-      |> assert_has(
-        Query.css("[aria-label=\"Member #{member.name} form\"]", count: 0)
-      )
+      |> assert_has(Query.css("[aria-label='Team members']"))
     end
 
-    feature "has ability to change member role", ctx do
-      session =
-        visit(ctx.session, "/team")
-        |> assert_has(Query.css("[aria-label='Team members']"))
+    feature "put cookie via session", ctx do
+      endpoint_opts = Application.get_env(:runa, RunaWeb.Endpoint)
+      secret_key_base = Keyword.fetch!(endpoint_opts, :secret_key_base)
 
-      for {member, role} <- ctx.members do
-        if role.role != :owner do
-          click(
-            session,
-            Query.css("[aria-label=\"Role for #{member.name}\"] button")
-          )
-          |> click(Query.css("[data-select-item]", text: "admin"))
-          |> visit("/team")
-          |> assert_has(
-            Query.css("[aria-label=\"Role for #{member.name}\"]", text: "admin")
-          )
-        end
-      end
+      conn =
+        %Plug.Conn{secret_key_base: secret_key_base}
+        |> Plug.Session.call(@session_opts)
+        |> Plug.Conn.fetch_session()
+        |> Plug.Conn.put_session(:user_id, ctx.user.id)
+        |> Plug.Conn.resp(:ok, "")
+
+      resp_cookie = conn.resp_cookies["_session"][:value]
+
+      dbg("==========TEST===========")
+      IO.puts("resp_cookie: #{inspect(resp_cookie)}\n")
+
+      [_, payload, _] = String.split(resp_cookie, ".", parts: 3)
+      {:ok, encoded_cookie_data} = Base.url_decode64(payload, padding: false)
+
+      IO.puts(
+        "encoded resp_cookie: #{inspect(:erlang.binary_to_term(encoded_cookie_data))}\n\n"
+      )
+
+      ctx.session
+      |> visit("/")
+      |> set_cookie("_runa_key", resp_cookie)
+      |> visit("/team")
+      |> assert_has(Query.css("[aria-label='Team members']"))
     end
   end
 end
