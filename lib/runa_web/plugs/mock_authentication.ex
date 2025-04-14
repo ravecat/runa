@@ -25,17 +25,8 @@ defmodule RunaWeb.Plugs.MockAuthentication do
 
   defp find_user_for_env do
     case Mix.env() do
-      :dev ->
-        Accounts.get_by(email: @dev_email)
-
-      :test ->
-        case Application.get_env(:runa, :e2e_test_user_id) do
-          nil -> nil
-          user_id -> Accounts.get_by(id: user_id)
-        end
-
-      _ ->
-        nil
+      :dev -> Accounts.get_by(email: @dev_email)
+      _ -> nil
     end
   end
 end

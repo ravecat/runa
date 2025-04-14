@@ -4,12 +4,15 @@ defmodule RunaWeb.Endpoint do
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
-  @session_options [
-    store: :cookie,
-    key: "_runa_key",
-    signing_salt: "buKCuE47",
-    same_site: "Lax"
-  ]
+
+  @session_options Application.compile_env(
+                     :runa,
+                     [RunaWeb.Endpoint, :session_options],
+                     store: :cookie,
+                     key: "_runa_key",
+                     signing_salt: "buKCuE47",
+                     same_site: "Lax"
+                   )
 
   if sandbox = Application.compile_env(:runa, :sandbox, false) do
     plug Phoenix.Ecto.SQL.Sandbox, sandbox: sandbox
