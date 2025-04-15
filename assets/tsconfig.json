@@ -7,7 +7,7 @@
     "baseUrl": ".",
     "paths": {
       "$lib": ["svelte"],
-      "$lib/*": ["svelte/*"]
+      "$lib/*": ["svelte/*", "svelte/*.svelte", "svelte/*.ts", "svelte/*.js"]
     }
   },
   "include": ["./**/*"],
