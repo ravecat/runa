@@ -4,8 +4,8 @@
   import type { LiveSvelteProps } from "$lib/liveSvelte";
 
   import type { ModalProps } from "$lib/ui/modals.svelte";
-  import type { Team } from "$lib/team/types";
-  import type { Contributor } from "$lib/accounts/types";
+  import type { Team } from "$lib/team";
+  import type { Contributor } from "$lib/accounts";
 
   const {
     isOpen,

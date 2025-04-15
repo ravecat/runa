@@ -11,7 +11,6 @@
     icon?: Snippet;
     badge?: Snippet;
     onValueChange?: (newValue: string[]) => void;
-
     error?: string[] | string;
   };
 
@@ -59,7 +58,7 @@
   role="group"
   id="tags"
   class={cn(
-    "inline-flex flex-wrap items-center gap-1 px-3 py-2 w-full min-h-10 border border-input rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+    "inline-flex flex-wrap items-center gap-1 px-3 py-2 w-full min-h-10 border border-input rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 max-w-full box-border",
     className
   )}
 >
@@ -88,7 +87,7 @@
     </div>
   {/each}
   <input
-    class="bg-transparent border-none outline-none p-0 h-6 text-xs focus:ring-0 flex-1 min-w-4"
+    class="bg-transparent border-none outline-none p-0 h-6 text-xs focus:ring-0 flex-1 min-w-0 box-border"
     type="text"
     placeholder={value.length === 0 ? placeholder : ""}
     bind:value={currentValue}

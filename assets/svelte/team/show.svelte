@@ -2,8 +2,8 @@
   import { modals } from "svelte-modals";
   import { flip } from "svelte/animate";
   import type { LiveSvelteProps, Form } from "$lib/liveSvelte";
-  import type { Team } from "$lib/team/types";
-  import type { User, Contributor } from "$lib/accounts/types";
+  import type { Team } from "$lib/team";
+  import type { User, Contributor } from "$lib/accounts";
   import { Input } from "$lib/ui/input";
   import * as Table from "$lib/ui/table";
   import * as Card from "$lib/ui/card";
@@ -11,6 +11,7 @@
   import { debounce } from "$lib/shared/debounce";
   import { Calendar, Users, Trash2 } from "lucide-svelte";
   import DeleteContributorModal from "./delete_contributor_modal.svelte";
+  import InviteContributor from "./invite_contributor.svelte";
 
   let {
     team,
@@ -51,8 +52,9 @@
 </script>
 
 <Card.Root class="grid grid-rows-[auto_1fr_auto]">
-  <Card.Header>
+  <Card.Header class="flex flex-row items-center justify-between">
     <Card.Title>Team</Card.Title>
+    <InviteContributor {team} {roles} {live} />
   </Card.Header>
   <Card.Content>
     <form onsubmit={handleSubmit} class="flex flex-col gap-2">
@@ -104,7 +106,7 @@
                       handleRoleChange(member, v.value);
                     }}
                   >
-                    <Select.Trigger class="w-32">
+                    <Select.Trigger class="h-8">
                       <Select.Value />
                     </Select.Trigger>
                     <Select.Content>
