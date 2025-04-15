@@ -70,6 +70,11 @@ defmodule RunaWeb.Live.Sidebar do
   end
 
   @impl true
+  def handle_info(%Events.TeamUpdated{data: data}, socket) do
+    {:noreply, assign(socket, active_team: data)}
+  end
+
+  @impl true
   def handle_info(%Events.AccountUpdated{data: data}, socket) do
     socket = assign(socket, :user, data)
 

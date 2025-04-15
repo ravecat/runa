@@ -35,6 +35,10 @@
     live.pushEvent("save", { team: form });
   }
 
+  function handleInputChange(_event: Event) {
+    live.pushEvent("save", { team: form });
+  }
+
   const handleValidate = debounce(function () {
     live.pushEvent("validate", { team: form });
   }, 300);
@@ -56,6 +60,7 @@
         bind:value={form.title}
         error={errors.title}
         onkeyup={handleValidate}
+        onchange={handleInputChange}
       />
       <div class="text-sm flex justify-between gap-2">
         <span class="text-muted-foreground flex items-center gap-1">
