@@ -49,18 +49,20 @@ openapi.yaml
 /assets/node_modules/
 npm-debug.log
 
-# Environment file
+# Ignore tools artifacts
 .env
 .env.*
-!.env.example
-
-# Ignore tools artifacts
 /.elixir*
-/openapi.json
-.aider*
+openapi.json
 *.coverdata
-.continuerules
 /screenshots/
+.*
+
+# Include tools artifacts
+!.env.example
+!.recode.exs
+!.formatter.exs
+!.credo.exs
 
 # Ignore automatically generated Svelte files by the ~V sigil
 /assets/svelte/_build/
