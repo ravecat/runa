@@ -8,6 +8,7 @@
 
   type Props = HTMLInputAttributes & {
     value?: string[];
+    errors?: string[] | string;
     icon?: Snippet;
     badge?: Snippet;
     onValueChange?: (newValue: string[]) => void;
