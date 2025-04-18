@@ -35,6 +35,7 @@ defmodule Runa do
       import RunaWeb.Adapters.DateTime
       import Ecto.Changeset
       import Ecto.Query
+      import Runa.Changeset
     end
   end
 
