@@ -1,4 +1,4 @@
-import * as Components from "../svelte/**/*.svelte"
-import {getRender} from "live_svelte"
+const Components = import.meta.glob("../svelte/**/*.svelte", { eager: true });
+import { getRender } from "live_svelte";
 
-export const render = getRender(Components)
+export const render = getRender(Components);

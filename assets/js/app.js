@@ -20,9 +20,9 @@ import "phoenix_html";
 // Establish Phoenix Socket and LiveView configuration.
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
-import topbar from "../vendor/topbar";
+import * as topbar from "../vendor/topbar";
 import { getHooks } from "live_svelte";
-import * as Components from "../svelte/**/*.svelte";
+const Components = import.meta.glob("../svelte/**/*.svelte", { eager: true });
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
