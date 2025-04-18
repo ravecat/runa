@@ -20,7 +20,8 @@ defmodule RunaWeb.Live.Team.Show do
           owner: @owner,
           current_user: @current_user,
           members: @members,
-          roles: @roles
+          roles: @roles,
+          invite: @invite
         }
       }
       class="flex min-h-0"
@@ -46,7 +47,8 @@ defmodule RunaWeb.Live.Team.Show do
         owner: Teams.get_owner(team),
         roles: roles,
         current_user: socket.assigns.user,
-        members: Teams.get_members(team)
+        members: Teams.get_members(team),
+        invite: to_invite_form(Teams.to_invite_changeset())
       )
 
     {:ok, socket}
@@ -94,6 +96,19 @@ defmodule RunaWeb.Live.Team.Show do
   end
 
   @impl true
+  def handle_event("validate_contributors", attrs, socket) do
+    changeset = Teams.to_invite_changeset(attrs)
+    form = to_invite_form(changeset, action: :validate)
+
+    {:reply, form, assign(socket, invite: form)}
+  end
+
+  @impl true
+  def handle_event("invite_contributors", attrs, socket) do
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event(_, _, socket) do
     {:noreply, socket}
   end
@@ -123,5 +138,9 @@ defmodule RunaWeb.Live.Team.Show do
   @impl true
   def handle_info(_, socket) do
     {:noreply, socket}
+  end
+
+  defp to_invite_form(changeset, opts \\ []) do
+    to_form(changeset, Keyword.merge([as: :invite], opts))
   end
 end

@@ -3,7 +3,7 @@
   import { flip } from "svelte/animate";
   import type { LiveSvelteProps, Form } from "$lib/liveSvelte";
   import type { Team } from "$lib/team";
-  import type { User, Contributor } from "$lib/accounts";
+  import type { User, Contributor, ContributorInvite } from "$lib/accounts";
   import { Input } from "$lib/ui/input";
   import * as Table from "$lib/ui/table";
   import * as Card from "$lib/ui/card";
@@ -19,6 +19,7 @@
     owner,
     members,
     current_user,
+    invite,
     roles,
   }: LiveSvelteProps<{
     team: Form<Team>;
@@ -26,6 +27,7 @@
     owner: User;
     members: Contributor[];
     roles: Contributor["role"][];
+    invite: Form<ContributorInvite>;
   }> = $props();
 
   let form = team.data;
@@ -54,7 +56,7 @@
 <Card.Root class="grid grid-rows-[auto_1fr_auto]">
   <Card.Header class="flex flex-row items-center justify-between">
     <Card.Title>Team</Card.Title>
-    <InviteContributor {team} {roles} {live} />
+    <InviteContributor {invite} {team} {roles} {live} />
   </Card.Header>
   <Card.Content>
     <form onsubmit={handleSubmit} class="flex flex-col gap-2">

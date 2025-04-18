@@ -16,3 +16,8 @@ export type Contributor = {
     inserted_at: string;
     updated_at: string;
 }
+
+export type ContributorInvite = {
+    role: Contributor["role"];
+    emails: string[];
+}

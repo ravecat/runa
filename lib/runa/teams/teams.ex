@@ -312,6 +312,10 @@ defmodule Runa.Teams do
     |> Repo.one()
   end
 
+  def to_invite_changeset(attrs \\ %{}) do
+    Contributor.invite_changeset(attrs)
+  end
+
   @spec subscribe(Scope.t()) :: :ok | {:error, term()}
   def subscribe(%Scope{} = scope) do
     PubSub.subscribe(topic(scope))

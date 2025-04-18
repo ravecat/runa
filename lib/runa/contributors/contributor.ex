@@ -53,9 +53,12 @@ defmodule Runa.Contributors.Contributor do
       emails: {:array, :string}
     }
 
-    {%{}, types}
+    {%{role: :viewer, emails: []}, types}
     |> cast(attrs, [:role, :emails])
     |> validate_required([:role, :emails])
     |> validate_length(:emails, min: 1)
+    |> validate_list(:emails, fn changset ->
+      validate_format(changset, :value, ~r/@/)
+    end)
   end
 end

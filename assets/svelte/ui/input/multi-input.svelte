@@ -21,6 +21,7 @@
     badge,
     class: className,
     error,
+    name,
     onValueChange,
     ...rest
   }: Props = $props();
@@ -54,50 +55,56 @@
   }
 </script>
 
-<div
-  role="group"
-  id="tags"
-  class={cn(
-    "inline-flex flex-wrap items-center gap-1 px-3 py-2 w-full min-h-10 border border-input rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 max-w-full box-border",
-    className
-  )}
->
-  {#each value as item, idx (item)}
-    <div class="inline-flex items-center">
-      {#if badge}
-        {@render badge()}
-      {:else}
-        <Badge variant="outline">
-          {item}
-        </Badge>
-      {/if}
-      <Button
-        class="size-6"
-        size="icon"
-        variant="ghost"
-        aria-label="Remove {item}"
-        onclick={() => dropValue(idx)}
-      >
-        {#if icon}
-          {@render icon()}
+<div class={className}>
+  <div
+    role="group"
+    id="tags"
+    class={cn(
+      "flex flex-wrap items-center gap-1 px-3 py-2 w-full min-h-10 border rounded-md focus-within:ring-2 max-w-full box-border",
+      error?.length > 0 ? "border-destructive focus-within:ring-destructive focus-within:ring-1" : "border-input focus-within:ring-ring",
+    )}
+  >
+    {#each value as item, idx (item)}
+      <div class="flex items-center">
+        {#if badge}
+          {@render badge()}
         {:else}
-          <X class="size-3 text-muted-foreground" />
+          <Badge variant="outline">
+            {item}
+          </Badge>
         {/if}
-      </Button>
-    </div>
-  {/each}
-  <input
-    class="bg-transparent border-none outline-none p-0 h-6 text-xs focus:ring-0 flex-1 min-w-0 box-border"
-    type="text"
-    placeholder={value.length === 0 ? placeholder : ""}
-    bind:value={currentValue}
-    bind:this={inputElement}
-    {onkeydown}
-    aria-controls="tags"
-    aria-autocomplete="list"
-    {...rest}
-  />
+        <Button
+          class="size-6"
+          size="icon"
+          variant="ghost"
+          aria-label="Remove {item}"
+          onclick={() => dropValue(idx)}
+        >
+          {#if icon}
+            {@render icon()}
+          {:else}
+            <X class="size-3 text-muted-foreground" />
+          {/if}
+        </Button>
+      </div>
+    {/each}
+    <input
+      class="bg-transparent border-none outline-none p-0 h-6 text-xs focus:ring-0 flex-1 min-w-0 box-border"
+      type="text"
+      placeholder={value.length === 0 ? placeholder : ""}
+      bind:value={currentValue}
+      bind:this={inputElement}
+      {onkeydown}
+      aria-controls="tags"
+      aria-autocomplete="list"
+      {...rest}
+    />
+  </div>
+  {#if error?.length > 0}
+    <p
+      class="mt-1 px-1 text-xs text-destructive overflow-hidden text-ellipsis whitespace-nowrap w-full"
+    >
+      {Array.isArray(error) ? error[0] : error}
+    </p>
+  {/if}
 </div>
-{#if error?.length > 0}
-  <span class="text-destructive">{error}</span>
-{/if}
