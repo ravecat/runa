@@ -30,7 +30,7 @@ defmodule Runa.Changeset do
 
           {:error, %{errors: errors}} ->
             {message, meta} = errors[:value]
-            [{field, {"#{value}: #{message}", meta}}]
+            [{field, {"#{value} #{message}", meta}}]
         end
       end)
     end)
