@@ -34,7 +34,10 @@ defmodule Runa.Contributors do
 
   """
   def get_by(attrs \\ []) do
-    Repo.get_by(Contributor, attrs)
+    case Repo.get_by(Contributor, attrs) do
+      nil -> {:error, %Ecto.NoResultsError{}}
+      data -> {:ok, data}
+    end
   end
 
   @doc """

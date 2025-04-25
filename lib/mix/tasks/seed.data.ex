@@ -34,7 +34,8 @@ defmodule Mix.Tasks.Seed.Data do
 
     email = Application.get_env(:runa, :authentication)[:email]
 
-    users = [insert(:user, email: email)] ++ insert_list(3, :user)
+    # users = insert_list(3, :user) ++ [insert(:user, email: email)]
+    users = insert_list(3, :user)
 
     teams =
       Enum.map(users, fn user ->
@@ -42,6 +43,12 @@ defmodule Mix.Tasks.Seed.Data do
 
         insert(:contributor, user: user, team: team, role: :owner)
         insert_list(3, :token, user: user)
+
+        insert(:invitation,
+          team: team,
+          invited_by_user: user,
+          email: "someone@somewhere.com"
+        )
 
         users
         |> Enum.reject(fn u -> u.id == user.id end)

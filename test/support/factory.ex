@@ -7,6 +7,7 @@ defmodule Runa.Factory do
   alias Runa.Accounts.User
   alias Runa.Contributors.Contributor
   alias Runa.Files.File
+  alias Runa.Invitations.Invitation
   alias Runa.Keys.Key
   alias Runa.Languages.Language
   alias Runa.Languages.Locale
@@ -92,6 +93,18 @@ defmodule Runa.Factory do
 
   def file_factory(attrs) do
     %File{filename: "#{Faker.File.file_name(:text)}"}
+    |> merge_attributes(attrs)
+    |> evaluate_lazy_attributes()
+  end
+
+  def invitation_factory(attrs) do
+    %Invitation{
+      token: :crypto.strong_rand_bytes(32) |> Base.url_encode64(padding: false),
+      status: :pending,
+      expires_at: DateTime.add(DateTime.utc_now(), 86400),
+      email: Faker.Internet.email(),
+      role: sequence(:role, [:admin, :editor, :viewer])
+    }
     |> merge_attributes(attrs)
     |> evaluate_lazy_attributes()
   end

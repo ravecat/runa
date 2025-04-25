@@ -5,6 +5,9 @@ defmodule RunaWeb.Router do
 
   import RunaWeb.Plugs.Authentication, only: [authenticate: 2]
 
+  import RunaWeb.InvitationController,
+    only: [put_invitation_token: 2]
+
   @auth_path Application.compile_env(:ueberauth, Ueberauth)[:base_path]
 
   pipeline :browser do
@@ -14,6 +17,7 @@ defmodule RunaWeb.Router do
     plug :put_root_layout, html: {RunaWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :put_invitation_token
 
     unless match?(:prod, Mix.env()) do
       plug RunaWeb.Plugs.MockAuthentication
@@ -45,10 +49,11 @@ defmodule RunaWeb.Router do
     get "/openapi", OpenApiSpex.Plug.SwaggerUI, path: "/api"
   end
 
-  scope "/" do
+  scope "/", RunaWeb do
     pipe_through [:browser]
 
-    get "/", RunaWeb.PageController, :home
+    get "/", PageController, :home
+    get "/invitations/accept/:token", InvitationController, :accept
   end
 
   scope @auth_path, RunaWeb do

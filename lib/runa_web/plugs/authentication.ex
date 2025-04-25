@@ -12,7 +12,7 @@ defmodule RunaWeb.Plugs.Authentication do
   alias Runa.Accounts
   alias Runa.Services.Avatar
 
-  def call(conn, _opts) do
+  def call(conn, _) do
     user_id = get_session(conn, :user_id)
 
     cond do

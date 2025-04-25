@@ -104,7 +104,8 @@ defmodule Runa.MixProject do
       {:typed_struct, "~> 0.3.0"},
       {:live_svelte, "~> 0.15.0"},
       {:wallaby, "~> 0.30", runtime: false, only: :test},
-      {:ecto_commons, "~> 0.3.4"}
+      {:ecto_commons, "~> 0.3.4"},
+      {:swoosh, "~> 1.0"}
     ]
   end
 

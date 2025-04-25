@@ -6,7 +6,10 @@ defmodule RunaWeb.KeyControllerTest do
 
   setup do
     team = insert(:team)
-    project = insert(:project, base_language: fn -> build(:language) end, team: team)
+
+    project =
+      insert(:project, base_language: fn -> build(:language) end, team: team)
+
     file = insert(:file, project: project)
 
     {:ok, localization_file: file}
@@ -18,7 +21,9 @@ defmodule RunaWeb.KeyControllerTest do
         data: %{
           type: "keys",
           attributes: %{name: "name", description: "description"},
-          relationships: %{file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}}
+          relationships: %{
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
+          }
         }
       }
 
@@ -40,7 +45,9 @@ defmodule RunaWeb.KeyControllerTest do
         data: %{
           type: "keys",
           attributes: %{name: nil, description: nil},
-          relationships: %{file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}}
+          relationships: %{
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
+          }
         }
       }
 
@@ -71,7 +78,9 @@ defmodule RunaWeb.KeyControllerTest do
       get(ctx.conn, ~p"/api/keys/#{key.id}")
       |> json_response(200)
       |> get_in(["data", "relationships"])
-      |> Enum.each(fn {_, value} -> assert_schema(value, "RelationshipObject", ctx.spec) end)
+      |> Enum.each(fn {_, value} ->
+        assert_schema(value, "RelationshipObject", ctx.spec)
+      end)
     end
   end
 
@@ -110,7 +119,9 @@ defmodule RunaWeb.KeyControllerTest do
           id: "#{key.id}",
           type: "keys",
           attributes: %{name: "name", description: "description"},
-          relationships: %{file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}}
+          relationships: %{
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
+          }
         }
       }
 
@@ -125,7 +136,9 @@ defmodule RunaWeb.KeyControllerTest do
           type: "keys",
           id: "1",
           attributes: %{name: "name", description: "description"},
-          relationships: %{file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}}
+          relationships: %{
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
+          }
         }
       }
 
@@ -142,7 +155,9 @@ defmodule RunaWeb.KeyControllerTest do
           id: "#{key.id}",
           type: "keys",
           attributes: %{name: nil, description: nil},
-          relationships: %{file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}}
+          relationships: %{
+            file: %{data: %{id: "#{ctx.localization_file.id}", type: "files"}}
+          }
         }
       }
 

@@ -1,5 +1,6 @@
 <.flash_group flash={@flash} />
-<div class="grid grid-cols-[16rem_1fr] grid-rows-[1fr] min-h-screen max-h-screen p-2 gap-2 bg-background-alt">
+<.svelte name="ui/modals" />
+<div class="grid grid-cols-[16rem_1fr] grid-rows-[1fr] min-h-screen max-h-screen p-2 gap-2">
   {live_render(@socket, RunaWeb.Live.Sidebar,
     id: "sidebar",
     session: %{"current_uri" => @current_uri},
@@ -8,5 +9,4 @@
   <div class="min-h-0 grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-2">
     {@inner_content}
   </div>
-  <.svelte name="ui/modals" />
 </div>

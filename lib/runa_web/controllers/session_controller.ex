@@ -11,17 +11,16 @@ defmodule RunaWeb.SessionController do
   If the authentication fails, the `callback` action will redirect the user to the
   home page with an error message.
   """
-  alias RunaWeb.Plugs.Authentication
+
   use RunaWeb, :controller
   use RunaWeb, :verified_routes
 
   require Logger
 
-  plug Ueberauth
+  alias Runa.Invitations
+  alias RunaWeb.Plugs.Authentication
 
-  def request(conn, _params) do
-    conn
-  end
+  plug Ueberauth
 
   def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
     conn
@@ -45,6 +44,7 @@ defmodule RunaWeb.SessionController do
   defp login(conn, user) do
     conn
     |> put_session(:user_id, user.id)
+    |> process_invitation(user)
     |> configure_session(renew: true)
   end
 
@@ -52,5 +52,16 @@ defmodule RunaWeb.SessionController do
     conn
     |> configure_session(drop: true)
     |> redirect(to: ~p"/")
+  end
+
+  defp process_invitation(conn, user) do
+    with invitation_token when is_binary(invitation_token) <-
+           get_session(conn, :invitation_token),
+         {:ok, invitation} <- Invitations.get_invitation(invitation_token),
+         {:ok, _} <- Invitations.accept_invitation(user, invitation) do
+      delete_session(conn, :invitation_token)
+    else
+      _ -> conn
+    end
   end
 end

@@ -5,6 +5,7 @@ defmodule RunaWeb.Live.Team.Show do
   use RunaWeb, :live_view
 
   alias Runa.Contributors
+  alias Runa.Invitations
   alias Runa.Teams
 
   on_mount(__MODULE__)
@@ -48,7 +49,7 @@ defmodule RunaWeb.Live.Team.Show do
         roles: roles,
         current_user: socket.assigns.user,
         members: Teams.get_members(team),
-        invite: to_invite_form(Teams.to_invite_changeset())
+        invite: to_invite_form(Invitations.to_invite_changeset())
       )
 
     {:ok, socket}
@@ -97,14 +98,14 @@ defmodule RunaWeb.Live.Team.Show do
 
   @impl true
   def handle_event("validate_contributors", attrs, socket) do
-    changeset = Teams.to_invite_changeset(attrs)
+    changeset = Invitations.to_invite_changeset(attrs)
     form = to_invite_form(changeset, action: :validate)
 
     {:reply, form, assign(socket, invite: form)}
   end
 
   @impl true
-  def handle_event("invite_contributors", attrs, socket) do
+  def handle_event("invite_contributors", _, socket) do
     {:noreply, socket}
   end
 

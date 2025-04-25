@@ -45,20 +45,4 @@ defmodule Runa.Contributors.Contributor do
     |> assoc_constraint(:user)
     |> assoc_constraint(:team)
   end
-
-  @doc false
-  def invite_changeset(attrs) do
-    types = %{
-      role: Ecto.ParameterizedType.init(Ecto.Enum, values: @roles ++ @owner),
-      emails: {:array, :string}
-    }
-
-    {%{role: :viewer, emails: []}, types}
-    |> cast(attrs, [:role, :emails])
-    |> validate_required([:role, :emails])
-    |> validate_length(:emails, min: 1)
-    |> validate_list(:emails, fn changset ->
-      validate_format(changset, :value, ~r/@/)
-    end)
-  end
 end
