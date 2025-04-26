@@ -7,8 +7,11 @@ defmodule RunaWeb.Live.Project.FormTest do
   alias RunaWeb.Live.Project.Form
 
   setup ctx do
+    user = insert(:user)
+    conn = put_session(ctx.conn, :user_id, user.id)
+
     team = insert(:team)
-    contributor = insert(:contributor, team: team, user: ctx.user)
+    contributor = insert(:contributor, team: team, user: user)
     language = insert(:language, wals_code: "eng", title: "English")
 
     project =
@@ -18,9 +21,11 @@ defmodule RunaWeb.Live.Project.FormTest do
         languages: [language]
       )
 
-    scope = Scope.new(ctx.user)
+    scope = Scope.new(user)
 
     {:ok,
+     conn: conn,
+     user: user,
      project: project,
      team: team,
      contributor: contributor,

@@ -4,9 +4,12 @@ defmodule RunaWeb.Live.Token.IndexTest do
   @moduletag :tokens
 
   setup ctx do
-    [token | _] = tokens = insert_list(3, :token, user: ctx.user)
+    user = insert(:user)
+    [token | _] = tokens = insert_list(3, :token, user: user)
 
-    {:ok, tokens: tokens, token: token}
+    conn = Plug.Conn.put_session(ctx.conn, :user_id, user.id)
+
+    {:ok, conn: conn, user: user, tokens: tokens, token: token}
   end
 
   describe "Tokens view" do

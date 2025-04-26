@@ -3,8 +3,9 @@ defmodule RunaWeb.Live.Translation.IndexTest do
 
   @moduletag :translations
 
-  setup do
+  setup ctx do
     team = insert(:team)
+    user = insert(:user)
 
     project =
       insert(:project, base_language: fn -> build(:language) end, team: team)
@@ -12,7 +13,10 @@ defmodule RunaWeb.Live.Translation.IndexTest do
     file = insert(:file, project: project)
     keys = insert_list(2, :key, file: file)
 
-    {:ok, keys: keys, project: project}
+    {:ok,
+     keys: keys,
+     project: project,
+     conn: put_session(ctx.conn, :user_id, user.id)}
   end
 
   describe "translations view" do

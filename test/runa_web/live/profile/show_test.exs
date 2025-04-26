@@ -6,9 +6,11 @@ defmodule RunaWeb.Live.Profile.ShowTest do
   alias Runa.Accounts
 
   setup ctx do
-    tokens = insert_list(3, :token, user: ctx.user)
+    user = insert(:user)
+    tokens = insert_list(3, :token, user: user)
+    conn = put_session(ctx.conn, :user_id, user.id)
 
-    {:ok, tokens: tokens}
+    {:ok, conn: conn, user: user, tokens: tokens}
   end
 
   describe "profile page" do

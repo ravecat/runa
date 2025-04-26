@@ -17,8 +17,6 @@ defmodule RunaWeb.ConnCase do
 
   use ExUnit.CaseTemplate
 
-  import Runa.Factory
-
   @session_opts Plug.Session.init(
                   store: :cookie,
                   key: "_session",
@@ -74,10 +72,10 @@ defmodule RunaWeb.ConnCase do
     {:ok, conn: conn}
   end
 
-  setup context do
-    user = insert(:user)
+  # setup context do
+  #   user = insert(:user)
 
-    {:ok,
-     user: user, conn: Plug.Conn.put_session(context.conn, :user_id, user.id)}
-  end
+  #   {:ok,
+  #    user: user, conn: Plug.Conn.put_session(context.conn, :user_id, user.id)}
+  # end
 end

@@ -20,7 +20,10 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     test "assigns user from db when user_id present in session", ctx do
       Repatch.patch(Accounts, :get, fn _ -> {:ok, ctx.user} end)
 
-      conn = Authentication.call(ctx.conn, [])
+      conn =
+        ctx.conn
+        |> Plug.Conn.put_session(:user_id, ctx.user.id)
+        |> Authentication.call([])
 
       assert conn.assigns.current_user == ctx.user
     end
