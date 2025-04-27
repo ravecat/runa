@@ -80,7 +80,6 @@ defmodule Runa.MixProject do
       {:pathex, "~> 2.0"},
       {:tailwind, "~> 0.2.2"},
       {:csv, "~> 3.2"},
-      {:mock, "~> 0.3.0", only: :test},
       {:repatch, "~> 1.0", only: :test},
       {:jsonapi, "~> 1.7.1"},
       {:ex_machina, "~> 2.7.0", only: [:dev, :test]},

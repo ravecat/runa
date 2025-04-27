@@ -24,15 +24,18 @@ defmodule RunaWeb.SessionControllerTest do
     end
 
     test "puts user id to session on authentication success", ctx do
-      with_mock RunaWeb.Plugs.Authentication, [:passthrough],
-        authenticate_by_auth_data: fn _ -> {:ok, ctx.user} end do
-        conn =
-          ctx.conn
-          |> assign(:ueberauth_auth, ctx.auth_data)
-          |> SessionController.callback(%{})
+      Repatch.patch(
+        RunaWeb.Plugs.Authentication,
+        :authenticate_by_auth_data,
+        fn _ -> {:ok, ctx.user} end
+      )
 
-        assert get_session(conn, :user_id) == ctx.user.id
-      end
+      conn =
+        ctx.conn
+        |> assign(:ueberauth_auth, ctx.auth_data)
+        |> SessionController.callback(%{})
+
+      assert get_session(conn, :user_id) == ctx.user.id
     end
 
     test "redirects user on authentication failure", ctx do

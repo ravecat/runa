@@ -41,7 +41,6 @@ defmodule RunaWeb.ConnCase do
       import Plug.HTML
       import Phoenix.ConnTest
       import RunaWeb.ConnCase
-      import Mock
       import Runa.Factory
       import RunaWeb.Router
       import Phoenix.Controller, only: [fetch_flash: 2]
