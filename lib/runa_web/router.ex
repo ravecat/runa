@@ -18,11 +18,6 @@ defmodule RunaWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :put_invitation_token
-
-    unless match?(:prod, Mix.env()) do
-      plug RunaWeb.Plugs.MockAuthentication
-    end
-
     plug RunaWeb.Plugs.Authentication
   end
 
@@ -62,7 +57,8 @@ defmodule RunaWeb.Router do
     get "/:provider", SessionController, :request
     get "/:provider/callback", SessionController, :callback
     post "/:provider/callback", SessionController, :callback
-    delete "/logout", SessionController, :logout
+    post "/login", SessionController, :create
+    delete "/logout", SessionController, :delete
   end
 
   scope "/api", RunaWeb do
@@ -126,7 +122,7 @@ defmodule RunaWeb.Router do
     end
   end
 
-  # Enable LiveDashboard in development
+  # Enable LiveDashboard and QuickLogin in development
   if Application.compile_env(:runa, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
     # it behind authentication and allow only admins to access it.
@@ -137,6 +133,8 @@ defmodule RunaWeb.Router do
 
     scope "/dev" do
       pipe_through :browser
+
+      post "/quick_login", RunaWeb.SessionController, :quick_login
 
       live_dashboard "/dashboard",
         metrics: RunaWeb.Telemetry

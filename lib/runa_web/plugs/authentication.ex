@@ -54,16 +54,14 @@ defmodule RunaWeb.Plugs.Authentication do
   end
 
   def authenticate_by_auth_data(%Ueberauth.Auth{} = auth) do
-    result =
-      Accounts.create_or_find(%{
-        uid: auth.uid,
-        email: fetch_email(auth),
-        name: fetch_name(auth),
-        nickname: fetch_nickname(auth),
-        avatar: fetch_avatar(auth)
-      })
-
-    case result do
+    Accounts.create_or_find(%{
+      uid: auth.uid,
+      email: fetch_email(auth),
+      name: fetch_name(auth),
+      nickname: fetch_nickname(auth),
+      avatar: fetch_avatar(auth)
+    })
+    |> case do
       {:ok, user} -> {:ok, user}
       {:error, reason} -> {:error, reason}
     end

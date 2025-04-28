@@ -39,19 +39,21 @@ defmodule RunaWeb do
 
   def controller do
     quote do
+      require Logger
+
       use Phoenix.Controller,
         formats: [:html, :json, :jsonapi],
         layouts: [html: RunaWeb.Layouts]
 
       import RunaWeb.APISpec
       import Plug.Conn
-      import RunaWeb.Gettext
 
       alias RunaWeb.Schemas
 
       action_fallback RunaWeb.FallbackController
 
       unquote(verified_routes())
+      unquote(html_helpers())
     end
   end
 

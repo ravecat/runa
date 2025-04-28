@@ -34,21 +34,22 @@ defmodule RunaWeb.SessionController do
       ) do
     case Authentication.authenticate_by_auth_data(auth) do
       {:ok, user} ->
-        conn |> login(user) |> redirect(to: ~p"/profile")
+        create(conn, user)
 
       {:error, reason} ->
         conn |> put_flash(:error, reason) |> redirect(to: ~p"/")
     end
   end
 
-  defp login(conn, user) do
+  defp create(conn, user) do
     conn
     |> put_session(:user_id, user.id)
     |> process_invitation(user)
     |> configure_session(renew: true)
+    |> redirect(to: ~p"/profile")
   end
 
-  def logout(conn, _) do
+  def delete(conn, _) do
     conn
     |> configure_session(drop: true)
     |> redirect(to: ~p"/")
@@ -62,6 +63,15 @@ defmodule RunaWeb.SessionController do
       delete_session(conn, :invitation_token)
     else
       _ -> conn
+    end
+  end
+
+  if Mix.env() == :dev do
+    def quick_login(conn, %{"user_id" => user_id}) do
+      case Runa.Accounts.get_by(id: user_id) do
+        nil -> put_flash(conn, :error, "User not found")
+        user -> create(conn, user)
+      end
     end
   end
 end

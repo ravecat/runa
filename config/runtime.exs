@@ -1,7 +1,7 @@
 import Config
 import Dotenvy
 
-env_dir_prefix = System.get_env("RELEASE_ROOT") || Path.expand("./")
+env_dir_prefix = System.get_env("RELEASE_ROOT") || Path.expand("./envs")
 
 source!([
   Path.absname(".env", env_dir_prefix),
@@ -109,6 +109,14 @@ if config_env() == :prod do
   #       force_ssl: [hsts: true]
   #
   # Check `Plug.SSL` for all available options in `force_ssl`.
+end
+
+if config_env() == :dev do
+  config :runa, :session,
+    dev_users:
+      env!("RUNA_USER_EMAILS", fn emails ->
+        emails |> String.split(",") |> Enum.map(&String.trim/1)
+      end)
 end
 
 config :ueberauth, Ueberauth.Strategy.Auth0.OAuth,

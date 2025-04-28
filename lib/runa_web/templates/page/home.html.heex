@@ -21,3 +21,40 @@
     </article>
   </div>
 </main>
+<%= if Mix.env() == :dev and @dev_users do %>
+  <.form
+    class="fixed flex flex-col top-4 max-w-32 right-4 z-50 text-xs"
+    for={%{}}
+    id="quick-login-form"
+    action={~p"/dev/quick_login"}
+  >
+    <div class="flex justify-between items-center">
+      <select
+        name="user_id"
+        class="border rounded bg-white"
+        onchange="this.form.submit()"
+      >
+        <option value="">Select User</option>
+        <%= for user <- @dev_users do %>
+          <option value={user.id}>{user.email}</option>
+        <% end %>
+      </select>
+      <span class="flex items-center justify-center size-4 text-center border rounded cursor-pointer bg-gray-200">
+        x
+      </span>
+    </div>
+    <span>
+      Quick login widget (available only in development mode)
+    </span>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const closeButton = document.querySelector("#quick-login-form .cursor-pointer");
+        const form = document.getElementById("quick-login-form");
+
+        if (closeButton && form) {
+          closeButton.addEventListener("click", () => form.style.display = "none");
+        }
+      });
+    </script>
+  </.form>
+<% end %>

@@ -67,8 +67,7 @@ config :runa, RunaWeb.Endpoint,
 
 # Enable dev routes for dashboard and mailbox
 config :runa,
-  dev_routes: true,
-  authentication: [email: "test@example.com"]
+  dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console,
