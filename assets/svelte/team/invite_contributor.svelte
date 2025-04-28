@@ -16,9 +16,11 @@
 
   let { team, roles, live, invite }: Props = $props();
 
+  // Form helper below doesn't reflect the actual from errors
+  // so we need to derive the errors from props
   let errors = $derived(invite.errors);
 
-  const { form, data, isValid } = createForm<ContributorInvite>({
+  let { form, data, isValid } = createForm<ContributorInvite>({
     onSubmit: (values) => {
       live?.pushEvent("invite_contributors", values);
     },
@@ -47,6 +49,7 @@
       </div>
       <form class="flex flex-col gap-4" use:form>
         <div class="flex gap-4 items-start">
+          <input type="hidden" name="team_id" value={team.data.id} />
           <MultiInput
             name="emails"
             placeholder="Email"
@@ -71,9 +74,7 @@
             </Select.Content>
           </Select.Root>
         </div>
-        <Button disabled={!$isValid} type="submit" size="xs" class="self-start">
-          Invite
-        </Button>
+        <Button type="submit" size="xs" class="self-start">Invite</Button>
       </form>
     </div>
   </Popover.Content>

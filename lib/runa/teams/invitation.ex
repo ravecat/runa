@@ -1,4 +1,4 @@
-defmodule Runa.Invitations.Invitation do
+defmodule Runa.Teams.Invitation do
   @moduledoc """
   Schema representing an invitation sent to a user to join a team.
   """
@@ -7,6 +7,17 @@ defmodule Runa.Invitations.Invitation do
   @roles Runa.Contributors.Contributor.roles()
   @owner [owner: 8]
   @status [expired: 8, declined: 4, accepted: 2, pending: 1]
+
+  @derive {Jason.Encoder,
+           only: [
+             :id,
+             :email,
+             :role,
+             :status,
+             :expires_at,
+             :inserted_at,
+             :updated_at
+           ]}
 
   typed_schema "invitations" do
     field :email, :string

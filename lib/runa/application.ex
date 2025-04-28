@@ -17,6 +17,8 @@ defmodule Runa.Application do
       {Phoenix.PubSub, name: Runa.PubSub},
       # Start a worker by calling: Runa.Worker.start_link(arg)
       # {Runa.Worker, arg},
+      {Task.Supervisor, name: Runa.AsyncEmailSupervisor},
+      Runa.Teams.Notifier,
       # Start to serve requests, typically the last entry
       RunaWeb.Endpoint
     ]

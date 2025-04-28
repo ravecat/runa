@@ -142,4 +142,24 @@ defmodule Runa.Events do
       field :data, Runa.Tokens.Token.t(), enforce: true
     end
   end
+
+  defmodule InvitationCreated do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Runa.Teams.Invitation.t(), enforce: true
+    end
+  end
+
+  defmodule InvitationUpdated do
+    @moduledoc false
+
+    use TypedStruct
+
+    typedstruct do
+      field :data, Runa.Teams.Invitation.t(), enforce: true
+    end
+  end
 end

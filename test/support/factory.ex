@@ -7,7 +7,7 @@ defmodule Runa.Factory do
   alias Runa.Accounts.User
   alias Runa.Contributors.Contributor
   alias Runa.Files.File
-  alias Runa.Invitations.Invitation
+  alias Runa.Teams.Invitation
   alias Runa.Keys.Key
   alias Runa.Languages.Language
   alias Runa.Languages.Locale

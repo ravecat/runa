@@ -9,11 +9,13 @@ import Config
 
 config :runa,
   ecto_repos: [Runa.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  app_name: to_string(Mix.Project.config()[:app]),
+  app_version: Mix.Project.config()[:version]
 
 # Configures the endpoint
 config :runa, RunaWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "localhost", scheme: "http"],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
     accepts: ~w(html json jsonapi),
@@ -63,6 +65,8 @@ config :flop, repo: Runa.Repo
 
 config :live_svelte,
   ssr: true
+
+config :runa, Runa.Mailer, adapter: Swoosh.Adapters.Local
 
 config :phoenix_template, :format_encoders, jsonapi: Jason
 

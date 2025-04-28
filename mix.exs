@@ -105,7 +105,7 @@ defmodule Runa.MixProject do
       {:live_svelte, "~> 0.15.0"},
       {:wallaby, "~> 0.30", runtime: false, only: :test},
       {:ecto_commons, "~> 0.3.4"},
-      {:swoosh, "~> 1.0"}
+      {:phoenix_swoosh, "~> 1.0"}
     ]
   end
 

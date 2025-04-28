@@ -135,6 +135,7 @@ defmodule RunaWeb.Router do
       pipe_through :browser
 
       post "/quick_login", RunaWeb.SessionController, :quick_login
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
 
       live_dashboard "/dashboard",
         metrics: RunaWeb.Telemetry

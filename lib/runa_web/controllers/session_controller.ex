@@ -17,7 +17,7 @@ defmodule RunaWeb.SessionController do
 
   require Logger
 
-  alias Runa.Invitations
+  alias Runa.Teams.Invitations
   alias RunaWeb.Plugs.Authentication
 
   plug Ueberauth

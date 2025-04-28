@@ -109,6 +109,11 @@ if config_env() == :prod do
   #       force_ssl: [hsts: true]
   #
   # Check `Plug.SSL` for all available options in `force_ssl`.
+
+  config :runa, Runa.Mailer,
+    adapter: Swoosh.Adapters.Mailjet,
+    api_key: env!("RUNA_MAILJET_API_KEY", :string?, ""),
+    secret: env!("RUNA_MAILJET_SECRET", :string?, "")
 end
 
 if config_env() == :dev do
@@ -119,11 +124,21 @@ if config_env() == :dev do
       end)
 end
 
-config :ueberauth, Ueberauth.Strategy.Auth0.OAuth,
+config :runa,
+  app_domain: "#{Application.get_env(:runa, RunaWeb.Endpoint)[:url][:host]}",
+  app_base_url:
+    env!(
+      "RUNA_APP_BASE_URL",
+      :string?,
+      "#{Application.get_env(:runa, RunaWeb.Endpoint)[:url][:scheme]}://#{Application.get_env(:runa, RunaWeb.Endpoint)[:url][:host]}:#{Application.get_env(:runa, RunaWeb.Endpoint)[:http][:port]}"
+    )
+
+config(:ueberauth, Ueberauth.Strategy.Auth0.OAuth,
   domain: env!("AUTH0_DOMAIN", :string?, ""),
   client_id: env!("AUTH0_CLIENT_ID", :string?, ""),
   client_secret: env!("AUTH0_CLIENT_SECRET", :string?, ""),
   redirect_uri: env!("AUTH0_REDIRECT_URI", :string?, "")
+)
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: env!("GOOGLE_CLIENT_ID", :string?, ""),

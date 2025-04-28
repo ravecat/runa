@@ -2,7 +2,7 @@ defmodule RunaWeb.InvitationController do
   use RunaWeb, :controller
   use RunaWeb, :verified_routes
 
-  alias Runa.Invitations
+  alias Runa.Teams.Invitations
 
   def accept(conn, %{"token" => token}) do
     case Invitations.get_invitation(token) do

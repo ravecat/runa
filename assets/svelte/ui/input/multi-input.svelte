@@ -61,7 +61,9 @@
     id="tags"
     class={cn(
       "flex flex-wrap items-center gap-1 px-3 py-2 w-full min-h-10 border rounded-md focus-within:ring-2 max-w-full box-border",
-      error?.length > 0 ? "border-destructive focus-within:ring-destructive focus-within:ring-1" : "border-input focus-within:ring-ring",
+      error?.length > 0
+        ? "border-destructive focus-within:ring-destructive focus-within:ring-1"
+        : "border-input focus-within:ring-ring"
     )}
   >
     {#each value as item, idx (item)}
@@ -83,7 +85,7 @@
           {#if icon}
             {@render icon()}
           {:else}
-            <X class="size-3 text-muted-foreground" />
+            <X class="size-3 text-muted-foreground pointer-events-none" />
           {/if}
         </Button>
       </div>
