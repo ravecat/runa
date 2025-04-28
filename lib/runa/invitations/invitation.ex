@@ -8,6 +8,17 @@ defmodule Runa.Invitations.Invitation do
   @owner [owner: 8]
   @status [expired: 8, declined: 4, accepted: 2, pending: 1]
 
+  @derive {Jason.Encoder,
+           only: [
+             :id,
+             :email,
+             :role,
+             :status,
+             :expires_at,
+             :inserted_at,
+             :updated_at
+           ]}
+
   typed_schema "invitations" do
     field :email, :string
     field :role, Ecto.Enum, values: @roles

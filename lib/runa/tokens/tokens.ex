@@ -20,7 +20,7 @@ defmodule Runa.Tokens do
 
   """
   @spec get(Scope.t(), non_neg_integer()) ::
-          {:ok, Token.t()} | {:error, Ecto.NoResultsError.t()}
+          {:ok, Token.t()} | {:error, %Ecto.NoResultsError{}}
   def get(%Scope{} = scope, id) do
     from(t in Token,
       where: t.id == ^id and t.user_id == ^scope.current_user.id,
@@ -46,7 +46,7 @@ defmodule Runa.Tokens do
 
   """
   @spec get_by_api_key(String.t()) ::
-          {:ok, Token.t()} | {:error, Ecto.NoResultsError.t()}
+          {:ok, Token.t()} | {:error, %Ecto.NoResultsError{}}
   def get_by_api_key(x_api_key) do
     from(t in Token, where: t.hash == ^hash(x_api_key), preload: [:user])
     |> Repo.one()

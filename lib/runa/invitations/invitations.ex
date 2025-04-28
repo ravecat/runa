@@ -4,19 +4,18 @@ defmodule Runa.Invitations do
   alias Runa.Accounts.User
   alias Runa.Contributors
   alias Runa.Invitations.Invitation
-  alias Runa.Repo
-  alias Runa.Scope
 
-  @spec create_invitation(map()) ::
+  @spec create_invitation(Scope.t(), map()) ::
           {:ok, Invitation.t()} | {:error, Ecto.Changeset.t()}
-  def create_invitation(attrs \\ %{}) do
+  def create_invitation(%Scope{} = scope, attrs \\ %{}) do
     %Invitation{}
     |> Invitation.changeset(attrs)
     |> Repo.insert()
     |> case do
-      {:ok, invitation} ->
-        Runa.Mailer.send_invitation_email(invitation)
-        {:ok, invitation}
+      {:ok, data} ->
+        broadcast(scope, %Events.InvitationCreated{data: data})
+
+        {:ok, data}
 
       other ->
         other
@@ -79,6 +78,17 @@ defmodule Runa.Invitations do
     end
   end
 
+  def make_mailing_list(%Scope{} = scope, attrs) do
+    for email <- attrs["emails"] do
+      create_invitation(scope, %{
+        "email" => email,
+        "role" => attrs["role"],
+        "team_id" => attrs["team_id"],
+        "invited_by_user_id" => scope.current_user.id
+      })
+    end
+  end
+
   defp check_invitation_status(invitation) do
     case invitation.status do
       :pending -> {:ok, invitation}
@@ -101,4 +111,18 @@ defmodule Runa.Invitations do
       {:error, "Invitation created for another user"}
     end
   end
+
+  @spec subscribe(Scope.t()) :: :ok | {:error, term()}
+  def subscribe(%Scope{} = scope) do
+    PubSub.subscribe(topic(scope))
+  end
+
+  @spec broadcast(Scope.t(), term()) :: :ok | {:error, term()}
+  defp broadcast(%Scope{} = scope, event) do
+    PubSub.broadcast(topic(scope), event)
+  end
+
+  @spec topic(Scope.t()) :: String.t()
+  defp topic(scope),
+    do: "#{Invitation.__schema__(:source)}:#{scope.current_user.id}"
 end

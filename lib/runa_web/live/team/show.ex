@@ -105,8 +105,13 @@ defmodule RunaWeb.Live.Team.Show do
   end
 
   @impl true
-  def handle_event("invite_contributors", _, socket) do
-    {:noreply, socket}
+  def handle_event("invite_contributors", attrs, socket) do
+    Invitations.make_mailing_list(socket.assigns.scope, attrs)
+
+    {:noreply,
+     assign(socket,
+       invite: to_invite_form(Invitations.to_invite_changeset()) |> dbg()
+     )}
   end
 
   @impl true
