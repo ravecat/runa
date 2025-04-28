@@ -1,7 +1,14 @@
 import Config
 import Dotenvy
 
-source([".env", System.get_env()])
+env_dir_prefix = System.get_env("RELEASE_ROOT") || Path.expand("./")
+
+source!([
+  Path.absname(".env", env_dir_prefix),
+  Path.absname(".#{config_env()}.env", env_dir_prefix),
+  Path.absname(".#{config_env()}.overrides.env", env_dir_prefix),
+  System.get_env()
+])
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the

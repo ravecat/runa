@@ -59,7 +59,7 @@ openapi.json
 .*
 
 # Include tools artifacts
-!.env.example
+!.dev.env
 !.recode.exs
 !.formatter.exs
 !.credo.exs

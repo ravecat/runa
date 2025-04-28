@@ -6,6 +6,7 @@ defmodule Mix.Tasks.Seed.Data do
   use Mix.Task
 
   import Runa.Factory
+  import Dotenvy
 
   alias Runa.Languages.Language
   alias Runa.Repo
@@ -15,6 +16,8 @@ defmodule Mix.Tasks.Seed.Data do
   @requirements ["app.start"]
 
   def run(_args) do
+    Mix.Task.run("app.config")
+
     Logger.info("Starting to seed development data...")
 
     case Repo.aggregate(Language, :count) do
@@ -32,10 +35,18 @@ defmodule Mix.Tasks.Seed.Data do
 
     languages = Repo.all(Language)
 
-    email = Application.get_env(:runa, :authentication)[:email]
+    users =
+      case env!("RUNA_USER_EMAILS", :string?, "") do
+        "" ->
+          insert_list(3, :user)
 
-    # users = insert_list(3, :user) ++ [insert(:user, email: email)]
-    users = insert_list(3, :user)
+        user_emails ->
+          user_emails
+          |> String.split(",")
+          |> Enum.map(&String.trim/1)
+          |> Enum.reject(&(&1 == ""))
+          |> Enum.map(fn email -> insert(:user, email: email) end)
+      end
 
     teams =
       Enum.map(users, fn user ->
