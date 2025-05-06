@@ -63,6 +63,7 @@ openapi.json
 !.recode.exs
 !.formatter.exs
 !.credo.exs
+!.tool-versions
 
 # Ignore automatically generated Svelte files by the ~V sigil
 /assets/svelte/_build/
