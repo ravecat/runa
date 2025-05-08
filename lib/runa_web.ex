@@ -103,9 +103,8 @@ defmodule RunaWeb do
   def email do
     quote do
       import Swoosh.Email
+      import Runa.Mailer
 
-      @app_base_url Application.compile_env(:runa, :app_base_url)
-      @no_reply_email "no-reply@#{Application.compile_env(:runa, RunaWeb.Endpoint)[:url][:host]}"
       @app_name Application.compile_env(:runa, :app_name)
     end
   end

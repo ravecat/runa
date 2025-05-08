@@ -1,13 +1,19 @@
 defmodule Runa.Teams.Email do
   use RunaWeb, :email
 
-  def invite_to_team(%Runa.Teams.Invitation{
+  def deliver_invitation_to_team(%Runa.Teams.Invitation{
         token: token,
         email: email,
         role: role
       }) do
-    acceptance_url = "#{@app_base_url}/invitations/accept/#{token}"
+    app_base_url = Application.get_env(:runa, :app_base_url)
+
+    no_reply_email =
+      "no-reply@#{Application.get_env(:runa, RunaWeb.Endpoint)[:url][:host]}"
+
     app_name = String.capitalize(@app_name)
+
+    acceptance_url = "#{app_base_url}/invitations/accept/#{token}"
 
     email_content = """
     Hello,
@@ -23,8 +29,9 @@ defmodule Runa.Teams.Email do
 
     new()
     |> to(email)
-    |> from(@no_reply_email)
+    |> from(no_reply_email)
     |> subject("#{app_name} team invitation")
     |> text_body(email_content)
+    |> deliver()
   end
 end

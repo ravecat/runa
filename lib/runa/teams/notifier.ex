@@ -2,9 +2,9 @@ defmodule Runa.Teams.Notifier do
   use GenServer
 
   alias Runa.Events
-  alias Runa.Mailer
-  import Runa.Teams.Email
   alias Runa.Teams.Invitations
+
+  import Runa.Teams.Email
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -19,7 +19,7 @@ defmodule Runa.Teams.Notifier do
   @impl true
   def handle_info(%Events.InvitationCreated{data: invitation}, socket) do
     Task.Supervisor.start_child(Runa.AsyncEmailSupervisor, fn ->
-      invitation |> invite_to_team() |> Mailer.deliver()
+      deliver_invitation_to_team(invitation)
     end)
 
     {:noreply, socket}
