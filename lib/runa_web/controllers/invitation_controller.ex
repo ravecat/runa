@@ -5,40 +5,50 @@ defmodule RunaWeb.InvitationController do
   alias Runa.Teams.Invitations
 
   def accept(conn, %{"token" => token}) do
-    case Invitations.get_invitation(token) do
+    with {:ok, invitation} <- Invitations.get_invitation(token),
+         user <- conn.assigns[:current_user],
+         invitee_email <- invitation.email do
+      cond do
+        user && user.email == invitee_email ->
+          accept_by_matched_user(conn, user, invitation)
+
+        user && user.email != invitee_email ->
+          accept_by_unmatched_user(conn, token)
+
+        true ->
+          accept_by_unregistered_user(conn, invitee_email, token)
+      end
+    else
       {:error, %Ecto.NoResultsError{}} ->
         conn
         |> put_flash(:error, "Invalid or expired invitation")
         |> redirect(to: "/")
-
-      {:ok, invitation} ->
-        user = conn.assigns[:current_user]
-        invitee_email = invitation.email
-
-        cond do
-          user && user.email == invitee_email ->
-            case Invitations.accept_invitation(user, invitation) do
-              {:ok, _} ->
-                redirect(conn, to: ~p"/team")
-
-              {:error, reason} ->
-                conn |> put_flash(:error, reason) |> redirect(to: ~p"/")
-            end
-
-          user && user.email != invitee_email ->
-            conn
-            |> configure_session(drop: true)
-            |> redirect(to: ~p"/?invitation_token=#{token}")
-
-          true ->
-            conn
-            |> put_flash(
-              :info,
-              "This invite is for #{invitee_email}, please sign in with that account"
-            )
-            |> redirect(to: ~p"/?invitation_token=#{token}")
-        end
     end
+  end
+
+  defp accept_by_matched_user(conn, user, invitation) do
+    case Invitations.accept_invitation(user, invitation) do
+      {:ok, _} ->
+        redirect(conn, to: ~p"/team")
+
+      {:error, reason} ->
+        conn |> put_flash(:error, reason) |> redirect(to: ~p"/")
+    end
+  end
+
+  defp accept_by_unmatched_user(conn, token) do
+    conn
+    |> configure_session(drop: true)
+    |> redirect(to: ~p"/?invitation_token=#{token}")
+  end
+
+  defp accept_by_unregistered_user(conn, invitee_email, token) do
+    conn
+    |> put_flash(
+      :info,
+      "This invite is for #{invitee_email}, please sign in with that account"
+    )
+    |> redirect(to: ~p"/?invitation_token=#{token}")
   end
 
   def put_invitation_token(
