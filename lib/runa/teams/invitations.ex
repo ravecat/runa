@@ -1,4 +1,7 @@
 defmodule Runa.Teams.Invitations do
+  @moduledoc """
+  Context module for managing team invitations.
+  """
   use Runa, :context
 
   alias Runa.Accounts.User
@@ -47,7 +50,7 @@ defmodule Runa.Teams.Invitations do
   Retrieve invitation by token.
   """
   @spec get_invitation(String.t()) ::
-          {:ok, Invitation.t()} | {:error, %Ecto.NoResultsError{}}
+          {:ok, Invitation.t()} | {:error, term()}
   def get_invitation(token) do
     case Repo.get_by(Invitation, token: token) do
       nil -> {:error, %Ecto.NoResultsError{}}

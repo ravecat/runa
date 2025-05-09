@@ -1,4 +1,7 @@
 defmodule Runa.Teams.Notifier do
+  @moduledoc """
+  GenServer for handling team invitation notifications.
+  """
   use GenServer
 
   alias Runa.Events

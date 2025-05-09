@@ -1,6 +1,12 @@
 defmodule Runa.Teams.Email do
+  @moduledoc """
+  Emails related to team context.
+  """
   use RunaWeb, :email
 
+  @doc """
+  Delivers an invitation email to a user.
+  """
   def deliver_invitation_to_team(%Runa.Teams.Invitation{
         token: token,
         email: email,

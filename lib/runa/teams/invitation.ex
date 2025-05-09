@@ -40,7 +40,7 @@ defmodule Runa.Teams.Invitation do
       :token,
       :crypto.strong_rand_bytes(32) |> Base.url_encode64(padding: false)
     )
-    |> put_change(:expires_at, DateTime.add(DateTime.utc_now(), 86400))
+    |> put_change(:expires_at, DateTime.add(DateTime.utc_now(), 86_400))
     |> validate_format(:email, ~r/@/)
   end
 
