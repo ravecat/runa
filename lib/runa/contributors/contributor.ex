@@ -14,14 +14,8 @@ defmodule Runa.Contributors.Contributor do
     def encode(value, opts) do
       value
       |> Map.take([:id, :user, :role, :inserted_at, :updated_at])
-      |> Map.update(:inserted_at, nil, fn
-        dt when is_struct(dt, DateTime) -> dt_to_string(dt)
-        other -> other
-      end)
-      |> Map.update(:updated_at, nil, fn
-        dt when is_struct(dt, DateTime) -> dt_to_string(dt)
-        other -> other
-      end)
+      |> Map.update(:inserted_at, nil, &dt_to_string/1)
+      |> Map.update(:updated_at, nil, &dt_to_string/1)
       |> Jason.Encode.map(opts)
     end
   end

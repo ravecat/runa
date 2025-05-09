@@ -39,7 +39,7 @@ defmodule RunaWeb.Live.Team.ShowTest do
       for {member, _} <- ctx.members do
         assert_has(
           session,
-          Query.css("[aria-label=\"Member #{member.name} form\"]",
+          Query.css("[aria-label='Member #{member.name} form']",
             text: member.name
           )
         )
@@ -55,7 +55,7 @@ defmodule RunaWeb.Live.Team.ShowTest do
       for {member, role} <- ctx.members do
         assert_has(
           session,
-          Query.css("[aria-label=\"Role for #{member.name}\"]",
+          Query.css("[aria-label='Role for #{member.name}']",
             text: to_string(role.role)
           )
         )
@@ -91,14 +91,14 @@ defmodule RunaWeb.Live.Team.ShowTest do
 
       assert_has(
         session,
-        Query.css("[aria-label=\"Member #{member.name} form\"]",
+        Query.css("[aria-label='Member #{member.name} form']",
           text: member.name
         )
       )
-      |> click(Query.css("[aria-label=\"Delete #{member.name} from team\"]"))
-      |> click(Query.css("[aria-label=\"Confirm delete contributor\"]"))
+      |> click(Query.css("[aria-label='Delete #{member.name} from team']"))
+      |> click(Query.css("[aria-label='Confirm delete contributor']"))
       |> assert_has(
-        Query.css("[aria-label=\"Member #{member.name} form\"]", count: 0)
+        Query.css("[aria-label='Member #{member.name} form']", count: 0)
       )
     end
 
@@ -112,11 +112,11 @@ defmodule RunaWeb.Live.Team.ShowTest do
         if role.role != :owner do
           click(
             session,
-            Query.css("[aria-label=\"Role for #{member.name}\"] button")
+            Query.css("[aria-label='Role for #{member.name}'] button")
           )
           |> click(Query.css("[data-select-item]", text: "admin"))
           |> assert_has(
-            Query.css("[aria-label=\"Role for #{member.name}\"]", text: "admin")
+            Query.css("[aria-label='Role for #{member.name}']", text: "admin")
           )
         end
       end
@@ -137,6 +137,13 @@ defmodule RunaWeb.Live.Team.ShowTest do
         |> click(Query.css("[aria-label='Confirm invite']"))
         |> assert_has(Query.css("[aria-label='Confirm invite']"))
     end
+
+    feature "hasn't ability to leave team", ctx do
+      put_session(ctx.session, :user_id, ctx.user.id)
+      |> visit("/team")
+      |> assert_has(Query.css("[aria-label='Team members']"))
+      |> assert_has(Query.css("[aria-label='Leave team']", count: 0))
+    end
   end
 
   describe "team non-owner" do
@@ -150,11 +157,27 @@ defmodule RunaWeb.Live.Team.ShowTest do
       for {member, _role} <- ctx.members do
         assert_has(
           session,
-          Query.css("[aria-label=\"Delete #{member.name} from team\"]",
-            count: 0
-          )
+          Query.css("[aria-label='Delete #{member.name} from team']", count: 0)
         )
       end
+    end
+
+    feature "has ability to leave team", ctx do
+      user = insert(:user)
+      insert(:contributor, team: ctx.team, user: user, role: :editor)
+
+      session =
+        put_session(ctx.session, :user_id, user.id)
+        |> visit("/team")
+        |> assert_has(Query.text(ctx.team.title))
+        |> take_screenshot()
+        |> assert_has(Query.css("[aria-label='Leave team']"))
+        |> click(Query.css("[aria-label='Leave team']"))
+        |> assert_has(Query.css("[aria-label='Confirm leaving team']"))
+        |> click(Query.css("[aria-label='Confirm leaving team']"))
+        |> assert_has(Query.text(ctx.team.title, count: 0))
+
+      assert current_path(session) == "/profile"
     end
   end
 end

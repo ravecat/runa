@@ -17,6 +17,16 @@ defmodule Runa.Teams.Team do
              order_directions: [:desc, :asc]
            }}
 
+  defimpl Jason.Encoder, for: __MODULE__ do
+    def encode(value, opts) do
+      value
+      |> Map.take([:id, :title, :inserted_at, :updated_at])
+      |> Map.update(:inserted_at, nil, &dt_to_string/1)
+      |> Map.update(:updated_at, nil, &dt_to_string/1)
+      |> Jason.Encode.map(opts)
+    end
+  end
+
   typed_schema "teams" do
     field :title, :string
     has_many :projects, Project
@@ -30,21 +40,5 @@ defmodule Runa.Teams.Team do
     |> cast(attrs, [:title])
     |> validate_required([:title])
     |> validate_length(:title, min: 3, max: 100)
-  end
-
-  defimpl Jason.Encoder, for: __MODULE__ do
-    def encode(value, opts) do
-      value
-      |> Map.take([:id, :title, :inserted_at, :updated_at])
-      |> Map.update(:inserted_at, nil, fn
-        dt when is_struct(dt, DateTime) -> dt_to_string(dt)
-        other -> other
-      end)
-      |> Map.update(:updated_at, nil, fn
-        dt when is_struct(dt, DateTime) -> dt_to_string(dt)
-        other -> other
-      end)
-      |> Jason.Encode.map(opts)
-    end
   end
 end

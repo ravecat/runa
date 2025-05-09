@@ -9,9 +9,10 @@
   import * as Card from "$lib/ui/card";
   import * as Select from "$lib/ui/select";
   import { debounce } from "$lib/shared/debounce";
-  import { Calendar, Users, Trash2 } from "lucide-svelte";
+  import { Calendar, Users, Trash2, LogOut } from "lucide-svelte";
   import DeleteContributorModal from "./delete_contributor_modal.svelte";
   import InviteContributor from "./invite_contributor.svelte";
+  import LeaveTeamModal from "./leave_team_modal.svelte";
 
   let {
     team,
@@ -121,6 +122,18 @@
               </Table.Cell>
               <Table.Cell class="flex items-center gap-2">
                 {member.inserted_at}
+                {#if member.user.id === current_user.id && member.role !== "owner"}
+                  <LogOut
+                    onclick={() =>
+                      modals.open(LeaveTeamModal, {
+                        member: member,
+                        team: team.data,
+                        live: live,
+                      })}
+                    class="size-4 flex-shrink-0 cursor-pointer hover:bg-muted"
+                    aria-label="Leave team"
+                  />
+                {/if}
                 {#if current_user.id == owner.id && member.role !== "owner"}
                   <Trash2
                     onclick={() =>

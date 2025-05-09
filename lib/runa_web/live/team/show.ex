@@ -113,6 +113,14 @@ defmodule RunaWeb.Live.Team.Show do
   end
 
   @impl true
+  def handle_event("leave_team", %{"contributor_id" => id}, socket) do
+    case Contributors.delete(socket.assigns.scope, id) do
+      {:ok, _} -> {:noreply, push_navigate(socket, to: ~p"/profile")}
+      {:error, _} -> {:noreply, socket}
+    end
+  end
+
+  @impl true
   def handle_event(_, _, socket) do
     {:noreply, socket}
   end

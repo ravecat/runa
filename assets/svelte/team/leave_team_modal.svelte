@@ -7,13 +7,12 @@
   import type { Team } from "$lib/team";
   import type { Contributor } from "$lib/accounts";
 
-  type Props = LiveSvelteProps<
-    ModalProps<{ team: Team; contributor: Contributor }>
-  >;
-  let { isOpen, team, contributor, close, live }: Props = $props();
+  type Props = LiveSvelteProps<ModalProps<{ member: Contributor; team: Team }>>;
 
-  function handleDeleteContributor() {
-    live.pushEvent(`delete_contributor:${contributor.id}`, {});
+  let { isOpen, member, team, close, live }: Props = $props();
+
+  function handleLeaveTeam() {
+    live.pushEvent(`leave_team`, { contributor_id: member.id });
     close();
   }
 </script>
@@ -21,24 +20,27 @@
 <Dialog.Root open={isOpen} onOpenChange={() => close()}>
   <Dialog.Content>
     <Dialog.Header>
-      <Dialog.Title>Delete contributor?</Dialog.Title>
+      <Dialog.Title>Leave team?</Dialog.Title>
       <Dialog.Description>
-        This action cannot be undone. This will permanently delete <span
-          class="font-bold">{contributor.user.name}</span
+        This action cannot be undone. This will permanently remove you from <span
+          class="font-bold"
         >
-        from <span class="font-bold">{team.title}</span>.
+          {team.title}
+        </span>
       </Dialog.Description>
     </Dialog.Header>
     <Dialog.Footer>
       <Button
         variant="outline"
-        aria-label="Cancel delete contributor"
-        onclick={close}>Cancel</Button
+        aria-label="Cancel leaving team"
+        onclick={close}
       >
+        Cancel
+      </Button>
       <Button
         variant="destructive"
-        aria-label="Confirm delete contributor"
-        onclick={handleDeleteContributor}>Delete</Button
+        aria-label="Confirm leaving team"
+        onclick={handleLeaveTeam}>Leave</Button
       >
     </Dialog.Footer>
   </Dialog.Content>
