@@ -101,7 +101,7 @@ defmodule Runa.Factory do
     %Invitation{
       token: :crypto.strong_rand_bytes(32) |> Base.url_encode64(padding: false),
       status: :pending,
-      expires_at: DateTime.add(DateTime.utc_now(), 86400),
+      expires_at: DateTime.add(DateTime.utc_now(), 86_400),
       email: Faker.Internet.email(),
       role: sequence(:role, [:admin, :editor, :viewer])
     }
