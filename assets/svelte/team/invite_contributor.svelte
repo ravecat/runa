@@ -16,13 +16,17 @@
 
   let { team, roles, live, invite }: Props = $props();
 
+  let isPopoverOpen = $state(false);
+
   // Form helper below doesn't reflect the actual from errors
   // so we need to derive the errors from props
   let errors = $derived(invite.errors);
 
   let { form, data, isValid } = createForm<ContributorInvite>({
     onSubmit: (values) => {
-      live?.pushEvent("invite_contributors", values);
+      live?.pushEvent("invite_contributors", values, () => {
+        isPopoverOpen = false;
+      });
     },
     initialValues: invite.data,
     validate: async (values) => {
@@ -35,9 +39,14 @@
   });
 </script>
 
-<Popover.Root>
+<Popover.Root bind:open={isPopoverOpen}>
   <Popover.Trigger asChild let:builder>
-    <Button builders={[builder]} variant="outline" size="xs">Add member</Button>
+    <Button
+      builders={[builder]}
+      variant="outline"
+      size="xs"
+      aria-label="Add team members">Add member</Button
+    >
   </Popover.Trigger>
   <Popover.Content align="end" class="w-[32rem]">
     <div class="grid gap-4">
@@ -56,6 +65,7 @@
             class="w-2/3"
             error={errors.emails}
             bind:value={$data.emails}
+            aria-label="Email input for inviting member"
           />
           <Select.Root
             name="role"
@@ -74,7 +84,13 @@
             </Select.Content>
           </Select.Root>
         </div>
-        <Button type="submit" size="xs" class="self-start">Invite</Button>
+        <Button
+          type="submit"
+          disabled={!$isValid}
+          size="xs"
+          class="self-start"
+          aria-label="Confirm invite">Invite</Button
+        >
       </form>
     </div>
   </Popover.Content>

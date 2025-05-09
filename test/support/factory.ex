@@ -7,12 +7,12 @@ defmodule Runa.Factory do
   alias Runa.Accounts.User
   alias Runa.Contributors.Contributor
   alias Runa.Files.File
-  alias Runa.Teams.Invitation
   alias Runa.Keys.Key
   alias Runa.Languages.Language
   alias Runa.Languages.Locale
   alias Runa.Projects.Project
   alias Runa.Services.Avatar
+  alias Runa.Teams.Invitation
   alias Runa.Teams.Team
   alias Runa.Tokens
   alias Runa.Tokens.Token

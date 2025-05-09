@@ -121,6 +121,22 @@ defmodule RunaWeb.Live.Team.ShowTest do
         end
       end
     end
+
+    feature "has ability to invite new members", ctx do
+      session =
+        put_session(ctx.session, :user_id, ctx.user.id)
+        |> visit("/team")
+        |> assert_has(Query.css("[aria-label='Team members']"))
+        |> click(Query.css("[aria-label='Add team members']"))
+        |> assert_has(
+          Query.css("[aria-label='Email input for inviting member']")
+        )
+        |> fill_in(Query.css("[aria-label='Email input for inviting member']"),
+          with: "test@example.com"
+        )
+        |> click(Query.css("[aria-label='Confirm invite']"))
+        |> assert_has(Query.css("[aria-label='Confirm invite']"))
+    end
   end
 
   describe "team non-owner" do

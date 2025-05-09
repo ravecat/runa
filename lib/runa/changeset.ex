@@ -7,11 +7,9 @@ defmodule Runa.Changeset do
   Validates a list field within a changeset by applying a callback function to each element.
   """
   # credo:disable-for-this-file Credo.Check.Refactor.Nesting
-  @spec validate_list(
-          Ecto.Changeset.t(),
-          atom(),
-          (Ecto.Changeset.t() -> Ecto.Changeset.t())
-        ) :: Ecto.Changeset.t()
+  @spec validate_list(Ecto.Changeset.t(), atom(), (Ecto.Changeset.t() ->
+                                                     Ecto.Changeset.t())) ::
+          Ecto.Changeset.t()
   def validate_list(%Ecto.Changeset{} = changeset, field, callback) do
     changeset = Ecto.Changeset.change(changeset)
     {:array, element_type} = changeset.types[field]

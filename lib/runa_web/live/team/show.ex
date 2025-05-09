@@ -5,8 +5,8 @@ defmodule RunaWeb.Live.Team.Show do
   use RunaWeb, :live_view
 
   alias Runa.Contributors
-  alias Runa.Teams.Invitations
   alias Runa.Teams
+  alias Runa.Teams.Invitations
 
   on_mount(__MODULE__)
 
