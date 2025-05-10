@@ -4,9 +4,9 @@ defmodule RunaWeb.Serializers.Project do
   """
   use RunaWeb, :serializer
 
-  def type, do: "projects"
+  def type(), do: "projects"
 
-  def fields,
+  def fields(),
     do: [
       :name,
       :description,

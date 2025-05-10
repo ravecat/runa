@@ -123,19 +123,16 @@ defmodule RunaWeb.Live.Team.ShowTest do
     end
 
     feature "has ability to invite new members", ctx do
-      session =
-        put_session(ctx.session, :user_id, ctx.user.id)
-        |> visit("/team")
-        |> assert_has(Query.css("[aria-label='Team members']"))
-        |> click(Query.css("[aria-label='Add team members']"))
-        |> assert_has(
-          Query.css("[aria-label='Email input for inviting member']")
-        )
-        |> fill_in(Query.css("[aria-label='Email input for inviting member']"),
-          with: "test@example.com"
-        )
-        |> click(Query.css("[aria-label='Confirm invite']"))
-        |> assert_has(Query.css("[aria-label='Confirm invite']"))
+      put_session(ctx.session, :user_id, ctx.user.id)
+      |> visit("/team")
+      |> assert_has(Query.css("[aria-label='Team members']"))
+      |> click(Query.css("[aria-label='Add team members']"))
+      |> assert_has(Query.css("[aria-label='Email input for inviting member']"))
+      |> fill_in(Query.css("[aria-label='Email input for inviting member']"),
+        with: "test@example.com"
+      )
+      |> click(Query.css("[aria-label='Confirm invite']"))
+      |> assert_has(Query.css("[aria-label='Confirm invite']"))
     end
 
     feature "hasn't ability to leave team", ctx do

@@ -4,9 +4,9 @@ defmodule RunaWeb.Serializers.Team do
   """
   use RunaWeb, :serializer
 
-  def type, do: "teams"
+  def type(), do: "teams"
 
-  def fields,
+  def fields(),
     do: [
       :title,
       :inserted_at,

@@ -40,7 +40,7 @@ defmodule Runa.Repo do
 
     changeset =
       Ecto.Changeset.cast(
-        struct.__struct__.__struct__,
+        struct.__struct__.__struct__(),
         params,
         struct.__struct__.__schema__(:fields) -- [:id]
       )
