@@ -37,24 +37,24 @@ defmodule RunaWeb.Plugs.AuthenticationTest do
     end
   end
 
-  describe "authenticate/2" do
+  describe "require_authenticated_user/2" do
     test "returns connection when current_user is assigned", ctx do
       conn =
         ctx.conn
         |> assign(:current_user, ctx.user)
-        |> Authentication.authenticate([])
+        |> Authentication.require_authenticated_user([])
 
       assert conn.assigns.current_user == ctx.user
     end
 
     test "halts request when current_user is not assigned", ctx do
-      conn = Authentication.authenticate(ctx.conn, [])
+      conn = Authentication.require_authenticated_user(ctx.conn, [])
 
       assert conn.halted
     end
 
     test "redirects to root path when current_user is not assigned", ctx do
-      conn = Authentication.authenticate(ctx.conn, [])
+      conn = Authentication.require_authenticated_user(ctx.conn, [])
 
       assert redirected_to(conn) == "/"
     end

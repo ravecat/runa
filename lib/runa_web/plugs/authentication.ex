@@ -42,7 +42,7 @@ defmodule RunaWeb.Plugs.Authentication do
     |> assign(:user_token, token)
   end
 
-  def authenticate(conn, _opts) do
+  def require_authenticated_user(conn, _opts) do
     if conn.assigns[:current_user] do
       conn
     else
@@ -50,6 +50,16 @@ defmodule RunaWeb.Plugs.Authentication do
       |> put_flash(:error, "You must be logged in to access that page")
       |> redirect(to: ~p"/")
       |> halt()
+    end
+  end
+
+  def redirect_if_user_is_authenticated(conn, _opts) do
+    if conn.assigns[:current_user] do
+      conn
+      |> redirect(to: ~p"/")
+      |> halt()
+    else
+      conn
     end
   end
 

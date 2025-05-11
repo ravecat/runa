@@ -3,7 +3,8 @@ defmodule RunaWeb.Router do
 
   require Ueberauth
 
-  import RunaWeb.Plugs.Authentication, only: [authenticate: 2]
+  import RunaWeb.Plugs.Authentication,
+    only: [require_authenticated_user: 2, redirect_if_user_is_authenticated: 2]
 
   import RunaWeb.InvitationController,
     only: [put_invitation_token: 2]
@@ -52,7 +53,7 @@ defmodule RunaWeb.Router do
   end
 
   scope @auth_path, RunaWeb do
-    pipe_through :browser
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     get "/:provider", SessionController, :request
     get "/:provider/callback", SessionController, :callback
@@ -88,37 +89,33 @@ defmodule RunaWeb.Router do
       only: [:create, :show, :update, :delete]
   end
 
-  live_session :default,
-    on_mount: [RunaWeb.EctoSandbox, RunaWeb.RequestUri, RunaWeb.Scope] do
-    scope "/profile", RunaWeb.Live do
-      pipe_through [:browser, :authenticate]
+  scope "/", RunaWeb do
+    pipe_through [:browser, :require_authenticated_user]
 
-      live "/", Profile.Show
-    end
+    live_session :require_authenticated_user,
+      on_mount: [RunaWeb.EctoSandbox, RunaWeb.RequestUri, RunaWeb.Scope] do
+      scope "/profile", Live do
+        live "/", Profile.Show
+      end
 
-    scope "/tokens", RunaWeb.Live do
-      pipe_through [:browser, :authenticate]
+      scope "/tokens", Live do
+        live "/", Token.Index
+        live "/new", Token.Index, :new
+        live "/:id/edit", Token.Index, :edit
+        live "/:id/delete", Token.Index, :delete
+      end
 
-      live "/", Token.Index
-      live "/new", Token.Index, :new
-      live "/:id/edit", Token.Index, :edit
-      live "/:id/delete", Token.Index, :delete
-    end
+      scope "/projects", Live do
+        live "/", Project.Index
+        live "/new", Project.Index, :new
+        live "/:id/edit", Project.Index, :edit
+        live "/:id/delete", Project.Index, :delete
+        live "/:id", Project.Show
+      end
 
-    scope "/projects", RunaWeb.Live do
-      pipe_through [:browser, :authenticate]
-
-      live "/", Project.Index
-      live "/new", Project.Index, :new
-      live "/:id/edit", Project.Index, :edit
-      live "/:id/delete", Project.Index, :delete
-      live "/:id", Project.Show
-    end
-
-    scope "/team", RunaWeb.Live do
-      pipe_through [:browser, :authenticate]
-
-      live "/", Team.Show
+      scope "/team", Live do
+        live "/", Team.Show
+      end
     end
   end
 
