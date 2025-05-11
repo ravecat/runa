@@ -3,6 +3,8 @@ defmodule Mix.Tasks.Cleanup.Chromedrivers do
   Mix task to kill abandoned chromedriver processes.
   """
 
+  @shortdoc "Cleans up abandoned chromedriver processes"
+
   use Mix.Task
 
   def run(_) do

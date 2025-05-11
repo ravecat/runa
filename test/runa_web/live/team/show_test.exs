@@ -167,7 +167,6 @@ defmodule RunaWeb.Live.Team.ShowTest do
         put_session(ctx.session, :user_id, user.id)
         |> visit("/team")
         |> assert_has(Query.text(ctx.team.title))
-        |> take_screenshot()
         |> assert_has(Query.css("[aria-label='Leave team']"))
         |> click(Query.css("[aria-label='Leave team']"))
         |> assert_has(Query.css("[aria-label='Confirm leaving team']"))

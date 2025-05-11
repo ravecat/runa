@@ -3,6 +3,8 @@ defmodule Mix.Tasks.Seed.Languages do
   Fetch languages data from a CSV file and seed the database.
   """
 
+  @shortdoc "Seeds languages data to the database"
+
   use Mix.Task
 
   require Logger
