@@ -13,11 +13,7 @@ defmodule Runa.MixProject do
       preferred_cli_env: [
         "test.watch": :test,
         "test.only": :test,
-        "test.e2e": :test
-      ],
-      elixirc_options: [debug_info: true, verbose: true, all_warnings: true],
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
+        "test.e2e": :test,
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
@@ -25,6 +21,8 @@ defmodule Runa.MixProject do
         "coveralls.html": :test,
         "coveralls.cobertura": :test
       ],
+      elixirc_options: [debug_info: true, verbose: true, all_warnings: true],
+      test_coverage: [tool: ExCoveralls],
       consolidate_protocols: Mix.env() != :test
     ]
   end
@@ -78,7 +76,7 @@ defmodule Runa.MixProject do
       {:plug_cowboy, "~> 2.7"},
       {:floki, "~> 0.36.0", only: :test},
       {:pathex, "~> 2.0"},
-      {:tailwind, "~> 0.2.2"},
+      # {:tailwind, "~> 0.2.2"},
       {:csv, "~> 3.2"},
       {:repatch, "~> 1.0", only: :test},
       {:jsonapi, "~> 1.7.1"},
