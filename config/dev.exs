@@ -27,7 +27,7 @@ config :runa, RunaWeb.Endpoint,
     "pNcmh9y/fN20hRXU5V/Yy6RO+2nbAgAlBbU1/QIw6m0JQV5YcOHj9GTIBDbw1jNW",
   watchers: [
     node: ["build.js", "--watch", cd: Path.expand("../assets", __DIR__)],
-    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
+    tailwind: {Tailwind, :install_and_run, [:runa, ~w(--watch)]}
   ]
 
 # ## SSL Support

@@ -43,7 +43,7 @@ let optsServer = {
   entryPoints: ["js/server.js"],
   platform: "node",
   bundle: true,
-  minify: false,
+  minify: deploy,
   target: "node19.6.1",
   conditions: serverConditions,
   alias: { svelte: "svelte" },

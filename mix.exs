@@ -87,7 +87,7 @@ defmodule Runa.MixProject do
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:file_system, "~> 1.0", only: [:dev, :test]},
       {:typed_ecto_schema, "~> 0.4.1", runtime: false},
-      {:dotenvy, "~> 1.1.0", only: [:dev, :test]},
+      {:dotenvy, "~> 1.1.0"},
       {:faker, "~> 0.18", only: [:dev, :test]},
       {:pbkdf2_elixir, "~> 2.0"},
       {:tails, "~> 0.1.11"},
@@ -133,15 +133,15 @@ defmodule Runa.MixProject do
       "test.coverage": "coveralls.multiple --type html --type json --type lcov",
       "assets.client": "cmd make assets",
       "assets.deploy": [
-        "tailwind default --minify",
-        "assets.client --deploy",
+        "tailwind runa --minify",
+        "cmd --cd assets node build.js --deploy",
         "phx.digest"
       ],
       deploy: [
         "deps.get --only prod",
         "cmd MIX_ENV=prod mix compile",
         "cmd MIX_ENV=prod mix assets.deploy",
-        "phx.gen.release --docker",
+        "phx.gen.release",
         "cmd MIX_ENV=prod mix release --overwrite"
       ]
     ]

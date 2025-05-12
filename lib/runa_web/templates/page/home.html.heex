@@ -4,12 +4,6 @@
       <section>
         <div class="flex-col centered">
           <.icon icon="logo" class="w-[4rem] m-4" />
-          <%!-- <h1 class="text-4xl sm:text-4xl leading-tight">
-            Cloud-based localization management system
-          </h1>
-          <h2 class="text-xl py-[2rem]">
-            for your web, mobile apps, games and digital content.
-          </h2> --%>
           <.link
             class="w-full buttonable primary focus:outline-none focus:primary"
             href={~p"/session/google"}
@@ -21,7 +15,7 @@
     </article>
   </div>
 </main>
-<%= if Mix.env() == :dev and @dev_users do %>
+<%= if @dev_users do %>
   <.form
     class="fixed flex flex-col top-4 max-w-32 right-4 z-50 text-xs"
     for={%{}}
