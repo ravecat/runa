@@ -10,15 +10,13 @@ defmodule Runa.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      preferred_cli_env: [
-        "test.watch": :test,
-        "test.only": :test,
-        "test.e2e": :test
-      ],
       elixirc_options: [debug_info: true, verbose: true, all_warnings: true],
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
+        "test.watch": :test,
+        "test.only": :test,
+        "test.e2e": :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.lcov": :test,
@@ -100,7 +98,6 @@ defmodule Runa.MixProject do
       {:sweet_xml, "~> 0.6.6"},
       {:jaxon, "~> 2.0"},
       {:flow, "~> 1.0"},
-      {:live_debugger, "~> 0.1.0", only: :dev},
       {:typed_struct, "~> 0.3.0"},
       {:live_svelte, "~> 0.15.0"},
       {:wallaby, "~> 0.30", runtime: false, only: :test},

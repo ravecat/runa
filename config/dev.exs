@@ -85,5 +85,3 @@ config :phoenix, :plug_init_mode, :runtime
 config :phoenix_live_view, :debug_heex_annotations, true
 
 config :open_api_spex, :cache_adapter, OpenApiSpex.Plug.NoneCache
-
-config :live_debugger, browser_features?: true
