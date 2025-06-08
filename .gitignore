@@ -57,6 +57,7 @@ openapi.json
 *.coverdata
 /screenshots/
 .*
+/context_portal/
 
 # Include tools artifacts
 !.dev.env
@@ -70,3 +71,5 @@ openapi.json
 
 # Ignore ssr build for svelte.
 /priv/svelte/
+
+
